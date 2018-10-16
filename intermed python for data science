@@ -31,3 +31,132 @@ To combine steps 1-3, just do
   
  
  Using Boolean operators in conjuction with filtering Data:
+For example, want to combine multiple conditions
+
+import numpy as np  #import numpy to use boolean oprators on arrays
+
+np.logical_and(brics["area"]>8,brics{"area"]<10)   # want logical vector of countries where area is greater than 8 and less than 10
+
+brics[np.logical_and(brics["area"]>8,brics["area"]<10)]   #using the logical vector above, subset the brics data to get the rows
+
+
+
+>>>>>>>>>> Code Snippet
+# Import cars data
+import pandas as pd
+cars = pd.read_csv('cars.csv', index_col = 0)
+
+# Extract drives_right column as Series: dr
+dr = cars['drives_right']
+
+# Use dr to subset cars: sel
+sel = cars[dr]
+
+# Print sel
+print(sel)
+
+>>>>>>>>>>>> Code Snippet
+# Import cars data
+import pandas as pd
+cars = pd.read_csv('cars.csv', index_col = 0)
+
+# Convert code to a one-liner
+sel = cars[cars['drives_right']]
+
+# Print sel
+print(sel)
+
+>>>>>>>>>>>>>> Code Snippet
+# Import cars data
+import pandas as pd
+cars = pd.read_csv('cars.csv', index_col = 0)
+
+# Create car_maniac: observations that have a cars_per_cap over 500
+cpc = cars['cars_per_cap']
+many_cars = cpc>500
+car_maniac=cars[many_cars]
+
+# Print car_maniac
+print(car_maniac)
+
+
+>>>>>>>>>> Code Snippet:
+# Import cars data
+import pandas as pd
+cars = pd.read_csv('cars.csv', index_col = 0)
+
+# Option 1: Create car_maniac: observations that have a cars_per_cap over 500
+cpc = cars['cars_per_cap']
+many_cars = cpc>500
+car_maniac=cars[many_cars]
+
+# Print car_maniac
+print(car_maniac)
+
+# Option 2: 
+car_maniac = cars[cars['cars_per_cap']>500]
+print(car_maniac)
+
+
+>>>>>>>>>> Code Snippet: Combining Numpy Operators on a Pandas Series
+# Import cars data
+import pandas as pd
+cars = pd.read_csv('cars.csv', index_col = 0)
+
+# Import numpy, you'll need this
+import numpy as np
+
+# Create medium: observations with cars_per_cap between 100 and 500
+cpc = cars['cars_per_cap']
+medium = cars[np.logical_and(cpc>100, cpc<500)]
+
+# Print medium
+print(medium)
+
+
+
+---------------While Loops--------------------
+
+>>>>>>>>> Basic While Loop : Code Snippet
+# Initialize offset
+offset = 8
+
+# Code the while loop
+while offset != 0:
+    print("correcting...")
+    offset = offset -1
+    print(offset)
+    
+    
+>>>>>>>>>> Add Conditionals:     
+# Initialize offset
+offset = -6
+
+# Code the while loop
+while offset != 0 :
+    print("correcting...")
+    if offset > 0:
+        offset = offset - 1
+    else: 
+        offset = offset + 1
+    print(offset)
+    
+    
+-------------------for-loops-----------
+for var in seq :
+expression
+
+Interpretation: "for each var in seq, execute expression"
+
+ex: 
+  fam = [1.73, 1.86, 1.71, 1.89]
+  print(fam)
+  
+  for height in fam : 
+    print(height)
+    
+    
+    #what if you want to print out the index as well?
+    for index, height in enumerate(fam) : 
+      print("index " + str(inde) + ": " + str(height))
+    

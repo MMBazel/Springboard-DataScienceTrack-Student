@@ -1,0 +1,33 @@
+Comparison Operators
+
+Numpy Recap
+
+---------------Filtering Pandas DataFrame--------------------
+
+Goal: Selext countries with area over 8m km^2
+Steps:
+1) Select the area column
+2) Comparison on area column
+3) Use result to select countries
+
+
+Step 1: Get column
+Want Pandas Series (single bracket) as opposed to DataFRame (double bracket)
+Use
+  brics["area"]
+  
+Step 2: To find areas greater tahn 8,
+  brics["area"]>8
+Will give series of True/False correspinding to which values were greater than 8
+
+Can then store the boolean seriesas "is_huge" 
+  is_huge = brics["area]>8
+  
+Step 3: Then to select countries, can do
+  brics[is_huge]
+  
+To combine steps 1-3, just do
+  brics[brics["area"]>8]
+  
+ 
+ Using Boolean operators in conjuction with filtering Data:

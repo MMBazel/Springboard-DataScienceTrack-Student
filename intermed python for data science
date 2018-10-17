@@ -420,6 +420,7 @@ Simulate a Coin Tosss
 ------------------------------ Random Walk ----------------------------------------
 A sccuession of random steps is a random walk
 In order to recor d the values, need to 
+List below is random but it's not a random walk because the items in the list aren't based on the previous values
 
           import numpy as np
           np.random.seed(123)
@@ -431,4 +432,24 @@ In order to recor d the values, need to
               else:
                    outcomes.append("tails")
           print(outcomes)         
+
+Can turn the above code into a random walk by tracking the total number of tails while you're simulating the game
+
+Start by creating a list of tails that already contains the number 0, because at the start, you haven't thrown any tails
+Then you again start a for-loop that runs 10 times, suing the range function.
+In there, you again generate a random number. 
+Instead of an if-else structure, can simplify things. 
+if coin thrown is 0 then things shouldn;t change. 
+If a 1 is generated the number if tails should be incremented by 1. 
+Means you can just add coin to the previous number of tails and add this count to the list with append. 
+Finally, again print the list of tails.
+
+
+                import numpy as np
+                np.random.seed(123)
+                tails = [0]
+                for x in range(10) :
+                    coin = np.random.randint(0,2)
+                    tails.append(tails[x] + coin)
+                print(tails)    
 

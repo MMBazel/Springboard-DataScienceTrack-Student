@@ -159,4 +159,276 @@ ex:
     #what if you want to print out the index as well?
     for index, height in enumerate(fam) : 
       print("index " + str(inde) + ": " + str(height))
+      
+      
+      
+    >>>>>>>> Code Snippet: Indexes and Lists
+    # areas list
+areas = [11.25, 18.0, 20.0, 10.75, 9.50]
+
+# Change for loop to use enumerate() and update print()
+for x,y in enumerate(areas):
+    print("room "+str(x) +": "+str(y))
     
+    
+    >>>>>>> Loop over List of Lists
+    # house list of lists
+house = [["hallway", 11.25], 
+         ["kitchen", 18.0], 
+         ["living room", 20.0], 
+         ["bedroom", 10.75], 
+         ["bathroom", 9.50]]
+         
+# Build a for loop from scratch
+for x in house:
+        print("the "+x[0]+" is "+str(x[1])+" sqm")
+        
+        
+        
+-------------- Looping Over Data Sctructures -------------------part 1
+For example - Dictionary
+
+world = {
+            "afghanistant":30.55,
+            "albania":2.77,
+            "algeria":39.21
+            }
+
+How to print key and key-value pair: Use items method
+print(key + "----" + str(value))
+
+Because dictionaries are inherently unordered structures, will not print in ordered sequence
+
+What about numpy arrays?
+
+            import numpy as np
+            np_height = np.array([1.73, 1.68, 1.71, 1.89, 1.79])
+            np_weight = np.array([65.4, 59.2, 63.6, 88.4, 68.7])
+            bmi = np_weight / np_height ** 2
+            meas = np.array([np_height, np_weight])
+
+            for val in bmi :
+              print(val)  ## will print a single array in this case
+
+
+            for val in meas:
+              print(val)     ### will print an entire array on each run
+
+            #### If want to get each item printed out, then use nditer()
+            for val in np.nditer(meas) : 
+              print(val)
+  
+
+Recap: 
+If you want to iterate over a dictionary, use:
+  for key, val in my_dict.items() :
+  
+If you want to iterate over a Numpy array:
+  for val in np.nditer(my_array) : 
+
+
+>>>>>>>>>>>>>>>> Loop Over Dictionary: 
+          # Definition of dictionary
+          europe = {'spain':'madrid', 'france':'paris', 'germany':'berlin',
+                    'norway':'oslo', 'italy':'rome', 'poland':'warsaw', 'austria':'vienna' }
+
+          # Iterate over europe
+          for x, y in europe.items():
+              print("the capital of "+x+" is "+y)
+
+
+>>>>>>>>>> Loop over Numpy array
+
+
+          # Import numpy as np
+          import numpy as np
+
+          # For loop over np_height    ####### np_height is a Numpy array
+          for h in np.nditer(np_height):
+              print(str(h)+" inches")
+
+          # For loop over np_baseball    ######### np_baseball is a 2D array
+          for b in np.nditer(np_baseball):
+              print(b)
+
+
+
+---------------------------- Looping Over Data Structures, part 2 _______________________
+What about Pandas data frames? 
+In Pandas you have to explicitly mention you want to iterate over the rows
+by using the iterrows() methods
+
+The iterrows() method looks at the data frame and on each iteration generates two pieces of data: 
+the label of the row and then the actual data in the row as a Pandas Series
+
+          import pandas as pd
+          brics = pd.read_csv("brics.csv",index_col=0)
+
+          for lab, row in brics.iterrows() :
+              print(lab)
+              print(row)
+
+In the first iteration, lab is BR (as in Brazil) abd row is the entire Panda series
+Because this row variable on each iteration is a Series, 
+you can easily select additional information from it using the subsetting techniques you learned about earlier
+
+What if you only wanted to print the ca[pital of the countr fo example? 
+Could instead dom
+
+        import pandas as pd
+        brics = pd.read_csv("brics.csv", index_col=0)
+
+        for lab, row in brics.iterrows() :
+            print(lab + ": " + row["capital"])
+    
+What aboout adding a column? 
+Method 1: Creating Series on  every iteration --- Fine for small DF's but pain in the ass for Big DF's (imagine trillions of rows)
+Let's add an additional column that has the number of characters in a country's name
+        import pandas as pd
+        brics = pd.read_csv("brics.csv", index_col=0) 
+        
+        for lab, row in brics.iterrows() :      ### Specification of for-loop can be same as we need row labale and row data
+               brics.loc[lab, "name_length"] = len(row["country"])                          ### len(row["country"])  < - Next, we can calculate the length of each country name by selecting the country column from row and then passing it to the len() function, that determines the number of characters in a string
+         print(brics)                                                              ### brics.loc[lab, "name_length"] <- Finally we'll neeed to add new information to a new column name_length at the appropirate location
+
+
+
+Method 2: Use apply()
+Calculate an entire DF by applying a function on a particular column in an element-wise fashion
+
+        import pandas as pd
+        brics = pd.read_csv("brics.csv", index_col=0) 
+        
+        brics["name_length"] = brics["country"].apply(len)
+        print(brics)
+
+
+
+>>>>>>>>>>>> Loop Over DataFrame:
+            # Import cars data
+            import pandas as pd
+            cars = pd.read_csv('cars.csv', index_col = 0)
+
+            # Adapt for loop -- instead of getting a Panda Series, select variable to print out using bracket notation 
+
+            for lab, row in cars.iterrows() :
+                print(str(lab) + ": " + str(row['cars_per_cap']))
+
+
+>>>>>>>>>>>>>>> Add Column - #1 using the more inefficient itterows
+            # Import cars data
+            import pandas as pd
+            cars = pd.read_csv('cars.csv', index_col = 0)
+
+            # Code for loop that adds COUNTRY column
+            for lab, row in cars.iterrows() : 
+                cars.loc[lab,"COUNTRY"] = (row["country"]).upper()
+
+
+            # Print cars
+            print(cars)
+
+
+
+>>>>>>>>>>>>>>>>>>>>>> Add Column - #2 Using the more efficient apply
+
+              # Import cars data
+              import pandas as pd
+              cars = pd.read_csv('cars.csv', index_col = 0)
+
+              # Use .apply(str.upper)
+              cars["COUNTRY"]= cars["country"].apply(str.upper)
+
+              print(cars)
+
+
+
+
+
+---------------------------------------- Random Numbers _____________________________________
+Random Generators
+          import numpy as np
+          np.random.rand()
+          np.random.seed(123)
+
+
+
+Simulate a Coin Tosss
+
+        import numpy as np
+        np.random.seed(123)              ##### seed: sets the random seed, so that your results are the reproducible between simulations. As an argument, it takes an integer of your choosing. If you call the function, no output will be generated.
+        coin = np.random.randint(0,2)
+        print(coin)
+        if coin == 0:
+            print("heads")
+        else: 
+            print("tails")
+
+
+
+>>>>>>>>>>>> Random Float:
+          # Import numpy as np
+          import numpy as np
+
+          # Set the seed
+          np.random.seed(123)
+
+          # Generate and print random float
+          coin = np.random.rand()      #### rand() : if you don't specify any arguments, it generates a random float between zero and one.
+          print(coin)
+
+
+
+>>>>>>>>>>>> Roll the Dice
+          # Import numpy and set seed
+          import numpy as np
+          np.random.seed(123)
+
+          # Use randint() to simulate a dice
+          print(np.random.randint(1,7))
+
+
+          # Use randint() again
+          print(np.random.randint(1,7))
+
+
+
+>>>>>>>>>>>>>>> Determine your next move:
+          # Numpy is imported, seed is set
+
+          # Starting step
+          step = 50
+
+          # Roll the dice
+          dice = np.random.randint(1,7)
+
+          # Finish the control construct
+          if dice <= 2 :
+              step = step - 1
+          elif dice <= 5 :
+              step = step + 1
+          else :
+              step = step + np.random.randint(1,7)
+
+          # Print out dice and step
+          print(dice)
+          print(step)
+
+
+
+
+------------------------------ Random Walk ----------------------------------------
+A sccuession of random steps is a random walk
+In order to recor d the values, need to 
+
+          import numpy as np
+          np.random.seed(123)
+          outcomes = []           ### Initializes an empty list
+          for x in range(10) :           ###### will be run 10 times
+              coin = np.random.randint(0,2)
+              if coin == 0:
+                  outcomes.append("heads")
+              else:
+                   outcomes.append("tails")
+          print(outcomes)         
+

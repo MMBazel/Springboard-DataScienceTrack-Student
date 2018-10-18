@@ -16,6 +16,19 @@ Lists -
                   print(cookies[2])
                   
                   
-            
+ Combining lists
+        Can either use operator or .extend() - merges a list into another list at the end
+        
+        Operator method (1):
+        
+                  cakes = ['strawberry', 'vanilla']
+                  desserts = cookies + cakes
+                  print(desserts)
+                  
+        Extends Method (2):
+
+Find and Remove Elements in a List 
+        
+
     
   

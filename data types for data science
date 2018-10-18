@@ -1,0 +1,21 @@
+--------------------Introduction and Lists -------------------------------------
+
+Container Sequences - Hold other types of data
+Sepcific container sequences -inc lists, dictionarys, tuples
+
+Lists -
+  Hold data in order it was added
+  Mutable
+  Index to acccess a specific element
+  
+  
+  Ex: List
+                  cookies = ['chocolate chip', 'peanut butter', 'oatmeal', 'sugar']
+                  coookies.append('Tirggel')       #add new items to lists using the append method
+                  print(cookies)
+                  print(cookies[2])
+                  
+                  
+            
+    
+  

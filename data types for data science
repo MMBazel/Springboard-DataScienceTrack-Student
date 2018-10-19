@@ -28,7 +28,293 @@ Lists -
         Extends Method (2):
 
 Find and Remove Elements in a List 
+        .index() method locates the position of a data element in a list
         
+                  position = cookies.index('sugar')
+                  print(position)
+                  cookies[3]
+        
+        
+        .pop() method removes an item from a list and allow you to save it
+        
+                  name = cookies.pop(position)
+                  print(name)
+                  print(cookies)
 
-    
+ Iterating and sorting over a list
+      for loops are the most common way of iterating over a list
+ 
+                  for cookie in cookies :
+                        print(cookie)
+                        
+      sorted() function sorts data in numerical or alpjabetical order and returns a new list 
+      
+                  print(cookies)
+                  sorted_cookies = sorted(cookies)
+                  
+                  
+  .extend() - allows youto combine a list with another array type (list, set, tuple)
+  .append() - adding individual data elements to a list by using the .append() method
   
+                  >>>>>>>>>>>>>> Code SNippet: Manipulating lists
+                                          # Create a list containing the names: baby_names
+                                          baby_names = ['Ximena', 'Aliza', 'Ayden', 'Calvin']
+
+                                          # Extend baby_names with 'Rowen' and 'Sandeep'
+                                          baby_names.extend(['Rowen','Sandeep'])
+
+                                          # Print baby_names
+                                          print(baby_names)
+
+                                          # Find the position of 'Aliza': position
+                                          position = baby_names.index('Aliza')
+
+                                          # Remove 'Aliza' from baby_names
+                                          baby_names.pop(position)
+
+                                          # Print baby_names
+                                          print(baby_names)
+                                          
+                                          
+
+
+                     >>>>>>>>>>>>>>>>> Code SNippet: Looping over lists 
+                                     # Create the empty list: baby_names
+                                          baby_names = []
+
+                                          # Loop over records 
+                                          for row in records:
+                                              # Add the name to the list
+                                              baby_names.append(row[3])
+
+                                          # Sort the names in alphabetical order
+                                          for name in sorted(baby_names):
+                                              # Print each name
+                                              print(name)
+         
+
+
+
+
+
+---------------------------------- Meet the tuples---------------------------------
+Tuples - like lists
+    Holds data in order
+    Can access individual elements inside a tuple with index
+    
+    Easier to process and more efficient
+    Immutable - can ensure data isn't altered
+    Can create tuples by pairing up elements
+    Can use tuple unpacking to expand a tuple into named variables that represent each element in the tuple
+    
+    
+Zipping and Unpacking    
+        tuples are commonly created by zipping lists together with zip()
+        Two lists: us_ookies ,  in_cookies
+        
+                                      top_pairs = zip(us_cookies, in_cookies)
+                                      print(top_pairs)
+                                      
+         tuple unpacking is a very exporessive way for working with data
+            -allows us to assign the elements of a tuple to named variables for later use
+            -syntax allows us to create more readable and less error prone code
+            
+            start by putting both variables as the target of the assignment statement separated by a comma
+            Then assign the first tuple in our top pairs list to them
+                                     us_num_1, in_num_1 = top_pairs[0]   
+            
+         
+        More unpacking in Loops
+                Can use tuple unpacking to separate a list of tuples into their elements as we loop over them
+                
+
+                                        for us_cookie, in_cookie in top_pairs:
+                                                    print(in_cookie)
+                                                    print(us_cookie)
+
+          Enumerating Positions        
+                  Another use of tuple unpacking helps us keep track of which element in the iterable or list we are currently on 
+                  Often we want to know what the index is of an element in the iterable is. The enumerate function enabled us to do that by creating tuples where the first element of the tuple is the index of the element in the original list, then the element itself. 
+                  We can use this to track rankings in our data or skip elements we are not interested in. 
+                  Here I'm going to enumerate our top pairs list and split that resulting tuple into index and item. 
+                  I can also use tuple unpacking on the item to get all three components separately. 
+                  This can be exceptionally powerful. 
+                  
+                          - Another useful tuple creation method is the eunmerate() function
+                          Enumeration is used in loops to return the postion and the data in that position while looping
+                          
+                                                    for idx, item in enumerate(top_pairs) :
+                                                            us_cookie, in_cookie = items
+                                                            print(idx, us_cookie, in_cookie)
+                                                            
+                  BE careful when making tuples!
+                      Can use different methods like zip(), enumerate() or () t make tuples
+                                  
+                                                    items = ('vanilla', 'chocolate')
+                                  
+                   But beware of trailing commas!
+                   
+                                                       item2 = 'butter',
+                                                            
+                                                            
+                                                            
+    Using and unpacking tuples
+Tuples are made of several items just like a list, but they cannot be modified in any way. It is very common for tuples to be used to represent data from a database. If you have a tuple like ('chocolate chip cookies', 15) and you want to access each part of the data, you can use an index just like a list. However, you can also "unpack" the tuple into multiple variables such as type, count = ('chocolate chip cookies', 15) that will set type to 'chocolate chip cookies' and count to 15.
+
+Often you'll want to pair up multiple array data types. The zip() function does just that. It will return a list of tuples containing one element from each list passed into zip().
+
+When looping over a list, you can also track your position in the list by using the enumerate() function. The function returns the index of the list item you are currently on in the list and the list item itself.
+
+You'll practice using the enumerate() and zip() functions in this exercise, in which your job is to pair up the most common boy and girl names.                                                         
+     
+     
+     
+     
+     
+     
+     >>>>>>>>>>>>>>> Code SNippet: Using and Unpacking Tuples:
+                                         # Pair up the boy and girl names: pairs
+                                          pairs = zip(girl_names, boy_names)
+
+                                          # Iterate over pairs
+                                          for idx, pair in enumerate(pairs):
+                                              # Unpack pair: girl_name, boy_name
+                                              girl_name, boy_name = pair      #### this is similar to naming the components of the tuple
+                                              # Print the rank and names associated with each rank
+                                              print('Rank {}: {} and {}'.format(idx, girl_name, boy_name))
+
+                       
+                                    
+   >>>>>>>>>>>>>>>>>>>>> Code Snippet: Making Tuples by Accident:
+                                       # Create the normal variable: normal
+                            normal = 'simple'
+
+                            # Create the mistaken variable: error
+                            error = 'trailing comma',
+
+                            # Print the types of the variables
+                            print(type(normal))
+                            print(type(error))                   
+       
+       
+       
+       
+       
+  --------------------------------Sets for unordered and unique data ------------------------------------     
+       
+       Sets - 
+          Excellent for finding all the unique values in a column of your data, a list of elements, or even rows from a file.
+          We use sets when we want to store unique data elements in an unordered fashion.
+          Sets are mutable, so can add and remove elements from them. 
+          Just going to scratch surface of what can be done with sets. Has many more capabilities that align wuth set theory from math. 
+          
+          
+       
+       Creating Sets
+                -Sets are created from a list. 
+                
+                                cookies_eated_today =['choclate chip', 'peanut butter', 'chocolate chip', 'oatmeal cream', 'chocolate chip']
+                                types_of_cookies_eaten = set(cookies_eaten_today)
+                                print(types_of_cookies_eaten)
+                                
+                                
+        Modifying a Set
+                  .add() - adds single elements; will only add the element if it is unique, otherwise it just continues on -When working with a set, will use the add method to add a new element to the set
+                  
+                  .update() - merges in another set or list; can add multiple items using the update method; update method takes a list of items and adds each one to the set if it is not present
+                  
+                
+                                            types_of_cookies_eaten.add('biscotti')
+                                            types_of_cookies_eaten.add('chocolate chip')
+                                            print(types_of_cookies_eaten)
+                                            
+                                            cookies_hugo_ate = ['chocolate chip','anzac']
+                                            types_of_cookies_eaten.update(cookies_hugo_ate)
+                                            print(types_of_cookies_eaten_
+                                            
+            Removing data from sets
+                      .discard() - safely removes an element from the sey by its value - No error will be thrown if the data isn't found - When removing data from a set, we can use the discard method to safely remove an element from the set by its vlaue
+                      
+                      .pop()  - Can also use the pop method to remove and return an arbitrary element from the set (KeyError when empty) 
+                      
+                          
+                          
+                                          types_of_cookies_eaten.discard('biscotti')
+                                          print(types_of_cookies_eaten)
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+                
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+                  
+                  
+                                         
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+

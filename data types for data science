@@ -257,9 +257,89 @@ You'll practice using the enumerate() and zip() functions in this exercise, in w
                                                      cookies_jason_ate.union(cookies_hugo_ate)
                                                      cookies_jason_ate.intersection(cookies_hugo_ate)
                                                      
-                                                     
-                                                     
-                                            
+                        .difference()   - method identifies data present in the set on which the method was used that is not in the arguments (-). The target we call the difference method on is important as that will be the basis for our differences. 
+                        
+                                                      cookies_jason_ate.difference(cookies_hugo_ate)    ### See the cookies that Jason ate that Hugo didn't
+                                                      
+                                                      cookies_hugo_ate.difference(cookies_jason_ate)    ### see the cookies that hugo ate and jason ddin't
+                                                      
+                                                      
+                                                      
+                                        >>>>>>>>>>>>>>> Finding all the data and the overlapping data between sets
+                                                        Code Snippet: # Find the union: all_names
+                                                                        all_names = baby_names_2011.union(baby_names_2014)
+
+                                                                        # Print the count of names in all_names
+                                                                        print(len(all_names))
+
+                                                                        # Find the intersection: overlapping_names
+                                                                        overlapping_names = baby_names_2011.intersection(baby_names_2014)
+
+                                                                        # Print the count of names in overlapping_names
+                                                                        print(len(overlapping_names))
+
+                                         >>>>>>>>>>>>>>>>>> Determining set differences
+                                                            Code Snippet: # Create the empty set: baby_names_2011
+                                                                            baby_names_2011 = set()
+
+                                                                            # Loop over records and add the names from 2011 to the baby_names_2011 set
+                                                                            for row in records:
+                                                                                # Check if the first column is '2011'
+                                                                                if row[0] == '2011':
+                                                                                    # Add the fourth column to the set
+                                                                                    baby_names_2011.add(row[3])
+
+                                                                            # Find the difference between 2011 and 2014: differences
+                                                                            differences = baby_names_2011.difference(baby_names_2014)
+
+                                                                            # Print the differences
+                                                                            print(differences)
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+--------------------------------------Using Dictionaries----------------------------------------------
+Dictionaries are useful for storing key/value pairs, grouping data by time or structuring hierarchical data like org charts.
+
+                                                        
+Creating and Looping through dictionaries
+            -Hold data in key/value pairs - while they key must be alphanumeric, the value can be any other data type
+            -Nestable - Use a dictionary as the value of a key within a dictionary - also possible to nest dictionaries so that you can work with grouped or hierarchical data
+            -Iterable - We can also iterate over the keys and values of a dictionary
+                       -We can also iterate over the items of a dictionary, which are tuples of the key value pairs!
+            -Create dictionaries using the dict() or the braces method {}           
+
+             
+             
+          -Have list of tuples in this example to turn into a dictionary, so can quickly find the zipcode without having to scan the whole list
+          
+                                    art_galleries = {}                   ###Created empty dictionary
+                                    
+                                    for name, zip_code in galleries :                ##### use tuple unpacking as loop over the galleries list that contains data
+                                              art_galleries[name] = zip_code         ###### Inside the loop, set the name of the gallery as the key in my dictionary and the zip code as the value
+                                              
+                                              
+                                    for name in art_galleries :                 ########### Finally want to fund the last 5 art gallery names
+                                               print(name)
+                                  
+  
+                                                        
+                        By default, when using sorted on a dictionary or looping over a dictionary we loop over the keys, so will print the keys by name.
+                        
+                        Accessing dictionary vale=ues by key -- 
+                               
+                               Safely finding by key -- getting a value from a dictionary is done by using the key as an index;
+                                                             however, if the key isn't present you will get an ugly exception that stops the execution of your code (KeyError)
+                                                    While you could use Python exception hadling, this is so common that dictionaries have a get() method just for this problem
+                                         .get() method allows you to safely access a key without errir or exception handling (allows you to safely get a value from a key by passing the key)
+                                                         -if a key is not in the dictionary, .get() returns None by default or you can supply a value to return
+                                                                    -you can optionally supply a second argument which will be returned instead of None
+                                                             
+                                        ex:
+                                        
+                                                    art_galleries.get('Louvre','Not Found')                
+                                           If you do supply a valid key to the get() method it will return the value from the dictionary 
                                             
          
          

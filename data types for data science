@@ -244,7 +244,21 @@ You'll practice using the enumerate() and zip() functions in this exercise, in w
                                             
                                             
                                             
-                                            
+             Set Operations - Similarities
+                      .union()  - set method returns a set of all the names (or)
+                      .intersection() - method identifies overlapping data (and) 
+             
+                      
+                      
+                                                     cookies_jason_ate = set(['chocolate chip', 'oatmeal cookie', 'peanut butter'])
+                                                     
+                                                     cookies_hugo_ate = set (['chocolate chip', 'anzac'])
+                                                     
+                                                     cookies_jason_ate.union(cookies_hugo_ate)
+                                                     cookies_jason_ate.intersection(cookies_hugo_ate)
+                                                     
+                                                     
+                                                     
                                             
                                             
          

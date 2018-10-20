@@ -424,22 +424,114 @@ Adding and Extending Dictionaries
                                                   
                               
                               
-                              print(galleries_10007)
-                              art_galleries
+                              print(galleries_10007)    ### Have zipcode want to add
+                              art_galleries['10007'] = galleries_10007    ### Assign zipcode as the key and then the dictionary as the value
                               
+                              galleries_11234 = [("A J ARTS LTD', '(718) 763-5473'), ('Doug Meyer Fine Art", '(718) 375-8006')]   #### Can also create a list of tuples and supply them to the update() method
+                              art_galleries['11234'].update(galleries_11234)   ### Supplying them to a dictionary index of the ziupcode since I want this data to be neted underneath it
+                              
+                              print(art_galleries['11234'])   ###Print the zipcode to be sure they wered added
             
          
+         -Often we'll want to narrow the data to only the data which is relevant to the problem at hand, so let's lear how to remove data
+
+Popping and deleting from dictionaries         
+               - del instruction deletes a key?value  - however its important to remember that del will throw a KeyError if the key tyou're trying to delete doesn't exist
+               - .pop() method safely removes a key/value froma dictionary 
+         
+                            - del art_galleries['11234']     ###let's start by removing all the galleries from zipcode '11234'
+                            
+                            galleries_10310 = art_galleries.pop('10310')        ### Not sure if there are any galleries in zipcode 10310, so I'm going to pop that zip code from the dictionary and save it
+                            
+                            
+        Adding and extending dictionaries
+If you have a dictionary and you want to add data to it, you can simply create a new key and assign the data you desire to it. It's important to remember that if it's a nested dictionary, then all the keys in the data path must exist, and each key in the path must be assigned individually.
+
+You can also use the .update() method to update a dictionary with keys and values from another dictionary, tuples or keyword arguments. 
          
          
          
          
          
          
-         
-         
-         
-         
-         
+         >>>>>>>>>>>>>>>>> Code Snippet: Adding and Extending Dictionaries
+         # Assign the names_2011 dictionary as the value to the 2011 key of boy_names
+boy_names[2011] = names_2011
+
+# Update the 2012 key in the boy_names dictionary
+boy_names[2012].update(((1,'Casey'),(2,'Aiden')))
+
+# Loop over the boy_names dictionary 
+for year in boy_names:
+    # Loop over and sort the data for each year by descending rank
+    for rank in sorted(boy_names[year], reverse=True)[:1]:
+        # Check that you have a rank
+        if not rank:
+            print(year, 'No Data Available')
+        # Safely print the year and the least popular name or 'Not Available'
+        print(year, boy_names[year].get(rank))
+        
+        
+        
+        Popping and deleting from dictionaries
+Often, you will want to remove keys and value from a dictionary. You can do so using the del Python instruction. It's important to remember that del will throw a KeyError if the key you are trying to delete does not exist. You can not use it with the .get() method to safely delete items; however, it can be used with try: catch:.
+
+If you want to save that deleted data into another variable for further processing, the .pop() dictionary method will do just that. You can supply a default value for .pop() much like you did for .get() to safely deal with missing keys. It's also typical to use .pop() instead of del since it is a safe method.
+
+Here, you'll remove 2011 and 2015
+
+>>>>>>>>>>>>>>>>>>Code Snippet
+# Remove 2011 and store it: female_names_2011
+female_names_2011 = female_names.pop(2011)
+
+# Safely remove 2015 with an empty dictionary as the default: female_names_2015
+female_names_2015 = female_names.pop(2015,{})
+
+# Delete 2012
+del female_names[2012]
+
+# Print female_names
+print(female_names)
+
+
+
+        
+        
+-----------------------------------------------------Pythonically Using Dictionaries________________________________
+ Previously we looped through dictionary keyts then used the keys to get the values we desired
+ 
+          -   .items() method returns an object we can iterate over  ---   Python provides an items() method which returns a dict_items pobject but we can iterate over it as a list of key/value tuples
+          
+ If we use the .items()  metho on the original art_galleries dictionary it returns a tuple of the gallery name and then the phone number
+        
+         for gallery, phone_num in art_galleries.items():
+                print(gallery)
+                print(phone_num)
+                
+                
+  I can use tuple unpacking to go ahead and expand that into its two components in the loop      
+  Finally, I print them so you can see the information. 
+  
+  Now a more pythonic method for checking if the data is present in a dictionary 
+  
+  Checking Dictionairies for Data
+            - earlier we ued the .get() method to safely check for keys and we can use that to check to see if a key is in a dictionary
+            -python provides the in operator (which is much more efficient and clear) -- returns a boolean (True or False) 
+                                                    -since returns a boolean, it is often used in conditionals statements like an if/else statement
+  
+  
+                          '11234' in art_galleries        #Checks to see if key '11234' is in galleries
+                          
+                          
+                          if '10010' in art_galleries : 
+                                  print('I found: %s' % art_galleries['10010'])
+                          else:
+                                  print('No galleries found')
+                          
+     Working with dictionaries more pythonically
+So far, you've worked a lot with the keys of a dictionary to access data, but in Python, the prefered manner for iterating over items in a dictionary is with the .items() method.
+
+This returns each key and value from the dictionary as a tuple, which you can unpack in a for loop. You'll now get practice doing this.                     
          
          
          

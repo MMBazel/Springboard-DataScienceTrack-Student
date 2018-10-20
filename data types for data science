@@ -342,16 +342,92 @@ Creating and Looping through dictionaries
                                            If you do supply a valid key to the get() method it will return the value from the dictionary 
                                             
          
+         -WQorking with nested data
+                    -Can also nest dictionaries to group data or establish hierarchy 
+                                .keys() method shows the keys for a given dictionary
+                                
+                                
+                                                  art_galleries.keys()
+                                                  dict_keys(['10021','10013','10001','10011'])
+                                                  
+                                                  print(art_galleries['10027'])
+                                                  art_galleries['10027']['Inner City Art Ga;;ery Inc']  ##Getting the phone number of one of the galleries by using the gallery name which us the nested dictionary's key aas a secondary key
+                                                  
+                     -Nesting dictionaries is a very commom way to deal with repeating data structures such as yearly data, grouped, or hierarchical data such as organization reporting structures
+                     -You can access nested values by providing multiple indices to the dictionary or using the get mothod on AN INDEX
+                     
+                                          -Can be accessed using multiple indices or the .get() method on an index
+                                                  
+         
+         
+         >>>>>>>>>>>>>>>>>> Code snippet: Creatijg and looping through dictionaries
+                                     # Create an empty dictionary: names
+                            names = {}
+
+                            # Loop over the girl names
+                            for name, rank in female_baby_names_2012:
+                                # Add each name to the names dictionary using rank as the key
+                                names[rank] = name
+
+                            # Sort the names list by rank in descending order and slice the first 10 items
+                            for rank in sorted(names,reverse=True)[:10]:
+                                # Print each item
+                                print(names[rank])
+
+
+          >>>>>>>>>>>>>Code Snippet: Safely Finding by Key
+          As demonstrated in the video, if you attempt to access a key that isn't present in a dictionary, you'll get a KeyError. One option to handle this type of error is to use a try: except: block. You can learn more about error handling in Python Data Science Toolbox (Part 1), specifically in this video.
+
+Python provides a faster, more versatile tool to help with this problem in the form of the .get() method. The .get() method allows you to supply the name of a key, and optionally, what you'd like to have returned if the key is not found.
+                             
+                             
+                             # Safely print rank 7 from the names dictionary
+                                print(names.get(7))
+
+                                # Safely print the type of rank 100 from the names dictionary
+                                print(type(names.get(100)))
+
+                                # Safely print rank 105 from the names dictionary or 'Not Found'
+                                print(names.get(105,'Not Found'))
+
+
+
+
+
+
+
+
+                  >>>>>>>>>>>>>Code Snippet: Dealing with Nested Data 
+
+
+                                          # Print a list of keys from the boy_names dictionary
+                      print(boy_names.keys())
+
+                      # Print a list of keys from the boy_names dictionary for the year 2013
+                      print(boy_names[2013].keys())
+
+                      # Loop over the dictionary
+                      for year in boy_names:
+                          # Safely print the year and the third ranked name or 'Unknown'
+                          print(year, boy_names[year].get(3,'Unknown'))   
+
          
          
          
-         
-         
-         
-         
-         
-         
-         
+  ----------------------------------Altering Dictionaries___________________________________________________
+Dictionaries are mutable, so we can alter them in  number of ways
+Adding and Extending Dictionaries
+            - Assignment to add a new key/value to a dictionary
+                              -You can add data to a dictionary just by using a new key as an index and assigning it a value 
+                              -Also possible to supply a dictionary, list of tuples or a set of keywords arguments to the update()  method to add values into a dictionary
+                                                  - .update() method to updaTE A DICTIONARY FROM ANOTHER DICTIONARY OR TUPLES OR KEYWORDS
+                                                  
+                              
+                              
+                              print(galleries_10007)
+                              art_galleries
+                              
+            
          
          
          

@@ -597,31 +597,274 @@ Reading from a file using CSV reader
               
                      
                      
+   -python csv module also provides a way to directly create a dictionary from a csv file with the Dct Reader class
+                  - often we want to go from csv file to dictionary
+                  - DictReader does just that
+                                        -if the file has a header row, that row will automaticcally be used as the keys for the dictionary
+                  - If data doesn't have a header row, you can pass in the column names
+                  - Eeach row of the file is returned as an OrderedDict object 
+                  
+                  -It's all the same until the line where we use the DictReader instead of the reaer method
+                  -Then we print the row, we get an OrderedDict that looks like a list of tuples; however, it operates just like a normal dictionary
+                  
+                  
+                      import csv
+                      csvfile = open('ART_GALLERY.csv','r')
+                      
+                      for row in csv.DictReader(csvfile):
+                              print(row)
    
-   
+                       csvfile.close()
+       
+       
+       
+ >>>>>>>>>>>>>> Code Snippet: Reading from a file using CSV reader
+ Python provides a wonderful module called csv to work with CSV files. You can pass the .reader() method of csv a Python file object and use it as you would any other iterable. To create a Python file object, you use the open() function, which accepts a file name and a mode. The mode is typically 'r' for read or 'w' for write.
+
+Though you won't use it for this exercise, often CSV files will have a header row with field names, and you will need to use slice notation such as [1:] to skip the header row
+       
+       # Import the python CSV module
+import csv
+
+# Create a python file object in read mode for the baby_names.csv file: csvfile
+csvfile = open('baby_names.csv','r')
+
+# Loop over a csv reader on the file object
+for row in csv.reader(csvfile):
+    # Print each row 
+    print(row)
+    # Add the rank and name to the dictionary
+    baby_names[row[5]] = row[3]
+
+# Print the dictionary keys
+print(baby_names.keys())
+
+
+>>>>>>>>>>>>>>> Code Snippet: Creating a dictionary from a file
+The csv module also provides a way to directly create a dictionary from a CSV file with the DictReader class. If the file has a header row, that row will automatically be used as the keys for the dictionary. However, if not, you can supply a list of keys to be used. Each row from the file is returned as a dictionary. Using DictReader can make it much easier to read your code and understand what data is being used, especially when compared to the numbered indexes you used in the prior exercise.
+# Import the python CSV module
+import csv
+
+# Create a python file object in read mode for the `baby_names.csv` file: csvfile
+csvfile = open('baby_names.csv','r')
+
+# Loop over a DictReader on the file
+for row in csv.DictReader(csvfile):
+    # Print each row 
+    print(row)
+    # Add the rank and name to the dictionary: baby_names
+    baby_names[row['RANK']] = row['NAME']
+
+# Print the dictionary keys
+print(baby_names.keys())
+
+
+
+
+------------------------------------- Counting Made Easy ________________________________
+As data scientist, going to need to count items, create dictionary values before we know the keys to store them in, or maintain order in a dictionary 
+
+Collections Module
+    -Part of standard library
+    -Advanced data containers
+    
+    
+Counter - powerful python object based on the dictionary object that accepts a list and counts the number of times a values is found within the elements of that list
+                -Special dictionary used for counting data, measruing frequency
                 
+                
+                -Since it's dictionary based, can use all the normal dictionary features 
+                
+
+                        from collections import Counter
+                        
+                        nyc_eatery_count_by_types = Counter(nyc_eatery_types)   ### Here have a list named nyc_eatery_types that contains one column of data called type from a table about eateries in NYC parks
+                                                                                 ### I create a new Conter based on that list and print it
+                        print(nyc_eatery_count_by_type)          ### Can see each type from list ad the number of times it was found in the list
+                         print(nyc_eatert_count_by_times['Restaurant'])                                        ### I can also see how many restaurants are in the counter by using Restaurant as the index and printing it
+                                                                 
+
+-Counters also provide a wonderful way to find the high values they contain
+            -Counter t find the most common
+                                  -  .most_common() method returns the counter values in descending order
+                                              -returns a list of tuples containing the items and their count in descending order
+                                  -great for frequency analytics,how often someting occurs            
+                
+                        print(nyc_eatery_count_by_types.most_common(3))  ###Here printing the top 3 eatery types in the NYC part system with the most_common method and passing t 3 as the numer of items to return
+                                            
+
+>>>>>>>>>>>>>>>>> Code Snippet: Using Counter on Lists
+Counter is a powerful tool for counting, validating, and learning more about the elements within a dataset that is found in the collections module. You pass an iterable (list, set, tuple) or a dictionary to the Counter. You can also use the Counter object similarly to a dictionary with key/value assignment, for example counter[key] = value.
+
+A common usage for Counter is checking data for consistency prior to using it, so let's do just that. In this exercise, you'll be using data from the Chicago Transit Authority on ridership.
+
+       
+       # Import the Counter object
+from collections import Counter
+
+# Print the first ten items from the stations list
+print(stations[:10])
+
+# Create a Counter of the stations list: station_count
+station_count = Counter(stations)
+
+# Print the station_count
+print(station_count)
+
+
+
+
+>>>>>>>>>>>>>>>>>>>>>>> Code Snippet: Finding the most common elements
+Another powerful usage of Counter is finding the most common elements in a list. This can be done with the .most_common() method.
+
+# Import the Counter object
+from collections import Counter
+
+# Create a Counter of the stations list: station_count
+station_count = Counter(stations)
+
+# Find the 5 most common elements
+print(station_count.most_common(5))
+
+
+
+
+--------------------------------------------------Dictionaries of unknown structures - Defaultdict _____________________________
+Often will be working with data where we don't know all the keys that will be used but want to store a coplex structure under those keys
+
+A good is example is I want every key to have a list of values
+I' have to initialize every key with an empty list then asd the values to the list
+
+Dictionary Handling - Ex (without Defaultdict)
+      I can start by looping over a list of tuples with the park's d ad the name of the eatery
+      
+      for park_id, name in nyc_eateries_parks: 
+              if park_id not in eateris_by_park:                   ### The can check to see if have a list for that aprt already in the dictionary
+                      eateries_by_park[park_id] = []                ### If not then create an empty list
+              eateries_by_park[park_id].append(name)                ### Next, append the name of the eatery to the list for that park id
+
+
+
+Using defaultdict
+            -Thankfully collections provides an easier way using defaultdict
+                    -Pass it a default type tht every key will have even if it doesn't currently exist
+                            -Defaultdict accepts a type that every value will default to if the key is not in present in the dictionary
+                      - Works exactly like a dictionary
+                               -You can overrude that type by setting the key manually to a value of a different type
+                               
+            -Still working with the nyc eatery, have a list of tuples that contain the park id and the name of an eatery 
+            - I eant to create a list of eateries by park 
        
        
+            from collections import defaultdict
+            eateries_by_park = defaultdict(list)     ### Next, create a defaultdict that defaults to a list 
+            
+            for park_id, name in nyc_eateries_parks:          #### Next I iterae over my data and npack it into the park_id and name
+               eateries_by_park[park_id].append(name)       #### I append each eatery name into list for each park_id
        
        
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
+       It's also common to use a defaultdict as a type of counter for a list of dictionaries where we are counting ultiple keys from those dictionaries
+                  In  our new york city eateries, curious as to how many had a published phone number or a website.
+                  
+                  
+                  from collections import defaultdict
+                  eatery_contact_types = defaultdict(int)   ### This time when creating my defaultdict, I tell it I ant it to be an int. 
+                  
+                  
+                  for eatery in nyc_eateries:     
+                      if eatery.get('phone'):
+                              eatery_contact_types['phones'] += 1     #### Then I look over my nyc_eateries data and add 1 to the phones key if it has a phone number that is not None
+                      if eatery.get('website'):
+                               eatery_contact_types['websites'] += 1     #### Then I add one to the key if it has a websites
        
                   
                   
-                                         
+  >>>>>>>>>>>>>>> Code Snippet: Creating dictionaries of an unknown structure
   
+  # Create an empty dictionary: ridership
+ridership = {}
+
+# Iterate over the entries
+for date, stop, riders in entries:
+    # Check to see if date is already in the dictionary
+    if date not in ridership:
+        # Create an empty list for any missing date
+        ridership[date] = []
+    # Append the stop and riders as a tuple to the date keys list
+    ridership[date].append((stop,riders))
+
+    
+# Print the ridership for '03/09/2016'
+print(ridership['03/09/2016'])
+
+
+
+
+>>>>>>>>>>>>>>>> Code Snippet: Safely appending to a key's value list 
+Safely appending to a key's value list
+Often when working with dictionaries, you know the data type you want to have each key be; however, some data types such as lists have to be initialized on
+each key before you can append to that list.
+
+A defaultdict allows you to define what each uninitialized key will contain. When establishing a defaultdict, you pass it the type you want it to be, such as a list, tuple, set, int, string, dictionary or any other valid type object.
+
+
+# Import defaultdict
+from collections import defaultdict
+
+# Create a defaultdict with a default type of list: ridership
+ridership = defaultdict(list)
+
+# Iterate over the entries
+for date, stop, riders in entries:
+    # Use the stop as the key of ridership and append the riders to its value
+    ridership[stop].append(riders)
+    
+# Print the first 10 items of the ridership dictionary
+print(list(ridership.items())[:10])
+
+
+
+
+----------------------Maintaining Dictionary Order with OrderDict-----------------------------------
+Often we want to store data in the dictionary in an ordered fashion 
+For example, I might want to store the data in order by date, or by a ranking
+
+Order in Python Dictionaries
+      -Normal dictionaries don't maintain order of the keys hat you insert into them before Python 3.6
+          Python version > 3.6 ordered
+          
+          
+       However, the collections module provides an OrderedDict that maintains the order that keys and values as they were added to the dictionary without regard for the Python version
+       You might remember this from our video usi g the CSV dictreader whch returned each row as an OrderedDict
+       
+       
+Getting Started with OrderedDict
+       
+       
+       
+       from collections import OrderedDict
+       
+       nyc_eatery_permits = OrderedDict()   ### Next I create an OrderedDict to hold the NYC park data by permit end date
+       
+       for eatery in nyc_eateries:     ### Then I loop over the NYC park eateries which are ordered by permit end date already and add them to the OrderedDict by that date
+              nyc_eatery_permits[eatert['end_date']] = eatery
+       print(list(nyc_eatery_permits.items())[:3]      ###Finally I can print the first 3 permit end dates by making a list of the items and slicing it
+       
+       
+ OrderedDict power feature
+        .popitem() method returns items in reverse insertion order
+        
+                        print(nyc_eatery_permits.popitems())     ###using the OrderedDict from previous examples, I use popitem() and get the permit that expires the latest, a second popitem() retrns the next latest experiation
+                        
+         Finallt I can pop the lowest end date in the dictionary by using popitem(last=False) here               
+       
+       
+       
+      
+      
+
+
+
   
   
 

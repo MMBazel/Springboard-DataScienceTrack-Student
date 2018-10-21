@@ -778,7 +778,7 @@ Using defaultdict
                                eatery_contact_types['websites'] += 1     #### Then I add one to the key if it has a websites
        
                   
-                  
+               
   >>>>>>>>>>>>>>> Code Snippet: Creating dictionaries of an unknown structure
   
   # Create an empty dictionary: ridership
@@ -857,16 +857,183 @@ Getting Started with OrderedDict
                         print(nyc_eatery_permits.popitems())     ###using the OrderedDict from previous examples, I use popitem() and get the permit that expires the latest, a second popitem() retrns the next latest experiation
                         
          Finallt I can pop the lowest end date in the dictionary by using popitem(last=False) here               
-       
+                You can use the last=FALSE keyword argument o return the items in insertion order       
        
        
       
-      
+                        print(yc_eatery_permits.popitem(last=FALSE))
 
 
 
   
-  
+>>>>>>>>>>>>>>>>>>>>>>Code Snippet:  Working with OrderedDictionaries
+Recently in Python 3.6, dictionaries were made to maintain the order in which the keys were inserted; however, in all versions prior to that you need to use an OrderedDict to maintain insertion order.
+
+
+# Import OrderedDict from collections
+from collections import OrderedDict
+
+# Create an OrderedDict called: ridership_date
+ridership_date = OrderedDict()
+
+# Iterate over the entries
+for date, riders in entries:
+    # If a key does not exist in ridership_date, set it to 0
+    if not date in ridership_date:
+        ridership_date[date] = 0
+        
+    # Add riders to the date key in ridership_date
+    ridership_date[date] += riders
+    
+# Print the first 31 records
+print(list(ridership_date.items())[:31])
+
+
+
+
+
+
+
+>>>>>>>>>>>>>>>>>> Code Snippet: Powerful Ordered popping
+Where OrderedDicts really shine is when you need to access the data in the dictionary in the order you added it. OrderedDict has a .popitem() method that will return items in reverse of which they were inserted. You can also pass .popitem() the last=False keyword argument and go through the items in the order of how they were added.
+
+
+# Print the first key in ridership_date
+print(list(ridership_date.keys())[0])
+
+# Pop the first item from ridership_date and print it
+
+
+print(ridership_date.popitem(last=False))
+
+# Print the last key in ridership_date
+print(list(ridership_date.keys())[-1])
+
+# Pop the last item from ridership_date and print it
+print(ridership_date.popitem())
+
+
+
+--------------------------------------------------------------------------What do you mean I don't have class? 
+Namedtuple----------------------------------------------------------------
+
+Often times when working with data you'll use a dictionary in order to use ky names to make reading the code and accessing the data easier to understand.
+Python has another container called a namedtuple which is tuple, but has names for each position of the tuple 
+            - A tuple where each positon (column) has a name
+            -Ensure each one has the same properties       
+                   -This works well when you don't ned the nested structure of a dictionary or desire each items to look identical 
+            -Alternative to a pandas DataFrame row
+            
+            
+ Creating a named tuple
+              -Pass a name and a list of field names - in order to create a namedtuple
+              -Let's begin by importing namedtuple from the collections module 
+              
+              
+              from collections import namedtuple
+              
+              Eatery = namedtuple('Eatery',['name,'location','park_id','type_name'])                ###Next we'll define our namedtuple; common practice to use Pascalcase (capitalizing each word) when naming namedtuples so here I've used Eatery with a capital Efor both the tuple name and the variable we stored the namedtuple as
+                                                                                                     ### Then we provide a list of fields we want on the namedtuple
+                                                                                                      ### Going to change NYC Park eateries data into a list of namdtuples
+              for eatery in nyc_eateries:
+                    details = Eatery( eatery['name'],
+                                      eatery['locaion'],                       #### Create an empty list then itrate over my nyc_eatries list creating an instance of my 
+                                      eatery['park_id'],                       #### Eatery namedtuple by passing in the data from the loop as the arguments to my namedtuple
+                                      eatery['type_name'])
+                    eateries.append(details)                  
+              
+              
+              print(eateries[0])                              #### Finally let's print the first Eatery in the list 
+              
+              
+ Leveraging namedtuples
+                    - Each field available as an attriubte of the namedtuple - can make code much cleaner
+                                  -Attribute is basically a named field or data storage location
+                                  
+                                  -We can also depend on every isntance of a namedtuple to have all the fields although some might be empty or None in Python terms
+                                            -This means we can aleays have safe access to a field without the need for a get method like a dictionary
+                     -Going to use the list of tuples from the prior slides and pritn the name, park_id, location for the first three entries in the list
+                          
+                                   for eatery in eateries[:3]:
+                                              print(eatery.name)
+                                              print(eatery.park_id)
+                                              print(eatery.location)
+                                              
+                                              
+   
+   
+>>>>>>>>>>>>> Code Snippet: Creating namedtuples for storing data
+Often times when working with data, you will use a dictionary just so you can use key names to make reading the code and accessing the data easier to understand. Python has another container called a namedtuple that is a tuple, but has names for each position of the tuple. You create one by passing a name for the tuple type and a list of field names.
+
+For example, Cookie = namedtuple("Cookie", ['name', 'quantity']) will create a container, and you can create new ones of the type using Cookie('chocolate chip', 1) where you can access the name using the name attribute, and then get the quantity using the quantity attribute.
+
+# Import namedtuple from collections
+from collections import namedtuple
+
+# Create the namedtuple: DateDetails
+DateDetails = namedtuple('DateDetails', ['date', 'stop', 'riders'])
+
+# Create the empty list: labeled_entries
+labeled_entries = []
+
+# Iterate over the entries
+for date, stop, riders in entries:
+    # Append a new DateDetails namedtuple instance for each entry to labeled_entries
+    details = DateDetails(date,stop,riders)
+    labeled_entries.append(details)
+    
+# Print the first 5 items in labeled_entries
+print(labeled_entries[:5])
+
+
+
+
+            
+            
+---------------------------------------------There and Back Again a DateTime JOurney--------------------------------
+Will be using data from NYC parking violations data
+
+From string to datetime
+     -The datetime module is part of the Standard Python library
+                        When working with datetimes in Python we use the datetime module from the standard library
+     -Use the datetime type from inside the datetime module
+                        There is a dateti,e type inside of the datetime module
+     - .strptime() converts from a string to a datetime object
+                          In addition to letting us manually create datetime objects, we can also parse existing strings into datetime objects
+                          
+                          
+                          
+      from datetime import datetime
+      print(parking_violations_date)                                    ###Next I'm printing th string that we are going to parse to create a datetime object
+      date_dt = datetime.strptime(parking_violations_date, '%m/%d/%Y')          ###Next I use the strptime method to parse the parking violations date using a format string for MM/DD/YYYY (more on this in just one case)
+      print(date_dt)                              ### Finally I print the datetime object so we can see the results
+      
+      
+     
+Tikme Format Strings
+              Time format strings are so common across many different programming kanguages and originated in C
+              You csn use the directives and any special caracters or spacs you need to match the datestring you are trying to parse
+              In additions to using these to convert from a datetime to a string object with the strftime() method
+
+
+Datetime to String
+            - .strftime() method uses a format string to convert a datetime object to a string
+                                 For example we can use the same format string to output the date time we created on a prior slide
+                                 
+                                 date_dt.strftime('%m/%d/%Y')
+                                 
+                                 
+            -.isoformat() methd outputs a datetime as an ISO standard string, one of the mmost common ways to express times when dealing with writing to or readijng from files or applications
+                                  date_dt.isoformat()           #Let's use it on our datetime object we've been working with
+                              
+
+
+
+
+
+
+
+
 
 
 

@@ -533,14 +533,72 @@ So far, you've worked a lot with the keys of a dictionary to access data, but in
 
 This returns each key and value from the dictionary as a tuple, which you can unpack in a for loop. You'll now get practice doing this.                     
          
+ >>>>>>>>>>>Code Snippet: Working withj dictionaries more pythonically
+ # Iterate over the 2014 nested dictionary
+for rank, name in baby_names[2014].items():
+    # Print rank and name
+    print(rank, name)
+    
+# Iterate over the 2012 nested dictionary
+for rank, name in baby_names[2012].items():
+    print(rank, name)
+    # Print rank and name
+  
          
          
          
          
+Checking dictionaries for data
+
+You can check to see if a key exists in a dictionary by using the in expression.
+
+For example, you can check to see if 'cookies' is a key in the dictionary by using if 'cookies' in recipes_dict: this allows you to safely react to data being present in the dictionary.
+
+You can also use the in expression so see if data is in the value of a dictionary such as if 'cookies' in recipes_dict.values(). Remember you have to handle nested dictionaries differently as illustrated in the video and previous exercises, and use the in expression on each nested dictionary.         
          
-         
-         
-         
+         >>>>>>>>>>> Code Snippet
+         # Check to see if 2011 is in baby_names
+if '2011' in baby_names:
+    # Print 'Found 2011'
+    print('Found 2011')
+    
+# Check to see if rank 1 is in 2012
+if 1 in baby_names[2012]:
+    # Print 'Found Rank 1 in 2012' if found
+    print('Found Rank 1 in 2012')
+else:
+    # Print 'Rank 1 missing from 2012' if not found
+    print('Rank 1 missing from 2012')
+    
+# Check to see if Rank 5 is in 2013
+if 5 in baby_names[2013]:
+   # Print 'Found Rank 5'
+   print('Found Rank 5')
+   
+   
+------------------------------------------Working with CSV Files------------------------------------
+Reading from a file using CSV reader
+
+-Python csv module 
+             - open() function provides a variable that represents a file, takes a path and a mode - 
+                -To create a Python file object, you use the open() function, which accepts a name and a mode
+                 - The mode is typically 'r' for read and 'w' for write
+                 
+              - then we pass the file object to the .reader() metho on the csv module and use it as you would any other iterable
+                     csv.reader() reads a file object and returns the lines from the file as tuples
+                     .close() method closes file objects
+                     
+              
+              import csv                                      #import the csv module
+              csvfile = open('ART_GALLERY.csv','r')              # create a fiule objects for the ART_GALLERY.csv data fiule
+              for row in csv.reader(csvfile):                     # Then I use the csv.reader to read the file and iterate over each line or row in the file and print it
+              
+                      print(row)
+              
+                     
+                     
+   
+   
                 
        
        

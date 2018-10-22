@@ -1066,6 +1066,58 @@ Datetime Components
        All parts of a datetimeobject are available as attributes
                       day, month, year, hour, minute, seconds and more are available from a datetime instance 
 
+        Great for grouping data
+        
+        
+        
+        >>> daily_violations = defaultdict(int)      ### we'll start by using a defaultdict of ints to count the records
+        for violation in parking_violations:        ### Next I'll loop over the parking violations to and parse the date which is found in the 5th element of our list
+                violation_date = datetime.strptime(violation[4], '%m/%d/%y')
+                
+                daily_violations[violation_date.day] += 1
+                
+         print(sorted(daily_violations.items()))   ###Finally sort the days of the month and print the day of the month and our violation count for that day
+         
+         
+         Often when working with datetime objects, you'll want to work on windows or ranges that start from the current date and time  
+         
+         What is the deal now?
+                  We can do this using the .now() method on the datetime object in the datetime module and a .utcnow() method
+                  
+                  .now() method reutrns the current local datetime - returns the current local time on the machine on which it is run
+                  .utcnow() method returns the current UTC datetime - does the same but returns it in utc timezone
+                  
+                                            
+
+                                  >>> from datetime import datetime
+                                  local_dt = datetime.now()
+                                  print(local_dt)
+                                  
+                                  
+                                  >>> utc_dt = datetime.utcnow()
+                                  
+Timezones
+          Naive datetime objects havew no timezone data - By default, any datetime you make using the now methods are "naive" datetime objects, whcih means they are missing their timezone that is required to make an "aware" of datetime object. 
+          Aware datetime objects have a timezone - will often get data where there is no timezone and will need to set it manually 
+                      In order to work effectively
+                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

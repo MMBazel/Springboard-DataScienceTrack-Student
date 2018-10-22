@@ -1101,28 +1101,131 @@ Timezones
           Aware datetime objects have a timezone - will often get data where there is no timezone and will need to set it manually 
                       In order to work effectively
                       
+           Timezone data is available via the pytz module via the timezone object 
+                        and use the timezone names from the Olsen database, the standard for timezone information
+                        
+           Aware objects have a .astimezone() so you can get the time in another timezone 
+                      -an aware object has a .astimezone() that accepts a timezone object and returns a new datetime object in the desired timezone
+                      
+
+
+
+            If the tzinfo isn't set for the datetime object it assumes the timezone of the computer you are working on
+            
+
+
+Timezones in Action
+        
+            from pytz import timezone
+            
+            record_dt = datetime.strptime('07/12/2016 04:39PM', '%m/%d/%Y %H:%M%p')   ### I've got the datetime of a violation and parsed it into a naive datetime object
+         
+            ### Next going to prepare the timezone objects I'm going to work with
+            ### The create an object to present the Eastern timezoen that NYC is in and then the timezone for LA
+               ny_tz = timezone('US/Eastern')
+               la_tz = timezone('US/Pacific')
+               ny_dt = record_dt.replace(tzinfo=ny_tz)   ### Next use the replace method to replace the empty timezone on my record datetime and save it as my datetinme
+               la_dt  = ny_dt.astimezone(la_tz) ###Now that I have an aware datetime instance, I can use the as timezone method to get the records time in la
+               
+               ###This type of conversion is greart for ensuring that data remains relevant to the viewere by presenting it in their mative timezone
+               
+
+
+
+>>>>>>>>>>> Code Snippet: Pieces of Time
+When working with datetime objects, you'll often want to group them by some component of the datetime such as the month, year, day, etc. Each of these are available as attributes on an instance of a datetime object.
+
+You're going to work with the summary of the CTA's daily ridership. It contains the following columns, in order: service_date, day_type, bus, rail_boardings, and total_rides. The modules defaultdict and datetime have already been imported for you.
+
+Instructions:
+Create a defaultdict of an integer called monthly_total_rides.
+Loop over the list daily_summaries, which contains the columns mentioned above in the assignment text.
+Convert the service_date (1st element of daily_summary) to a datetime object called service_datetime. Use '%m/%d/%Y' as your format string.
+Use the month of the service_datetime as the dict key and add the total_rides (5th element of daily_summary) to the current amount for the month. Be sure to convert this into an integer.
+Print monthly_total_rides.
+
+
+# Create a defaultdict of an integer: monthly_total_rides
+monthly_total_rides = defaultdict(int)
+
+# Loop over the list daily_summaries
+for daily_summary in daily_summaries:
+    # Convert the service_date to a datetime object
+    service_datetime = datetime.strptime(daily_summary[0],'%m/%d/%Y')
+
+    # Add the total rides to the current amount for the month
+    monthly_total_rides[service_datetime.month] += int(daily_summary[4])
+    
+# Print monthly_total_rides
+print(monthly_total_rides)
 
 
 
 
 
+>>>>>>> Code Sippet: Creating Datetime Objects.....Now
+Often when working with datetime objects, you'll want to work on windows or ranges that start from the current date and time. You can do this using the datetime now functions. There is a .now() method on the datetime object in the datetime module and a .utcnow() method. The .now() method returns the current local time on the machine on which it is run, and .utcnow() does the same thing but returns the value in UTC time. You'll need to be very familiar with these methods.
+
+# Import datetime from the datetime module
+from datetime ikport datetime
+
+# Compute the local datetime: local_dt
+local_dt = datetime.now()
+
+# Print the local datetime
+print(local_dt)
+
+# Compute the UTC datetime: utc_dt
+utc_dt = datetime.utcnow()
+
+# Print the UTC datetime
+print(utc_dt)
+
+
+
+>>>>>>>>>>> Code Snippet:
+Timezones
+In order to work effectively with other timezones, you can use the pytz library. To use timezones, you need to import the timezone object from the pytz module. Then you can use the timezone constructor and pass it a name of a timezone, such as CT = timezone('US/Central'). You can get a full list of timezone names at Wikipedia. In Python 3, you can make a datetime object "aware" by passing a timezone as the tzinfo keyword argument to the .replace() method on a datetime instance.
+
+An "aware" datetime object has an .astimezone() method that accepts a timezone object and returns a new datetime object in the desired timezone. If the tzinfo is not set for the datetime object it assumes the timezone of the computer you are working on.
+
+A list, daily_summaries, has been supplied for you it contains the datetime and rail ridership for trains going to New York. You need to determine the time in New York so you can align it with the New York Transit Authority data.
+
+Instructions:
+              Create a Timezone object for Chicago ('US/Central') called chicago_usa_tz.
+              Create a Timezone object for New York ('US/Eastern') called ny_usa_tz.
+              Iterate over the daily_summaries, unpacking it into the variables orig_dt and ridership.
+              Make the orig_dt timezone "aware" for Chicago, using chicago_usa_tz. Store the result in chicago_dt.
+              Convert chicago_dt to the New York timezone, ny_dt.
+              Print the chicago_dt, ny_dt, and ridership.
 
 
 
 
+# Create a Timezone object for Chicago
+chicago_usa_tz = timezone('US/Central')
 
+# Create a Timezone object for New York
+ny_usa_tz = timezone('US/Eastern')
 
+# Iterate over the daily_summaries list
+for orig_dt, ridership in daily_summaries:
 
+    # Make the orig_dt timezone "aware" for Chicago
+    chicago_dt = orig_dt.replace(tzinfo=chicago_usa_tz)
+    
+    # Convert chicago_dt to the New York Timezone
+    ny_dt = chicago_dt.astimezone(ny_usa_tz)
+    
+    # Print the chicago_dt, ny_dt, and ridership
+    print('Chicago: %s, NY: %s, Ridership: %s' % (chicago_dt, ny_dt, ridership))
+    
+    
+    
+    ___________________________________________________Time Travel (Adding and Subtracting Time)_______________________
+A very common case when working with times is to get a date 30,60,90 days in the past from some date
 
-
-
-
-
-
-
-
-
-
+Incrementing through time 
 
 
 

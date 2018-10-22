@@ -1026,11 +1026,45 @@ Datetime to String
             -.isoformat() methd outputs a datetime as an ISO standard string, one of the mmost common ways to express times when dealing with writing to or readijng from files or applications
                                   date_dt.isoformat()           #Let's use it on our datetime object we've been working with
                               
+>>>>>>>>>>>> Code Snippet: Strings to DateTimes
+Time to begin your DateTime journey! You'll start by using the .strptime() method from the datetime object as shown in the video, passing it both the string and the format
+
+# Import the datetime object from datetime
+from datetime import datetime
+
+# Iterate over the dates_list 
+for date_str in dates_list:
+    # Convert each date to a datetime object: date_dt
+    date_dt = datetime.strptime(date_str,'%m/%d/%Y')
+    
+    # Print each date_dt
+    print(date_dt)
 
 
 
+>>>>>>>>>>>>>>>Code Snippet: Converting to a String
+Converting from a datetime object to a string is done with the .strftime() method on a instance of the datetime object. You pass a format string just like the ones used in the prior exercise.
 
+There is also a widely used string output standard called ISO-8601. It has a shortcut method named .isoformat(). I encourage you to use it anytime you write out to a file.
 
+# Loop over the first 10 items of the datetimes_list
+for item in datetimes_list[:10]:
+    # Print out the record as a string in the format of 'MM/DD/YYYY'
+    print(item.strftime('%m/%d/%Y'))
+    
+    # Print out the record as an ISO standard string
+    print(item.isoformat())
+    
+    
+    
+    ____________________________________________ Working with Datetime Components and current time______________________
+
+Once we have a datetime object, we can work with it to get  parts of the datetime like the month, year, day
+We can also get the current time and maniuplate a timezone 
+
+Datetime Components
+       All parts of a datetimeobject are available as attributes
+                      day, month, year, hour, minute, seconds and more are available from a datetime instance 
 
 
 

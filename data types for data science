@@ -1326,9 +1326,29 @@ Parsing time with Pendulum
                 
 Timezone Hopping with Pendulum
               - Pendulum has wonderful support for timezones and comes with the Olsen Database built into it
-              - .in_timzeon() method converts a 
+              - .in_timzeon() method converts a pendulum time object to a desired timezone
+              - .now() method accepts a timezone you want to get the current time in (to generate the current time easily for any location in the world)
+              - I saved the results for our pendulum parsin example into the violations_dts list as you can see here
+              
+               ### I'm going to iterate over the records and convert them all to Tokyo timezone
+               for violation_dt in violation_dts:
+                      print(violation_dt.in_timzeone('Asia/Tokyo')
+                                                                        ### Finally I'm going to ue the now() method with the Tokyo timezone to ge the current time in Tokyo
+               print(pendulum.now('Asia/Tokyo')
 
 
+Humanizing Differences
+        -Pendulum has an alternative to timedeleta called a period when calculating the difference betwee two dates by subtraction that provides methods such as dot in_days/weeks/hour/minutes and in_words to poutput in a chose manner
+                  - .in_xxx() methods provide the differene in a chosementric
+                  - .in_words() provides the difference in a nice expressive form
+                  
+        ### Example 
+                  dif = violation_dts[3] - violation_dts[2]
+                  print(diff.inwords())   ### Next I use the in_words() method to get a nice english representation of the difference
+                  print(diff.in_days())    ###The I use the in_days method to see the difference in days and the in_hours to see the difference in hours
+                  print(diff.in_hours())
+       -Pendulum provides the ability to set a local and get it in other langages
+       
 
 
 

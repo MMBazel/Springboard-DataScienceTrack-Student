@@ -1226,7 +1226,107 @@ for orig_dt, ridership in daily_summaries:
 A very common case when working with times is to get a date 30,60,90 days in the past from some date
 
 Incrementing through time 
+        - A very common case when working wih times is to get a date 30, 60, 90 days in the past from some date
+        -timedelta is used to represent an amount of change in time
+        -used to add or subtract a set amont of time from a datetime object
+                -in python we use the timedelta object from the datetime module to represent differences in datetime objects
+                -you can ceate a timedelta by passing nay number of keyword arguments such as days, seconds, microsecnds, milliseconds, minutes, hours and weeks to it
+        -Once we have a timedelta object, we can add or subtract it from a datetime object to get a datetime object relative to the original datetime object
 
+
+                        from datetime import timedelta
+                        flashback = timedelta(days=90)    ###Next we'll make a timedelta instance called flashback for 90 days
+                        print(recod_dt)                   ### Then e can see the starting point by printing the datetime we'll be working with
+                        print(record_dt - flashback)      ###then print the date minus 90 days and finally plus 90 days
+                        print(record_dt + flashback)     ### This can be useful to compare a date this year to one from the prior year, compare  by quarter as we did here, or compare month to month
+
+         -Just like we were able to sibtract a timedelta from a datetime to find a date in the past, we can also calculate the difference between two dates to get the timedelta between in return
+         -Let's find out how much time has elapsed between the first two violations in our list
+ 
+ 
+ Datetime differences
+ 
+      -Use the - operator to calculate the difference
+      -Returns a timedelta with the difference
+              ###I've already parsed both date unto record_dt and record_dt2 respectively. 
+      
+                        time_diff = recod_dt - record2_dt  ###Now subtract one from the other and store the result as time_diff
+                        type(time_dff)   ### This will return a timedelta, that represents the time difference between the two datetimes
+                        print(time_diff)   ### Finally I can print the time_diff and see that time difference btween violations was 4 seconds
+                        
+                        
+        
+                
+Code Snippet >>>>>>>>>>>>>>>>>> 
+Finding a time in the future and from the past
+
+
+Another common case when working with times is to get a date 30, 60, or 90 days in the past from some date. In Python, the timedelta object from the datetime module is used to represent differences in datetime objects. You can create a timedelta by passing any number of keyword arguments such as days, seconds, microseconds, milliseconds, minutes, hours, and weeks to timedelta().
+
+Once you have a timedelta object, you can add or subtract it from a datetime object to get a datetime object relative to the original datetime object.
+
+A dictionary, daily_summaries, has been supplied for you. It contains the datetime as the key with a dict as the value that has 'day_type' and 'total_ridership' keys. A list of datetimes to review called review_dates is also available.
+
+
+# Import timedelta from the datetime module
+from datetime import timedelta
+
+# Build a timedelta of 30 days: glanceback
+glanceback = timedelta(days=30)
+
+# Iterate over the review_dates as date
+for date in review_dates:
+    # Calculate the date 30 days back: prior_period_dt
+    prior_period_dt = date - glanceback
+    
+    # Print the review_date, day_type and total_ridership
+    print('Date: %s, Type: %s, Total Ridership: %s' %
+         (date, 
+          daily_summaries[date]['day_type'], 
+          daily_summaries[date]['total_ridership']))
+
+    # Print the prior_period_dt, day_type and total_ridership
+    print('Date: %s, Type: %s, Total Ridership: %s' %
+         (prior_period_dt, 
+          daily_summaries[prior_period_dt]['day_type'], 
+          daily_summaries[prior_period_dt]['total_ridership']))
+          
+          
+   Code Snppet >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Finding differences in DateTimes
+Just like you were able to subtract a timedelta from a datetime to find a date in the past, you can also calculate the difference between two dates to get the timedelta between in return. Here, you'll find out how much time has elapsed between two transit dates.
+
+A list of tuples called date_ranges is provided for you. We took the dates from our dataset at every 30th record, and we paired up the records into tuples in a stepwise fashion
+
+       # Iterate over the date_ranges
+for start_date, end_date in date_ranges:
+    # Print the End and Start Date
+    print(end_date, start_date)
+    # Print the difference between each end and start date
+    print(end_date - start_date)
+
+
+
+_______________________________________________Libraries Make It Easier_____________________________________________
+There are several 3rd party libraries that make parsing, converting, and working with dates and times easier. 
+
+Parsing time with Pendulum 
+        -One of the most popular is the Pendulum library. 
+                - .parse() will attempt to convert a stirng to a pendulum datetime object without the need of the format string
+                -Just pass it a date string and it will attempt to convert into a valid pendulum datetime 
+                
+                ### Example of how helpful a parse can be
+                
+                import pendulum
+                occurrred = violation[4] + ' ' + violation[5] + 'M'   ###Using the first parking violation, bulding a tring called occurred that is the date plus a space plus the time and appending an M to complete the AM/PM indicator 
+                occurred_dt = pendulum.parse(occurred, tz='US/Eastern')  ### Then I use pendulum .parse() on the string and instruct pendulum that it's in the Eastern timezone all on one line
+                print(occurred_dt)              ### Finally I print the date that pendulum parsed - Note that they use an aware version of the ISO standard string 
+                                          ### If we were to do this with datetim we'd need to use strptime =w/ a format string and use the replace method to fix the timezone
+                                          
+                
+                
+Timezone Hopping with Pendulum
+              - Pendulum has wonderful support for timezones and comes with the Olsen Database built into it
+              - .in_timzeon() method converts a 
 
 
 

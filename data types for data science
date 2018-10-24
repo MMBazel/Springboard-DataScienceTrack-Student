@@ -1379,11 +1379,45 @@ A list of tuples called date_ranges is provided for you. This is the same list o
 You can learn more in the pendulum documentation. Here, it has been imported for you.
 
 
+# Iterate over date_ranges
+for start_date, end_date in date_ranges:
 
+    # Convert the start_date string to a pendulum date: start_dt 
+    start_dt = pendulum.parse(start_date, strict=False)
+    
+    # Convert the end_date string to a pendulum date: end_dt 
+    end_dt = pendulum.parse(end_date, strict=False)
+    
+    # Print the End and Start Date
+    print(end_dt, start_dt)
+    
+    
+    
+    
+    
+    -----------------------------------------------------------Counting Within Date Ranges ------------------------------------------
+    Chicago Crimes
+    
+    Part 1- Step 1 - Begin case study by reading ata from a CSV and building a list to hold your data
+    
+                Ex:    import csv
+                       csvfile = open('ART_GALLERY','r')
+                       for row in csv.reader(csvfile): 
+                              print(row)
 
+            Step 2 - You'll count the data by month using a counter similarly to how we did previously
+               
+               Ex:    from collections import Countr
+                      nyc_eatery_count_by_types = Counter(nyc_eatery_types)
 
-
-
+                 Use date parts for grouping like in Chapter 4; use the month date part to group/count the ddata by month
+                
+               Ex: daily_violations = defaultdict(int)
+                   for violation in parking_violations:
+                          violation_date = datetime.strptime(violation[4], '%m/'%d/%Y')
+                          daily_violations[violation_date.day] += 1
+               In date part grouping example we used a defaultdict but for this problem will be using a counter
+               
 
 
 

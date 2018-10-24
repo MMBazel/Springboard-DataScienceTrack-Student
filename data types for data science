@@ -1350,6 +1350,39 @@ Humanizing Differences
        -Pendulum provides the ability to set a local and get it in other langages
        
 
+Code Snippet >>>>>>>>>>>>>>>> Localizing time with pendulum
+Import the pendulum module.
+Create a now datetime for Tokyo ('Asia/Tokyo') called tokyo_dt.
+Covert tokyo_dt to Los Angeles time ('America/Los_Angeles'). Store the result as la_dt.
+Print the ISO 8601 string of la_dt, using the .to_iso8601_string() method.
+
+# Import the pendulum module
+import pendulum
+
+# Create a now datetime for Tokyo: tokyo_dt
+tokyo_dt = pendulum.now('Asia/Tokyo')
+
+# Covert the tokyo_dt to Los Angeles: la_dt
+la_dt = tokyo_dt.in_timezone('America/Los_Angeles')
+
+# Print the ISO 8601 string of la_dt
+print(la_dt.to_iso8601_string())
+
+
+>>>>>>>>>>>>>>> Code Snippet: Humanizing Differences with Pendulum
+Pendulum provides a powerful way to convert strings to pendulum datetime objects via the .parse() method. Just pass it a date string and it will attempt to convert into a valid pendulum datetime. By default, .parse() can process dates in ISO 8601 format. To allow it to parse other date formats, pass strict = False.
+
+It also has a wonderful alternative to timedelta. When calculating the difference between two dates by subtraction, pendulum provides methods such as .in_days() to output the difference in a chosen metric. These are just the beginning of what pendulum can do for you.
+
+A list of tuples called date_ranges is provided for you. This is the same list of tuples that contain two dates that was used a few exercises prior. You'll be focusing on comparing ranges of records.
+
+You can learn more in the pendulum documentation. Here, it has been imported for you.
+
+
+
+
+
+
 
 
 

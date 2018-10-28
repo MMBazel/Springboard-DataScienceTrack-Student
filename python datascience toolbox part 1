@@ -1,0 +1,250 @@
+Course Description
+It's now time to push forward and develop your Python chops even further. There are lots and lots of fantastic functions in Python and its library ecosystem. However, as a Data Scientist, you'll constantly need to write your own functions to solve problems that are dictated by your data. The art of function writing is what you'll learn in this first Python Data Science toolbox course. You'll come out of this course being able to write your very own custom functions, complete with multiple parameters and multiple return values, along with default arguments and variable-length arguments. You'll gain insight into scoping in Python and be able to write lambda functions and handle errors in your very own function writing practice. On top of this, you'll wrap up each Chapter by diving into using your acquired skills to write functions that analyze twitter DataFrames and are generalizable to broader Data Science contexts.
+
+
+--------------------------------WRITING YOR OWN FUNCTIONS---------------------------------------------------------
+_______________________________User Defined Functions______________________________________________________________________
+
+In this vourse will learn how to do the following:
+1) Defined functions without parameters
+2) Defined functions with one parameter
+3) Define functions that return a value
+
+In later sectons, will leanr how to defined functions with multiple arguments and functions tha return multiple values
+
+
+Built-in functions
+  - Let's check out python's built in function str, which accepts an object such as a number and return a string object
+          x = str(5)
+          print(x)
+          print(type(x))
+          
+          ### You can assign a str to a variable to store its return value
+
+Defining a function
+        We'll see how to define functions via an example, a funtion that squares a number
+        To define the function we begin with the keyword def followed by the function's name
+        
+        def square():   ### <-- functuon header
+                new_value = 4 ** 2
+                print(new_value)   ###<-- function body (indented)
+                
+                
+        def square(value):   ### <-- functuon header -- Number here is parameter
+                new_value = value ** 2
+                print(new_value)   ###<-- function body (indented) 
+                
+        square(4)               ####< Number here is an argument        
+        
+        
+        
+   What if we don't want to print it but want to return it directly? 
+   You can have your function return the new value by adding the return ketword followed by the value to return
+   
+          def square(value):
+                  new_value = value ** 2
+                  return new_v
+                  
+                  
+Another essential aspect of writing functions in Oython: docstrings
+-Describes what your function does, such as the computations it performs or its return values
+-These descriptions serve as documentation for your functions so that anyone who reads yur funtions's docstrings understand what your funtion does without having to trace through all the code in the function definition
+-Placed in the immediate line after the function headr
+-In btween triple double quotes """
+
+ex: 
+        
+       def square(value):
+              """Return the square of a value."""
+              new_value = value ** 2
+              return new_value
+              
+              
+              
+                  
+ ----------------------------------------------------------------------------------------------------------------------------------------
+ Strings in Python
+In the video, you learned of another standard Python datatype, strings. Recall that these represent textual data. To assign the string 'DataCamp' to a variable company, you execute:
+
+company = 'DataCamp'
+You've also learned to use the operations + and * with strings. Unlike with numeric types such as ints and floats, the + operator concatenates strings together, while the * concatenates multiple copies of a string together. In this exercise, you will use the + and * operations on strings to answer the question below. Execute the following code in the shell:
+
+object1 = "data" + "analysis" + "visualization"
+object2 = 1 * 3
+object3 = "1" * 3
+What are the values in object1, object2, and object3, respectively?
+
+
+     Recapping built-in functions
+In the video, Hugo briefly examined the return behavior of the built-in functions print() and str(). Here, you will use both functions and examine their return values. A variable x has been preloaded for this exercise. Run the code below in the console. Pay close attention to the results to answer the question that follows.
+
+Assign str(x) to a variable y1: y1 = str(x)
+Assign print(x) to a variable y2: y2 = print(x)
+Check the types of the variables x, y1, and y2.
+What are the types of x, y1, and y2?             
+                  
+                  
+                  
+                  
+  ___________________________________________________________________________________________________________________-
+  Write a simple function
+In the last video, Hugo described the basics of how to define a function. You will now write your own function!
+
+Define a function, shout(), which simply prints out a string with three exclamation marks '!!!' at the end. The code for the square() function that we wrote earlier is found below. You can use it as a pattern to define shout().
+
+def square():
+    new_value = 4 ** 2
+    return new_value
+Note that the function body is indented 4 spaces already for you. Function bodies need to be indented by a consistent number of spaces and the choice of 4 is common.
+
+>>>>>>>>>>>>>> Code Snippet:
+# Define the function shout
+def shout():
+    """Print a string with three exclamation marks"""
+    # Concatenate the strings: shout_word
+    shout_word = 'congratulations'+'!!!'
+
+    # Print shout_word
+    print(shout_word)
+
+# Call shout
+shout()
+
+--------------------------------------------------------------------------------------------------------------------------
+Single-parameter functions
+Congratulations! You have successfully defined and called your own function! That's pretty cool.
+
+In the previous exercise, you defined and called the function shout(), which printed out a string concatenated with '!!!'. You will now update shout() by adding a parameter so that it can accept and process any string argument passed to it. Also note that shout(word), the part of the header that specifies the function name and parameter(s), is known as the signature of the function. You may encounter this term in the wild!
+
+Complete the function header by adding the parameter name, word.
+Assign the result of concatenating word with '!!!' to shout_word.
+Print the value of shout_word.
+Call the shout() function, passing to it the string, 'congratulations'.
+
+# Define shout with the parameter, word
+def shout(word):
+    """Print a string with three exclamation marks"""
+    # Concatenate the strings: shout_word
+    shout_word = word + '!!!'
+
+    # Print shout_word
+    print(shout_word)
+
+# Call shout with the string 'congratulations'
+shout('congratulations')
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+Functions that return single values
+You're getting very good at this! Try your hand at another modification to the shout() function so that it now returns a single value instead of printing within the function. Recall that the return keyword lets you return values from functions. Parts of the function shout(), which you wrote earlier, are shown. Returning values is generally more desirable than printing them out because, as you saw earlier, a print() call assigned to a variable has type NoneType.
+
+
+In the function body, concatenate the string in word with '!!!' and assign to shout_word.
+Replace the print() statement with the appropriate return statement.
+Call the shout() function, passing to it the string, 'congratulations', and assigning the call to the variable, yell.
+To check if yell contains the value returned by shout(), print the value of yell.
+
+>>>>>>>>>>> 
+# Define shout with the parameter, word
+def shout(word):
+    """Return a string with three exclamation marks"""
+    # Concatenate the strings: shout_word
+    shout_word = word + '!!!'
+
+    # Replace print with return
+    return(shout_word)
+
+# Pass 'congratulations' to shout: yell
+yell = shout('congratulations')
+
+# Print yell
+print(yell)
+
+                  
+  ___________________________________________________________________________________________________________________
+  
+    Multiple Function Parameters
+    
+                  
+   -Accept more than 1 parameter
+   
+                ex:    def raise_to_power(value1, value2):
+                              """Raise value1 to the power of value2."""
+                              new_value = value1 ** value2
+                              return new_value
+                              
+  Make sure to change function name and docs strings to reflect new behavior
+  
+  Call function: # pf arguments  = # of parameters
+          -The order in which the arguments are passed correpsond to the order of the parameters in the function header
+         
+  You can also make your function return multiple values
+  You do that by constructing objects known as tuples in your functions
+  
+  A quick jump into tuples
+          - Make functions return multiple values
+          -Tupes:
+                  -Like a list - can contain multple values
+                  Immutable - can;t modufy values
+                  Constucted using parentheses()
+                  
+                  ex: 
+                  even_nums = (2,4,6)
+                  print(type(even_nums))
+                
+         
+         
+  Unpacking tuples
+          -Unpack tuple into several variables
+          
+          even_nums = (2,4,6)
+          a,b,c = even_nums
+          print(a)
+          print(b)
+          
+    
+    
+Accessing tuple elements
+-Accessing tuple elements like you do with lists:
+        
+        ex: 
+                even_nums = (2,4,6)
+                print(even_nums[1])
+                second_num = even_nums[1]
+  -Uses zero indexing               
+                
+                
+  
+                  
+   Let's now modify the prior example
+   
+   
+   def raise_both(value1, value2):
+   """Raise value1 to the power of value2 and vice versa"""
+   
+   new_value1 = value1 ** value2
+   new_value2 = value2 ** value1
+   
+   new_tuple = (new_value1, new_value2)
+   
+   return new_tuple
+   
+   
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  

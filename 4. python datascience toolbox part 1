@@ -434,10 +434,346 @@ result = count_entries(tweets_df, 'lang')
 # Print the result
 print(result)
 
+_______________________________________________________________________________________________________________________________
 
+Topic: Scope and User-Defined Functions
+
+Crash Course on Scope in Functions
+
+        - Idea of scope in the context of user-defined functions
+        - Not all objects are accessible everywhere in a script
+        - Scope - part of the program where an object or name may be accessible
+                -Names refer to the variables or, more generally, objects such as functions that are defined in your program, for example, a variable X has a name as does the function sum. 
+                
+        -There are three types of scopes that you should know - 
+                1) Global Scope - defined in the main body of a script or a python program
+                2) Local Scope -defined inside of a function; once the execution of a function is done, any name inside the local scope ceases to exist, which means you cannot access those names anymore outside of the function definition
+                3) Built-in Scope - names in the pre-defined built-ins module (such as print, sum)
                   
+        
+            
+        Global vs Local Scope - Example 1:
+        
+                    new_val = 10
+                    
+                    def square(value):
+                            """Returns the square of a number."""
+                            new_val = value ** 2
+                            return new_val
+                            
+                            
+                    ### Anytime we call the name in the global scope, it will access the name in the global, as you see here
+                    Anytime we call the name in the local scope of the function, it will look first in the local scope
+                    If Python cannot find the name in the local scope, it will then and only then look in the global scope
+                    
+        
+   
+   
+   
+        Global vs Local Scope - Example 2:
+        
+                    new_val = 10
+                    
+                    def square(value):
+                            """Returns the square of a number."""
+                            new_val2 = new_value ** 2
+                            return new_val2
+                            
+                            
+                    ### Here for example we access new_val defined globally within the function square 
+                    Note that the global value accessed is the value at the time the function is called, not the value when the function is defined
+                    Thus if we re-assign new_val and call the function square, we see that the new value of new_val is accessed
+                    
+                    To recap, when we reference a name, first the local scope is searched and then the global
+                    If the name is in neither then the built-in scope is searched
+                    
+                    
+        What if we want to alter the value of a global name within a function call? - This is where the keyword global comes in handy. 
+        Global vs. Local Scope - Example 3
+        
+                       
+   
+                new_val = 10
+                
+                def square(val):
+                        """Returns the square of a number."""
+                        global new_val                                            ###Keyword global followed by the name of the global variable we wish to access and alter
+                        new_val = new_val ** 2                                   ### Example: We changed new_val 
+                        return new_val
+                        
+                        
+   
+   
+   
+   
+   ________________________________________________________________________________________________________________
+The keyword global
+Let's work more on your mastery of scope. In this exercise, you will use the keyword global within a function to alter the value of a variable defined in the global scope.
+
+INSTRUCTIONS
+100 XP
+Use the keyword global to alter the object team in the global scope.
+Change the value of team in the global scope to the string "justice league". Assign the result to team.
+Hit the Submit button to see how executing your newly defined function change_team() changes the value of the name team!
+
+
+   >>>>>>>>>>>>>>>> Code Snippet: 
+   # Create a string: team
+team = "teen titans"
+
+# Define change_team()
+def change_team():
+    """Change the value of the global variable team."""
+    
+    # Use team in global scope
+    global team
+
+    # Change the value of team in global: team
+    team = "justice league"
+# Print team
+print(team)
+
+# Call change_team()
+change_team()
+
+# Print team
+print(team)
+
+_______________________________________________________________________________________________________________________________
+
+
+ Python's built-in scope
+Here you're going to check out Python's built-in scope, which is really just a built-in module called builtins. However, to query builtins, you'll need to import builtins 'because the name builtins is not itself built in...No, I’m serious!' (Learning Python, 5th edition, Mark Lutz). After executing import builtins in the IPython Shell, execute dir(builtins) to print a list of all the names in the module builtins. Have a look and you'll see a bunch of names that you'll recognize! Which of the following names is NOT in the module builtins?  
+   
+In [1]: import builtins
+
+In [2]: dir(builtins)
+Out[2]: 
+['ArithmeticError',
+ 'AssertionError',
+ 'AttributeError',
+ 'BaseException',
+ 'BlockingIOError',
+ 'BrokenPipeError',
+ 'BufferError',
+ 'BytesWarning',
+ 'ChildProcessError',
+ 'ConnectionAbortedError',
+ 'ConnectionError',
+ 'ConnectionRefusedError',
+ 'ConnectionResetError',
+ 'DeprecationWarning',
+ 'EOFError',
+ 'Ellipsis',
+ 'EnvironmentError',
+ 'Exception',
+ 'False',
+ 'FileExistsError',
+ 'FileNotFoundError',
+ 'FloatingPointError',
+ 'FutureWarning',
+ 'GeneratorExit',
+ 'IOError',
+ 'ImportError',
+ 'ImportWarning',
+ 'IndentationError',
+ 'IndexError',
+ 'InterruptedError',
+ 'IsADirectoryError',
+ 'KeyError',
+ 'KeyboardInterrupt',
+ 'LookupError',
+ 'MemoryError',
+ 'NameError',
+ 'None',
+ 'NotADirectoryError',
+ 'NotImplemented',
+ 'NotImplementedError',
+ 'OSError',
+ 'OverflowError',
+ 'PendingDeprecationWarning',
+ 'PermissionError',
+ 'ProcessLookupError',
+ 'RecursionError',
+ 'ReferenceError',
+ 'ResourceWarning',
+ 'RuntimeError',
+ 'RuntimeWarning',
+ 'StopAsyncIteration',
+ 'StopIteration',
+ 'SyntaxError',
+ 'SyntaxWarning',
+ 'SystemError',
+ 'SystemExit',
+ 'TabError',
+ 'TimeoutError',
+ 'True',
+ 'TypeError',
+ 'UnboundLocalError',
+ 'UnicodeDecodeError',
+ 'UnicodeEncodeError',
+ 'UnicodeError',
+ 'UnicodeTranslateError',
+ 'UnicodeWarning',
+ 'UserWarning',
+ 'ValueError',
+ 'Warning',
+ 'ZeroDivisionError',
+ '_',
+ '__IPYTHON__',
+ '__IPYTHON__active',
+ '__build_class__',
+ '__debug__',
+ '__doc__',
+ '__import__',
+ '__loader__',
+ '__name__',
+ '__package__',
+ '__spec__',
+ 'abs',
+ 'all',
+ 'any',
+ 'ascii',
+ 'bin',
+ 'bool',
+ 'bytearray',
+ 'bytes',
+ 'callable',
+ 'chr',
+ 'classmethod',
+ 'compile',
+ 'complex',
+ 'copyright',
+ 'credits',
+ 'delattr',
+ 'dict',
+ 'dir',
+ 'divmod',
+ 'dreload',
+ 'enumerate',
+ 'eval',
+ 'exec',
+ 'filter',
+ 'float',
+ 'format',
+ 'frozenset',
+ 'get_ipython',
+ 'getattr',
+ 'globals',
+ 'hasattr',
+ 'hash',
+ 'help',
+ 'hex',
+ 'id',
+ 'input',
+ 'int',
+ 'isinstance',
+ 'issubclass',
+ 'iter',
+ 'len',
+ 'license',
+ 'list',
+ 'locals',
+ 'map',
+ 'max',
+ 'memoryview',
+ 'min',
+ 'next',
+ 'object',
+ 'oct',
+ 'open',
+ 'ord',
+ 'pow',
+ 'print',
+ 'property',
+ 'range',
+ 'repr',
+ 'reversed',
+ 'round',
+ 'set',
+ 'setattr',
+ 'slice',
+ 'sorted',
+ 'staticmethod',
+ 'str',
+ 'sum',
+ 'super',
+ 'tuple',
+ 'type',
+ 'vars',
+ 'zip']
+
+In [3]: 
+
+_______________________________________________________________________________________________________
+
+   
+Nested Functions
+   
+   
+What if we have a function inner defined within another function outer and we reference a name x in the inner function?
+The answer is intuitive: Python searches the local scope of the function inner then if it doesn't find x it searches the scope of the function outer, which is called an enclosing function because it encloses the function inner
+If Python can't find x in the scope of the enclosing function it only then searches the global scope and then the built-in scope. 
+
+
+def outer(...):
+      """..."""
+      x = ...
+      
+      def inner(...):
+              """..."""
+              y= x ** 2
+              
+      return ...
+      
+      
+   But whoa, hold on there for a second, why are we even nesting functions? 
+   There are a number of good reasnons to do so. Let's say that we want to use a process a number of times within a function. 
+   
+   For example, we want a function that takes 3 numbers as parameters and performs the same function on each of them. 
+   One way would be to write out the computation three times but this is unscaleable.  
+   
+          def mod2plus5(x1, x2, x3):
+                  """Returns the remainder plus 5 of three values"""
                   
+                  new_x1 = x1 % 2 + 5
+                  new_x2 = x2 % 2 + 5
+                  new_x3 = x3 % 2 + 5
                   
+                  return( new_x1, new_x2, new_x3)
+   
+   
+   
+   
+   
+   What we can do instead is define an inner function within our function definition and call it where necessary as we do here:
+   This is called a nested function, the syntax for the inner function is exactly the same as that for any other function.
+   
+  
+   def mod2plus5(x1, x2, x3):
+          """Returns the remainder plus 5 of three values."""
+          
+          def inner(x):
+                  """Returns the remainder plus 5 of a value."""
+                  return x % 2 + 5
+                  
+          return( inner(x1), inner(x2), inner(x3))        
+   
+   
+Returning Functions
+        - Another important use case of nested functions
+                - We define a function, raise_vals, which contains an inner function
+  
+
+               def raise_val(n):
+                      """Return the inner function."""
+                      
+                      def inner(x):
+                      """Raise x to the power of n."""
+                              raised = x ** n
+                              return raised
+                              
+                       return inner       
                   
                   
                   

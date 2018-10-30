@@ -776,10 +776,37 @@ Returning Functions
                        return inner       
                   
                   
+ Using nonlocal
+ =Reall that in our disucssions about scope you can use the keyword global in function definitions to creat and change global names; similarly, in a nested function you can use the keyword nonlocal to create and change names in an enclosing scope
+ 
+        def outer():
+                """Prints the value of n."""
+                n=1
+                
+                def inner():
+                        nonlocal n   ###In this example we alter the value of n in the inner function; because we used the keyword nonlocal, it also alters the value of n in the enclosing scope
+                        n = 2
+                        print(n)
+                        
+                inner()
+                print(n)
                   
                   
-                  
-                  
+ - This is why calling the function outer prints the value of n as detrmined within the function inner
+ 
+ 
+ To summarize:
+ name references search at most 4 scopes,
+ -the local scope
+ -then those of enclosing functions
+ -then global
+ -then built in
+ 
+ LEGB rule!
+ Also remember that assigning names will only create or hange local names, unless they are declared in global or nonlocal statements using the keyword global or the keyword nonlocal, respectively
+ 
+ 
+ 
                   
                   
                   

@@ -925,8 +925,23 @@ echo_shout('hello')
 Default arguments and flexible arguments 
       Let's say  you're writing a functon that takes multiple parameters & that there is a common values for some of these parameters.
 			In this case you would like to be able to call the function without explicityly specifiying every parameter. 
+			In other words you would like some parameters to have default arguments that are used when it isn't specified otherwise. 
+
+In this unit, you'll learn to:
+	-Write functions with default arguments
+	Use flexible arguments which allow ypu to pass any number of arguments to a functions
+	
+	
+Add a default argument
+	-First up to define a function with a default argument value in the function header, we follow the parameter of interest with an equals sign and the default argument value. 
+	
+	ex: 
+	def power(number, pow=1):
+			"""Raise number to the power of now."""
+			new_value = number ** pow
+			return new_value
 			
-                  
+			
                   
                   
                   

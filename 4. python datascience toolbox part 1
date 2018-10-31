@@ -806,14 +806,126 @@ Returning Functions
  Also remember that assigning names will only create or hange local names, unless they are declared in global or nonlocal statements using the keyword global or the keyword nonlocal, respectively
  
  
- 
+ ________________________________________________________________________________________________________________________
+Nested Functions I
+You've learned in the last video about nesting functions within functions. One reason why you'd like to do this is to avoid writing out the same computations within functions repeatedly. There's nothing new about defining nested functions: you simply define it as you would a regular function with def and embed it inside another function!
+
+In this exercise, inside a function three_shouts(), you will define a nested function inner() that concatenates a string object with !!!. three_shouts() then returns a tuple of three elements, each a string concatenated with !!! using inner(). Go for it!
+
+INSTRUCTIONS
+100 XP
+INSTRUCTIONS
+100 XP
+Complete the function header of the nested function with the function name inner() and a single parameter word.
+Complete the return value: each element of the tuple should be a call to inner(), passing in the parameters from three_shouts() as arguments to each call.
+     
+     
+     
+   # Define three_shouts
+def three_shouts(word1, word2, word3):
+    """Returns a tuple of strings
+    concatenated with '!!!'."""
+
+    # Define inner
+    def inner(word):
+        """Returns a string concatenated with '!!!'."""
+        return word + '!!!'
+
+    # Return a tuple of strings
+    return (inner(word1),inner(word2), inner(word3))
+
+# Call three_shouts() and print
+print(three_shouts('a', 'b', 'c'))
+
+___________________________________________________________________________________________________________________________
+
+
+Nested Functions II
+Great job, you've just nested a function within another function. One other pretty cool reason for nesting functions is the idea of a closure. This means that the nested or inner function remembers the state of its enclosing scope when called. Thus, anything defined locally in the enclosing scope is available to the inner function even when the outer function has finished execution.
+
+Let's move forward then! In this exercise, you will complete the definition of the inner function inner_echo() and then call echo() a couple of times, each with a different argument. Complete the exercise and see what the output will be!
+
+INSTRUCTIONS
+100 XP
+INSTRUCTIONS
+100 XP
+Complete the function header of the inner function with the function name inner_echo() and a single parameter word1.
+Complete the function echo() so that it returns inner_echo.
+We have called echo(), passing 2 as an argument, and assigned the resulting function to twice. Your job is to call echo(), passing 3 as an argument. Assign the resulting function to thrice.
+Hit Submit to call twice() and thrice() and print the results.
+
+
+
+# Define echo
+def echo(n):
+    """Return the inner_echo function."""
+
+    # Define inner_echo
+    def inner_echo(word1):
+        """Concatenate n copies of word1."""
+        echo_word = word1 * n
+        return echo_word
+
+    # Return inner_echo
+    return inner_echo
+
+# Call echo: twice
+twice = echo(2)
+
+# Call echo: thrice
+thrice = echo(3)
+
+# Call twice() and thrice() then print
+print(twice('hello'), thrice('hello'))
+
+__________________________________________________________________________________________________________________
+
+
+The keyword nonlocal and nested functions
+Let's once again work further on your mastery of scope! In this exercise, you will use the keyword nonlocal within a nested function to alter the value of a variable defined in the enclosing scope.
+
+INSTRUCTIONS
+100 XP
+Assign to echo_word the string word, concatenated with itself.
+Use the keyword nonlocal to alter the value of echo_word in the enclosing scope.
+Alter echo_word to echo_word concatenated with '!!!'.
+Call the function echo_shout(), passing it a single argument 'hello'.
+
+
+ # Define echo_shout()
+def echo_shout(word):
+    """Change the value of a nonlocal variable"""
+    
+    # Concatenate word with itself: echo_word
+    echo_word = word * 2
+    
+    # Print echo_word
+    print(echo_word)
+    
+    # Define inner function shout()
+    def shout():
+        """Alter a variable in the enclosing scope"""    
+        # Use echo_word in nonlocal scope
+        nonlocal echo_word
+        
+        # Change echo_word to echo_word concatenated with '!!!'
+        echo_word = echo_word + '!!!'
+    
+    # Call function shout()
+    shout()
+    
+    # Print echo_word
+    print(echo_word)
+
+# Call function echo_shout() with argument 'hello'
+echo_shout('hello')                 
                   
-                  
-                  
-                  
-                  
-                  
-                  
+  __________________________________________________Default and Flexible Arguments_________________________________________________________________________
+
+Default arguments and flexible arguments 
+      Let's say  you're writing a functon that takes multiple parameters & that there is a common values for some of these parameters.
+			In this case you would like to be able to call the function without explicityly specifiying every parameter. 
+			
                   
                   
                   

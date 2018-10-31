@@ -934,6 +934,7 @@ In this unit, you'll learn to:
 	
 Add a default argument
 	-First up to define a function with a default argument value in the function header, we follow the parameter of interest with an equals sign and the default argument value. 
+	-Notice this function raises the first argument to the power of the second argument and the default 2nd argument value is 1. 
 	
 	ex: 
 	def power(number, pow=1):
@@ -941,8 +942,49 @@ Add a default argument
 			new_value = number ** pow
 			return new_value
 			
-			
+	So you can call the function using 2 arguments as you would expect but if you use only one argument then it uses the default value. 
+	
+	
+Let's now look at a flexible argument:
+		Let's say that you want to write a function but aren't sure how many arguments a user will want to pass it
+		
+		Flexible arguments:  *args(1)
+		For example, a function that takes floats or ints adn adds them all up, irrespective of how many there are.
+		In this example we write the function that sums up all the arguments passed to it. 
+		In the function definition, we use the parameter star followed by args: this then turns all the arguments passed to a function call into a tuple called args in the functon body;
+			then, in the funcition body, to write our desired function, we initialize our sum sum_all to 0, loop over the tuple args and add each element of it successively to sum_all and then return it.
+		We can now call our function add_all with any number of arguments to add them all up!
+		
+		
+		def add_all(*args):
+				"""Sum all values in *args together."""
+				
+				# Initialize sum 
+                  		sum_all = 0
+				
+				#Accumulate the sum
+				for num in args:
+					sum_all += num
+					
+				return sum_all	
                   
                   
-                  
-                  
+                Flexible Arguments: **kwargs
+		Can also use a double star to pass arbitrary number of keyword arguments, also called kwargs, that is arguments preceded by identifiers.    
+		
+		We'll write a function  that prints the identifiers and parameters passed to them as you see here.
+		Now to write such a function we'll use the parameter kwargs preceded by a double star.
+		This turns the identyifier -keyword pairs into a dictionary within the function body. 
+		Then in the functiuon body all we need to do is to print all the key-value pairs stored in the dictionary kwargs. 
+		Note that it is not the names args and kwargs that are important when using flexible arguments, but rather that they're preceded by a single and double start, respectively. 
+		
+		
+		
+		def print_all(**kwargs):
+				"""Print out key-value pairs in **kwargs."""
+				
+				# Print out the key-value pairs
+				for key, value in kwargs.items():
+					print(key + ": "+value)
+		print_all(name="Hugo", employer="DataCamp")
+		

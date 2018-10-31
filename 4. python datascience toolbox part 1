@@ -1000,3 +1000,78 @@ Use the * operator to concatenate echo copies of word1. Assign the result to ech
 Call shout_echo() with just the string, "Hey". Assign the result to no_echo.
 Call shout_echo() with the string "Hey" and the value 5 for the default argument, echo. Assign the result to with_echo.
 
+# Define shout_echo
+def shout_echo(word1, echo=1):
+    """Concatenate echo copies of word1 and three
+     exclamation marks at the end of the string."""
+
+    # Concatenate echo copies of word1 using *: echo_word
+    echo_word = word1 * echo
+
+    # Concatenate '!!!' to echo_word: shout_word
+    shout_word = echo_word + '!!!'
+
+    # Return shout_word
+    return shout_word
+
+# Call shout_echo() with "Hey": no_echo
+no_echo = shout_echo("Hey")
+
+# Call shout_echo() with "Hey" and echo=5: with_echo
+with_echo = shout_echo("Hey",echo=5)
+
+# Print no_echo and with_echo
+print(no_echo)
+print(with_echo)
+
+________________________________________________________________________________________________________________________________
+
+Functions with multiple default arguments
+You've now defined a function that uses a default argument - don't stop there just yet! You will now try your hand at defining a function with more than one default argument and then calling this function in various ways.
+
+After defining the function, you will call it by supplying values to all the default arguments of the function. Additionally, you will call the function by not passing a value to one of the default arguments - see how that changes the output of your function!
+
+INSTRUCTIONS
+100 XP
+INSTRUCTIONS
+100 XP
+Complete the function header with the function name shout_echo. It accepts an argument word1, a default argument echo with default value 1 and a default argument intense with default value False, in that order.
+In the body of the if statement, make the string object echo_word upper case by applying the method .upper() on it.
+Call shout_echo() with the string, "Hey", the value 5 for echo and the value True for intense. Assign the result to with_big_echo.
+Call shout_echo() with the string "Hey" and the value True for intense. Assign the result to big_no_echo.
+
+
+
+# Define shout_echo
+def shout_echo(word1, echo=1, intense=False):
+    """Concatenate echo copies of word1 and three
+    exclamation marks at the end of the string."""
+
+    # Concatenate echo copies of word1 using *: echo_word
+    echo_word = word1 * echo
+
+    # Capitalize echo_word if intense is True
+    if intense is True:
+        # Capitalize and concatenate '!!!': echo_word_new
+        echo_word_new = echo_word.upper() + '!!!'
+    else:
+        # Concatenate '!!!' to echo_word: echo_word_new
+        echo_word_new = echo_word + '!!!'
+
+    # Return echo_word_new
+    return echo_word_new
+
+# Call shout_echo() with "Hey", echo=5 and intense=True: with_big_echo
+with_big_echo = shout_echo("Hey", echo=5,intense=True)
+
+# Call shout_echo() with "Hey" and intense=True: big_no_echo
+big_no_echo = shout_echo("Hey",intense=True)
+
+# Print values
+print(with_big_echo)
+print(big_no_echo)
+
+_______________________________________________________________________________________________________________________________
+
+
+

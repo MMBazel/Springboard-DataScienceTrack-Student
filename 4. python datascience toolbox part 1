@@ -1154,4 +1154,66 @@ Bringing It All Together
 Recall that in a previous chapter you wrote a function tjat would take a DataFra,eof twitter data and return a dictionary containing languages as keys and the number of times a tweet was written in a given language as values
 
 
-In the following exercises, you will write a function that takes a DataFrame and returns a dictionary with counts of 
+In the following exercises, you will write a function that takes a DataFrame and returns a dictionary with counts of any occurences for any column
+By default however it will process a column called lang
+This generalizes the previous function that you wrote.
+
+You will then generalize this further so you can pass the function a DataFrame and a ny number of column names to perform the computation on an arbitrary number of columns
+
+Next Exercises:
+	1- Count occurences for any column
+	2- Count occurrences for an arbitrary number of columns
+	
+	Let's remind ourselves of the techniques necessary: recall that to define a function with a default argument, all that you need to do is provide that argument in the function header as you can see here.
+	
+____________________________________________________________________________________________________________________________
+
+Bringing it all together (1)
+Recall the Bringing it all together exercise in the previous chapter where you did a simple Twitter analysis by developing a function that counts how many tweets are in certain languages. The output of your function was a dictionary that had the language as the keys and the counts of tweets in that language as the value.
+
+In this exercise, we will generalize the Twitter language analysis that you did in the previous chapter. You will do that by including a default argument that takes a column name.
+
+For your convenience, pandas has been imported as pd and the 'tweets.csv' file has been imported into the DataFrame tweets_df. Parts of the code from your previous work are also provided.
+
+INSTRUCTIONS
+100 XP
+INSTRUCTIONS
+100 XP
+Complete the function header by supplying the parameter for a DataFrame df and the parameter col_name with a default value of 'lang' for the DataFrame column name.
+Call count_entries() by passing the tweets_df DataFrame and the column name 'lang'. Assign the result to result1. Note that since 'lang' is the default value of the col_name parameter, you don't have to specify it here.
+Call count_entries() by passing the tweets_df DataFrame and the column name 'source'. Assign the result to result2.
+
+# Define count_entries()
+def count_entries(df, col_name ='lang'):
+    """Return a dictionary with counts of
+    occurrences as value for each key."""
+
+    # Initialize an empty dictionary: cols_count
+    cols_count = {}
+
+    # Extract column from DataFrame: col
+    col = df[col_name]
+    
+    # Iterate over the column in DataFrame
+    for entry in col:
+
+        # If entry is in cols_count, add 1
+        if entry in cols_count.keys():
+            cols_count[entry] += 1
+
+        # Else add the entry to cols_count, set the value to 1
+        else:
+            cols_count[entry] = 1
+
+    # Return the cols_count dictionary
+    return cols_count
+
+# Call count_entries(): result1
+result1 = count_entries(tweets_df)
+
+# Call count_entries(): result2
+result2 = count_entries(tweets_df, col_name='source')
+
+# Print result1 and result2
+print(result1)
+print(result2)

@@ -1,0 +1,172 @@
+---------Customizing Plots---------------------------------------------------------------------------------------------------
+
+Plotting multiple graphs
+Strategies:
+
+  -Plotting many graphs on a common axis
+  -Creating axes within a figure
+  -Creating subplots within a figure
+  
+  
+  Ex:
+					import matplotlib.pyplot as plt
+					plt.plot(t,temperature,'r')
+					plt.plot(t,dewpoint,'b') #Appears on same axes
+  				plt.xlabel('Date')
+					plt.title('Temperature & Dew Point')
+					plt.show() #Renders plot objects t screen
+					
+Using axes
+			Laying figures out with separate axes side by side
+
+					plt.axes([0.05,0.05,0.425,0.9])
+					plt.plot(t,temperature,'r')
+					plt.xlabel('Date')
+					plt.title('Temperature')
+					plt.axes([0.05,0.05,0.425,0.9])
+					plt.plot(t, dewpoint,'b')
+					plt.xlabel('Date')
+					plt.title('Dew Point')
+					plt.show()
+					
+					
+					The axes() command
+								-Syntx
+					
+					
+					
+					
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

@@ -684,7 +684,32 @@ numpy and matplotlib.pyplot have been imported as np and plt respectively. Play 
 ___________________________________________________________________________________________________________________
 Visualizing bivariate functions
 
+-Visualize data from a bivariate function sampled on a 2D array
+-Assume function Z comes from evaluating a functin on a mesh grid
 
+Creating a pseudocolor plot
+
+		import numpy as np
+		import matplotlib.pyplot as plt
+		u= np.linspace(-2,2,65)
+		v= np.linspace(-1,1,33)
+		X,Y = np.meshgrid(u,v)
+		Z= X**2/25 + Y**2/4
+		plt.pcolor(Z)         ###Many colors as opposed to grayscale
+		plt.show()
+		
+		
+	
+Colorbar
+
+		plt.pcolor(Z)
+		plt.colorbar()
+		plt.show()
+		
+		
+			###Will display a color map - associates numerical values with colors in some continuous way
+			###Just like gray scale maps the specturm from 
+			
   
   
   

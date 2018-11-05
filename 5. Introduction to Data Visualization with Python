@@ -562,6 +562,8 @@ plt.show()
 _________________________________________________________________________________________________________________
 
 Working with 2D Arrays
+-Now let's see how to plot 2D arrays (somtimes called raster data) that represent images or functions of two variables (alsoknow as bivariate functions)
+
 
 Reminder: NumOy Arrays
 
@@ -585,12 +587,104 @@ Reminder: Slicing Arrays
 	-Negative indexes/slices: count from end of array
 	
 	
-	
+Using meshgrid()
+
+	ex: 
+		import numoy as np
+		u = np.linspace(-2,2,3) ###Linspace = creates 1D array
+		v = np.linspace(-1,1,5) ### Two linspaces creates 2D space
+		X,Y = np.meshgrid(u,v) ### Creates the grid from the two arrays
+		Z = X**2/25 + Y**2/4
+		
+		
+		###Resulting 2D arrays have identical shape but are constant valued along different axes
+		###The entries of X and Y taken pairwise correspond to rectangular coordinates of a grid or mesh of points in the xy plane
+		###The meshgrid presented by XY makes evaluating a bivariate function very easy 
+		
+		
+Sampling on a grid
+
+		ex: 
+		
+		import numpy as np
+		import matplotlib.pyplot as plt
+		
+		u = np.linspace(-2,2,3)
+		v= np.linspace(-1,1,5)
+		X,Y = np.meshgrid(u,v)
+		Z=X**2/25 + Y**2/4
+		
+		print('Z:\n',Z)   ###Fills every part of array
+		plt.set_cmap('grayscale')
+		plt.pcolor(Z)
+		plt.show()
+		
+		
+Oriientations of 2D arrays & images
+
+
+______________________________________________________________________________________________________________________________
+
+		
+  Generating meshes
+In order to visualize two-dimensional arrays of data, it is necessary to understand how to generate and manipulate 2-D arrays. Many Matplotlib plots support arrays as input and in particular, they support NumPy arrays. The NumPy library is the most widely-supported means for supporting numeric arrays in Python.
+
+In this exercise, you will use the meshgrid function in NumPy to generate 2-D arrays which you will then visualize using plt.imshow(). The simplest way to generate a meshgrid is as follows:
+
+import numpy as np
+Y,X = np.meshgrid(range(10),range(20))
+This will create two arrays with a shape of (20,10), which corresponds to 20 rows along the Y-axis and 10 columns along the X-axis. In this exercise, you will use np.meshgrid() to generate a regular 2-D sampling of a mathematical function.
+
+INSTRUCTIONS
+100 XP
+INSTRUCTIONS
+100 XP
+Import the numpy and matplotlib.pyplot modules using the respective aliases np and plt.
+Generate two one-dimensional arrays u and v using np.linspace(). The array u should contain 41 values uniformly spaced beween -2 and +2. The array v should contain 21 values uniformly spaced between -1 and +1.
+Construct two two-dimensional arrays X and Y from u and v using np.meshgrid(). The resulting arrays should have shape (41,21).
+After the array Z is computed using X and Y, visualize the array Z using plt.pcolor() and plt.show().
+Save the resulting figure as 'sine_mesh.png'.
+
 
   
   
-  
-  
+  # Import numpy and matplotlib.pyplot
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate two 1-D arrays: u, v
+u = np.linspace(-2, 2, 41)
+v = np.linspace(-1, 1, 21)
+
+# Generate 2-D arrays from u and v: X, Y
+X,Y = np.meshgrid(u,v)
+
+# Compute Z based on X and Y
+Z = np.sin(3*np.sqrt(X**2 + Y**2)) 
+
+# Display the resulting image with pcolor()
+plt.pcolor(Z)
+plt.show()
+
+# Save the figure to 'sine_mesh.png'
+plt.savefig('sine_mesh.png')
+
+
+_________________________________________________________________________________________________________________________
+
+The commands
+
+In [1]: plt.pcolor(A, cmap='Blues')
+In [2]: plt.colorbar()
+In [3]: plt.show()
+produce the pseudocolor plot above using a Numpy array A. Which of the commands below could have generated A?
+
+numpy and matplotlib.pyplot have been imported as np and plt respectively. Play around in the IPython shell with different arrays and generate pseudocolor plots from them to identify which of the below commands could have generated A.
+
+___________________________________________________________________________________________________________________
+Visualizing bivariate functions
+
+
   
   
   

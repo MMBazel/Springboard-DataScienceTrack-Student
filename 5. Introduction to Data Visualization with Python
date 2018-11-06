@@ -996,18 +996,112 @@ ________________________________________________________________________________
 Working with Images
 
 
+Images
+	-Grayscale images: rectangular 2D arrays
+	-Color Images: typically three 2D arrays (channels)
+		-RGB (Red - Green - Blue)
+	-Channel values:
+		-0 to 1(floating-point numbers)
+		-0 to 255 (8 bit integers)
+		
+  
+  
+  
+Loading IMages:
+	-ex:
+
+		img = plt.imread('sunflower.jpg')
+		print(img.shape)
+		plt.imshow(img)
+		plt.axis('off')
+		plt.show
+		
+		
+ Reduction to gray-scale image:
+
+	-ex:
+
+		collapsed = img.mean(axis=2)  ###Average the RGB channels by apply the numpy mean method along axis 2, the trailing dimension; since the color image consists of three matrices with values between 0 and 255, using the avg works as a reasonable proxy for thr RGB values when collapsing them into a single scalar intensity for  
+		print(collapsed.shape)
+		plt.set_cmap('gray') ##So al images will be gray
+		plt.axis('off')
+		plt.show()
+		
+		
+Uneven Samples - one subelty is the pixel shape
+
+	uneven = collapsed[::4,::2] # nonuniform subsampling
+	print(uneven.shape)
+	plt.imshow(uneven)
+	plt.axis('off')
+	plt.show()
+	
+	
+	### As a result, when plotted the image will be distoreted 
+	### Here, the aspect ratio is off with width over hiegh is 2 because of uneven sampling
+	##Way to fix is adjusting the aspect ratio
+	
+	plt.imshow(uneven,aspect=2.0)
+	plt.axis('off')
+	plt.show()
+	
+	
+  Adjusting Extent - Another way to fix the distortion
+  
+  	plt.imshow(uneven, cmap='gray', extent=(0,640,0,480))
+	plt.axis('off')
+	plt.show()
+	
+	
+  ________________________________________________________________________________________________________
+
+Loading, examining images
+Color images such as photographs contain the intensity of the red, green and blue color channels.
+
+To read an image from file, use plt.imread() by passing the path to a file, such as a PNG or JPG file.
+The color image can be plotted as usual using plt.imshow().
+The resulting image loaded is a NumPy array of three dimensions. The array typically has dimensions M×N×3, where M×N is the dimensions of the image. The third dimensions are referred to as color channels (typically red, green, and blue).
+The color channels can be extracted by Numpy array slicing.
+In this exercise, you will load & display an image of an astronaut (by NASA (Public domain), via Wikimedia Commons). You will also examine its attributes to understand how color images are represented.
+
+INSTRUCTIONS
+100 XP
+INSTRUCTIONS
+100 XP
+Load the file '480px-Astronaut-EVA.jpg' into an array.
+Print the shape of the img array. How wide and tall do you expect the image to be?
+Prepare img for display using plt.imshow().
+Turn off the axes using plt.axis('off').
 
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  # Load the image into an array: img
+img = plt.imread('480px-Astronaut-EVA.jpg')
+
+# Print the shape of the image
+print(img.shape)
+
+# Display the image
+plt.imshow(img)
+
+# Hide the axes
+plt.axis('off')
+plt.show()
+
+_________________________________________________________________________________________________________________________
+
+  Pseudocolor plot from image data
+Image data comes in many forms and it is not always appropriate to display the available channels in RGB space. In many situations, an image may be processed and analysed in some way before it is visualized in pseudocolor, also known as 'false' color.
+
+In this exercise, you will perform a simple analysis using the image showing an astronaut as viewed from space. Instead of simply displaying the image, you will compute the total intensity across the red, green and blue channels. The result is a single two dimensional array which you will display using plt.imshow() with the 'gray' colormap.
+
+INSTRUCTIONS
+100 XP
+Print the shape of the existing image array.
+Compute the sum of the red, green, and blue channels of img by using the .sum() method with axis=2.
+Print the shape of the intensity array to verify this is the shape you expect.
+Plot intensity with plt.imshow() using a 'gray' colormap.
+Add a colorbar to the figure.
   
   
   

@@ -751,18 +751,174 @@ Contour plots
 			plt.show()
 	
 	We cna see that contour are smooth curved along which values presented by the data are infered to be constant valued 
-	Contour maps comes from topographical maps where the contours are assumed to be 
-  	
+	Contour maps comes from topographical maps where the contours are assumed to be points at the same height above sea level
+	
+	ex: 
+	
+		plt.contour(Z,30)  #Specify number of contours to draw; in this case number = 30
+		plt.show()
+		
+		
+Contour plot using meshgrid:
+	
+	ex: Can also supply meshgrid's X,Y matrices as arguments just as with pcolor
+	
+	plt.contour(X,Y,Z,30)
+	plt.show()
+	
+  
+ Filled contour plots
+ 
+ 	ex: 
+	
+	plt.contourf(X,Y,Z,30)
+	plt.colorbar()
+	plt.show()
+	
+	
+__________________________________________________________________________________________________________________
+
+Contour & filled contour plots
+Although plt.imshow() or plt.pcolor() are often used to visualize a 2-D array in entirety, there are other ways of visualizing such data without displaying all the available sample values. One option is to use the array to compute contours that are visualized instead.
+
+Two types of contour plot supported by Matplotlib are plt.contour() and plt.contourf() where the former displays the contours as lines and the latter displayed filled areas between contours. Both these plotting commands accept a two dimensional array from which the appropriate contours are computed.
+
+In this exercise, you will visualize a 2-D array repeatedly using both plt.contour() and plt.contourf(). You will use plt.subplot() to display several contour plots in a common figure, using the meshgrid X, Y as the axes. For example, plt.contour(X, Y, Z) generates a default contour map of the array Z.
+
+Using the meshgrid X, Y as axes:
+Generate a default contour plot of the array Z in the upper left subplot.
+Generate a contour plot of the array Z in the upper right subplot with 20 contours.
+Generate a default filled contour plot of the array Z in the lower left subplot.
+Generate a default filled contour plot of the array Z in the lower right subplot with 20 contours.
+Improve the spacing between the subplots with plt.tight_layout() and display the figure.
+
+# Generate a default contour map of the array Z
+plt.subplot(2,2,1)
+plt.contour(X,Y,Z)
+plt.show()
+
+# Generate a contour map with 20 contours
+plt.subplot(2,2,2)
+plt.contour(X,Y,Z,20)
+plt.show()
+
+# Generate a default filled contour map of the array Z
+plt.subplot(2,2,3)
+plt.contourf(X,Y,Z)
+plt.show()
+
+# Generate a default filled contour map with 20 contours
+plt.subplot(2,2,4)
+plt.contourf(X,Y,Z,20)
+plt.show()
+
+# Improve the spacing between subplots
+plt.tight_layout()
+
+# Display the figure
+plt.show()
+_____________________________________________________________________________________________________________________________
+
+
+
+Modifying colormaps
+When displaying a 2-D array with plt.imshow() or plt.pcolor(), the values of the array are mapped to a corresponding color. The set of colors used is determined by a colormap which smoothly maps values to colors, making it easy to understand the structure of the data at a glance.
+
+It is often useful to change the colormap from the default 'jet' colormap used by matplotlib. A good colormap is visually pleasing and conveys the structure of the data faithfully and in a way that makes sense for the application.
+
+Some matplotlib colormaps have unique names such as 'jet', 'coolwarm', 'magma' and 'viridis'.
+Others have a naming scheme based on overall color such as 'Greens', 'Blues', 'Reds', and 'Purples'.
+Another four colormaps are based on the seasons, namely 'summer', 'autumn', 'winter' and 'spring'.
+You can insert the option cmap=<name> into most matplotlib functions to change the color map of the resulting plot.
+In this exercise, you will explore four different colormaps together using plt.subplot(). You will use a pregenerated array Z and a meshgrid X, Y to generate the same filled contour plot with four different color maps. Be sure to also add a color bar to each filled contour plot with plt.colorbar().
+
+INSTRUCTIONS
+100 XP
+Modify the call to plt.contourf() so the filled contours in the top left subplot use the 'viridis' colormap.
+Modify the call to plt.contourf() so the filled contours in the top right subplot use the 'gray' colormap.
+Modify the call to plt.contourf() so the filled contours in the bottom left subplot use the 'autumn' colormap.
+Modify the call to plt.contourf() so the filled contours in the bottom right subplot use the 'winter' colormap.
+
+
+  
+
+# Create a filled contour plot with a color map of 'viridis'
+plt.subplot(2,2,1)
+plt.contourf(X,Y,Z,20, cmap='viridis')
+plt.colorbar()
+plt.title('Viridis')
+
+# Create a filled contour plot with a color map of 'gray'
+plt.subplot(2,2,2)
+plt.contourf(X,Y,Z,20, cmap='gray')
+plt.colorbar()
+plt.title('Gray')
+
+# Create a filled contour plot with a color map of 'autumn'
+plt.subplot(2,2,3)
+plt.contourf(X,Y,Z,20, cmap='autumn')
+plt.colorbar()
+plt.title('Autumn')
+
+# Create a filled contour plot with a color map of 'winter'
+plt.subplot(2,2,4)
+plt.contourf(X,Y,Z,20, cmap='winter')
+plt.colorbar()
+plt.title('Winter')
+
+# Improve the spacing between subplots and display them
+plt.tight_layout()
+plt.show()
+
+_______________________________________________________________________________________________________________________
+
+
+ Visualizing Bivariate Distributions
+ 
+ Distirbutions of 2D Points:
+ 	- 2D points given as two 1D arrays x & y
+	- Goal: generate a 2D histogram from x & Y
   
   
+  Histograms in 1D
+	-  GIven a collections of realizatuons of a single random variable:
+		- Choose bins (intervals)
+		- Count realizations w/in bins & plots
+		
+		ex:
+			counts, bins, patches = plt.hist(x, bins=25)
+			plt.show()
   
   
+  Bins in 2D:
   
-  
-  
-  
-  
-  
+  	-Different shapes available for binning points
+	-Common choices:
+		-rectangles
+		-histograms
+		
+		
+hist2d(): Rectangular binning
+
+	-ex:
+		
+		plt.hist2d(x,y, bins=(10,20)) #x & y are 1D arrays of the same length
+		plt.colorbar()
+		plt.xlabel('weight ($\mathrm{kg}$)')
+		plt.ylabel('acceleration ($\mathrm{ms}^{-2}$}')
+		plt.show()
+	
+hexbin(): Heagonal binning 
+
+	-ex: 
+		
+		plt.hexbin(x,y,gridsize=(15,10))
+		plt.colorbar()
+		plt.xlabel('weight ($\mathrm{kg}$')
+		plt.ylabel('acceleration ($\mathrm{ms}^{-2}$}')
+		plt.show()
+		
+	
   
   
   

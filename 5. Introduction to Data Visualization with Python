@@ -710,11 +710,49 @@ Colorbar
 			###Will display a color map - associates numerical values with colors in some continuous way
 			###Just like gray scale maps the specturm from 
 			
+		#Can choose a number of different options
+		Ex:
+		
+		plt.pcolor(Z, cmap='gray')    ### Choosing this option forces a gray scale image
+		plt.colorbar()
+		plt.show()
+			
+		Ex:
+		
+  		plt.pcolor(Z, cmap='autumn')    ### Results in colors from orange to yellow
+		plt.colorbar()
+		plt.show()
+		
   
+  Axis Tight
+  #To fix the problem of empty space around the pseudo colored chart
   
-  
-  
-  
+  	plt.pcolor(Z)
+	plt.colorbar()
+	plt.axis('tight')   # Use this to get rid of empty space around pcolor
+	plt.show()
+	
+	
+Plot Using Meshgrid
+	-We can fix dead space and axis numbering by calling
+	
+	plt.pcolor(X,Y,Z) # X, Y are 2D meshgrids
+	plt.colorbar() 
+	plt.show()
+	
+	The resulting figures has axis ticks determined by the X,Y and corresponding to the X & Y coordinates
+	
+Contour plots	
+	Pseudocolor plots can be pixelated, which may be appropriate for data that is inherently blocky or discontinuous
+	But we can use the function contour to make contour plots when the data varies continuously
+	
+	Ex: 
+			plt.contour(Z)
+			plt.show()
+	
+	We cna see that contour are smooth curved along which values presented by the data are infered to be constant valued 
+	Contour maps comes from topographical maps where the contours are assumed to be 
+  	
   
   
   

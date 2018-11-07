@@ -1453,13 +1453,33 @@ Using swarmplot()
   
 Changing Orientation  
   
+  	sns.swarmplot(x='tip', y='day', data=tips, hue='sex', orient='h')
+	plt.xlabel('tip ($)')
+	plt.show()
+  
+  
+ With a lot of data, boxplots and violen plots are better
+ 
+ 	-Boxplot:
+ 	plt.subplot(1,2,1)
+ 	sns.swarmplot(x='day', y='tip', data=tip)
+	plt.ylabel('tip ($))
+	plt.subplot(1,2,2)
+ 	sns.violinplot(x='day', y='tip', data=tip)
+	plt.ylabel('tip ($))
+	plt.tigh_layout()
+	plt.show()
   
   
   
+  Combining Plots
   
-  
-  
-  
+  	 	sns.violinplot(x='day', y='tip', data=tip, inner=None, color='lightgray')
+		sns.stripplot(x='day', y='tip', data=tip, size=4, jitter=True)
+		plt.ylabel('tip ($)')
+		plt.show()
+ 
+ 
   
   
   

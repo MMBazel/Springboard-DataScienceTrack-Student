@@ -1104,7 +1104,225 @@ Plot intensity with plt.imshow() using a 'gray' colormap.
 Add a colorbar to the figure.
   
   
-  
+# Load the image into an array: img
+img = plt.imread('480px-Astronaut-EVA.jpg')
+
+# Print the shape of the image
+print(img.shape)
+
+# Compute the sum of the red, green and blue channels: intensity
+intensity = img.sum(axis=2)
+
+# Print the shape of the intensity
+print(intensity.shape)
+
+# Display the intensity with a colormap of 'gray'
+plt.imshow(intensity, cmap='gray')
+
+# Add a colorbar
+plt.colorbar()
+
+# Hide the axes and show the figure
+plt.axis('off')
+plt.show()
+
+______________________________________________________________________________________________________________________
+
+Extent and aspect
+When using plt.imshow() to display an array, the default behavior is to keep pixels square so that the height to width ratio of the output matches the ratio determined by the shape of the array. In addition, by default, the x- and y-axes are labeled by the number of samples in each direction.
+
+The ratio of the displayed width to height is known as the image aspect and the range used to label the x- and y-axes is known as the image extent. The default aspect value of 'auto' keeps the pixels square and the extents are automatically computed from the shape of the array if not specified otherwise.
+
+In this exercise, you will investigate how to set these options explicitly by plotting the same image in a 2 by 2 grid of subplots with distinct aspect and extent options.
+
+INSTRUCTIONS
+100 XP
+INSTRUCTIONS
+100 XP
+Display img in the top left subplot with horizontal extent from -1 to 1, vertical extent from -1 to 1, and aspect ratio 0.5.
+Display img in the top right subplot with horizontal extent from -1 to 1, vertical extent from -1 to 1, and aspect ratio 1.
+Display img in the bottom left subplot with horizontal extent from -1 to 1, vertical extent from -1 to 1, and aspect ratio 2.
+Display img in the bottom right subplot with horizontal extent from -2 to 2, vertical extent from -1 to 1, and aspect ratio 2.
+
+
+# Load the image into an array: img
+img = plt.imread('480px-Astronaut-EVA.jpg')
+
+# Specify the extent and aspect ratio of the top left subplot
+plt.subplot(2,2,1)
+plt.title('extent=(-1,1,-1,1),\naspect=0.5') 
+plt.xticks([-1,0,1])
+plt.yticks([-1,0,1])
+plt.imshow(img, extent=(-1,1,-1,1), aspect=0.5)
+
+# Specify the extent and aspect ratio of the top right subplot
+plt.subplot(2,2,2)
+plt.title('extent=(-1,1,-1,1),\naspect=1')
+plt.xticks([-1,0,1])
+plt.yticks([-1,0,1])
+plt.imshow(img, extent=(-1,1,-1,1), aspect=1)
+
+# Specify the extent and aspect ratio of the bottom left subplot
+plt.subplot(2,2,3)
+plt.title('extent=(-1,1,-1,1),\naspect=2')
+plt.xticks([-1,0,1])
+plt.yticks([-1,0,1])
+plt.imshow(img, extent=(-1,1,-1,1), aspect=2)
+
+# Specify the extent and aspect ratio of the bottom right subplot
+plt.subplot(2,2,4)
+plt.title('extent=(-2,2,-1,1),\naspect=2')
+plt.xticks([-2,-1,0,1,2])
+plt.yticks([-1,0,1])
+plt.imshow(img, extent=(-2,2,-1,1), aspect=2)
+
+# Improve spacing and display the figure
+plt.tight_layout()
+plt.show()
+
+_________________________________________________________________________________________________________________________________
+
+Rescaling pixel intensities
+Sometimes, low contrast images can be improved by rescaling their intensities. For instance, this image of Hawkes Bay, New Zealand (originally by Phillip Capper, modified by User:Konstable, via Wikimedia Commons, CC BY 2.0) has no pixel values near 0 or near 255 (the limits of valid intensities).
+
+For this exercise, you will do a simple rescaling (remember, an image is NumPy array) to translate and stretch the pixel intensities so that the intensities of the new image fill the range from 0 to 255.
+
+INSTRUCTIONS
+100 XP
+Use the methods .min() and .max() to save the minimum and maximum values from the array image as pmin and pmax respectively.
+Create a new 2-D array rescaled_image using 256*(image-pmin)/(pmax-pmin)
+Plot the original array image in the top subplot of a 2×1 grid.
+Plot the new array rescaled_image in the bottom subplot of a 2×1 grid.
+
+
+# Load the image into an array: image
+image = plt.imread('640px-Unequalized_Hawkes_Bay_NZ.jpg')
+
+# Extract minimum and maximum values from the image: pmin, pmax
+pmin, pmax = image.min(), image.max()
+print("The smallest & largest pixel intensities are %d & %d." % (pmin, pmax))
+
+# Rescale the pixels: rescaled_image
+rescaled_image = 256*(image-pmin)/(pmax-pmin)
+print("The rescaled smallest & largest pixel intensities are %.1f & %.1f." % 
+      (rescaled_image.min(), rescaled_image.max()))
+
+# Display the original image in the top subplot
+plt.subplot(2,1,1)
+plt.title('original image')
+plt.axis('off')
+plt.imshow(image)
+
+# Display the rescaled image in the bottom subplot
+plt.subplot(2,1,2)
+plt.title('rescaled image')
+plt.axis('off')
+plt.imshow(rescaled_image)
+
+plt.show()
+
+______________________________________________________________________________________________________________________________
+Statistical plots with Seaborn
+7%
+This is a high-level tour of the Seaborn plotting library for producing statistical graphics in Python. The tour covers Seaborn tools for computing and visualizing linear regressions as well as tools for visualizing univariate distributions (e.g., strip, swarm, and violin plots) and multivariate distributions (e.g., joint plots, pair plots, and heatmaps). This also includes a discussion of grouping categories in plots.
+______________________________________________________________________________________________________________________________
+Visualizing Regressions
+
+We'll now extend our toolbox with Seaborn
+
+https://seaborn.pydata.org/
+
+Seaborn works best with Pandas DataFrames
+
+	Recap: Pandas DataFrame
+		-Labelled tabular data structure
+		-Labels on rows: index
+		-Labels on columns: columns
+		-Columns are Pandas Series
+		
+Using lmplot()
+
+	ex: 
+		import pandas as pd
+		import matplotlib.pyplot as plt
+		import seaborn as sns
+		
+		timps = sns.load_dataset('tips)
+		sns.lmplot(x= 'total_bill',y='tip', data=tips) ###Line to use seaborn to create linear regressions plot
+		plt.show()
+		
+Data has factors
+Grouping Factors (on the same plot)
+
+	ex:
+		sns.lmplot(x= 'total_bill',y='tip', data=tips, hue = 'sex', palette='Set1') ###Line to use seaborn to create linear regressions plot
+		plt.show()
+		
+		
+Using col=..
+
+	ex:
+	
+		sns.lmplot(x= 'total_bill',y='tip', data=tips, col='sex') ###Line to use seaborn to create linear regressions plot
+		plt.show()
+		
+		
+		
+Using residplot()
+
+	ex: 
+		sns.residplot(x='age',y='fare',data=df,color='indianred')
+		plt.show()
+		
+		
+	-Similar arguments as lmplot() but more flexible
+		-x, y can be arrays or strings but more flexible
+		-data is DataFrame (optional)
+		
+	-Optional arguments (e.g.color) as in matplotlib
+	
+		
+_____________________________________________________________________________________________________________
+		
+		
+Simple linear regressions
+As you have seen, seaborn provides a convenient interface to generate complex and great-looking statistical plots. One of the simplest things you can do using seaborn is to fit and visualize a simple linear regression between two variables using sns.lmplot().
+
+One difference between seaborn and regular matplotlib plotting is that you can pass pandas DataFrames directly to the plot and refer to each column by name. For example, if you were to plot the column 'price' vs the column 'area' from a DataFrame df, you could call sns.lmplot(x='area', y='price', data=df).
+
+In this exercise, you will once again use the DataFrame auto containing the auto-mpg dataset. You will plot a linear regression illustrating the relationship between automobile weight and horse power.
+
+INSTRUCTIONS
+100 XP
+Import matplotlib.pyplot and seaborn using the standard names plt and sns respectively.
+Plot a linear regression between the 'weight' column (on the x-axis) and the 'hp' column (on the y-axis) from the DataFrame auto.
+Display the plot as usual with plt.show(). This has been done for you, so hit 'Submit Answer' to view the plot.
+
+# Import plotting modules
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Plot a linear regression between 'weight' and 'hp'
+sns.lmplot(x='weight', y='hp', data=auto)
+
+# Display the plot
+plt.show()
+
+___________________________________________________________________________________________________________
+Plotting residuals of a regression
+Often, you don't just want to see the regression itself but also see the residuals to get a better idea how well the regression captured the data. Seaborn provides sns.residplot() for that purpose, visualizing how far datapoints diverge from the regression line.
+
+In this exercise, you will visualize the residuals of a regression between the 'hp' column (horse power) and the 'mpg' column (miles per gallon) of the auto DataFrame used previously.
+
+INSTRUCTIONS
+100 XP
+Import matplotlib.pyplot and seaborn using the standard names plt and sns respectively.
+Generate a green residual plot of the regression between 'hp' (on the x-axis) and 'mpg' (on the y-axis). You will need to specify the additional data and color parameters.
+Display the plot as usual using plt.show(). This has been done for you, so hit 'Submit Answer' to view the plot.
+
+
+
+
   
   
   

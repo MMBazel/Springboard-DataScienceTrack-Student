@@ -1480,14 +1480,274 @@ Changing Orientation
 		plt.show()
  
  
+  __________________________________________________________________________________________________________________________
+
+  Constructing strip plots
+Regressions are useful to understand relationships between two continuous variables. Often we want to explore how the distribution of a single continuous variable is affected by a second categorical variable. Seaborn provides a variety of plot types to perform these types of comparisons between univariate distributions.
+
+The strip plot is one way of visualizing this kind of data. It plots the distribution of variables for each category as individual datapoints. For vertical strip plots (the default), distributions of continuous values are laid out parallel to the y-axis and the distinct categories are spaced out along the x-axis.
+
+For example, sns.stripplot(x='type', y='length', data=df) produces a sequence of vertical strip plots of length distributions grouped by type (assuming length is a continuous column and type is a categorical column of the DataFrame df).
+Overlapping points can be difficult to distinguish in strip plots. The argument jitter=True helps spread out overlapping points.
+Other matplotlib arguments can be passed to sns.stripplot(), e.g., marker, color, size, etc.
+INSTRUCTIONS
+100 XP
+In the first row of subplots, make a strip plot showing distribution of 'hp' values grouped horizontally by 'cyl'.
+In the second row of subplots, make a second strip plot with improved readability. In particular, you'll call sns.stripplot() again, this time adding jitter=True and decreasing the point size to 3 using the size parameter.
+
+
+
+ # Make a strip plot of 'hp' grouped by 'cyl'
+plt.subplot(2,1,1)
+sns.stripplot(x='cyl', y='hp', data=auto)
+
+# Make the strip plot again using jitter and a smaller point size
+plt.subplot(2,1,2)
+sns.stripplot(x='cyl', y='hp', data=auto, jitter=True, size=3)
+
+# Display the plot
+plt.show()
+
+________________________________________________________________________________________________________________________
+
+Constructing swarm plots
+As you have seen, a strip plot can be visually crowded even with jitter applied and smaller point sizes. An alternative is provided by the swarm plot (sns.swarmplot()), which is very similar but spreads out the points to avoid overlap and provides a better visual overview of the data.
+
+The syntax for sns.swarmplot() is similar to that of sns.stripplot(), e.g., sns.swarmplot(x='type', y='length', data=df).
+The orientation for the continuous variable in the strip/swarm plot can be inferred from the choice of the columns x and y from the DataFrame data. The orientation can be set explicitly using orient='h' (horizontal) or orient='v' (vertical).
+Another grouping can be added in using the hue keyword. For instance, using sns.swarmplot(x='type', y='length', data=df, hue='build year') makes a swarm plot from the DataFrame df with the 'length' column values spread out vertically, horizontally grouped by the column 'type' and each point colored by the categorical column 'build year'.
+In this exercise, you'll use the auto DataFrame again to illustrate the use of sns.swarmplot() with grouping by hue and with explicit specification of the orientation using the keyword orient.
+
+INSTRUCTIONS
+100 XP
+In the first row of subplots, make a swarm plot showing distribution of 'hp' values grouped horizontally by 'cyl'.
+In the second row of subplots, make a second swarm plot with horizontal orientation (i.e., grouped vertically by 'cyl' with 'hp' value spread out horizontally) with points colored by 'origin'. You need to specify the orient parameter to explicitly set the horizontal orientation.
+
+
+# Generate a swarm plot of 'hp' grouped horizontally by 'cyl'  
+plt.subplot(2,1,1)
+sns.swarmplot(x='cyl',y='hp',data=auto)
+
+# Generate a swarm plot of 'hp' grouped vertically by 'cyl' with a hue of 'origin'
+plt.subplot(2,1,2)
+sns.swarmplot(x='hp',y='cyl',data=auto,hue='origin',orient='h')
+
+# Display the plot
+plt.show()
+
+___________________________________________________________________________________________________________________
+
+Constructing violin plots
+Both strip and swarm plots visualize all the datapoints. For large datasets, this can result in significant overplotting. Therefore, it is often useful to use plot types which reduce a dataset to more descriptive statistics and provide a good summary of the data. Box and whisker plots are a classic way of summarizing univariate distributions but seaborn provides a more sophisticated extension of the standard box plot, called a violin plot.
+
+Here, you will produce violin plots of the distribution of horse power ('hp') by the number of cylinders ('cyl'). Additionally, you will combine two different plot types by overlaying a strip plot on the violin plot.
+
+As before, the DataFrame has been pre-loaded for you as auto.
+
+INSTRUCTIONS
+100 XP
+In the first row of subplots, make a violin plot showing the distribution of 'hp' grouped by 'cyl'.
+In the second row of subplots, make a second violin plot without the inner annotations (by specifying inner=None) and with the color 'lightgray'.
+In the second row of subplots, overlay a strip plot with jitter and a point size of 1.5.
+
+
+
+# Generate a violin plot of 'hp' grouped horizontally by 'cyl'
+plt.subplot(2,1,1)
+sns.violinplot(x='cyl', y='hp', data=auto)
+
+# Generate the same violin plot again with a color of 'lightgray' and without inner annotations
+plt.subplot(2,1,2)
+sns.violinplot(x='cyl', y='hp', data=auto, color='lightgray', inner=None)
+
+# Overlay a strip plot on the violin plot
+sns.stripplot(x='cyl',y='hp',data=auto,jitter=True,size=1.5)
+
+# Display the plot
+plt.show()
+
+___________________________________________________________________________________________________________________________
+
+Visualizing Multivariate Distributions
+
+	-Bivariate ==> 2 Variables
+	-Multivariate ==> Multiple Variables
+	
+	-Visualizing relationships in multivariate data
+		-Joint plots
+		-Pair plots
+		-Heat maps
+		
+		
+	Joint Plots
+		Using jointplot()
+		
+			sns.jointplot(x='total_bill', y='tip', data=tips)
+			plt.show()
+			
+			
+	Joint plot KDE 
+		-Used to smooth a scatter plot and show bounding curves
+			-Show smoot contour plots and surfaces instead
+		-To produce joint plot with KDE's just need to set kde=True
+		
+		
+			sns.jointplot(x='total_bill',y='tip',data=tips,kind='kde')  ###Other options for kind include using a scatter plot, residual plot, etc.
+			plt.show()
+			
+		
+	Pair Plot
+		- plot every combineation of variables
+			-can be created using pairplot()
+			
+				sns.pairplot(tips)    ###Can just input the data set
+				plt.show()     
+
+	Using pairplot() with hue
+			
+			sns.pairplot(tips, hue='sex')
+			plt.show()
+
+
+
+
+
+	Covariance heat map 
+	
+			### For the code, assume we've created a Pandas dataframe called "covariance" 
+			
+			sns.heatmap(covariance)
+			plt.title('Covariance Plot')
+			plt.show()
+
+
+
+
+
+
+
+________________________________________________________________________________________________________________________
+ Plotting joint distributions (1)
+There are numerous strategies to visualize how pairs of continuous random variables vary jointly. Regression and residual plots are one strategy. Another is to visualize a bivariate distribution.
+
+Seaborn's sns.jointplot() provides means of visualizing bivariate distributions. The basic calling syntax is similar to that of sns.lmplot(). By default, calling sns.jointplot(x, y, data) renders a few things:
+
+A scatter plot using the specified columns x and y from the DataFrame data.
+A (univariate) histogram along the top of the scatter plot showing distribution of the column x.
+A (univariate) histogram along the right of the scatter plot showing distribution of the column y.
+INSTRUCTIONS
+100 XP
+INSTRUCTIONS
+100 XP
+Use sns.jointplot() to visualize the joint variation of the columns 'hp' (on the x-axis) and 'mpg' (on the y-axis) from the DataFrame auto.
+
+# Generate a joint plot of 'hp' and 'mpg'
+sns.jointplot(x='hp',y='mpg',data=auto)
+
+# Display the plot
+plt.show()
+
+_______________________________________________________________________________________________________________________
+
+Plotting joint distributions (2)
+The seaborn function sns.jointplot() has a parameter kind to specify how to visualize the joint variation of two continuous random variables (i.e., two columns of a DataFrame)
+
+kind='scatter' uses a scatter plot of the data points
+kind='reg' uses a regression plot (default order 1)
+kind='resid' uses a residual plot
+kind='kde' uses a kernel density estimate of the joint distribution
+kind='hex' uses a hexbin plot of the joint distribution
+For this exercise, you will again use sns.jointplot() to display the joint distribution of the hp and mpg columns of the auto DataFrame. This time, you will use kind='hex' to generate a hexbin plot of the joint distribution.
+
+INSTRUCTIONS
+100 XP
+Create a hexbin plot of the joint distribution between 'hp' and 'mpg'.
+
+
+# Generate a joint plot of 'hp' and 'mpg' using a hexbin plot
+sns.jointplot(x='hp',y='mpg',data=auto,kind='hex')
+
+# Display the plot
+plt.show()
+
+
+
+_________________________________________________________________________________________________________________________
+Plotting distributions pairwise (1)
+Data sets often contain more than two continuous variables. The function sns.jointplot() is restricted to representing joint variation between only two quantities (i.e., two columns of a DataFrame). Visualizing multivariate relationships is trickier.
+
+The function sns.pairplot() constructs a grid of all joint plots pairwise from all pairs of (non-categorical) columns in a DataFrame. The syntax is very simple: sns.pairplot(df), where df is a DataFrame. The non-categorical columns are identified and the corresponding joint plots are plotted in a square grid of subplots. The diagonal of the subplot grid shows the univariate histograms of the individual columns.
+
+In this exercise, you will use a DataFrame auto comprising only three columns from the original auto-mpg data set.
+
+INSTRUCTIONS
+100 XP
+Print the first five rows of the DataFrame auto. This is done for you.
+Plot the joint distributions between columns from the entire DataFrame auto.
+
+
+# Print the first 5 rows of the DataFrame
+print(auto.head())
+
+# Plot the pairwise joint distributions from the DataFrame 
+sns.pairplot(auto)
+
+# Display the plot
+plt.show()
+
+
+________________________________________________________________________________________________________________________
+
+Plotting distributions pairwise (2)
+In this exercise, you will generate pairwise joint distributions again. This time, you will make two particular additions:
+
+You will display regressions as well as scatter plots in the off-diagonal subplots. You will do this with the argument kind='reg' (where 'reg' means 'regression'). Another option for kind is 'scatter' (the default) that plots scatter plots in the off-diagonal subplots.
+You will also visualize the joint distributions separated by continent of origin. You will do this with the keyword argument hue specifying the 'origin'.
+INSTRUCTIONS
+100 XP
+Plot the pairwise joint distributions separated by continent of origin and display the regressions.
+
+
+
+# Print the first 5 rows of the DataFrame
+print(auto.head())
+
+# Plot the pairwise joint distributions grouped by 'origin' along with regression lines
+sns.pairplot(auto,kind='reg',hue='origin')
+
+# Display the plot
+plt.show()
+
+_________________________________________________________________________________________________________________________
+
+Visualizing correlations with a heatmap
+Plotting relationships between many variables using a pair plot can quickly get visually overwhelming. It is therefore often useful to compute covariances between the variables instead. The covariance matrix can then easily be visualized as a heatmap. A heatmap is effectively a pseudocolor plot with labelled rows and columns (i.e., a pseudocolor plot based on a pandas DataFrame rather than a matrix). The DataFrame does not have to be square or symmetric (but, in the context of a covariance matrix, it is both).
+
+In this exercise, you will view the covariance matrix between the continuous variables in the auto-mpg dataset. You do not have to know here how the covariance matrix is computed; the important point is that its diagonal entries are all 1s, and the off-diagonal entries are between -1 and +1 (quantifying the degree to which variable pairs vary jointly). It is also, then, a symmetric matrix.
+
+INSTRUCTIONS
+100 XP
+INSTRUCTIONS
+100 XP
+Print the covariance matrix cov_matrix to examine its contents and labels. This has been done for you.
+Plot the covariance matrix cov_matrix using sns.heatmap().
+
+
   
-  
-  
-  
-  
-  
-  
-  
+ # Print the covariance matrix
+print(cov_matrix)
+
+# Visualize the covariance matrix using a heatmap
+sns.heatmap(cov_matrix)
+
+# Display the heatmap
+plt.show()
+
+_________________________________________________________________________________________________________________________
+
+Visualizing Time Series
+
+
   
   
   

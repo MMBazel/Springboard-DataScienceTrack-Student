@@ -1786,6 +1786,7 @@ Plotting Time Series Slices
 Selecting & formatting dates
 
 	jan = temperature['2010-01']
+	dates.index[::96] #pick every 4th day
 	
 	
   

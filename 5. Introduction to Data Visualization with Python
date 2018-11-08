@@ -1748,8 +1748,45 @@ ________________________________________________________________________________
 Visualizing Time Series
 
 
+Date & Time Series
+	plt.plot(weather)
+	plt.show()
+	
+Time Series
+	-Pandas time series: datetime as index
+	-Datetime: represents periods or time-stamps
+	-Datetime index: specialized slicing 
+		e.g. weather['2010-07-04']
+		e.g. weather['2010-03':'2010-04']
+		e.g. weather['2010-05']
+		
+		
+		
+Slicing time series
+	temperature = weather['Temperature']
+	march_apr = temperature['2010-03':'2010-04']       #####data of March & April 2010 only
+	march_apr.shape
+	march_apr.iloc[-4] 				   #####extract last 4 entries from time series
+	
 
-  
+		
+		
+Plotting Time Series Slices
+
+	plt.plot(temperature['2010-01'], color='r', label='Temperature')
+	dew point = weather['DewPoint']
+	plt.plot(dewpoint['2010-01'], color='b', label='Dewpoint')
+	plt.legend(loc='upper right')
+	plt.xticks(rotation=60)
+	plt.show()
+	
+	
+	
+
+Selecting & formatting dates
+
+	jan = temperature['2010-01']
+	
   
   
   

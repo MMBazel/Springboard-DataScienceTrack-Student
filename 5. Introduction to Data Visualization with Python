@@ -2103,8 +2103,37 @@ Compare Original & rescaled histograms
 		plt.show()
 		
 		
+Image Histogram & CDF
+		CDF Needed to make image sharper
 		
 		
+		plt.hist(pixels, bins=256, range=(0,256), normed=True, color='blue', alpha=0.3)
+		plt.twinx()
+		orig_cdf, bins, patches = plt.hist(pixels, cumulative=True, bins=256, range=(0,256), normed=True, color='red', alpha=0.3)
+		plt.title('Image histogram and CDF')
+		plt.xlim((0,255))
+		plt.show()
+		
+		
+Equalizing Intensity Values
+
+		new_pixels = np.interp(pixels, bins[:-1], orig_cdf*255)
+		new = new_pixels.reshape(orig.shape)
+		plt.imshow(new)
+		plt.axis('off')
+		plt.title('Equalized Image')
+		plt.show()
+		
+		
+		
+Equalized Histogram & CDF
+
+		plt.hist(new_pixels, bins=256, range=(0,256), normed=True, color='blue', alpha=0.3)
+		plt.twinx()
+		orig_cdf, bins, patches = plt.hist(new_pixels, cumulative=True, bins=256, range=(0,256), normed=True, color='red', alpha=0.3)
+		plt.title('Image histogram and CDF')
+		plt.xlim((0,255))
+		plt.show()
 		
 		
 

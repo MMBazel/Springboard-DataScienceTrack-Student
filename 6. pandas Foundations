@@ -5,6 +5,49 @@ Pandas DataFrames are the most widely used in-memory representation of complex d
 Data ingestion & inspection
 
 Review of pandas Data Frames
+    -pandas is for data analysis
+    -power tool of pandas is DataFrame - tabular data sgtructure with labeled rows & columns
+      -rows are labeled by Index- special data structure
+        -indexes are tailored lists of labels that permit fast look-up & powerful relational operations
+        
+      
+    ex: 
+          import pandas as pd  ###AAPL is an example Pandas DataFrame 
+          type(AAPL)  ### Gives # of rows and # of columns as tuple
+          AAPL.shape
+          AAPL.columns ###List the name of the columns
+          
+Pandas DataFRames can be sliced like NumPy arrays or Python lists using colons to specify the start, end and stride of a slice
+          We can slice using the .iloc accessor to express the slice positionally
+
+        ex: 
+        
+            AAPL.iloc[:5,:]
+            AAPL.iloc[-5:,:]   ###Next we can slice from the 5th last row to the end of the DataFrame using a negative index
+            
+            ### Also possible to slice using labels with the .loc accessor
+            
+ head()
+        Another way to see just the top rows of a DataFrame: the head method
+        Specifying head(5) returns the first 5 rows
+        
+            AAPL.head(5)
+        
+tail()   
+
+        AAPL.tail()   - default is 5
+        
+info()
+
+        AAPL.info() - returns the metadata
+        
+        
+ Broadcasting
+ 
+        import numpy as np
+        AAPL.iloc[::3,-1] = mp.nan     ###  <=== Assigning scalar value to column slice broadcasts value to each row
+        AAPL.head(6)   
+      
 
 ============================================================================================================================
 

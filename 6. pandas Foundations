@@ -45,10 +45,312 @@ info()
  Broadcasting
  
         import numpy as np
-        AAPL.iloc[::3,-1] = mp.nan     ###  <=== Assigning scalar value to column slice broadcasts value to each row
+        AAPL.iloc[::3,-1] = mp.nan     ###  <=== Assigning scalar value to column slice broadcasts value to each row (like NaN in this case)
         AAPL.head(6)   
       
+                ### Slice consists of every 3rd row starting from zero in the last column
+                
+                
+Series
+    Columns of a DataFrame are themselves a specialized Pandas structure called a Series
+    Extracting a single column from Pandas returns a Series
+    Notice the Series extracted has its own head() method and inherits its name attribute from the DataFrame column
+    
+            low = AAPL['Low']
+            type(low)
+            low.head()
+            lows = low.values
+            type(lows)
+                
+    To extract the numerical entries from the Series, use the values attribute
+    The data in the Series actually form a Numpy Array which is what the values attribute yields
+    A pandas Series, then, is a 1D labelled NumPy array and a DataFrame is a 2D labelled array whose columns are Series
+    ____________________________________________________________________________________________________________________
+    
+    
+DataFrame data types
+Pandas is aware of the data types in the columns of your DataFrame. It is also aware of null and NaN ('Not-a-Number') types which often indicate missing data. In this exercise, we have imported pandas as pd and read in the world population data which contains some NaN values, a value often used as a place-holder for missing or otherwise invalid data entries. Your job is to use df.info() to determine information about the total count of non-null entries and infer the total count of 'null' entries, which likely indicates missing data. Select the best description of this data set from the following:
 
+_____________________________________________________________________________________________________--
+
+NumPy and pandas working together
+Pandas depends upon and interoperates with NumPy, the Python library for fast numeric array computations. For example, you can use the DataFrame attribute .values to represent a DataFrame df as a NumPy array. You can also pass pandas data structures to NumPy methods. In this exercise, we have imported pandas as pd and loaded world population data every 10 years since 1960 into the DataFrame df. This dataset was derived from the one used in the previous exercise.
+
+Your job is to extract the values and store them in an array using the attribute .values. You'll then use those values as input into the NumPy np.log10() method to compute the base 10 logarithm of the population values. Finally, you will pass the entire pandas DataFrame into the same NumPy np.log10() method and compare the results.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import numpy using the standard alias np.
+Assign the numerical values in the DataFrame df to an array np_vals using the attribute values.
+Pass np_vals into the NumPy method log10() and store the results in np_vals_log10.
+Pass the entire df DataFrame into the NumPy method log10() and store the results in df_log10.
+Inspect the output of the print() code to see the type() of the variables that you created.
+
+# Import numpy
+import numpy as np
+
+# Create array of DataFrame values: np_vals
+np_vals = df.values
+
+# Create new array of base 10 logarithm values: np_vals_log10
+np_vals_log10 = np.log10(np_vals)
+
+# Create array of new DataFrame by passing df to np.log10(): df_log10
+df_log10 = np.log10(df)
+
+# Print original and new data containers
+[print(x, 'has type', type(eval(x))) for x in ['np_vals', 'np_vals_log10', 'df', 'df_log10']]
+
+__________________________________________________________________________________________________________________
+
+Building DataFrames from Scratch
+
+        -We've seen how to work with DataFrames in memory but how do we get them in memory?
+        
+  DataFrames from CSV files
+        - In prior course, we used read_csv to load a DataFrame from a csv file
+        
+
+        -Example: Here we use a file users.csv to create a DataFrame called users
+                    The file records visitors to a blog for a band and who signed up for the newsletter.
+                    By tracking where visitors come from, this information can help design tours later. 
+                    DataFrames can also be rolled by hand using dictionaries.
+        
+                import pandas as pd
+                users = pd.read_csv('datasets/users.csv', index_col=0)
+                print(users)
+
+DataFrames from dict(1)
+        -DataFrames can also be rolled by hand using dictionaries
+        -Dictionaries (or associative arrays) are a core data structure in Python
+            -Here we construct a dictionary of lists with the same users data
+            Keys of dictionary data are used as column labels
+            Notice with no index specified, the row labels are the integers zero to three by default
+            
+                        import pandas as pd
+                        data = {'weekyday': ['Sun', 'Sun', 'Mon', 'Mon],
+                                'city': ['Austin', 'Dallas', 'Austin', 'Dallas'],
+                                'visitors':[139,237,326,456],
+                                'singups':[7,12,3,5]}
+                                
+                         users = pd.DataFrame(data)       
+        
+
+DataFrames from dict(2)
+    import pandas as pd
+    
+    ### Common for data to come in form of lists
+    cities = ['Austin','Dallas','Austin','Dallas']
+    signups = [7, 12, 3, 5]
+    visitors = [139,237,326,456]
+    weekdays = ['Sun', 'Sun', 'Mon', 'Mon]
+
+    
+    ###Can then define other lists: list_labels  & list cols
+    
+    list_labels = ['city', 'signups', 'visitors', 'weekday']
+    list_cols = [cities, signups, visitors, weekdays]   ###<= Notice this is a list of lists
+    
+    zipped = list(zip(list_labels, list_cols))  ###Using pyton's list and zip functions constructus a list called zipped of tupls (column names and columns) to feed to the dict command. 
+    
+    ### Calling dict(zipped) creates a dict data which is then used with pd.DataFrame to build the DataFrame
+    data = dict(zipped)
+    users = pd.DataFRame(data)
+    
+    
+Broadcasting
+
+        -a convenient technique in NumPy & Pandas
+        -with users in memory, a new colun, can be created on the fly 
+        -Broadcasting saves time in generating long lists, arrays, or columns
+    
+    users['fees'] = 0 ### New columns fees is created and value = 0 is broadcast to entire column
+    
+    
+    
+Broadcasting with a dict
+        -Broadcasting isn;t restricted to numbers
+        -Here we create a dictionary data with column lables height and sex as keys and a list and a single-character string 'M' as values
+        -When the dict data is used to create DataFrame results, the value 'M' is broadcast to the entire column
+        
+        
+        import pandas as pd
+        heights = [59.0, 65.2, 62.9, 65.4, 63.7, 65.7, 64.1]
+        data = {'height':heights, 'sex':'M'}
+        results = pd.DataFrame(data)
+        
+Index and Columns
+
+        Remember we can change the column and index labels using the columns and index attributes of a Pandas DataFrame
+        We can assign lists of strings to the attributes columns and index as long as they are of suitable length (that is, the number of columns and rows respectively)
+        
+        
+                results.columns = ['height (in)', 'sex']
+                results.index = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+                
+                
+  ____________________________________________________________________________________________
+
+Zip lists to build a DataFrame
+In this exercise, you're going to make a pandas DataFrame of the top three countries to win gold medals since 1896 by first building a dictionary. list_keys contains the column names 'Country' and 'Total'. list_values contains the full names of each country and the number of gold medals awarded. The values have been taken from Wikipedia.
+
+Your job is to use these lists to construct a list of tuples, use the list of tuples to construct a dictionary, and then use that dictionary to construct a DataFrame. In doing so, you'll make use of the list(), zip(), dict() and pd.DataFrame() functions. Pandas has already been imported as pd.
+
+Note: The zip() function in Python 3 and above returns a special zip object, which is essentially a generator. To convert this zip object into a list, you'll need to use list(). You can learn more about the zip() function as well as generators in Python Data Science Toolbox (Part 2).
+
+Instructions
+100 XP
+Instructions
+100 XP
+Zip the 2 lists list_keys and list_values together into one list of (key, value) tuples. Be sure to convert the zip object into a list, and store the result in zipped.
+Inspect the contents of zipped using print(). This has been done for you.
+Construct a dictionary using zipped. Store the result as data.
+Construct a DataFrame using the dictionary. Store the result as df.
+
+# Zip the 2 lists together into one list of (key,value) tuples: zipped
+zipped = list(zip(list_keys, list_values))
+
+# Inspect the list using print()
+print(zipped)
+
+# Build a dictionary with the zipped list: data
+data = dict(zipped)
+
+# Build and inspect a DataFrame from the dictionary: df
+df = pd.DataFrame(data)
+print(df)
+
+
+________________________________________________________________________________________________________________________-
+
+Labeling your data
+You can use the DataFrame attribute df.columns to view and assign new string labels to columns in a pandas DataFrame.
+
+In this exercise, we have imported pandas as pd and defined a DataFrame df containing top Billboard hits from the 1980s (from Wikipedia). Each row has the year, artist, song name and the number of weeks at the top. However, this DataFrame has the column labels a, b, c, d. Your job is to use the df.columns attribute to re-assign descriptive column labels.
+
+Instructions
+100 XP
+Create a list of new column labels with 'year', 'artist', 'song', 'chart weeks', and assign it to list_labels.
+Assign your list of labels to df.columns.
+
+# Build a list of labels: list_labels
+list_labels = ['year', 'artist', 'song', 'chart weeks']
+
+# Assign the list of labels to the columns attribute: df.columns
+df.columns = list_labels
+
+____________________________________________________________________________________________________________
+
+Building DataFrames with broadcasting
+You can implicitly use 'broadcasting', a feature of NumPy, when creating pandas DataFrames. In this exercise, you're going to create a DataFrame of cities in Pennsylvania that contains the city name in one column and the state name in the second. We have imported the names of 15 cities as the list cities.
+
+Your job is to construct a DataFrame from the list of cities and the string 'PA'.
+
+Instructions
+100 XP
+Make a string object with the value 'PA' and assign it to state.
+Construct a dictionary with 2 key:value pairs: 'state':state and 'city':cities.
+Construct a pandas DataFrame from the dictionary you created and assign it to df.
+
+# Make a string with the value 'PA': state
+state = 'PA'
+
+# Construct a dictionary: data
+data = {'state':state, 'city':cities}
+
+# Construct a DataFrame from dictionary data: df
+df = pd.DataFrame(data)
+
+# Print the DataFrame
+print(df)
+
+
+_______________________________________________________________________________________________________________
+
+Importing  &  Exporting Data
+
+dataSets from CSV files
+    Read csv functions requires a string describing a filepath as input
+    We read into a DataFrame sunspots
+    Notuce the index of the DataFra,e (the row labales) are of a type Range Index (just integers)
+    
+    
+        import pandas as pd
+        filepath = 'ISSN_D_tot.csv'
+        sunspots = pd.read_csv(filepath)
+        sunspots.info()
+        sunspots.iloc[10:20,:]       #### Using the accessor.iloc to view a slice of the middle of the DataFrame
+    
+
+Example data set: SILSO sunspots data set
+
+    Problems 
+        CSV file has no column headers
+        Missing values
+        As written, dates are awakward for CSV files
+        
+      
+      
+        sunspots = pd.read_csv(filepath, header=None)  ###Using header =None prevents pandas from assuming the first line of the file gives column labels
+        
+        
+Using names keyword     
+        
+        We can explicitly define the column names using the names keyword
+        
+        col_names = ['year', 'month', 'day', 'dec_date', 'sunspots', 'definite']
+        sunspots = pd.read_csv(filepath, header=None, names=col_names)
+        sunspots.iloc[10:20,:]
+ 
+ 
+ Using na_values keyword(1)
+ 
+        sunspots = pd.read_csv(filepath, header=None, names=col_names, na_values='-1')  ## We try na_values equals "-1" but in this case will need " -1" 
+        sunspots.iloc[10:20,:]
+        
+        
+        We can also read the negative one entries in the sunspots with the na_values keyword
+        
+        
+ Using na_values keyword(3) 
+        Note it's possible using distinct patterns for null values & multipl values
+        
+        sunspots = pd.read_csv(filepath, header=None, names = col_names, na_values={'sunspots':['-1']})
+        
+        
+        
+Using  parse_date keyword  
+        The prase_dates keyword in read_csv infers dates intelligently
+        We use a list of lists of column positons (indexed from 0) to inform read_csv which columns hold the dates
+        
+        sunspots = pd.read_csv(filepath, header=None, names=col_names, na_values={'sunspots':['-1]}, parse_dates=[[0,1,2]]) ### This combines three columns (month, day, year)
+        
+        
+        
+Trimming redundant columns
+        Only include meaningful columns 
+        
+        cols = ['sunspots','definite']
+        sunspots = sunspots[cols]
+        sunspots.iloc[10:20,:]
+        
+        
+        
+Writing Files     
+        Share files with others
+        
+            out_csv = 'sunspots'.csv
+            sunspots.to_csv(out_csv)
+            
+            out_tsv = 'sunspots.tsv'
+            sunspots.to_csv(out_tsv, sep='\t')
+            
+            out_xlsx = 'sunspots.xlsx'
+            sunspots.to_excel(out_xlsx)
+            
+            
 ============================================================================================================================
 
 Exploratory data analysis

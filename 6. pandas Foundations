@@ -350,7 +350,144 @@ Writing Files
             out_xlsx = 'sunspots.xlsx'
             sunspots.to_excel(out_xlsx)
             
-            
+_______________________________________________________________________________________________________________________
+
+Reading a flat file
+In previous exercises, we have preloaded the data for you using the pandas function read_csv(). Now, it's your turn! Your job is to read the World Bank population data you saw earlier into a DataFrame using read_csv(). The file is available in the variable data_file.
+
+The next step is to reread the same file, but simultaneously rename the columns using the names keyword input parameter, set equal to a list of new column labels. You will also need to set header=0 to rename the column labels.
+
+Finish up by inspecting the result with df.head() and df.info() in the IPython Shell (changing df to the name of your DataFrame variable).
+
+pandas has already been imported and is available in the workspace as pd.
+
+Instructions
+100 XP
+Use pd.read_csv() with the string data_file to read the CSV file into a DataFrame and assign it to df1.
+Create a list of new column labels - 'year', 'population' - and assign it to the variable new_labels.
+Reread the same file, again using pd.read_csv(), but this time, add the keyword arguments header=0 and names=new_labels. Assign the resulting DataFrame to df2.
+Print both the df1 and df2 DataFrames to see the change in column names. This has already been done for you.
+
+# Read in the file: df1
+df1 = pd.read_csv(data_file)
+
+# Create a list of the new column labels: new_labels
+new_labels = ['year','population']
+
+# Read in the file, specifying the header and names parameters: df2
+df2 = pd.read_csv(data_file, header=0, names=new_labels)
+
+# Print both the DataFrames
+print(df1)
+print(df2)
+_______________________________________________________________________________________________________________
+
+Delimiters, headers, and extensions
+Not all data files are clean and tidy. Pandas provides methods for reading those not-so-perfect data files that you encounter far too often.
+
+In this exercise, you have monthly stock data for four companies downloaded from Yahoo Finance. The data is stored as one row for each company and each column is the end-of-month closing price. The file name is given to you in the variable file_messy.
+
+In addition, this file has three aspects that may cause trouble for lesser tools: multiple header lines, comment records (rows) interleaved throughout the data rows, and space delimiters instead of commas.
+
+Your job is to use pandas to read the data from this problematic file_messy using non-default input options with read_csv() so as to tidy up the mess at read time. Then, write the cleaned up data to a CSV file with the variable file_clean that has been prepared for you, as you might do in a real data workflow.
+
+You can learn about the option input parameters needed by using help() on the pandas function pd.read_csv().
+
+Instructions
+100 XP
+Instructions
+100 XP
+Use pd.read_csv() without using any keyword arguments to read file_messy into a pandas DataFrame df1.
+Use .head() to print the first 5 rows of df1 and see how messy it is. Do this in the IPython Shell first so you can see how modifying read_csv() can clean up this mess.
+Using the keyword arguments delimiter=' ', header=3 and comment='#', use pd.read_csv() again to read file_messy into a new DataFrame df2.
+Print the output of df2.head() to verify the file was read correctly.
+Use the DataFrame method .to_csv() to save the DataFrame df2 to the variable file_clean. Be sure to specify index=False.
+Use the DataFrame method .to_excel() to save the DataFrame df2 to the file 'file_clean.xlsx'. Again, remember to specify index=False.
+
+
+# Read the raw file as-is: df1
+df1 = pd.read_csv(file_messy)
+
+# Print the output of df1.head()
+print(df1.head())
+
+# Read in the file with the correct parameters: df2
+df2 = pd.read_csv(file_messy, delimiter=' ', header=3, comment='#')
+
+# Print the output of df2.head()
+print(df2.head())
+
+# Save the cleaned up DataFrame to a CSV file without the index
+df2.to_csv(file_clean, index=False)
+
+# Save the cleaned up DataFrame to an excel file without the index
+df2.to_excel('file_clean.xlsx', index=False)
+______________________________________________________________________________________________________________________________
+
+Plotting with Pandas
+
+
+AAPL Stock Data
+    
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    aapl = pd.read_csv('aapl.csv', index_col='date', parse_dates=True)  ###Notice the options parse_date = True & index_col='date' to force a datetime64 index
+    aapl.head(6)
+    
+    
+Plotting arrays (matplotlib)
+
+    close_arr = aapl['close'].values   ###Now we assign close_arr by indexing aapl 'close' (yielding a Series) and applying the values method (yielding a NumPy array) 
+    type(close_arr)                                    #### Remember the command plot can plot NumPy arrays or lists & the command show must be executed to make the plot visible
+    numpy.ndarray
+
+    plt.plot(close_arr)
+    plt.show() 
+    
+
+We can plot a Pandas series directly
+
+    close_series = aapl['close']
+    type(close_series)  ### displays that in this case it's a pandas Series
+    plt.plot(close_series)  ###Plot automatically uses tje Serie's datetime index labels along the horizontal axis
+    plt.show() 
+    
+
+An even nicer method is to plot series (Pandas)
+
+        close_series.plot()  ###Plot series directly
+        plt.show()
+        
+        
+ Plotting DataFrames (pandas)
+ 
+        aapl.plot()
+        plt.show()
+        
+        
+ ________________________________________________________________________________________________________________________________
+ 
+ Plotting series using pandas
+Data visualization is often a very effective first step in gaining a rough understanding of a data set to be analyzed. Pandas provides data visualization by both depending upon and interoperating with the matplotlib library. You will now explore some of the basic plotting mechanics with pandas as well as related matplotlib options. We have pre-loaded a pandas DataFrame df which contains the data you need. Your job is to use the DataFrame method df.plot() to visualize the data, and then explore the optional matplotlib input parameters that this .plot() method accepts.
+
+The pandas .plot() method makes calls to matplotlib to construct the plots. This means that you can use the skills you've learned in previous visualization courses to customize the plot. In this exercise, you'll add a custom title and axis labels to the figure.
+
+Before plotting, inspect the DataFrame in the IPython Shell using df.head(). Also, use type(df) and note that it is a single column DataFrame.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create the plot with the DataFrame method df.plot(). Specify a color of 'red'.
+Note: c and color are interchangeable as parameters here, but we ask you to be explicit and specify color.
+Use plt.title() to give the plot a title of 'Temperature in Austin'.
+Use plt.xlabel() to give the plot an x-axis label of 'Hours since midnight August 1, 2010'.
+Use plt.ylabel() to give the plot a y-axis label of 'Temperature (degrees F)'.
+Finally, display the plot using plt.show().
+
+
+
+
 ============================================================================================================================
 
 Exploratory data analysis

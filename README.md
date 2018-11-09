@@ -1,2 +1,3 @@
 # datacamp-notes
-Place to keep my data camp code snippets
+
+Prograss tracking through DataCamp coursework.

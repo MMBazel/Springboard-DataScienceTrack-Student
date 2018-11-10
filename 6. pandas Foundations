@@ -940,6 +940,144 @@ sum14 = ts1 + ts4
 
 ________________________________________________________________________________________________________
 
+Resampling and frequency
+Pandas provides methods for resampling time series data. When downsampling or upsampling, the syntax is similar, but the methods called are different. Both use the concept of 'method chaining' - df.method1().method2().method3() - to direct the output from one method call to the input of the next, and so on, as a sequence of operations, one feeding into the next.
+
+For example, if you have hourly data, and just need daily data, pandas will not guess how to throw out the 23 of 24 points. You must specify this in the method. One approach, for instance, could be to take the mean, as in df.resample('D').mean().
+
+In this exercise, a data set containing hourly temperature data has been pre-loaded for you. Your job is to resample the data using a variety of aggregation methods to answer a few questions.
+
+Instructions
+100 XP
+Downsample the 'Temperature' column of df to 6 hour data using .resample('6h') and .mean(). Assign the result to df1.
+Downsample the 'Temperature' column of df to daily data using .resample('D') and then count the number of data points in each day with .count(). Assign the result df2.
+
+
+# Downsample to 6 hour data and aggregate by mean: df1
+df1 = df['Temperature'].resample('6h').mean()
+
+# Downsample to daily data and count the number of data points: df2
+df2 = df['Temperature'].resample('D').count()
+
+
+_______________________________________________________________________________________________________---
+
+Separating and resampling
+With pandas, you can resample in different ways on different subsets of your data. For example, resampling different months of data with different aggregations. In this exercise, the data set containing hourly temperature data from the last exercise has been pre-loaded.
+
+Your job is to resample the data using a variety of aggregation methods. The DataFrame is available in the workspace as df. You will be working with the 'Temperature' column.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Use partial string indexing to extract temperature data for August 2010 into august.
+Use the temperature data for August and downsample to find the daily maximum temperatures. Store the result in august_highs.
+Use partial string indexing to extract temperature data for February 2010 into february.
+Use the temperature data for February and downsample to find the daily minimum temperatures. Store the result in february_lows.
+
+# Extract temperature data for August: august
+august = df.loc['2010-08','Temperature']
+
+# Downsample to obtain only the daily highest temperatures in August: august_highs
+august_highs = august.resample('D').max()
+
+# Extract temperature data for February: february
+february = df.loc['2010-02','Temperature']
+
+# Downsample to obtain the daily lowest temperatures in February: february_lows
+february_lows = february.resample('D').min()
+
+________________________________________________________________________________________________________________________
+
+Rolling mean and frequency
+In this exercise, some hourly weather data is pre-loaded for you. You will continue to practice resampling, this time using rolling means.
+
+Rolling means (or moving averages) are generally used to smooth out short-term fluctuations in time series data and highlight long-term trends. You can read more about them here.
+
+To use the .rolling() method, you must always use method chaining, first calling .rolling() and then chaining an aggregation method after it. For example, with a Series hourly_data, hourly_data.rolling(window=24).mean() would compute new values for each hourly point, based on a 24-hour window stretching out behind each point. The frequency of the output data is the same: it is still hourly. Such an operation is useful for smoothing time series data.
+
+Your job is to resample the data using the combination of .rolling() and .mean(). You will work with the same DataFrame df from the previous exercise.
+
+Instructions
+100 XP
+Use partial string indexing to extract temperature data from August 1 2010 to August 15 2010. Assign to unsmoothed.
+Use .rolling() with a 24 hour window to smooth the mean temperature data. Assign the result to smoothed.
+Use a dictionary to create a new DataFrame august with the time series smoothed and unsmoothed as columns.
+Plot both the columns of august as line plots using the .plot() method.
+
+# Extract data from 2010-Aug-01 to 2010-Aug-15: unsmoothed
+unsmoothed = df['Temperature']['2010-08-01':'2010-08-15']
+
+# Apply a rolling mean with a 24 hour window: smoothed
+smoothed = unsmoothed.rolling(window=24).mean()
+
+# Create a new DataFrame with columns smoothed and unsmoothed: august
+august = pd.DataFrame({'smoothed':smoothed, 'unsmoothed':unsmoothed})
+
+# Plot both smoothed and unsmoothed data using august.plot().
+august.plot()
+plt.show()
+
+
+________________________________________________________________________________________________
+
+Resample and roll with it
+As of pandas version 0.18.0, the interface for applying rolling transformations to time series has become more consistent and flexible, and feels somewhat like a groupby (If you do not know what a groupby is, don't worry, you will learn about it in the next course!).
+
+You can now flexibly chain together resampling and rolling operations. In this exercise, the same weather data from the previous exercises has been pre-loaded for you. Your job is to extract one month of data, resample to find the daily high temperatures, and then use a rolling and aggregation operation to smooth the data.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Use partial string indexing to extract August 2010 temperature data, and assign to august.
+Resample to daily frequency, saving the maximum daily temperatures, and assign the result to daily_highs.
+As part of one long method chain, repeat the above resampling (or you can re-use daily_highs) and then combine it with .rolling() to apply a 7 day .mean() (with window=7 inside .rolling()) so as to smooth the daily highs. Assign the result to daily_highs_smoothed and print the result.
+
+
+# Extract the August 2010 data: august
+august = df['Temperature']['2010-08']
+
+# Resample to daily data, aggregating by max: daily_highs
+daily_highs = august.resample('D').max()
+
+# Use a rolling 7-day window with method chaining to smooth the daily high temperatures in August
+daily_highs_smoothed = daily_highs.rolling(window=7).mean()
+print(daily_highs_smoothed)
+
+_______________________________________________________________________________________________________________
+
+Method chaining and filtering
+We've seen that pandas supports method chaining. This technique can be very powerful when cleaning and filtering data.
+
+In this exercise, a DataFrame containing flight departure data for a single airline and a single airport for the month of July 2015 has been pre-loaded. Your job is to use .str() filtering and method chaining to generate summary statistics on flight delays each day to Dallas.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Use .str.strip() to strip extra whitespace from df.columns. Assign the result back to df.columns.
+In the 'Destination Airport' column, extract all entries where Dallas ('DAL') is the destination airport. Use .str.contains('DAL') for this and store the result in dallas.
+Resample dallas such that you get the total number of departures each day. Store the result in daily_departures.
+Generate summary statistics for daily Dallas departures using .describe(). Store the result in stats.
+
+
+# Strip extra whitespace from the column names: df.columns
+df.columns = df.columns.str.strip()
+
+# Extract data for which the destination airport is Dallas: dallas
+dallas = df['Destination Airport'].str.contains('DAL')
+
+# Compute the total number of Dallas departures each day: daily_departures
+daily_departures = dallas.resample('D').sum()
+
+# Generate the summary statistics for daily Dallas departures: stats
+stats = daily_departures.describe()
+
+_________________________________________________________________________________________________________
+
+
 
 
 ============================================================================================================================

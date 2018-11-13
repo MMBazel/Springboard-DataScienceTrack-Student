@@ -867,14 +867,193 @@ script.py> output:
 
 _____________________________________________________________________________________________________
 
+Adding names for readability
+You are now going to practice melting DataFrames. A DataFrame called visitors_by_city_weekday has been pre-loaded for you. Explore it in the IPython Shell and see that it is the users DataFrame from previous exercises with the rows indexed by 'weekday', columns indexed by 'city', and values populated with 'visitors'.
+
+Recall from the video that the goal of melting is to restore a pivoted DataFrame to its original form, or to change it from a wide shape to a long shape. You can explicitly specify the columns that should remain in the reshaped DataFrame with id_vars, and list which columns to convert into values with value_vars. As Dhavide demonstrated, if you don't pass a name to the values in pd.melt(), you will lose the name of your variable. You can fix this by using the value_name keyword argument.
+
+Your job in this exercise is to melt visitors_by_city_weekday to move the city names from the column labels to values in a single column called 'city'. If you were to use just pd.melt(visitors_by_city_weekday), you would obtain the following result:
+
+      city value
+0  weekday   Mon
+1  weekday   Sun
+2   Austin   326
+3   Austin   139
+4   Dallas   456
+5   Dallas   237
+Therefore, you have to specify the id_vars keyword argument to ensure that 'weekday' is retained in the reshaped DataFrame, and the value_name keyword argument to change the name of value to visitors.
+
+Instructions
+100 XP
+Reset the index of visitors_by_city_weekday with .reset_index().
+Print visitors_by_city_weekday and verify that you have just a range index, 0, 1, 2, 3. This has been done for you.
+Melt visitors_by_city_weekday to move the city names from the column labels to values in a single column called visitors.
+Print visitors to check that the city values are in a single column now and that the dataframe is longer and skinnier.
+
+# Reset the index: visitors_by_city_weekday
+visitors_by_city_weekday = visitors_by_city_weekday.reset_index()
+
+# Print visitors_by_city_weekday
+print(visitors_by_city_weekday)
+
+# Melt visitors_by_city_weekday: visitors
+visitors = pd.melt(visitors_by_city_weekday, id_vars=['weekday'], value_name='visitors')
+
+# Print visitors
+print(visitors)
+
+
+<script.py> output:
+    city weekday  Austin  Dallas
+    0        Mon     326     456
+    1        Sun     139     237
+      weekday    city  visitors
+    0     Mon  Austin       326
+    1     Sun  Austin       139
+    2     Mon  Dallas       456
+    3     Sun  Dallas       237
 
 
 
+_______________________________________________________________________________________________________________
+
+Going from wide to long
+You can move multiple columns into a single column (making the data long and skinny) by "melting" multiple columns. In this exercise, you will practice doing this.
+
+The users DataFrame has been pre-loaded for you. As always, explore it in the IPython Shell and note the index.
+
+Instructions
+100 XP
+Define a DataFrame skinny where you melt the 'visitors' and 'signups' columns of users into a single column.
+Print skinny to verify the results. Note the value column that had the cell values in users.
+
+# Melt users: skinny
+skinny = pd.melt(users,id_vars=['weekday' ,'city'])
+
+# Print skinny
+print(skinny)
+
+<script.py> output:
+      weekday    city  variable  value
+    0     Sun  Austin  visitors    139
+    1     Sun  Dallas  visitors    237
+    2     Mon  Austin  visitors    326
+    3     Mon  Dallas  visitors    456
+    4     Sun  Austin   signups      7
+    5     Sun  Dallas   signups     12
+    6     Mon  Austin   signups      3
+    7     Mon  Dallas   signups      5
+    
+    
+    
+    _____________________________________________________________________________________________________________________
+    
+    Obtaining key-value pairs with melt()
+Sometimes, all you need is some key-value pairs, and the context does not matter. If said context is in the index, you can easily obtain what you want. For example, in the users DataFrame, the visitors and signups columns lend themselves well to being represented as key-value pairs. So if you created a hierarchical index with 'city' and 'weekday' columns as the index, you can easily extract key-value pairs for the 'visitors' and 'signups' columns by melting users and specifying col_level=0.
+
+Instructions
+100 XP
+Set the index of users to ['city', 'weekday'].
+Print the DataFrame users_idx to see the new index.
+Obtain the key-value pairs corresponding to visitors and signups by melting users_idx with the keyword argument col_level=0.
 
 
+    # Set the new index: users_idx
+users_idx = users.set_index(['city','weekday'])
 
+# Print the users_idx DataFrame
+print(users_idx)
 
+# Obtain the key-value pairs: kv_pairs
+kv_pairs = pd.melt(users_idx, col_level=0)
 
+# Print the key-value pairs
+print(kv_pairs)
+
+<script.py> output:
+                    visitors  signups
+    city   weekday                   
+    Austin Sun           139        7
+    Dallas Sun           237       12
+    Austin Mon           326        3
+    Dallas Mon           456        5
+       variable  value
+    0  visitors    139
+    1  visitors    237
+    2  visitors    326
+    3  visitors    456
+    4   signups      7
+    5   signups     12
+    6   signups      3
+    7   signups      5
+    
+    ___________________________________________________________________________________________________________________________
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 
 ==============================================================================================================

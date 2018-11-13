@@ -990,70 +990,109 @@ print(kv_pairs)
     ___________________________________________________________________________________________________________________________
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    Setting up a pivot table
+Recall from the video that a pivot table allows you to see all of your variables as a function of two other variables. In this exercise, you will use the .pivot_table() method to see how the users DataFrame entries appear when presented as functions of the 'weekday' and 'city' columns. That is, with the rows indexed by 'weekday' and the columns indexed by 'city'.
 
+Before using the pivot table, print the users DataFrame in the IPython Shell and observe the layout.
+
+Instructions
+100 XP
+Use a pivot table to index the rows of users by 'weekday' and the columns of users by 'city'. These correspond to the index and columns parameters of .pivot_table().
+Print by_city_day. This has been done for you, so hit 'Submit Answer' to see the result.
+
+# Create the DataFrame with the appropriate pivot table: by_city_day
+by_city_day = users.pivot_table(index='weekday', columns='city')
+
+# Print by_city_day
+print(by_city_day)
+
+<script.py> output:
+            signups        visitors       
+    city     Austin Dallas   Austin Dallas
+    weekday                               
+    Mon           3      5      326    456
+    Sun           7     12      139    237
+    
+    
+    ________________________________________________________________________________________________________________
     
     
     
+    Using other aggregations in pivot tables
+You can also use aggregation functions within a pivot table by specifying the aggfunc parameter. In this exercise, you will practice using the 'count' and len aggregation functions - which produce the same result - on the users DataFrame.
+
+Instructions
+100 XP
+Define a DataFrame count_by_weekday1 that shows the count of each column with the parameter aggfunc='count'. The index here is 'weekday'.
+Print count_by_weekday1. This has been done for you.
+Replace aggfunc='count' with aggfunc=len and verify you obtain the same result.
+
+# Use a pivot table to display the count of each column: count_by_weekday1
+count_by_weekday1 = users.pivot_table(index='weekday',aggfunc='count')
+
+# Print count_by_weekday
+print(count_by_weekday1)
+
+# Replace 'aggfunc='count'' with 'aggfunc=len': count_by_weekday2
+count_by_weekday2 = users.pivot_table(index='weekday',aggfunc=len)
+
+# Verify that the same result is obtained
+print('==========================================')
+print(count_by_weekday1.equals(count_by_weekday2))
+
+
+
+<script.py> output:
+             city  signups  visitors
+    weekday                         
+    Mon         2        2         2
+    Sun         2        2         2
+    ==========================================
+    True
+
+
+____________________________________________________________________________________________________________________________
+
+
+Using margins in pivot tables
+Sometimes it's useful to add totals in the margins of a pivot table. You can do this with the argument margins=True. In this exercise, you will practice using margins in a pivot table along with a new aggregation function: sum.
+
+The users DataFrame, which you are now probably very familiar with, has been pre-loaded for you.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Define a DataFrame signups_and_visitors that shows the breakdown of signups and visitors by day.
+You will need to use aggfunc=sum to do this.
+Print signups_and_visitors. This has been done for you.
+Now pass the additional argument margins=True to the .pivot_table() method to obtain the totals.
+Print signups_and_visitors_total. This has been done for you, so hit 'Submit Answer' to see the result.
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+ # Create the DataFrame with the appropriate pivot table: signups_and_visitors
+signups_and_visitors = users.pivot_table(index='weekday',aggfunc=sum)
+
+# Print signups_and_visitors
+print(signups_and_visitors)
+
+# Add in the margins: signups_and_visitors_total 
+signups_and_visitors_total = users.pivot_table(index='weekday',aggfunc=sum, margins=True)
+
+# Print signups_and_visitors_total
+print(signups_and_visitors_total)
+
+
+<script.py> output:
+             signups  visitors
+    weekday                   
+    Mon            8       782
+    Sun           19       376
+             signups  visitors
+    weekday                   
+    Mon            8       782
+    Sun           19       376
+    All           27      1158
 
 
 ==============================================================================================================
@@ -1062,6 +1101,135 @@ print(kv_pairs)
 Grouping data
 
 In this chapter, you'll learn how to identify and split DataFrames by groups or categories for further aggregation or analysis. You'll also learn how to transform and filter your data, including how to detect outliers and impute missing values. Knowing how to effectively group data in pandas can be a seriously powerful addition to your data science toolbox.
+
+Grouping by multiple columns
+In this exercise, you will return to working with the Titanic dataset from Chapter 1 and use .groupby() to analyze the distribution of passengers who boarded the Titanic.
+
+The 'pclass' column identifies which class of ticket was purchased by the passenger and the 'embarked' column indicates at which of the three ports the passenger boarded the Titanic. 'S' stands for Southampton, England, 'C' for Cherbourg, France and 'Q' for Queenstown, Ireland.
+
+Your job is to first group by the 'pclass' column and count the number of rows in each class using the 'survived' column. You will then group by the 'embarked' and 'pclass' columns and count the number of passengers.
+
+The DataFrame has been pre-loaded as titanic.
+
+Instructions
+100 XP
+Group by the 'pclass' column and save the result as by_class.
+Aggregate the 'survived' column of by_class using .count(). Save the result as count_by_class.
+Print count_by_class. This has been done for you.
+Group titanic by the 'embarked' and 'pclass' columns. Save the result as by_mult.
+Aggregate the 'survived' column of by_mult using .count(). Save the result as count_mult.
+Print count_mult. This has been done for you, so hit 'Submit Answer' to view the result.
+
+
+# Group titanic by 'pclass'
+by_class = titanic.groupby('pclass')
+
+# Aggregate 'survived' column of by_class by count
+count_by_class = by_class['survived'].count()
+
+# Print count_by_class
+print(count_by_class)
+
+# Group titanic by 'embarked' and 'pclass'
+by_mult = titanic.groupby(['embarked','pclass'])
+
+# Aggregate 'survived' column of by_mult by count
+count_mult = by_mult['survived'].count()
+
+# Print count_mult
+print(count_mult)
+
+<script.py> output:
+    pclass
+    1    323
+    2    277
+    3    709
+    Name: survived, dtype: int64
+    embarked  pclass
+    C         1         141
+              2          28
+              3         101
+    Q         1           3
+              2           7
+              3         113
+    S         1         177
+              2         242
+              3         495
+    Name: survived, dtype: int64
+    
+    ____________________________________________________________________________________________________________________
+    
+    
+Grouping by another series
+In this exercise, you'll use two data sets from Gapminder.org to investigate the average life expectancy (in years) at birth in 2010 for the 6 continental regions. To do this you'll read the life expectancy data per country into one pandas DataFrame and the association between country and region into another.
+
+By setting the index of both DataFrames to the country name, you'll then use the region information to group the countries in the life expectancy DataFrame and compute the mean value for 2010.
+
+The life expectancy CSV file is available to you in the variable life_fname and the regions filename is available in the variable regions_fname.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Read life_fname into a DataFrame called life and set the index to 'Country'.
+Read regions_fname into a DataFrame called regions and set the index to 'Country'.
+Group life by the region column of regions and store the result in life_by_region.
+Print the mean over the 2010 column of life_by_region.
+
+
+# Read life_fname into a DataFrame: life
+life = pd.read_csv(life_fname, index_col='Country')
+
+# Read regions_fname into a DataFrame: regions
+regions = pd.read_csv(regions_fname, index_col='Country')
+
+# Group life by regions['region']: life_by_region
+life_by_region = life.groupby(regions['region'])
+
+# Print the mean over the '2010' column of life_by_region
+print(life_by_region['2010'].mean())
+
+
+
+
+<script.py> output:
+    region
+    America                       74.037350
+    East Asia & Pacific           73.405750
+    Europe & Central Asia         75.656387
+    Middle East & North Africa    72.805333
+    South Asia                    68.189750
+    Sub-Saharan Africa            57.575080
+    Name: 2010, dtype: float64
+    
+    ____________________________________________________________________________________________________________________
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 =============================================================================================================
 

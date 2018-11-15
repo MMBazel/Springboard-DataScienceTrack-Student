@@ -1644,6 +1644,420 @@ Bringing it all together
 
 Here, you will bring together everything you have learned in this course while working with data recorded from the Summer Olympic games that goes as far back as 1896! This is a rich dataset that will allow you to fully apply the data manipulation techniques you have learned. You will pivot, unstack, group, slice, and reshape your data as you explore this dataset and uncover some truly fascinating insights. Enjoy!
 
+Reminder: indexing & pivoting
+-Filtering & indexing
+    -One level indexing
+    -Multi-level indexing
+-Reshaping DataFrames with pivot()
+-pivot_table()
+
+
+Reminder: groupby
+-Useful DataFrame methods
+    -Unqiue()
+    -value_counts()
+-Aggregations, transformations and filtering    
+
+
+
+_____________________________________________________________-
+
+Using .value_counts() for ranking
+For this exercise, you will use the pandas Series method .value_counts() to determine the top 15 countries ranked by total number of medals.
+
+Notice that .value_counts() sorts by values by default. The result is returned as a Series of counts indexed by unique entries from the original Series with values (counts) ranked in descending order.
+
+The DataFrame has been pre-loaded for you as medals.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Extract the 'NOC' column from the DataFrame medals and assign the result to country_names. Notice that this Series has repeated entries for every medal (of any type) a country has won in any Edition of the Olympics.
+Create a Series medal_counts by applying .value_counts() to the Series country_names.
+Print the top 15 countries ranked by total number of medals won. This has been done for you, so hit 'Submit Answer' to see the result.
+Take Hint (-30 XP)
+
+# Select the 'NOC' column of medals: country_names
+country_names = medals['NOC']
+
+# Count the number of medals won by each country: medal_counts
+medal_counts = country_names.value_counts()
+
+# Print top 15 countries ranked by medals
+print(medal_counts.head(15))
+
+
+# Select the 'NOC' column of medals: country_names
+country_names = medals['NOC']
+
+# Count the number of medals won by each country: medal_counts
+medal_counts = country_names.value_counts()
+
+# Print top 15 countries ranked by medals
+print(medal_counts.head(15))
+
+
+
+___________________________________________________________________________________________________________
+
+Using .pivot_table() to count medals by type
+Rather than ranking countries by total medals won and showing that list, you may want to see a bit more detail. You can use a pivot table to compute how many separate bronze, silver and gold medals each country won. That pivot table can then be used to repeat the previous computation to rank by total medals won.
+
+In this exercise, you will use .pivot_table() first to aggregate the total medals by type. Then, you can use .sum() along the columns of the pivot table to produce a new column. When the modified pivot table is sorted by the total medals column, you can display the results from the last exercise with a bit more detail.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Construct a pivot table counted from the DataFrame medals aggregating by count. Use 'NOC' as the index, 'Athlete' for the values, and 'Medal' for the columns.
+Modify the DataFrame counted by adding a column counted['totals']. The new column 'totals' should contain the result of taking the sum along the columns (i.e., use .sum(axis='columns')).
+Overwrite the DataFrame counted by sorting it with the .sort_values() method. Specify the keyword argument ascending=False.
+Print the first 15 rows of counted using .head(15). This has been done for you, so hit 'Submit Answer' to see the result.
+
+Hint
+To construct the pivot table, use the .pivot_table() method on medals. You have to specify the index, values, columns, and aggfunc parameters.
+Use .sum() with axis='columns' on counted to create the new column 'totals'.
+To sort counted by the 'totals' column, use the .sort_values() method with 'totals' and ascending=False passed in as arguments.
+
+# Construct the pivot table: counted
+counted = medals.pivot_table(index='NOC',
+                            columns='Medal',
+                            values='Athlete',
+                            aggfunc='count')
+
+# Create the new column: counted['totals']
+counted['totals'] = counted.sum(axis='columns')
+
+# Sort counted by the 'totals' column
+counted = counted.sort_values('totals', ascending=False)
+
+# Print the top 15 rows of counted
+print(counted.head(15))
+
+
+In [5]: print(counted)
+Medal  Bronze    Gold  Silver
+NOC                          
+AFG       1.0     NaN     NaN
+AHO       NaN     NaN     1.0
+ALG       8.0     4.0     2.0
+ANZ       5.0    20.0     4.0
+ARG      88.0    68.0    83.0
+ARM       7.0     1.0     1.0
+AUS     413.0   293.0   369.0
+AUT      44.0    21.0    81.0
+AZE       9.0     4.0     3.0
+BAH       5.0     9.0     9.0
+BAR       1.0     NaN     NaN
+BDI       NaN     1.0     NaN
+BEL     150.0    91.0   167.0
+BER       1.0     NaN     NaN
+BLR      53.0    14.0    25.0
+BOH       6.0     NaN     1.0
+BRA     174.0    59.0   139.0
+BUL     136.0    53.0   142.0
+BWI       5.0     NaN     NaN
+CAN     227.0   154.0   211.0
+CHI      21.0     3.0     9.0
+CHN     193.0   234.0   252.0
+CIV       NaN     NaN     1.0
+CMR       1.0    20.0     1.0
+COL       7.0     1.0     3.0
+CRC       2.0     1.0     1.0
+CRO      18.0    31.0    30.0
+CUB     109.0   160.0   126.0
+CZE      13.0    10.0    18.0
+DEN     152.0   147.0   192.0
+..        ...     ...     ...
+SRI       NaN     NaN     2.0
+SUD       NaN     NaN     1.0
+SUI     138.0    73.0   165.0
+SUR       1.0     1.0     NaN
+SVK       8.0    10.0    11.0
+SWE     325.0   347.0   349.0
+SYR       1.0     1.0     1.0
+TAN       NaN     NaN     2.0
+TCH     105.0    80.0   144.0
+TGA       NaN     NaN     1.0
+THA      10.0     7.0     4.0
+TJK       1.0     NaN     1.0
+TOG       1.0     NaN     NaN
+TPE      13.0     2.0    27.0
+TRI      11.0     1.0     8.0
+TUN       3.0     2.0     2.0
+TUR      22.0    37.0    23.0
+UAE       NaN     1.0     NaN
+UGA       2.0     1.0     3.0
+UKR      78.0    32.0    38.0
+URS     584.0   838.0   627.0
+URU      30.0    44.0     2.0
+USA    1052.0  2088.0  1195.0
+UZB       8.0     4.0     5.0
+VEN       8.0     1.0     2.0
+VIE       NaN     NaN     2.0
+YUG     118.0   143.0   174.0
+ZAM       1.0     NaN     1.0
+ZIM       1.0    18.0     4.0
+ZZX      10.0    23.0    15.0
+
+[138 rows x 3 columns]
+
+In [6]: counted['totals'] = counted.sum(axis='columns')
+
+<script.py> output:
+    Medal  Bronze    Gold  Silver  totals
+    NOC                                  
+    USA    1052.0  2088.0  1195.0  4335.0
+    URS     584.0   838.0   627.0  2049.0
+    GBR     505.0   498.0   591.0  1594.0
+    FRA     475.0   378.0   461.0  1314.0
+    ITA     374.0   460.0   394.0  1228.0
+    GER     454.0   407.0   350.0  1211.0
+    AUS     413.0   293.0   369.0  1075.0
+    HUN     345.0   400.0   308.0  1053.0
+    SWE     325.0   347.0   349.0  1021.0
+    GDR     225.0   329.0   271.0   825.0
+    NED     320.0   212.0   250.0   782.0
+    JPN     270.0   206.0   228.0   704.0
+    CHN     193.0   234.0   252.0   679.0
+    RUS     240.0   192.0   206.0   638.0
+    ROU     282.0   155.0   187.0   624.0
+    
+    
+    
+    _____________________________________________________________________________________________________________________
+    
+    Reminder:
+    
+    -indexing & slicing:
+        - .loc[] & .iloc[] accessors
+        
+    -Filtering:
+        - Selecting by boolean series
+        -Filtering null/non-null and zero/non-zero values
+        
+        
+    Handling categorical variables
+    
+        -Useful DataFrame methods for handling categorical data 
+            -value_counts()
+            -unique()
+            -groupby()
+        -groupby() aggregations:
+            -mean(), std(), count()
+            
+            
+_____________________________________________________________________________________________________
+            
+    
+
+Applying .drop_duplicates()
+What could be the difference between the 'Event_gender' and 'Gender' columns? You should be able to evaluate your guess by looking at the unique values of the pairs (Event_gender, Gender) in the data. In particular, you should not see something like (Event_gender='M', Gender='Women'). However, you will see that, strangely enough, there is an observation with (Event_gender='W', Gender='Men').
+
+The duplicates can be dropped using the .drop_duplicates() method, leaving behind the unique observations. The DataFrame has been loaded as medals.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Select the columns 'Event_gender' and 'Gender'.
+Create a dataframe ev_gen_uniques containing the unique pairs contained in ev_gen.
+Print ev_gen_uniques. This has been done for you, so hit 'Submit Answer' to see the result.
+
+
+
+# Select columns: ev_gen
+ev_gen = medals[['Event_gender','Gender']]
+
+# Drop duplicate pairs: ev_gen_uniques
+ev_gen_uniques = ev_gen.drop_duplicates()
+
+# Print ev_gen_uniques
+print(ev_gen_uniques)
+
+
+<script.py> output:
+          Event_gender Gender
+    0                M    Men
+    348              X    Men
+    416              W  Women
+    639              X  Women
+    23675            W    Men
+    
+    
+______________________________________________________________________________________________________________________________
+
+Finding possible errors with .groupby()
+You will now use .groupby() to continue your exploration. Your job is to group by 'Event_gender' and 'Gender' and count the rows.
+
+You will see that there is only one suspicious row: This is likely a data error.
+
+The DataFrame is available to you as medals.
+
+Instructions
+100 XP
+Group medals by 'Event_gender' and 'Gender'.
+Create a medal_count_by_gender DataFrame with a group count using the .count() method.
+Print medal_count_by_gender. This has been done for you, so hit 'Submit Answer' to view the result.
+
+# Group medals by the two columns: medals_by_gender
+medals_by_gender = medals.groupby(['Event_gender', 'Gender'])
+
+# Create a DataFrame with a group count: medal_count_by_gender
+medal_count_by_gender = medals_by_gender.count()
+
+# Print medal_count_by_gender
+print(medal_count_by_gender)
+
+
+<script.py> output:
+                          City  Edition  Sport  Discipline  Athlete    NOC  Event  Medal
+    Event_gender Gender                                                                 
+    M            Men     20067    20067  20067       20067    20067  20067  20067  20067
+    W            Men         1        1      1           1        1      1      1      1
+                 Women    7277     7277   7277        7277     7277   7277   7277   7277
+    X            Men      1653     1653   1653        1653     1653   1653   1653   1653
+                 Women     218      218    218         218      218    218    218    218
+                 
+ __________________________________________________________________________________________________________
+
+Locating suspicious data
+You will now inspect the suspect record by locating the offending row.
+
+You will see that, according to the data, Joyce Chepchumba was a man that won a medal in a women's event. That is a data error as you can confirm with a web search.
+
+Instructions
+100 XP
+Create a Boolean Series with a condition that captures the only row that has medals.Event_gender == 'W' and medals.Gender == 'Men'. Be sure to use the & operator.
+Use the Boolean Series to create a DataFrame called suspect with the suspicious row.
+Print suspect. This has been done for you, so hit 'Submit Answer' to see the result.
+
+
+# Create the Boolean Series: sus
+sus = (medals.Event_gender == 'W') & (medals.Gender == 'Men')
+
+# Create a DataFrame with the suspicious row: suspect
+suspect = medals[sus]
+
+# Print suspect
+print(suspect)
+
+
+
+<script.py> output:
+             City  Edition      Sport Discipline            Athlete  NOC Gender     Event Event_gender   Medal
+    23675  Sydney     2000  Athletics  Athletics  CHEPCHUMBA, Joyce  KEN    Men  marathon            W  Bronze
+
+
+_________________________________________________________________________________________________________
+
+
+Constructing alternative country rankings
+
+Ranking of distinct events
+    -Top 5 countries that have won medals in the most sports
+    -Compare medal counts of USA and USSR from 1952 to 1988
+    
+    
+Two new DataFrame methods:
+    -idxmax(): Row or column label where maximum value is located
+    -idxmin(): Row or column label where minimum value is located
+    
+    
+Using idxmax() along rows:
+    - weather.idxmax()
+    
+Usinf idxmax along columns:
+    - weather.T.idxmax(axis='columns')
+    
+Using idxmin: (similar idea)
+    - weather.T.idxmin(axis='columns')
+    
+    
+______________________________________________________________________________________________________________________________________
+
+Using .nunique() to rank by distinct sports
+You may want to know which countries won medals in the most distinct sports. The .nunique() method is the principal aggregation here. Given a categorical Series S, S.nunique() returns the number of distinct categories.
+
+Instructions
+100 XP
+Group medals by 'NOC'.
+Compute the number of distinct sports in which each country won medals. To do this, select the 'Sport' column from country_grouped and apply .nunique().
+Sort Nsports in descending order with .sort_values() and ascending=False.
+Print the first 15 rows of Nsports. This has been done for you, so hit 'Submit Answer' to see the result.
+
+# Group medals by 'NOC': country_grouped
+country_grouped = medals.groupby('NOC')
+
+# Compute the number of distinct sports in which each country won medals: Nsports
+Nsports = country_grouped['Sport'].nunique()
+
+# Sort the values of Nsports in descending order
+Nsports = Nsports.sort_values(ascending=False)
+
+# Print the top 15 rows of Nsports
+print(Nsports.head(15))
+
+
+<script.py> output:
+    NOC
+    USA    34
+    GBR    31
+    FRA    28
+    GER    26
+    CHN    24
+    AUS    22
+    ESP    22
+    CAN    22
+    SWE    21
+    URS    21
+    ITA    21
+    NED    20
+    RUS    20
+    JPN    20
+    DEN    19
+    Name: Sport, dtype: int64
+    
+    
+    
+___________________________________________________________________________________________________________________________
+
+
+
+
+Counting USA vs. USSR Cold War Olympic Sports
+The Olympic competitions between 1952 and 1988 took place during the height of the Cold War between the United States of America (USA) & the Union of Soviet Socialist Republics (USSR). Your goal in this exercise is to aggregate the number of distinct sports in which the USA and the USSR won medals during the Cold War years.
+
+The construction is mostly the same as in the preceding exercise. There is an additional filtering stage beforehand in which you reduce the original DataFrame medals by extracting data from the Cold War period that applies only to the US or to the USSR. The relevant country codes in the DataFrame, which has been pre-loaded as medals, are 'USA' & 'URS'.
+
+Instructions
+100 XP
+Using medals, create a Boolean Series called during_cold_war that is True when 'Edition' is >= 1952 and <= 1988.
+Using medals, create a Boolean Series called is_usa_urs that is True when 'NOC' is either 'USA' or 'URS'.
+Filter the medals DataFrame using during_cold_war and is_usa_urs to create a new DataFrame called cold_war_medals.
+Group cold_war_medals by 'NOC'.
+Create a Series Nsports from country_grouped using indexing & chained methods:
+Extract the column 'Sport'.
+Use .nunique() to get the number of unique elements in each group;
+Apply .sort_values(ascending=False) to rearrange the Series.
+Print the final Series Nsports. This has been done for you, so hit 'Submit Answer' to see the result!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

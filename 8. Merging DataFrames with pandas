@@ -1,0 +1,207 @@
+Course Description
+As a Data Scientist, you'll often find that the data you need is not in a single file. It may be spread across a number of text files, spreadsheets, or databases. You want to be able to import the data of interest as a collection of DataFrames and figure out how to combine them to answer your central questions. This course is all about the act of combining, or merging, DataFrames, an essential part of any working Data Scientist's toolbox. You'll hone your pandas skills by learning how to organize, reshape, and aggregate multiple data sets to answer your specific questions.
+================================================================================================
+
+1
+Preparing data
+
+In this chapter, you'll learn about different techniques you can use to import multiple files into DataFrames. Having imported your data into individual DataFrames, you'll then learn how to share information between DataFrames using their Indexes. Understanding how Indexes work is essential information that you'll need for merging DataFrames later in the course.
+
+
+Reading DataFrames from multiple files
+When data is spread among several files, you usually invoke pandas' read_csv() (or a similar data import function) multiple times to load the data into several DataFrames.
+
+The data files for this example have been derived from a list of Olympic medals awarded between 1896 & 2008 compiled by the Guardian.
+
+The column labels of each DataFrame are NOC, Country, & Total where NOC is a three-letter code for the name of the country and Total is the number of medals of that type won (bronze, silver, or gold).
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import pandas as pd.
+Read the file 'Bronze.csv' into a DataFrame called bronze.
+Read the file 'Silver.csv' into a DataFrame called silver.
+Read the file 'Gold.csv' into a DataFrame called gold.
+Print the first 5 rows of the DataFrame gold. This has been done for you, so hit 'Submit Answer' to see the results.
+
+# Import pandas
+import pandas as pd
+
+# Read 'Bronze.csv' into a DataFrame: bronze
+bronze = pd.read_csv('Bronze.csv')
+
+# Read 'Silver.csv' into a DataFrame: silver
+silver = pd.read_csv('Silver.csv')
+
+# Read 'Gold.csv' into a DataFrame: gold
+gold = pd.read_csv('Gold.csv')
+
+# Print the first five rows of gold
+print(gold.head())
+
+<script.py> output:
+       NOC         Country   Total
+    0  USA   United States  2088.0
+    1  URS    Soviet Union   838.0
+    2  GBR  United Kingdom   498.0
+    3  FRA          France   378.0
+    4  GER         Germany   407.0
+    
+__________________________________________________________________________________________________________________________
+
+
+    Reading DataFrames from multiple files in a loop
+As you saw in the video, loading data from multiple files into DataFrames is more efficient in a loop or a list comprehension.
+
+Notice that this approach is not restricted to working with CSV files. That is, even if your data comes in other formats, as long as pandas has a suitable data import function, you can apply a loop or comprehension to generate a list of DataFrames imported from the source files.
+
+Here, you'll continue working with The Guardian's Olympic medal dataset.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create a list of file names called filenames with three strings 'Gold.csv', 'Silver.csv', & 'Bronze.csv'. This has been done for you.
+Use a for loop to create another list called dataframes containing the three DataFrames loaded from filenames:
+Iterate over filenames.
+Read each CSV file in filenames into a DataFrame and append it to dataframes by using pd.read_csv() inside a call to .append().
+Print the first 5 rows of the first DataFrame of the list dataframes. This has been done for you, so hit 'Submit Answer' to see the results.
+
+# Import pandas
+import pandas as pd
+
+# Create the list of file names: filenames
+filenames = ['Gold.csv', 'Silver.csv', 'Bronze.csv']
+
+# Create the list of three DataFrames: dataframes
+dataframes = []
+for filename in filenames:
+    dataframes.append(pd.read_csv(filename))
+
+# Print top 5 rows of 1st DataFrame in dataframes
+print(dataframes[0].head())
+
+
+
+# Import pandas
+import pandas as pd
+
+# Create the list of file names: filenames
+filenames = ['Gold.csv', 'Silver.csv', 'Bronze.csv']
+
+# Create the list of three DataFrames: dataframes
+dataframes = []
+for filename in filenames:
+    dataframes.append(pd.read_csv(filename))
+
+# Print top 5 rows of 1st DataFrame in dataframes
+print(dataframes[0].head())
+
+
+
+<script.py> output:
+       NOC         Country   Total
+    0  USA   United States  2088.0
+    1  URS    Soviet Union   838.0
+    2  GBR  United Kingdom   498.0
+    3  FRA          France   378.0
+    4  GER         Germany   407.0
+		
+		
+		
+_____________________________________________________________________________________________________________________
+
+
+
+Combining DataFrames from multiple data files
+In this exercise, you'll combine the three DataFrames from earlier exercises - gold, silver, & bronze - into a single DataFrame called medals. The approach you'll use here is clumsy. Later on in the course, you'll see various powerful methods that are frequently used in practice for concatenating or merging DataFrames.
+
+Remember, the column labels of each DataFrame are NOC, Country, and Total, where NOC is a three-letter code for the name of the country and Total is the number of medals of that type won.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Construct a copy of the DataFrame gold called medals using the .copy() method.
+Create a list called new_labels with entries 'NOC', 'Country', & 'Gold'. This is the same as the column labels from gold with the column label 'Total' replaced by 'Gold'.
+Rename the columns of medals by assigning new_labels to medals.columns.
+Create new columns 'Silver' and 'Bronze' in medals using silver['Total'] & bronze['Total'].
+Print the top 5 rows of the final DataFrame medals. This has been done for you, so hit 'Submit Answer' to see the result!
+
+
+# Import pandas
+import pandas as pd
+
+# Make a copy of gold: medals
+medals = gold.copy()
+
+# Create list of new column labels: new_labels
+new_labels = ['NOC', 'Country', 'Gold']
+
+# Rename the columns of medals using new_labels
+medals.columns = new_labels
+
+# Add columns 'Silver' & 'Bronze' to medals
+medals['Silver'] = silver['Total']
+medals['Bronze'] = bronze['Total']
+
+# Print the head of medals
+print(medals.head())
+
+
+
+<script.py> output:
+       NOC         Country    Gold  Silver  Bronze
+    0  USA   United States  2088.0  1195.0  1052.0
+    1  URS    Soviet Union   838.0   627.0   584.0
+    2  GBR  United Kingdom   498.0   591.0   505.0
+    3  FRA          France   378.0   461.0   475.0
+    4  GER         Germany   407.0   350.0   454.0
+
+
+
+================================================================================================
+
+2
+Concatenating data
+
+Having learned how to import multiple DataFrames and share information using Indexes, in this chapter you'll learn how to perform database-style operations to combine DataFrames. In particular, you'll learn about appending and concatenating DataFrames while working with a variety of real-world datasets.
+
+
+
+====================================================================================================
+
+3
+Merging data
+
+Here, you'll learn all about merging pandas DataFrames. You'll explore different techniques for merging, and learn about left joins, right joins, inner joins, and outer joins, as well as when to use which. You'll also learn about ordered merging, which is useful when you want to merge DataFrames whose columns have natural orderings, like date-time columns.
+
+
+======================================================================================================
+
+4
+Case Study - Summer Olympics
+
+To cement your new skills, you'll apply them by working on an in-depth study involving Olympic medal data. The analysis involves integrating your multi-DataFrame skills from this course and also skills you've gained in previous pandas courses. This is a rich dataset that will allow you to fully leverage your pandas data manipulation skills. Enjoy!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

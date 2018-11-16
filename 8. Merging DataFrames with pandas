@@ -439,38 +439,134 @@ Create the DataFrame yearly by resampling the slice post2008 by year. Remember, 
 Compute the percentage growth of the resampled DataFrame yearly with .pct_change() * 100.
 
 
+import pandas as pd
+
+# Read 'GDP.csv' into a DataFrame: gdp
+gdp = pd.read_csv('GDP.csv', parse_dates=True, index_col='DATE')
+
+# Slice all the gdp data from 2008 onward: post2008
+post2008 = gdp.loc['2008':,:]
+
+# Print the last 8 rows of post2008
+print(post2008.tail(8))
+
+# Resample post2008 by year, keeping last(): yearly
+yearly = post2008.resample('A').last()
+
+# Print yearly
+print(yearly)
+
+# Compute percentage growth of yearly: yearly['growth']
+yearly['growth'] = yearly.pct_change() * 100
+
+# Print yearly again
+print(yearly)
 
 
+             VALUE
+DATE               
+2014-07-01  17569.4
+2014-10-01  17692.2
+2015-01-01  17783.6
+2015-04-01  17998.3
+2015-07-01  18141.9
+2015-10-01  18222.8
+2016-01-01  18281.6
+2016-04-01  18436.5
+
+<script.py> output:
+                  VALUE
+    DATE               
+    2014-07-01  17569.4
+    2014-10-01  17692.2
+    2015-01-01  17783.6
+    2015-04-01  17998.3
+    2015-07-01  18141.9
+    2015-10-01  18222.8
+    2016-01-01  18281.6
+    2016-04-01  18436.5
+                  VALUE
+    DATE               
+    2008-12-31  14549.9
+    2009-12-31  14566.5
+    2010-12-31  15230.2
+    2011-12-31  15785.3
+    2012-12-31  16297.3
+    2013-12-31  16999.9
+    2014-12-31  17692.2
+    2015-12-31  18222.8
+    2016-12-31  18436.5
+                  VALUE    growth
+    DATE                         
+    2008-12-31  14549.9       NaN
+    2009-12-31  14566.5  0.114090
+    2010-12-31  15230.2  4.556345
+    2011-12-31  15785.3  3.644732
+    2012-12-31  16297.3  3.243524
+    2013-12-31  16999.9  4.311144
+    2014-12-31  17692.2  4.072377
+    2015-12-31  18222.8  2.999062
+    2016-12-31  18436.5  1.172707
+    
+    
+    _______________________________________________________________________________________________________________________
+    
+    
+
+Converting currency of stocks
+In this exercise, stock prices in US Dollars for the S&P 500 in 2015 have been obtained from Yahoo Finance. The files sp500.csv for sp500 and exchange.csv for the exchange rates are both provided to you.
+
+Using the daily exchange rate to Pounds Sterling, your task is to convert both the Open and Close column prices.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Read the DataFrames sp500 & exchange from the files 'sp500.csv' & 'exchange.csv' respectively..
+Use parse_dates=True and index_col='Date'.
+Extract the columns 'Open' & 'Close' from the DataFrame sp500 as a new DataFrame dollars and print the first 5 rows.
+Construct a new DataFrame pounds by converting US dollars to British pounds. You'll use the .multiply() method of dollars with exchange['GBP/USD'] and axis='rows'
+Print the first 5 rows of the new DataFrame pounds. This has been done for you, so hit 'Submit Answer' to see the results!.
 
 
+# Import pandas
+import pandas as pd
+
+# Read 'sp500.csv' into a DataFrame: sp500
+sp500 = pd.read_csv('sp500.csv', parse_dates=True, index_col='Date')
+
+# Read 'exchange.csv' into a DataFrame: exchange
+exchange = pd.read_csv('exchange.csv',parse_dates=True, index_col='Date')
+
+# Subset 'Open' & 'Close' columns from sp500: dollars
+dollars = sp500.loc[:,['Open','Close']]
+
+# Print the head of dollars
+print(dollars.head())
+
+# Convert dollars to pounds: pounds
+pounds = dollars.multiply(exchange['GBP/USD'], axis='rows')
+
+# Print the head of pounds
+print(pounds.head())
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<script.py> output:
+                       Open        Close
+    Date                                
+    2015-01-02  2058.899902  2058.199951
+    2015-01-05  2054.439941  2020.579956
+    2015-01-06  2022.150024  2002.609985
+    2015-01-07  2005.550049  2025.900024
+    2015-01-08  2030.609985  2062.139893
+                       Open        Close
+    Date                                
+    2015-01-02  1340.364425  1339.908750
+    2015-01-05  1348.616555  1326.389506
+    2015-01-06  1332.515980  1319.639876
+    2015-01-07  1330.562125  1344.063112
+    2015-01-08  1343.268811  1364.126161
+    
 
 ================================================================================================
 
@@ -478,6 +574,284 @@ Compute the percentage growth of the resampled DataFrame yearly with .pct_change
 Concatenating data
 
 Having learned how to import multiple DataFrames and share information using Indexes, in this chapter you'll learn how to perform database-style operations to combine DataFrames. In particular, you'll learn about appending and concatenating DataFrames while working with a variety of real-world datasets.
+
+
+Appending pandas Series
+In this exercise, you'll load sales data from the months January, February, and March into DataFrames. Then, you'll extract Series with the 'Units' column from each and append them together with method chaining using .append().
+
+To check that the stacking worked, you'll print slices from these Series, and finally, you'll add the result to figure out the total units sold in the first quarter.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Read the files 'sales-jan-2015.csv', 'sales-feb-2015.csv' and 'sales-mar-2015.csv' into the DataFrames jan, feb, and mar respectively.
+Use parse_dates=True and index_col='Date'.
+Extract the 'Units' column of jan, feb, and mar to create the Series jan_units, feb_units, and mar_units respectively.
+Construct the Series quarter1 by appending feb_units to jan_units and then appending mar_units to the result. Use chained calls to the .append() method to do this.
+Verify that quarter1 has the individual Series stacked vertically. To do this:
+Print the slice containing rows from jan 27, 2015 to feb 2, 2015.
+Print the slice containing rows from feb 26, 2015 to mar 7, 2015.
+Compute and print the total number of units sold from the Series quarter1. This has been done for you, so hit 'Submit Answer' to see the result!
+
+
+# Import pandas
+import pandas as pd
+
+# Load 'sales-jan-2015.csv' into a DataFrame: jan
+jan = pd.read_csv('sales-jan-2015.csv',parse_dates=True, index_col='Date')
+
+# Load 'sales-feb-2015.csv' into a DataFrame: feb
+feb = pd.read_csv('sales-feb-2015.csv',parse_dates=True, index_col='Date')
+
+# Load 'sales-mar-2015.csv' into a DataFrame: mar
+mar = pd.read_csv('sales-mar-2015.csv',parse_dates=True, index_col='Date')
+
+# Extract the 'Units' column from jan: jan_units
+jan_units = jan['Units']
+
+# Extract the 'Units' column from feb: feb_units
+feb_units = feb['Units']
+
+# Extract the 'Units' column from mar: mar_units
+mar_units = mar['Units']
+
+# Append feb_units and then mar_units to jan_units: quarter1
+quarter1 = (jan_units.append(feb_units)).append(mar_units)
+
+# Print the first slice from quarter1
+print(quarter1.loc['jan 27, 2015':'feb 2, 2015'])
+
+# Print the second slice from quarter1
+print(quarter1.loc['feb 26, 2015':'mar 7, 2015'])
+
+# Compute & print total sales in quarter1
+print(quarter1.sum())
+
+<script.py> output:
+    Date
+    2015-01-27 07:11:55    18
+    2015-02-02 08:33:01     3
+    2015-02-02 20:54:49     9
+    Name: Units, dtype: int64
+    Date
+    2015-02-26 08:57:45     4
+    2015-02-26 08:58:51     1
+    2015-03-06 10:11:45    17
+    2015-03-06 02:03:56    17
+    Name: Units, dtype: int64
+    642
+
+________________________________________________________________________________________________________________________
+
+Concatenating pandas Series along row axis
+Having learned how to append Series, you'll now learn how to achieve the same result by concatenating Series instead. You'll continue to work with the sales data you've seen previously. This time, the DataFrames jan, feb, and mar have been pre-loaded.
+
+Your job is to use pd.concat() with a list of Series to achieve the same result that you would get by chaining calls to .append().
+
+You may be wondering about the difference between pd.concat() and pandas' .append() method. One way to think of the difference is that .append() is a specific case of a concatenation, while pd.concat() gives you more flexibility, as you'll see in later exercises.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create an empty list called units. This has been done for you.
+Use a for loop to iterate over [jan, feb, mar]:
+In each iteration of the loop, append the 'Units' column of each DataFrame to units.
+Concatenate the Series contained in the list units into a longer Series called quarter1 using pd.concat().
+Specify the keyword argument axis='rows' to stack the Series vertically.
+Verify that quarter1 has the individual Series stacked vertically by printing slices. This has been done for you, so hit 'Submit Answer' to see the result!
+
+
+
+# Initialize empty list: units
+units = []
+
+# Build the list of Series
+for month in [jan, feb, mar]:
+    units.append(month.Units)
+
+# Concatenate the list: quarter1
+quarter1 = pd.concat(units, axis='rows')
+
+# Print slices from quarter1
+print(quarter1.loc['jan 27, 2015':'feb 2, 2015'])
+print(quarter1.loc['feb 26, 2015':'mar 7, 2015'])
+
+
+
+<script.py> output:
+    Date
+    2015-01-27 07:11:55    18
+    2015-02-02 08:33:01     3
+    2015-02-02 20:54:49     9
+    Name: Units, dtype: int64
+    Date
+    2015-02-26 08:57:45     4
+    2015-02-26 08:58:51     1
+    2015-03-06 10:11:45    17
+    2015-03-06 02:03:56    17
+    Name: Units, dtype: int64
+
+__________________________________________________________________________________________________________________
+
+
+Appending DataFrames with ignore_index
+In this exercise, you'll use the Baby Names Dataset (from data.gov) again. This time, both DataFrames names_1981 and names_1881 are loaded without specifying an Index column (so the default Indexes for both are RangeIndexes).
+
+You'll use the DataFrame .append() method to make a DataFrame combined_names. To distinguish rows from the original two DataFrames, you'll add a 'year' column to each with the year (1881 or 1981 in this case). In addition, you'll specify ignore_index=True so that the index values are not used along the concatenation axis. The resulting axis will instead be labeled 0, 1, ..., n-1, which is useful if you are concatenating objects where the concatenation axis does not have meaningful indexing information.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create a 'year' column in the DataFrames names_1881 and names_1981, with values of 1881 and 1981 respectively. Recall that assigning a scalar value to a DataFrame column broadcasts that value throughout.
+Create a new DataFrame called combined_names by appending the rows of names_1981 underneath the rows of names_1881. Specify the keyword argument ignore_index=True to make a new RangeIndex of unique integers for each row.
+Print the shapes of all three DataFrames. This has been done for you.
+Extract all rows from combined_names that have the name 'Morgan'. To do this, use the .loc[] accessor with an appropriate filter. The relevant column of combined_names here is 'name'.
+
+
+
+# Add 'year' column to names_1881 and names_1981
+names_1881['year'] = 1881
+names_1981['year'] = 1981
+
+# Append names_1981 after names_1881 with ignore_index=True: combined_names
+combined_names = names_1881.append(names_1981, ignore_index=True)
+
+# Print shapes of names_1981, names_1881, and combined_names
+print(names_1981.shape)
+print(names_1881.shape)
+print(combined_names.shape)
+
+# Print all rows that contain the name 'Morgan'
+print(combined_names.loc[combined_names['name']=='Morgan',])
+
+
+<script.py> output:
+    (19455, 4)
+    (1935, 4)
+    (21390, 4)
+             name gender  count  year
+    1283   Morgan      M     23  1881
+    2096   Morgan      F   1769  1981
+    14390  Morgan      M    766  1981
+    
+    ___________________________________________________________________________________________________________________________
+    
+    
+Concatenating pandas DataFrames along column axis
+The function pd.concat() can concatenate DataFrames horizontally as well as vertically (vertical is the default). To make the DataFrames stack horizontally, you have to specify the keyword argument axis=1 or axis='columns'.
+
+In this exercise, you'll use weather data with maximum and mean daily temperatures sampled at different rates (quarterly versus monthly). You'll concatenate the rows of both and see that, where rows are missing in the coarser DataFrame, null values are inserted in the concatenated DataFrame. This corresponds to an outer join (which you will explore in more detail in later exercises).
+
+The files 'quarterly_max_temp.csv' and 'monthly_mean_temp.csv' have been pre-loaded into the DataFrames weather_max and weather_mean respectively, and pandas has been imported as pd.
+
+Instructions
+100 XP
+Create a new DataFrame called weather by concatenating the DataFrames weather_max and weather_mean horizontally.
+Pass the DataFrames to pd.concat() as a list and specify the keyword argument axis=1 to stack them horizontally.
+Print the new DataFrame weather.
+
+
+
+# Concatenate weather_max and weather_mean horizontally: weather
+weather = pd.concat([weather_max, weather_mean], axis=1)
+
+# Print weather
+print(weather)
+
+
+<script.py> output:
+         Max TemperatureF  Mean TemperatureF
+    Apr              89.0          53.100000
+    Aug               NaN          70.000000
+    Dec               NaN          34.935484
+    Feb               NaN          28.714286
+    Jan              68.0          32.354839
+    Jul              91.0          72.870968
+    Jun               NaN          70.133333
+    Mar               NaN          35.000000
+    May               NaN          62.612903
+    Nov               NaN          39.800000
+    Oct              84.0          55.451613
+    Sep               NaN          63.766667
+    
+    _______________________________________________________________________________________________________________________
+    
+    Reading multiple files to build a DataFrame
+It is often convenient to build a large DataFrame by parsing many files as DataFrames and concatenating them all at once. You'll do this here with three files, but, in principle, this approach can be used to combine data from dozens or hundreds of files.
+
+Here, you'll work with DataFrames compiled from The Guardian's Olympic medal dataset.
+
+pandas has been imported as pd and two lists have been pre-loaded: An empty list called medals, and medal_types, which contains the strings 'bronze', 'silver', and 'gold'.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Iterate over medal_types in the for loop.
+Inside the for loop:
+Create file_name using string interpolation with the loop variable medal. This has been done for you. The expression "%s_top5.csv" % medal evaluates as a string with the value of medal replacing %s in the format string.
+Create the list of column names called columns. This has been done for you.
+Read file_name into a DataFrame called medal_df. Specify the keyword arguments header=0, index_col='Country', and names=columns to get the correct row and column Indexes.
+Append medal_df to medals using the list .append() method.
+Concatenate the list of DataFrames medals horizontally (using axis='columns') to create a single DataFrame called medals. Print it in its entirety.
+
+    
+  for medal in medal_types:
+
+    # Create the file name: file_name
+    file_name = "%s_top5.csv" % medal
+    
+    # Create list of column names: columns
+    columns = ['Country', medal]
+    
+    # Read file_name into a DataFrame: df
+    medal_df = pd.read_csv(file_name,header=0, index_col='Country',names=columns )
+
+    # Append medal_df to medals
+    medals.append(medal_df)
+
+# Concatenate medals horizontally: medals
+medals = pd.concat(medals, axis='columns')
+
+# Print medals
+print(medals)
+
+
+
+<script.py> output:
+                    bronze  silver    gold
+    France           475.0   461.0     NaN
+    Germany          454.0     NaN   407.0
+    Italy              NaN   394.0   460.0
+    Soviet Union     584.0   627.0   838.0
+    United Kingdom   505.0   591.0   498.0
+    United States   1052.0  1195.0  2088.0
+    
+    
+    
+    _____________________________________________________________________________________________________________________________
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

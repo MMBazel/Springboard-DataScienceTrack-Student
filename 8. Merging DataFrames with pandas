@@ -834,9 +834,318 @@ print(medals)
     
     _____________________________________________________________________________________________________________________________
     
+  Concatenating vertically to get MultiIndexed rows
+When stacking a sequence of DataFrames vertically, it is sometimes desirable to construct a MultiIndex to indicate the DataFrame from which each row originated. This can be done by specifying the keys parameter in the call to pd.concat(), which generates a hierarchical index with the labels from keys as the outermost index label. So you don't have to rename the columns of each DataFrame as you load it. Instead, only the Index column needs to be specified.
+
+Here, you'll continue working with DataFrames compiled from The Guardian's Olympic medal dataset. Once again, pandas has been imported as pd and two lists have been pre-loaded: An empty list called medals, and medal_types, which contains the strings 'bronze', 'silver', and 'gold'.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Within the for loop:
+Read file_name into a DataFrame called medal_df. Specify the index to be 'Country'.
+Append medal_df to medals.
+Concatenate the list of DataFrames medals into a single DataFrame called medals. Be sure to use the keyword argument keys=['bronze', 'silver', 'gold'] to create a vertically stacked DataFrame with a MultiIndex.
+Print the new DataFrame medals. This has been done for you, so hit 'Submit Answer' to see the result!
+
+for medal in medal_types:
+
+    file_name = "%s_top5.csv" % medal
     
+    # Read file_name into a DataFrame: medal_df
+    medal_df = pd.read_csv(file_name, index_col='Country')
+    
+    # Append medal_df to medals
+    medals.append(medal_df)
+    
+# Concatenate medals: medals
+medals = pd.concat(medals,keys=['bronze', 'silver', 'gold'])
+
+# Print medals in entirety
+print(medals)
 
 
+<script.py> output:
+                            Total
+           Country               
+    bronze United States   1052.0
+           Soviet Union     584.0
+           United Kingdom   505.0
+           France           475.0
+           Germany          454.0
+    silver United States   1195.0
+           Soviet Union     627.0
+           United Kingdom   591.0
+           France           461.0
+           Italy            394.0
+    gold   United States   2088.0
+           Soviet Union     838.0
+           United Kingdom   498.0
+           Italy            460.0
+           Germany          407.0
+	   
+	   
+	   
+________________________________________________________________________________________________________________________________
+
+Slicing MultiIndexed DataFrames
+This exercise picks up where the last ended (again using The Guardian's Olympic medal dataset).
+
+You are provided with the MultiIndexed DataFrame as produced at the end of the preceding exercise. Your task is to sort the DataFrame and to use the pd.IndexSlice to extract specific slices. Check out this exercise from Manipulating DataFrames with pandas to refresh your memory on how to deal with MultiIndexed DataFrames.
+
+pandas has been imported for you as pd and the DataFrame medals is already in your namespace.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create a new DataFrame medals_sorted with the entries of medals sorted. Use .sort_index(level=0) to ensure the Index is sorted suitably.
+Print the number of bronze medals won by Germany and all of the silver medal data. This has been done for you.
+Create an alias for pd.IndexSlice called idx. A slicer pd.IndexSlice is required when slicing on the inner level of a MultiIndex.
+Slice all the data on medals won by the United Kingdom. To do this, use the .loc[] accessor with idx[:,'United Kingdom'], :.
+
+
+# Sort the entries of medals: medals_sorted
+medals_sorted = medals.sort_index(level=0)
+
+# Print the number of Bronze medals won by Germany
+print(medals_sorted.loc[('bronze','Germany')])
+
+# Print data about silver medals
+print(medals_sorted.loc['silver'])
+
+# Create alias for pd.IndexSlice: idx
+idx = pd.IndexSlice
+
+# Print all the data on medals won by the United Kingdom
+print(medals_sorted.loc[idx[:,'United Kingdom'], :])
+
+<script.py> output:
+    Total    454.0
+    Name: (bronze, Germany), dtype: float64
+                     Total
+    Country               
+    France           461.0
+    Italy            394.0
+    Soviet Union     627.0
+    United Kingdom   591.0
+    United States   1195.0
+                           Total
+           Country              
+    bronze United Kingdom  505.0
+    silver United Kingdom  591.0
+    gold   United Kingdom  498.0
+    
+    
+    
+    _____________________________________________________________________________________________________________________________
+    
+    Concatenating horizontally to get MultiIndexed columns
+It is also possible to construct a DataFrame with hierarchically indexed columns. For this exercise, you'll start with pandas imported and a list of three DataFrames called dataframes. All three DataFrames contain 'Company', 'Product', and 'Units' columns with a 'Date' column as the index pertaining to sales transactions during the month of February, 2015. The first DataFrame describes Hardware transactions, the second describes Software transactions, and the third, Service transactions.
+
+Your task is to concatenate the DataFrames horizontally and to create a MultiIndex on the columns. From there, you can summarize the resulting DataFrame and slice some information from it.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Construct a new DataFrame february with MultiIndexed columns by concatenating the list dataframes.
+Use axis=1 to stack the DataFrames horizontally and the keyword argument keys=['Hardware', 'Software', 'Service'] to construct a hierarchical Index from each DataFrame.
+Print summary information from the new DataFrame february using the .info() method. This has been done for you.
+Create an alias called idx for pd.IndexSlice.
+Extract a slice called slice_2_8 from february (using .loc[] & idx) that comprises rows between Feb. 2, 2015 to Feb. 8, 2015 from columns under 'Company'.
+Print the slice_2_8. This has been done for you, so hit 'Submit Answer' to see the sliced data!
+
+
+# Concatenate dataframes: february
+february = pd.concat(dataframes, axis=1,keys=['Hardware', 'Software', 'Service'])
+
+# Print february.info()
+print(february.info())
+
+# Assign pd.IndexSlice: idx
+idx = pd.IndexSlice
+
+# Create the slice: slice_2_8
+slice_2_8 = february.loc['2015-02-02':'2015-02-08', idx[:, 'Company']]
+
+# Print slice_2_8
+print(slice_2_8)
+
+
+<script.py> output:
+    <class 'pandas.core.frame.DataFrame'>
+    DatetimeIndex: 20 entries, 2015-02-02 08:33:01 to 2015-02-26 08:58:51
+    Data columns (total 9 columns):
+    (Hardware, Company)    5 non-null object
+    (Hardware, Product)    5 non-null object
+    (Hardware, Units)      5 non-null float64
+    (Software, Company)    9 non-null object
+    (Software, Product)    9 non-null object
+    (Software, Units)      9 non-null float64
+    (Service, Company)     6 non-null object
+    (Service, Product)     6 non-null object
+    (Service, Units)       6 non-null float64
+    dtypes: float64(3), object(6)
+    memory usage: 1.6+ KB
+    None
+                                Hardware         Software Service
+                                 Company          Company Company
+    Date                                                         
+    2015-02-02 08:33:01              NaN            Hooli     NaN
+    2015-02-02 20:54:49        Mediacore              NaN     NaN
+    2015-02-03 14:14:18              NaN          Initech     NaN
+    2015-02-04 15:36:29              NaN        Streeplex     NaN
+    2015-02-04 21:52:45  Acme Coporation              NaN     NaN
+    2015-02-05 01:53:06              NaN  Acme Coporation     NaN
+    2015-02-05 22:05:03              NaN              NaN   Hooli
+    2015-02-07 22:58:10  Acme Coporation              NaN     NaN
+
+________________________________________________________________________________________________________________________________
+
+Concatenating DataFrames from a dict
+You're now going to revisit the sales data you worked with earlier in the chapter. Three DataFrames jan, feb, and mar have been pre-loaded for you. Your task is to aggregate the sum of all sales over the 'Company' column into a single DataFrame. You'll do this by constructing a dictionary of these DataFrames and then concatenating them.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create a list called month_list consisting of the tuples ('january', jan), ('february', feb), and ('march', mar).
+Create an empty dictionary called month_dict.
+Inside the for loop:
+Group month_data by 'Company' and use .sum() to aggregate.
+Construct a new DataFrame called sales by concatenating the DataFrames stored in month_dict.
+Create an alias for pd.IndexSlice and print all sales by 'Mediacore'. This has been done for you, so hit 'Submit Answer' to see the result!
+
+# Make the list of tuples: month_list
+month_list = [('january', jan), ('february', feb), ('march', mar)]
+
+# Create an empty dictionary: month_dict
+month_dict = {}
+
+for month_name, month_data in month_list:
+
+    # Group month_data: month_dict[month_name]
+    month_dict[month_name] = month_data.groupby('Company').sum()
+
+# Concatenate data in month_dict: sales
+sales = pd.concat(month_dict)
+
+# Print sales
+print(sales)
+
+# Print all sales by Mediacore
+idx = pd.IndexSlice
+print(sales.loc[idx[:, 'Mediacore'], :])
+
+
+<script.py> output:
+                              Units
+             Company               
+    february Acme Coporation     34
+             Hooli               30
+             Initech             30
+             Mediacore           45
+             Streeplex           37
+    january  Acme Coporation     76
+             Hooli               70
+             Initech             37
+             Mediacore           15
+             Streeplex           50
+    march    Acme Coporation      5
+             Hooli               37
+             Initech             68
+             Mediacore           68
+             Streeplex           40
+                        Units
+             Company         
+    february Mediacore     45
+    january  Mediacore     15
+    march    Mediacore     68
+
+
+_________________________________________________________________________________________________________________________________
+
+
+Concatenating DataFrames with inner join
+Here, you'll continue working with DataFrames compiled from The Guardian's Olympic medal dataset.
+
+The DataFrames bronze, silver, and gold have been pre-loaded for you.
+
+Your task is to compute an inner join.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Construct a list of DataFrames called medal_list with entries bronze, silver, and gold.
+Concatenate medal_list horizontally with an inner join to create medals.
+Use the keyword argument keys=['bronze', 'silver', 'gold'] to yield suitable hierarchical indexing.
+Use axis=1 to get horizontal concatenation.
+Use join='inner' to keep only rows that share common index labels.
+Print the new DataFrame medals.
+
+
+# Create the list of DataFrames: medal_list
+medal_list = [bronze, silver, gold]
+
+# Concatenate medal_list horizontally using an inner join: medals
+medals = pd.concat(medal_list, keys=['bronze', 'silver', 'gold'], axis=1, join='inner')
+
+# Print medals
+print(medals)
+
+<script.py> output:
+                    bronze  silver    gold
+                     Total   Total   Total
+    Country                               
+    United States   1052.0  1195.0  2088.0
+    Soviet Union     584.0   627.0   838.0
+    United Kingdom   505.0   591.0   498.0
+    
+    __________________________________________________________________________________________________________________
+    
+    Resampling & concatenating DataFrames with inner join
+In this exercise, you'll compare the historical 10-year GDP (Gross Domestic Product) growth in the US and in China. The data for the US starts in 1947 and is recorded quarterly; by contrast, the data for China starts in 1961 and is recorded annually.
+
+You'll need to use a combination of resampling and an inner join to align the index labels. You'll need an appropriate offset alias for resampling, and the method .resample() must be chained with some kind of aggregation method (.pct_change() and .last() in this case).
+
+pandas has been imported as pd, and the DataFrames china and us have been pre-loaded, with the output of china.head() and us.head() printed in the IPython Shell.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Make a new DataFrame china_annual by resampling the DataFrame china with .resample('A') (i.e., with annual frequency) and chaining two method calls:
+Chain .pct_change(10) as an aggregation method to compute the percentage change with an offset of ten years.
+Chain .dropna() to eliminate rows containing null values.
+Make a new DataFrame us_annual by resampling the DataFrame us exactly as you resampled china.
+Concatenate china_annual and us_annual to construct a DataFrame called gdp. Use join='inner' to perform an inner join and use axis=1 to concatenate horizontally.
+Print the result of resampling gdp every decade (i.e., using .resample('10A')) and aggregating with the method .last(). This has been done for you, so hit 'Submit Answer' to see the result!
+
+
+# Resample and tidy china: china_annual
+china_annual = china.resample('A').pct_change(10).dropna()
+
+# Resample and tidy us: us_annual
+us_annual = us.resample('A').pct_change(10).dropna()
+
+# Concatenate china_annual and us_annual: gdp
+gdp = pd.concat([china_annual, us_annual], join='inner',axis=1)
+
+# Resample gdp and print
+print(gdp.resample('10A').last())
+
+<script.py> output:
+                   China        US
+    Year                          
+    1971-12-31  0.988860  1.073188
+    1981-12-31  0.972048  1.749631
+    1991-12-31  0.962528  0.922811
+    2001-12-31  2.492511  0.720398
+    2011-12-31  4.623958  0.460947
+    2021-12-31  3.789936  0.377506
 
 
 

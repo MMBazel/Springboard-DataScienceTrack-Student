@@ -680,6 +680,7 @@ print(quarter1.loc['feb 26, 2015':'mar 7, 2015'])
 
 
 
+
 <script.py> output:
     Date
     2015-01-27 07:11:55    18
@@ -1729,6 +1730,570 @@ Select only the columns 'Athlete', 'NOC', and 'Medal' from medals_dict[year].
 Create a new column called 'Edition' in the DataFrame medals_dict[year] whose entries are all year.
 Concatenate the dictionary of DataFrames medals_dict into a DataFame called medals. Specify the keyword argument ignore_index=True to prevent repeated integer indices.
 Print the first and last 5 rows of medals. This has been done for you, so hit 'Submit Answer' to see the result!
+
+
+
+
+# Import pandas
+import pandas as pd
+
+# Create empty dictionary: medals_dict
+medals_dict = {}
+
+for year in editions['Edition']:
+
+    # Create the file path: file_path
+    file_path = 'summer_{:d}.csv'.format(year)
+    
+    # Load file_path into a DataFrame: medals_dict[year]
+    medals_dict[year] = pd.read_csv(file_path)
+    
+    # Extract relevant columns: medals_dict[year]
+    medals_dict[year] = medals_dict[year][['Athlete', 'NOC', 'Medal']]
+    
+    # Assign year to column 'Edition' of medals_dict
+    medals_dict[year]['Edition'] = year
+    
+# Concatenate medals_dict: medals
+medals = pd.concat(medals_dict, ignore_index=True)
+
+# Print first and last 5 rows of medals
+print(medals.head())
+print(medals.tail())
+
+
+______________________________________________________________________________________________________________________
+
+Counting medals by country/edition in a pivot table
+Here, you'll start with the concatenated DataFrame medals from the previous exercise.
+
+You can construct a pivot table to see the number of medals each country won in each year. The result is a new DataFrame with the Olympic edition on the Index and with 138 country NOC codes as columns. If you want a refresher on pivot tables, it may be useful to refer back to the relevant exercises in Manipulating DataFrames with pandas.
+
+Instructions
+100 XP
+Construct a pivot table from the DataFrame medals, aggregating by count (by specifying the aggfunc parameter). Use 'Edition' as the index, 'Athlete' for the values, and 'NOC' for the columns.
+Print the first & last 5 rows of medal_counts. This has been done for you, so hit 'Submit Answer' to see the results!
+
+
+# Construct the pivot_table: medal_counts
+medal_counts = medals.pivot_table(index='Edition', values='Athlete', columns='NOC', aggfunc='count')
+
+# Print the first & last 5 rows of medal_counts
+print(medal_counts.head())
+print(medal_counts.tail())
+
+<script.py> output:
+    NOC      AFG  AHO  ALG   ANZ  ARG  ARM  AUS   AUT  AZE  BAH  ...   URS  URU  \
+    Edition                                                      ...              
+    1896     NaN  NaN  NaN   NaN  NaN  NaN  2.0   5.0  NaN  NaN  ...   NaN  NaN   
+    1900     NaN  NaN  NaN   NaN  NaN  NaN  5.0   6.0  NaN  NaN  ...   NaN  NaN   
+    1904     NaN  NaN  NaN   NaN  NaN  NaN  NaN   1.0  NaN  NaN  ...   NaN  NaN   
+    1908     NaN  NaN  NaN  19.0  NaN  NaN  NaN   1.0  NaN  NaN  ...   NaN  NaN   
+    1912     NaN  NaN  NaN  10.0  NaN  NaN  NaN  14.0  NaN  NaN  ...   NaN  NaN   
+    
+    NOC        USA  UZB  VEN  VIE  YUG  ZAM  ZIM   ZZX  
+    Edition                                             
+    1896      20.0  NaN  NaN  NaN  NaN  NaN  NaN   6.0  
+    1900      55.0  NaN  NaN  NaN  NaN  NaN  NaN  34.0  
+    1904     394.0  NaN  NaN  NaN  NaN  NaN  NaN   8.0  
+    1908      63.0  NaN  NaN  NaN  NaN  NaN  NaN   NaN  
+    1912     101.0  NaN  NaN  NaN  NaN  NaN  NaN   NaN  
+    
+    [5 rows x 138 columns]
+    NOC      AFG  AHO  ALG  ANZ   ARG  ARM    AUS  AUT  AZE  BAH ...   URS  URU  \
+    Edition                                                      ...              
+    1992     NaN  NaN  2.0  NaN   2.0  NaN   57.0  6.0  NaN  1.0 ...   NaN  NaN   
+    1996     NaN  NaN  3.0  NaN  20.0  2.0  132.0  3.0  1.0  5.0 ...   NaN  NaN   
+    2000     NaN  NaN  5.0  NaN  20.0  1.0  183.0  4.0  3.0  6.0 ...   NaN  1.0   
+    2004     NaN  NaN  NaN  NaN  47.0  NaN  157.0  8.0  5.0  2.0 ...   NaN  NaN   
+    2008     1.0  NaN  2.0  NaN  51.0  6.0  149.0  3.0  7.0  5.0 ...   NaN  NaN   
+    
+    NOC        USA  UZB  VEN  VIE   YUG  ZAM  ZIM  ZZX  
+    Edition                                             
+    1992     224.0  NaN  NaN  NaN   NaN  NaN  NaN  NaN  
+    1996     260.0  2.0  NaN  NaN  26.0  1.0  NaN  NaN  
+    2000     248.0  4.0  NaN  1.0  26.0  NaN  NaN  NaN  
+    2004     264.0  5.0  2.0  NaN   NaN  NaN  3.0  NaN  
+    2008     315.0  6.0  1.0  1.0   NaN  NaN  4.0  NaN  
+    
+    [5 rows x 138 columns]
+
+
+______________________________________________________________________________________________________________________
+
+
+Computing fraction of medals per Olympic edition
+In this exercise, you'll start with the DataFrames editions, medals, & medal_counts from prior exercises.
+
+You can extract a Series with the total number of medals awarded in each Olympic edition.
+
+The DataFrame medal_counts can be divided row-wise by the total number of medals awarded each edition; the method .divide() performs the broadcast as you require.
+
+This gives you a normalized indication of each country's performance in each edition.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Set the index of the DataFrame editions to be 'Edition' (using the method .set_index()). Save the result as totals.
+Extract the 'Grand Total' column from totals and assign the result back to totals.
+Divide the DataFrame medal_counts by totals along each row. You will have to use the .divide() method with the option axis='rows'. Assign the result to fractions.
+Print first & last 5 rows of the DataFrame fractions. This has been done for you, so hit 'Submit Answer' to see the results!
+
+
+# Set Index of editions: totals
+totals = editions.set_index('Edition')
+
+# Reassign totals['Grand Total']: totals
+totals = totals.loc[:,'Grand Total']
+
+# Divide medal_counts by totals: fractions
+fractions = medal_counts.divide(totals, axis='rows')
+
+# Print first & last 5 rows of fractions
+print(fractions.head())
+print(fractions.tail())
+
+<script.py> output:
+    NOC      AFG  AHO  ALG       ANZ  ARG  ARM       AUS       AUT  AZE  BAH  \
+    Edition                                                                    
+    1896     NaN  NaN  NaN       NaN  NaN  NaN  0.013245  0.033113  NaN  NaN   
+    1900     NaN  NaN  NaN       NaN  NaN  NaN  0.009766  0.011719  NaN  NaN   
+    1904     NaN  NaN  NaN       NaN  NaN  NaN       NaN  0.002128  NaN  NaN   
+    1908     NaN  NaN  NaN  0.023632  NaN  NaN       NaN  0.001244  NaN  NaN   
+    1912     NaN  NaN  NaN  0.011299  NaN  NaN       NaN  0.015819  NaN  NaN   
+    
+    NOC        ...     URS  URU       USA  UZB  VEN  VIE  YUG  ZAM  ZIM       ZZX  
+    Edition    ...                                                                 
+    1896       ...     NaN  NaN  0.132450  NaN  NaN  NaN  NaN  NaN  NaN  0.039735  
+    1900       ...     NaN  NaN  0.107422  NaN  NaN  NaN  NaN  NaN  NaN  0.066406  
+    1904       ...     NaN  NaN  0.838298  NaN  NaN  NaN  NaN  NaN  NaN  0.017021  
+    1908       ...     NaN  NaN  0.078358  NaN  NaN  NaN  NaN  NaN  NaN       NaN  
+    1912       ...     NaN  NaN  0.114124  NaN  NaN  NaN  NaN  NaN  NaN       NaN  
+    
+    [5 rows x 138 columns]
+    NOC          AFG  AHO       ALG  ANZ       ARG       ARM       AUS       AUT  \
+    Edition                                                                        
+    1992         NaN  NaN  0.001173  NaN  0.001173       NaN  0.033431  0.003519   
+    1996         NaN  NaN  0.001614  NaN  0.010758  0.001076  0.071006  0.001614   
+    2000         NaN  NaN  0.002481  NaN  0.009926  0.000496  0.090819  0.001985   
+    2004         NaN  NaN       NaN  NaN  0.023524       NaN  0.078579  0.004004   
+    2008     0.00049  NaN  0.000979  NaN  0.024976  0.002938  0.072968  0.001469   
+    
+    NOC           AZE       BAH ...   URS       URU       USA       UZB       VEN  \
+    Edition                     ...                                                 
+    1992          NaN  0.000587 ...   NaN       NaN  0.131378       NaN       NaN   
+    1996     0.000538  0.002690 ...   NaN       NaN  0.139860  0.001076       NaN   
+    2000     0.001489  0.002978 ...   NaN  0.000496  0.123077  0.001985       NaN   
+    2004     0.002503  0.001001 ...   NaN       NaN  0.132132  0.002503  0.001001   
+    2008     0.003428  0.002449 ...   NaN       NaN  0.154261  0.002938  0.000490   
+    
+    NOC           VIE       YUG       ZAM       ZIM  ZZX  
+    Edition                                               
+    1992          NaN       NaN       NaN       NaN  NaN  
+    1996          NaN  0.013986  0.000538       NaN  NaN  
+    2000     0.000496  0.012903       NaN       NaN  NaN  
+    2004          NaN       NaN       NaN  0.001502  NaN  
+    2008     0.000490       NaN       NaN  0.001959  NaN  
+    
+    [5 rows x 138 columns]
+    
+    
+    _______________________________________________________________________________________________________________________
+    
+    Computing percentage change in fraction of medals won
+Here, you'll start with the DataFrames editions, medals, medal_counts, & fractions from prior exercises.
+
+To see if there is a host country advantage, you first want to see how the fraction of medals won changes from edition to edition.
+
+The expanding mean provides a way to see this down each column. It is the value of the mean with all the data available up to that point in time. If you are interested in learning more about pandas' expanding transformations, this section of the pandas documentation has additional information.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create mean_fractions by chaining the methods .expanding().mean() to fractions.
+Compute the percentage change in mean_fractions down each column by applying .pct_change() and multiplying by 100. Assign the result to fractions_change.
+Reset the index of fractions_change using the .reset_index() method. This will make 'Edition' an ordinary column.
+Print the first and last 5 rows of the DataFrame fractions_change. This has been done for you, so hit 'Submit Answer' to see the results!
+
+# Apply the expanding mean: mean_fractions
+mean_fractions = fractions.expanding().mean()
+
+# Compute the percentage change: fractions_change
+fractions_change = mean_fractions.pct_change()*100
+
+# Reset the index of fractions_change: fractions_change
+fractions_change = fractions_change.reset_index()
+
+# Print first & last 5 rows of fractions_change
+print(fractions_change.head())
+print(fractions_change.tail())
+
+
+<script.py> output:
+    NOC  Edition  AFG  AHO  ALG        ANZ  ARG  ARM        AUS        AUT  AZE  \
+    0       1896  NaN  NaN  NaN        NaN  NaN  NaN        NaN        NaN  NaN   
+    1       1900  NaN  NaN  NaN        NaN  NaN  NaN -13.134766 -32.304688  NaN   
+    2       1904  NaN  NaN  NaN        NaN  NaN  NaN   0.000000 -30.169386  NaN   
+    3       1908  NaN  NaN  NaN        NaN  NaN  NaN   0.000000 -23.013510  NaN   
+    4       1912  NaN  NaN  NaN -26.092774  NaN  NaN   0.000000   6.254438  NaN   
+    
+    NOC    ...      URS  URU         USA  UZB  VEN  VIE  YUG  ZAM  ZIM        ZZX  
+    0      ...      NaN  NaN         NaN  NaN  NaN  NaN  NaN  NaN  NaN        NaN  
+    1      ...      NaN  NaN   -9.448242  NaN  NaN  NaN  NaN  NaN  NaN  33.561198  
+    2      ...      NaN  NaN  199.651245  NaN  NaN  NaN  NaN  NaN  NaN -22.642384  
+    3      ...      NaN  NaN  -19.549222  NaN  NaN  NaN  NaN  NaN  NaN   0.000000  
+    4      ...      NaN  NaN  -12.105733  NaN  NaN  NaN  NaN  NaN  NaN   0.000000  
+    
+    [5 rows x 139 columns]
+    NOC  Edition  AFG  AHO        ALG  ANZ       ARG        ARM        AUS  \
+    21      1992  NaN  0.0  -7.214076  0.0 -6.767308        NaN   2.754114   
+    22      1996  NaN  0.0   8.959211  0.0  1.306696        NaN  10.743275   
+    23      2000  NaN  0.0  19.762488  0.0  0.515190 -26.935484  12.554986   
+    24      2004  NaN  0.0   0.000000  0.0  9.625365   0.000000   8.161162   
+    25      2008  NaN  0.0  -8.197807  0.0  8.588555  91.266408   6.086870   
+    
+    NOC       AUT        AZE ...   URS        URU       USA        UZB       VEN  \
+    21  -3.034840        NaN ...   0.0   0.000000 -1.329330        NaN  0.000000   
+    22  -3.876773        NaN ...   0.0   0.000000 -1.010378        NaN  0.000000   
+    23  -3.464221  88.387097 ...   0.0 -12.025323 -1.341842  42.258065  0.000000   
+    24  -2.186922  48.982144 ...   0.0   0.000000 -1.031922  21.170339 -1.615969   
+    25  -3.389836  31.764436 ...   0.0   0.000000 -0.450031  14.610625 -6.987342   
+    
+    NOC       VIE       YUG        ZAM        ZIM  ZZX  
+    21        NaN  0.000000   0.000000   0.000000  0.0  
+    22        NaN -2.667732 -10.758472   0.000000  0.0  
+    23        NaN -2.696445   0.000000   0.000000  0.0  
+    24   0.000000  0.000000   0.000000 -43.491929  0.0  
+    25  -0.661117  0.000000   0.000000 -23.316533  0.0  
+    
+    [5 rows x 139 columns]
+    
+    
+    
+    
+    
+    ______________________________________________________________________________________________________________________
+    
+    
+Building hosts DataFrame
+Your task here is to prepare a DataFrame hosts by left joining editions and ioc_codes.
+
+Once created, you will subset the Edition and NOC columns and set Edition as the Index.
+
+There are some missing NOC values; you will set those explicitly.
+
+Finally, you'll reset the Index & print the final DataFrame.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create the DataFrame hosts by doing a left join on DataFrames editions and ioc_codes (using pd.merge()).
+Clean up hosts by subsetting and setting the Index.
+Extract the columns 'Edition' and 'NOC'.
+Set 'Edition' column as the Index.
+Use the .loc[] accessor to find and assign the missing values to the 'NOC' column in hosts. This has been done for you.
+Reset the index of hosts using .reset_index(), which returns a new DataFrame.
+Hit 'Submit Answer' to see what hosts looks like!
+
+
+
+# Import pandas
+import pandas as pd
+
+# Left join editions and ioc_codes: hosts
+hosts = pd.merge(editions, ioc_codes, how='left')
+
+# Extract relevant columns and set index: hosts
+hosts = hosts[['Edition','NOC']].set_index('Edition')
+
+# Fix missing 'NOC' values of hosts
+print(hosts.loc[hosts.NOC.isnull()])
+hosts.loc[1972, 'NOC'] = 'FRG'
+hosts.loc[1980, 'NOC'] = 'URS'
+hosts.loc[1988, 'NOC'] = 'KOR'
+
+# Reset Index of hosts: hosts
+hosts = hosts.reset_index()
+
+# Print hosts
+print(hosts)
+
+
+
+
+<script.py> output:
+             NOC
+    Edition     
+    1972     NaN
+    1980     NaN
+    1988     NaN
+        Edition  NOC
+    0      1896  GRE
+    1      1900  FRA
+    2      1904  USA
+    3      1908  GBR
+    4      1912  SWE
+    5      1920  BEL
+    6      1924  FRA
+    7      1928  NED
+    8      1932  USA
+    9      1936  GER
+    10     1948  GBR
+    11     1952  FIN
+    12     1956  AUS
+    13     1960  ITA
+    14     1964  JPN
+    15     1968  MEX
+    16     1972  FRG
+    17     1976  CAN
+    18     1980  URS
+    19     1984  USA
+    20     1988  KOR
+    21     1992  ESP
+    22     1996  USA
+    23     2000  AUS
+    24     2004  GRE
+    25     2008  CHN
+    
+    
+    
+    
+    
+    
+    
+    
+    ___________________________________________________________________________________________________________________________-
+    
+    Reshaping for analysis
+This exercise starts off with fractions_change and hosts already loaded.
+
+Your task here is to reshape the fractions_change DataFrame for later analysis.
+
+Initially, fractions_change is a wide DataFrame of 26 rows (one for each Olympic edition) and 139 columns (one for the edition and 138 for the competing countries).
+
+On reshaping with pd.melt(), as you will see, the result is a tall DataFrame with 3588 rows and 3 columns that summarizes the fractional change in the expanding mean of the percentage of medals won for each country in blocks.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create a DataFrame reshaped by reshaping the DataFrame fractions_change with pd.melt().
+You'll need to use the keyword argument id_vars='Edition' to set the identifier variable.
+You'll also need to use the keyword argument value_name='Change' to set the measured variables.
+Print the shape of the DataFrames reshaped and fractions_change. This has been done for you.
+Create a DataFrame chn by extracting all the rows from reshaped in which the three letter code for each country ('NOC') is 'CHN'.
+Print the last 5 rows of the DataFrame chn using the .tail() method. This has been done for you, so hit 'Submit Answer' to see the results!
+
+# Import pandas
+import pandas as pd
+
+# Reshape fractions_change: reshaped
+reshaped = pd.melt(fractions_change,id_vars='Edition',value_name='Change')
+
+# Print reshaped.shape and fractions_change.shape
+print(reshaped.shape, fractions_change.shape)
+
+# Extract rows from reshaped where 'NOC' == 'CHN': chn
+chn = reshaped[reshaped['NOC']=='CHN']
+
+# Print last 5 rows of chn with .tail()
+print(chn.tail())
+
+
+<script.py> output:
+    (3588, 3) (26, 139)
+         Edition  NOC     Change
+    567     1992  CHN   4.240630
+    568     1996  CHN   7.860247
+    569     2000  CHN  -3.851278
+    570     2004  CHN   0.128863
+    571     2008  CHN  13.251332
+    
+    
+    
+    
+________________________________________________________________________________________________________________________
+
+
+Merging to compute influence
+This exercise starts off with the DataFrames reshaped and hosts in the namespace.
+
+Your task is to merge the two DataFrames and tidy the result.
+
+The end result is a DataFrame summarizing the fractional change in the expanding mean of the percentage of medals won for the host country in each Olympic edition.
+
+Instructions
+100 XP
+Merge reshaped and hosts using an inner join. Remember, how='inner' is the default behavior for pd.merge().
+Print the first 5 rows of the DataFrame merged. This has been done for you. You should see that the rows are jumbled chronologically.
+Set the index of merged to be 'Edition' and sort the index.
+Print the first 5 rows of the DataFrame influence. This has been done for you, so hit 'Submit Answer' to see the results!
+
+
+# Import pandas
+import pandas as pd
+
+# Merge reshaped and hosts: merged
+merged = pd.merge(reshaped, hosts, how='inner')
+
+# Print first 5 rows of merged
+print(merged.head())
+
+# Set Index of merged and sort it: influence
+influence = merged.set_index('Edition').sort_index()
+
+# Print first 5 rows of influence
+print(influence.head())
+
+
+<script.py> output:
+       Edition  NOC     Change
+    0     1956  AUS  54.615063
+    1     2000  AUS  12.554986
+    2     1920  BEL  54.757887
+    3     1976  CAN  -2.143977
+    4     2008  CHN  13.251332
+             NOC      Change
+    Edition                 
+    1896     GRE         NaN
+    1900     FRA  198.002486
+    1904     USA  199.651245
+    1908     GBR  134.489218
+    1912     SWE   71.896226
+    
+    
+    _______________________________________________________________________________________________________________________
+    
+    
+    
+    
+    Plotting influence of host country
+This final exercise starts off with the DataFrames influence and editions in the namespace. Your job is to plot the influence of being a host country.
+
+Instructions
+100 XP
+Create a Series called change by extracting the 'Change' column from influence.
+Create a bar plot of change using the .plot() method with kind='bar'. Save the result as ax to permit further customization.
+Customize the bar plot of change to improve readability:
+Apply the method .set_ylabel("% Change of Host Country Medal Count") toax.
+Apply the method .set_title("Is there a Host Country Advantage?") to ax.
+Apply the method .set_xticklabels(editions['City']) to ax.
+Reveal the final plot using plt.show().
+
+
+# Import pyplot
+import matplotlib.pyplot as plt
+
+# Extract influence['Change']: change
+change = influence['Change']
+
+# Make bar plot of change: ax
+ax = change.plot(kind='bar')
+
+# Customize the plot to improve readability
+ax.set_ylabel("% Change of Host Country Medal Count")
+ax.set_title("Is there a Host Country Advantage?")
+ax.set_xticklabels(editions['City'])
+
+# Display the plot
+plt.show()
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -479,40 +479,61 @@ plt.show()
 
     
     
-    
-    
+ ____________________________________________________________________________________________________________________
+ 
+ Visualizing multiple variables with boxplots
+Histograms are great ways of visualizing single variables. To visualize multiple variables, boxplots are useful, especially when one of the variables is categorical.
+
+In this exercise, your job is to use a boxplot to compare the 'initial_cost' across the different values of the 'Borough' column. The pandas .boxplot() method is a quick way to do this, in which you have to specify the column and by parameters. Here, you want to visualize how 'initial_cost' varies by 'Borough'.
+
+pandas and matplotlib.pyplot have been imported for you as pd and plt, respectively, and the DataFrame has been pre-loaded as df.
+
+Instructions
+100 XP
+Using the .boxplot() method of df, create a boxplot of 'initial_cost' across the different values of 'Borough'.
+Display the plot.
 
 
+# Import necessary modules
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Create the boxplot
+df.boxplot(column='initial_cost', by='Borough', rot=90)
+
+# Display the plot
+plt.show()
 
 
+___________________________________________________________________________________________________________________
 
+Visualizing multiple variables with scatter plots
+Boxplots are great when you have a numeric column that you want to compare across different categories. When you want to visualize two numeric columns, scatter plots are ideal.
 
+In this exercise, your job is to make a scatter plot with 'initial_cost' on the x-axis and the 'total_est_fee' on the y-axis. You can do this by using the DataFrame .plot() method with kind='scatter'. You'll notice right away that there are 2 major outliers shown in the plots.
 
+Since these outliers dominate the plot, an additional DataFrame, df_subset, has been provided, in which some of the extreme values have been removed. After making a scatter plot using this, you'll find some interesting patterns here that would not have been seen by looking at summary statistics or 1 variable plots.
 
+When you're done, you can cycle between the two plots by clicking the 'Previous Plot' and 'Next Plot' buttons below the plot.
 
+Instructions
+100 XP
+Instructions
+100 XP
+Using df, create a scatter plot (kind='scatter') with 'initial_cost' on the x-axis and the 'total_est_fee' on the y-axis. Rotate the x-axis labels by 70 degrees.
+Create another scatter plot exactly as above, substituting df_subset in place of df.
 
+# Import necessary modules
+import pandas as pd
+import matplotlib.pyplot as plt
 
+# Create and display the first scatter plot
+df.plot(kind='scatter', x='initial_cost', y='total_est_fee', rot=70)
+plt.show()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Create and display the second scatter plot
+df_subset.plot(kind='scatter', x='initial_cost', y='total_est_fee', rot=70)
+plt.show()
 
 
 =======================================================================================================
@@ -522,6 +543,375 @@ Tidying data for analysis
 
 
 Here, you'll learn about the principles of tidy data and more importantly, why you should care about them and how they make subsequent data analysis more efficient. You'll gain first hand experience with reshaping and tidying your data using techniques such as pivoting and melting.
+
+
+
+Recognizing tidy data
+For data to be tidy, it must have:
+
+Each variable as a separate column.
+Each row as a separate observation.
+As a data scientist, you'll encounter data that is represented in a variety of different ways, so it is important to be able to recognize tidy (or untidy) data when you see it.
+
+In this exercise, two example datasets have been pre-loaded into the DataFrames df1 and df2. Only one of them is tidy. Your job is to explore these further in the IPython Shell and identify the one that is not tidy, and why it is not tidy.
+
+In the rest of this course, you will frequently be asked to explore the structure of DataFrames in the IPython Shell prior to performing different operations on them. Doing this will not only strengthen your comprehension of the data cleaning concepts covered in this course, but will also help you realize and take advantage of the relationship between working in the Shell and in the script.
+
+____________________________________________________________________________________________________________________
+
+eshaping your data using melt
+Melting data is the process of turning columns of your data into rows of data. Consider the DataFrames from the previous exercise. In the tidy DataFrame, the variables Ozone, Solar.R, Wind, and Temp each had their own column. If, however, you wanted these variables to be in rows instead, you could melt the DataFrame. In doing so, however, you would make the data untidy! This is important to keep in mind: Depending on how your data is represented, you will have to reshape it differently.
+
+In this exercise, you will practice melting a DataFrame using pd.melt(). There are two parameters you should be aware of: id_vars and value_vars. The id_vars represent the columns of the data you do not want to melt (i.e., keep it in its current shape), while the value_vars represent the columns you do wish to melt into rows. By default, if no value_vars are provided, all columns not set in the id_vars will be melted. This could save a bit of typing, depending on the number of columns that need to be melted.
+
+The (tidy) DataFrame airquality has been pre-loaded. Your job is to melt its Ozone, Solar.R, Wind, and Temp columns into rows. Later in this chapter, you'll learn how to bring this melted DataFrame back into a tidy form.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Print the head of airquality.
+Use pd.melt() to melt the Ozone, Solar.R, Wind, and Temp columns of airquality into rows. Do this by using id_vars to specify the columns you do not wish to melt: 'Month' and 'Day'.
+Print the head of airquality_melt.
+
+# Print the head of airquality
+print(airquality.head())
+
+# Melt airquality: airquality_melt
+airquality_melt = pd.melt(airquality, id_vars=['Month', 'Day'])
+
+# Print the head of airquality_melt
+print(airquality_melt.head())
+
+
+
+<script.py> output:
+       Ozone  Solar.R  Wind  Temp  Month  Day
+    0   41.0    190.0   7.4    67      5    1
+    1   36.0    118.0   8.0    72      5    2
+    2   12.0    149.0  12.6    74      5    3
+    3   18.0    313.0  11.5    62      5    4
+    4    NaN      NaN  14.3    56      5    5
+       Month  Day variable  value
+    0      5    1    Ozone   41.0
+    1      5    2    Ozone   36.0
+    2      5    3    Ozone   12.0
+    3      5    4    Ozone   18.0
+    4      5    5    Ozone    NaN
+    
+    
+    ___________________________________________________________________________________________________________________________
+    
+    
+    Customizing melted data
+When melting DataFrames, it would be better to have column names more meaningful than variable and value.
+
+The default names may work in certain situations, but it's best to always have data that is self explanatory.
+
+You can rename the variable column by specifying an argument to the var_name parameter, and the value column by specifying an argument to the value_name parameter. You will now practice doing exactly this. The DataFrame airquality has been pre-loaded for you.
+
+Instructions
+100 XP
+Print the head of airquality.
+Melt the Ozone, Solar.R, Wind, and Temp columns of airquality into rows, with the default variable column renamed to 'measurement' and the default value column renamed to 'reading'. You can do this by specifying, respectively, the var_name and value_name parameters.
+Print the head of airquality_melt.
+    
+    
+ # Print the head of airquality
+print(airquality.head())
+
+# Melt airquality: airquality_melt
+airquality_melt = pd.melt(airquality, id_vars=['Month', 'Day'], var_name='measurement', value_name='reading')
+
+# Print the head of airquality_melt
+print(airquality_melt.head())
+
+
+<script.py> output:
+       Ozone  Solar.R  Wind  Temp  Month  Day
+    0   41.0    190.0   7.4    67      5    1
+    1   36.0    118.0   8.0    72      5    2
+    2   12.0    149.0  12.6    74      5    3
+    3   18.0    313.0  11.5    62      5    4
+    4    NaN      NaN  14.3    56      5    5
+       Month  Day measurement  reading
+    0      5    1       Ozone     41.0
+    1      5    2       Ozone     36.0
+    2      5    3       Ozone     12.0
+    3      5    4       Ozone     18.0
+    4      5    5       Ozone      NaN
+    
+    
+    ________________________________________________________________________________________________________________________
+    
+    
+    
+    Pivot data
+Pivoting data is the opposite of melting it. Remember the tidy form that the airquality DataFrame was in before you melted it? You'll now begin pivoting it back into that form using the .pivot_table() method!
+
+While melting takes a set of columns and turns it into a single column, pivoting will create a new column for each unique value in a specified column.
+
+.pivot_table() has an index parameter which you can use to specify the columns that you don't want pivoted: It is similar to the id_vars parameter of pd.melt(). Two other parameters that you have to specify are columns (the name of the column you want to pivot), and values (the values to be used when the column is pivoted). The melted DataFrame airquality_melt has been pre-loaded for you.
+
+Instructions
+100 XP
+Print the head of airquality_melt.
+Pivot airquality_melt by using .pivot_table() with the rows indexed by 'Month' and 'Day', the columns indexed by 'measurement', and the values populated with 'reading'.
+Print the head of airquality_pivot.
+
+
+
+# Print the head of airquality_melt
+print(airquality_melt.head())
+
+# Pivot airquality_melt: airquality_pivot
+airquality_pivot = airquality_melt.pivot_table(index=['Month','Day'], columns='measurement', values='reading')
+
+# Print the head of airquality_pivot
+print(airquality_pivot.head())
+
+
+<script.py> output:
+       Month  Day measurement  reading
+    0      5    1       Ozone     41.0
+    1      5    2       Ozone     36.0
+    2      5    3       Ozone     12.0
+    3      5    4       Ozone     18.0
+    4      5    5       Ozone      NaN
+    measurement  Ozone  Solar.R  Temp  Wind
+    Month Day                              
+    5     1       41.0    190.0  67.0   7.4
+          2       36.0    118.0  72.0   8.0
+          3       12.0    149.0  74.0  12.6
+          4       18.0    313.0  62.0  11.5
+          5        NaN      NaN  56.0  14.3
+          
+          
+          
+ _________________________________________________________________________________________________________________________
+ 
+ 
+ 
+ Resetting the index of a DataFrame
+After pivoting airquality_melt in the previous exercise, you didn't quite get back the original DataFrame.
+
+What you got back instead was a pandas DataFrame with a hierarchical index (also known as a MultiIndex).
+
+Hierarchical indexes are covered in depth in Manipulating DataFrames with pandas. In essence, they allow you to group columns or rows by another variable - in this case, by 'Month' as well as 'Day'.
+
+There's a very simple method you can use to get back the original DataFrame from the pivoted DataFrame: .reset_index(). Dan didn't show you how to use this method in the video, but you're now going to practice using it in this exercise to get back the original DataFrame from airquality_pivot, which has been pre-loaded.
+
+Instructions
+100 XP
+Print the index of airquality_pivot by accessing its .index attribute. This has been done for you.
+Reset the index of airquality_pivot using its .reset_index() method.
+Print the new index of airquality_pivot.
+Print the head of airquality_pivot.
+
+
+
+# Print the index of airquality_pivot
+print(airquality_pivot.index)
+
+# Reset the index of airquality_pivot: airquality_pivot_reset
+airquality_pivot_reset = airquality_pivot.reset_index()
+
+# Print the new index of airquality_pivot_reset
+print(airquality_pivot_reset.index)
+
+# Print the head of airquality_pivot_reset
+print(airquality_pivot_reset.head())
+
+
+
+<script.py> output:
+    MultiIndex(levels=[[5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]],
+               labels=[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]],
+               names=['Month', 'Day'])
+    RangeIndex(start=0, stop=153, step=1)
+    measurement  Month  Day  Ozone  Solar.R  Temp  Wind
+    0                5    1   41.0    190.0  67.0   7.4
+    1                5    2   36.0    118.0  72.0   8.0
+    2                5    3   12.0    149.0  74.0  12.6
+    3                5    4   18.0    313.0  62.0  11.5
+    4                5    5    NaN      NaN  56.0  14.3
+    
+    
+    
+________________________________________________________________________________________________________________________
+
+Pivoting duplicate values
+So far, you've used the .pivot_table() method when there are multiple index values you want to hold constant during a pivot. In the video, Dan showed you how you can also use pivot tables to deal with duplicate values by providing an aggregation function through the aggfunc parameter. Here, you're going to combine both these uses of pivot tables.
+
+Let's say your data collection method accidentally duplicated your dataset. Such a dataset, in which each row is duplicated, has been pre-loaded as airquality_dup. In addition, the airquality_melt DataFrame from the previous exercise has been pre-loaded. Explore their shapes in the IPython Shell by accessing their .shape attributes to confirm the duplicate rows present in airquality_dup.
+
+You'll see that by using .pivot_table() and the aggfunc parameter, you can not only reshape your data, but also remove duplicates. Finally, you can then flatten the columns of the pivoted DataFrame using .reset_index().
+
+NumPy and pandas have been imported as np and pd respectively.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Pivot airquality_dup by using .pivot_table() with the rows indexed by 'Month' and 'Day', the columns indexed by 'measurement', and the values populated with 'reading'. Use np.mean for the aggregation function.
+Flatten airquality_pivot by resetting its index.
+Print the head of airquality_pivot and then the original airquality DataFrame to compare their structure.
+
+
+# Pivot airquality_dup: airquality_pivot
+airquality_pivot = airquality_dup.pivot_table(index=['Month','Day'], columns='measurement', values='reading', aggfunc=np.mean)
+
+# Reset the index of airquality_pivot
+airquality_pivot = airquality_pivot.reset_index()
+
+# Print the head of airquality_pivot
+print(airquality_pivot.head())
+
+# Print the head of airquality
+print(airquality.head())
+
+
+
+<script.py> output:
+    measurement  Month  Day  Ozone  Solar.R  Temp  Wind
+    0                5    1   41.0    190.0  67.0   7.4
+    1                5    2   36.0    118.0  72.0   8.0
+    2                5    3   12.0    149.0  74.0  12.6
+    3                5    4   18.0    313.0  62.0  11.5
+    4                5    5    NaN      NaN  56.0  14.3
+       Ozone  Solar.R  Wind  Temp  Month  Day
+    0   41.0    190.0   7.4    67      5    1
+    1   36.0    118.0   8.0    72      5    2
+    2   12.0    149.0  12.6    74      5    3
+    3   18.0    313.0  11.5    62      5    4
+    4    NaN      NaN  14.3    56      5    5
+_________________________________________________________________________________________________________________________________
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ============================================================================================================
 

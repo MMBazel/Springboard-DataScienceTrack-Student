@@ -1,0 +1,194 @@
+Course Description
+In this second course in the Python Data Science Toolbox, you'll continue to build your Python Data Science skills. First you'll enter the wonderful world of iterators, objects that you have already encountered in the context of for loops without having necessarily known it. You'll then learn about list comprehensions, which are extremely handy tools that form a basic component in the toolbox of all modern Data Scientists working in Python. You'll end the course by working through a case study in which you'll apply all of the techniques you learned both in this course as well as the prequel. If you're looking to make it as a Pythonista Data Science ninja, you have come to the right place.
+
+===================================================================================================================================
+
+1
+Using iterators in PythonLand
+
+
+Here, you'll learn all about iterators and iterables, which you have already worked with before when writing for loops! You'll learn about some very useful functions that will allow you to effectively work with iterators and finish the chapter with a use case that is pertinent to the world of Data Science - dealing with large amounts of data - in this case, data from Twitter that you will load in chunks using iterators!
+
+
+Iterators vs Iterables
+Let's do a quick recall of what you've learned about iterables and iterators. Recall from the video that an iterable is an object that can return an iterator, while an iterator is an object that keeps state and produces the next value when you call next() on it. In this exercise, you will identify which object is an iterable and which is an iterator.
+
+The environment has been pre-loaded with the variables flash1 and flash2. Try printing out their values with print() and next() to figure out which is an iterable and which is an iterator.
+
+
+------------------------------------------------------------------------------------------------------
+
+Iterating over iterables (1)
+Great, you're familiar with what iterables and iterators are! In this exercise, you will reinforce your knowledge about these by iterating over and printing from iterables and iterators.
+
+You are provided with a list of strings flash. You will practice iterating over the list by using a for loop. You will also create an iterator for the list and access the values from the iterator.
+
+Instructions
+100 XP
+Create a for loop to loop over flash and print the values in the list. Use person as the loop variable.
+Create an iterator for the list flash and assign the result to superspeed.
+Print each of the items from superspeed using next() 4 times.
+
+
+
+# Create a list of strings: flash
+flash = ['jay garrick', 'barry allen', 'wally west', 'bart allen']
+
+# Print each list item in flash using a for loop
+for person in flash:
+    print(person)
+    
+
+
+# Create an iterator for flash: superspeed
+superspeed = iter(flash)
+
+# Print each item from the iterator
+print(next(superspeed))
+print(next(superspeed))
+print(next(superspeed))
+print(next(superspeed))
+
+
+In [2]: # Create a list of strings: flash
+        flash = ['jay garrick', 'barry allen', 'wally west', 'bart allen']
+        
+        # Print each list item in flash using a for loop
+        for person in flash:
+            print(person)
+jay garrick
+barry allen
+wally west
+bart allen
+
+In [3]: # Create an iterator for flash: superspeed
+        superspeed = iter(flash)
+
+<script.py> output:
+    jay garrick
+    barry allen
+    wally west
+    bart allen
+    jay garrick
+    barry allen
+    wally west
+    bart allen
+		
+		
+		
+		
+		_____________________________________________________________________________________________________________________________
+		
+		Iterating over iterables (2)
+One of the things you learned about in this chapter is that not all iterables are actual lists. A couple of examples that we looked at are strings and the use of the range() function. In this exercise, we will focus on the range() function.
+
+You can use range() in a for loop as if it's a list to be iterated over:
+
+for i in range(5):
+    print(i)
+Recall that range() doesn't actually create the list; instead, it creates a range object with an iterator that produces the values until it reaches the limit (in the example, until the value 4). If range() created the actual list, calling it with a value of 10100 may not work, especially since a number as big as that may go over a regular computer's memory. The value 10100 is actually what's called a Googol which is a 1 followed by a hundred 0s. That's a huge number!
+
+Your task for this exercise is to show that calling range() with 10100 won't actually pre-create the list.
+
+Instructions
+100 XP
+Create an iterator object small_value over range(3) using the function iter().
+Using a for loop, iterate over range(3), printing the value for every iteration. Use num as the loop variable.
+Create an iterator object googol over range(10 ** 100).
+
+
+# Create an iterator for range(3): small_value
+small_value = iter(range(3))
+
+# Print the values in small_value
+print(next(small_value))
+print(next(small_value))
+print(next(small_value))
+
+# Loop over range(3) and print the values
+for num in range(3):
+    print(num)
+
+
+# Create an iterator for range(10 ** 100): googol
+googol = iter(range(10 ** 100))
+
+# Print the first 5 values from googol
+print(next(googol))
+print(next(googol))
+print(next(googol))
+print(next(googol))
+print(next(googol))
+
+<script.py> output:
+    0
+    1
+    2
+    0
+    1
+    2
+    0
+    1
+    2
+    3
+    4
+
+_____________________________________________________________________________________________________________________________
+
+Iterators as function arguments
+You've been using the iter() function to get an iterator object, as well as the next() function to retrieve the values one by one from the iterator object.
+
+There are also functions that take iterators as arguments. For example, the list() and sum() functions return a list and the sum of elements, respectively.
+
+In this exercise, you will use these functions by passing an iterator from range() and then printing the results of the function calls.
+
+Instructions
+100 XP
+Create a range object that would produce the values from 10 to 20 using range(). Assign the result to values.
+Use the list() function to create a list of values from the range object values. Assign the result to values_list.
+Use the sum() function to get the sum of the values from 10 to 20 from the range object values. Assign the result to values_sum.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+========================================================================================================================================
+
+2
+List comprehensions and generators
+
+
+In this chapter, you'll build on your knowledge of iterators and be introduced to list comprehensions, which allow you to create complicated lists and lists of lists in one line of code! List comprehensions can dramatically simplify your code and make it more efficient, and will become a vital part of your Python Data Science toolbox. You'll then learn about generators, which are extremely helpful when working with large sequences of data that you may not want to store in memory but instead generate on the fly.
+
+=====================================================================================================================================
+
+3
+Bringing it all together!
+
+
+
+This chapter will allow you to apply your newly acquired skills towards wrangling and extracting meaningful information from a real-world dataset - the World Bank's World Development Indicators dataset! You'll have the chance to write your own functions and list comprehensions as you work with iterators and generators and solidify your Python Data Science chops. Enjoy!
+
+

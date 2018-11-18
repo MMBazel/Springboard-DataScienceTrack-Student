@@ -789,129 +789,89 @@ ________________________________________________________________________________
 
 
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+Splitting a column with .str
+The dataset you saw in the video, consisting of case counts of tuberculosis by country, year, gender, and age group, has been pre-loaded into a DataFrame as tb.
+
+In this exercise, you're going to tidy the 'm014' column, which represents males aged 0-14 years of age. In order to parse this value, you need to extract the first letter into a new column for gender, and the rest into a column for age_group. Here, since you can parse values by position, you can take advantage of pandas' vectorized string slicing by using the str attribute of columns of type object.
+
+Begin by printing the columns of tb in the IPython Shell using its .columns attribute, and take note of the problematic column.
+
+Instructions
+100 XP
+Melt tb keeping 'country' and 'year' fixed.
+Create a 'gender' column by slicing the first letter of the variable column of tb_melt.
+Create an 'age_group' column by slicing the rest of the variable column of tb_melt.
+Print the head of tb_melt. This has been done for you, so hit 'Submit Answer' to see the results!
+
+
+# Melt tb: tb_melt
+tb_melt = pd.melt(tb, id_vars=['country','year'])
+
+# Create the 'gender' column
+tb_melt['gender'] = tb_melt.variable.str[0]
+
+# Create the 'age_group' column
+tb_melt['age_group'] = tb_melt.variable.str[1:]
+
+# Print the head of tb_melt
+print(tb_melt.head())
+
+
+<script.py> output:
+      country  year variable  value gender age_group
+    0      AD  2000     m014    0.0      m       014
+    1      AE  2000     m014    2.0      m       014
+    2      AF  2000     m014   52.0      m       014
+    3      AG  2000     m014    0.0      m       014
+    4      AL  2000     m014    2.0      m       014
+    
+    
+    ____________________________________________________________________________________________________________________________
+    
+    Splitting a column with .split() and .get()
+Another common way multiple variables are stored in columns is with a delimiter. You'll learn how to deal with such cases in this exercise, using a dataset consisting of Ebola cases and death counts by state and country. It has been pre-loaded into a DataFrame as ebola.
+
+Print the columns of ebola in the IPython Shell using ebola.columns. Notice that the data has column names such as Cases_Guinea and Deaths_Guinea. Here, the underscore _ serves as a delimiter between the first part (cases or deaths), and the second part (country).
+
+This time, you cannot directly slice the variable by position as in the previous exercise. You now need to use Python's built-in string method called .split(). By default, this method will split a string into parts separated by a space. However, in this case you want it to split by an underscore. You can do this on Cases_Guinea, for example, using Cases_Guinea.split('_'), which returns the list ['Cases', 'Guinea'].
+
+The next challenge is to extract the first element of this list and assign it to a type variable, and the second element of the list to a country variable. You can accomplish this by accessing the str attribute of the column and using the .get() method to retrieve the 0 or 1 index, depending on the part you want.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Melt ebola using 'Date' and 'Day' as the id_vars, 'type_country' as the var_name, and 'counts' as the value_name.
+Create a column called 'str_split' by splitting the 'type_country' column of ebola_melt on '_'. Note that you will first have to access the str attribute of type_country before you can use .split().
+Create a column called 'type' by using the .get() method to retrieve index 0 of the 'str_split' column of ebola_melt.
+Create a column called 'country' by using the .get() method to retrieve index 1 of the 'str_split' column of ebola_melt.
+Print the head of ebola. This has been done for you, so hit 'Submit Answer' to view the results!
 
 
 
+# Melt ebola: ebola_melt
+ebola_melt = pd.melt(ebola, id_vars=['Date', 'Day'], var_name='type_country', value_name='counts')
+
+# Create the 'str_split' column
+ebola_melt['str_split'] = ebola_melt.type_country.str.split('_')
+
+# Create the 'type' column
+ebola_melt['type'] = ebola_melt.str_split.str.get(0)
+
+# Create the 'country' column
+ebola_melt['country'] = ebola_melt.str_split.str.get(1)
+
+# Print the head of ebola_melt
+print(ebola_melt.head())
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<script.py> output:
+             Date  Day  type_country  counts        str_split   type country
+    0    1/5/2015  289  Cases_Guinea  2776.0  [Cases, Guinea]  Cases  Guinea
+    1    1/4/2015  288  Cases_Guinea  2775.0  [Cases, Guinea]  Cases  Guinea
+    2    1/3/2015  287  Cases_Guinea  2769.0  [Cases, Guinea]  Cases  Guinea
+    3    1/2/2015  286  Cases_Guinea     NaN  [Cases, Guinea]  Cases  Guinea
+    4  12/31/2014  284  Cases_Guinea  2730.0  [Cases, Guinea]  Cases  Guinea
 
 ============================================================================================================
 
@@ -921,6 +881,369 @@ Combining data for analysis
 
 The ability to transform and combine your data is a crucial skill in data science, because your data may not always come in one monolithic file or table for you to load. A large dataset may be broken into separate datasets to facilitate easier storage and sharing. Or if you are dealing with time series data, for example, you may have a new dataset for each day. No matter the reason, it is important to be able to combine datasets so you can either clean a single dataset, or clean each dataset separately and then combine them later so you can run your analysis on a single dataset. In this chapter, you'll learn all about combining data.
 
+
+
+Combining rows of data
+The dataset you'll be working with here relates to NYC Uber data. The original dataset has all the originating Uber pickup locations by time and latitude and longitude. For didactic purposes, you'll be working with a very small portion of the actual data.
+
+Three DataFrames have been pre-loaded: uber1, which contains data for April 2014, uber2, which contains data for May 2014, and uber3, which contains data for June 2014. Your job in this exercise is to concatenate these DataFrames together such that the resulting DataFrame has the data for all three months.
+
+Begin by exploring the structure of these three DataFrames in the IPython Shell using methods such as .head().
+
+Instructions
+100 XP
+Concatenate uber1, uber2, and uber3 together using pd.concat(). You'll have to pass the DataFrames in as a list.
+Print the shape and then the head of the concatenated DataFrame, row_concat.
+
+# Concatenate uber1, uber2, and uber3: row_concat
+row_concat = pd.concat([uber1, uber2, uber3])
+
+# Print the shape of row_concat
+print(row_concat.shape)
+
+# Print the head of row_concat
+print(row_concat.head())
+
+
+<script.py> output:
+    (297, 4)
+              Date/Time      Lat      Lon    Base
+    0  4/1/2014 0:11:00  40.7690 -73.9549  B02512
+    1  4/1/2014 0:17:00  40.7267 -74.0345  B02512
+    2  4/1/2014 0:21:00  40.7316 -73.9873  B02512
+    3  4/1/2014 0:28:00  40.7588 -73.9776  B02512
+    4  4/1/2014 0:33:00  40.7594 -73.9722  B02512
+    
+    
+    ___________________________________________________________________________________________________________________________-
+    
+    
+    Combining columns of data
+Think of column-wise concatenation of data as stitching data together from the sides instead of the top and bottom. To perform this action, you use the same pd.concat() function, but this time with the keyword argument axis=1. The default, axis=0, is for a row-wise concatenation.
+
+You'll return to the Ebola dataset you worked with briefly in the last chapter. It has been pre-loaded into a DataFrame called ebola_melt. In this DataFrame, the status and country of a patient is contained in a single column. This column has been parsed into a new DataFrame, status_country, where there are separate columns for status and country.
+
+Explore the ebola_melt and status_country DataFrames in the IPython Shell. Your job is to concatenate them column-wise in order to obtain a final, clean DataFrame.
+
+Instructions
+100 XP
+Concatenate ebola_melt and status_country column-wise into a single DataFrame called ebola_tidy. Be sure to specify axis=1 and to pass the two DataFrames in as a list.
+Print the shape and then the head of the concatenated DataFrame, ebola_tidy.
+
+
+# Concatenate ebola_melt and status_country column-wise: ebola_tidy
+ebola_tidy = pd.concat([ebola_melt, status_country], axis = 1)
+
+# Print the shape of ebola_tidy
+print(ebola_tidy.shape)
+
+# Print the head of ebola_tidy
+print(ebola_tidy.head())
+
+
+         Date  Day status_country  counts
+0    1/5/2015  289   Cases_Guinea  2776.0
+1    1/4/2015  288   Cases_Guinea  2775.0
+2    1/3/2015  287   Cases_Guinea  2769.0
+3    1/2/2015  286   Cases_Guinea     NaN
+4  12/31/2014  284   Cases_Guinea  2730.0
+  status country
+0  Cases  Guinea
+1  Cases  Guinea
+2  Cases  Guinea
+3  Cases  Guinea
+4  Cases  Guinea
+
+<script.py> output:
+    (1952, 6)
+             Date  Day status_country  counts status country
+    0    1/5/2015  289   Cases_Guinea  2776.0  Cases  Guinea
+    1    1/4/2015  288   Cases_Guinea  2775.0  Cases  Guinea
+    2    1/3/2015  287   Cases_Guinea  2769.0  Cases  Guinea
+    3    1/2/2015  286   Cases_Guinea     NaN  Cases  Guinea
+    4  12/31/2014  284   Cases_Guinea  2730.0  Cases  Guinea
+    
+    
+    ______________________________________________________________________________________________________________________
+    
+    
+Finding files that match a pattern
+You're now going to practice using the glob module to find all csv files in the workspace. In the next exercise, you'll programmatically load them into DataFrames.
+
+As Dan showed you in the video, the glob module has a function called glob that takes a pattern and returns a list of the files in the working directory that match that pattern.
+
+For example, if you know the pattern is part_ single digit number .csv, you can write the pattern as 'part_?.csv' (which would match part_1.csv, part_2.csv, part_3.csv, etc.)
+
+Similarly, you can find all .csv files with '*.csv', or all parts with 'part_*'. The ? wildcard represents any 1 character, and the * wildcard represents any number of characters.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import the glob module along with pandas (as its usual alias pd).
+Write a pattern to match all .csv files.
+Save all files that match the pattern using the glob() function within the glob module. That is, by using glob.glob().
+Print the list of file names. This has been done for you.# Import necessary modules
+
+
+import glob as glob
+import pandas as pd
+
+# Write the pattern: pattern
+pattern = '*.csv'
+
+# Save all file matches: csv_files
+csv_files = glob.glob(pattern) 
+
+# Print the file names
+print(csv_files)
+
+# Load the second file into a DataFrame: csv2
+csv2 = pd.read_csv(csv_files[1])
+
+# Print the head of csv2
+print(csv2.head())
+
+Read the second file in csv_files (i.e., index 1) into a DataFrame called csv2.
+Hit 'Submit Answer' to print the head of csv2. Does it look familiar?
+
+
+
+
+
+<script.py> output:
+    ['uber-raw-data-2014_05.csv', 'uber-raw-data-2014_04.csv', 'uber-raw-data-2014_06.csv']
+              Date/Time      Lat      Lon    Base
+    0  4/1/2014 0:11:00  40.7690 -73.9549  B02512
+    1  4/1/2014 0:17:00  40.7267 -74.0345  B02512
+    2  4/1/2014 0:21:00  40.7316 -73.9873  B02512
+    3  4/1/2014 0:28:00  40.7588 -73.9776  B02512
+    4  4/1/2014 0:33:00  40.7594 -73.9722  B02512
+    
+    
+    
+    ____________________________________________________________________________________________________________________
+    
+    
+
+Iterating and concatenating all matches
+Now that you have a list of filenames to load, you can load all the files into a list of DataFrames that can then be concatenated.
+
+You'll start with an empty list called frames. Your job is to use a for loop to iterate through each of the filenames, read each filename into a DataFrame, and then append it to the frames list.
+
+You can then concatenate this list of DataFrames using pd.concat(). Go for it!
+
+Instructions
+100 XP
+Write a for loop to iterate through csv_files:
+In each iteration of the loop, read csv into a DataFrame called df.
+After creating df, append it to the list frames using the .append() method.
+Concatenate frames into a single DataFrame called uber.
+Hit 'Submit Answer' to see the head and shape of the concatenated DataFrame!
+
+
+
+
+# Create an empty list: frames
+frames = []
+
+#  Iterate over csv_files
+for csv in csv_files:
+
+    #  Read csv into a DataFrame: df
+    df = pd.read_csv(csv)
+    
+    # Append df to frames
+    frames.append(df)
+
+# Concatenate frames into a single DataFrame: uber
+uber = pd.concat(frames)
+
+# Print the shape of uber
+print(uber.shape)
+
+# Print the head of uber
+print(uber.head())
+
+
+<script.py> output:
+    (297, 4)
+              Date/Time      Lat      Lon    Base
+    0  5/1/2014 0:02:00  40.7521 -73.9914  B02512
+    1  5/1/2014 0:06:00  40.6965 -73.9715  B02512
+    2  5/1/2014 0:15:00  40.7464 -73.9838  B02512
+    3  5/1/2014 0:17:00  40.7463 -74.0011  B02512
+    4  5/1/2014 0:17:00  40.7594 -73.9734  B02512
+    
+    
+    _________________________________________________________________________________________________________________
+    
+    
+    1-to-1 data merge
+Merging data allows you to combine disparate datasets into a single dataset to do more complex analysis.
+
+Here, you'll be using survey data that contains readings that William Dyer, Frank Pabodie, and Valentina Roerich took in the late 1920 and 1930 while they were on an expedition towards Antarctica. The dataset was taken from a sqlite database from the Software Carpentry SQL lesson.
+
+Two DataFrames have been pre-loaded: site and visited. Explore them in the IPython Shell and take note of their structure and column names. Your task is to perform a 1-to-1 merge of these two DataFrames using the 'name' column of site and the 'site' column of visited.
+
+Instructions
+100 XP
+Merge the site and visited DataFrames on the 'name' column of site and 'site' column of visited.
+Print the merged DataFrame o2o.
+
+
+
+
+# Merge the DataFrames: o2o
+o2o = pd.merge(left=site, right=visited, left_on='name', right_on='site')
+
+# Print o2o
+print(o2o)
+
+
+<script.py> output:
+        name    lat    long  ident   site       dated
+    0   DR-1 -49.85 -128.57    619   DR-1  1927-02-08
+    1   DR-3 -47.15 -126.72    734   DR-3  1939-01-07
+    2  MSK-4 -48.87 -123.40    837  MSK-4  1932-01-14
+    
+    
+ _______________________________________________________________________________________________________________________________
+ 
+ 
+ 
+ Many-to-1 data merge
+In a many-to-one (or one-to-many) merge, one of the values will be duplicated and recycled in the output. That is, one of the keys in the merge is not unique.
+
+Here, the two DataFrames site and visited have been pre-loaded once again. Note that this time, visited has multiple entries for the site column. Confirm this by exploring it in the IPython Shell.
+
+The .merge() method call is the same as the 1-to-1 merge from the previous exercise, but the data and output will be different.
+
+Instructions
+100 XP
+Merge the site and visited DataFrames on the 'name' column of site and 'site' column of visited, exactly as you did in the previous exercise.
+Print the merged DataFrame and then hit 'Submit Answer' to see the different output produced by this merge!
+
+
+# Merge the DataFrames: m2o
+m2o = pd.merge(left=site, right=visited, left_on='name', right_on='site')
+
+# Print m2o
+print(m2o)
+
+
+<script.py> output:
+        name    lat    long  ident   site       dated
+    0   DR-1 -49.85 -128.57    619   DR-1  1927-02-08
+    1   DR-1 -49.85 -128.57    622   DR-1  1927-02-10
+    2   DR-1 -49.85 -128.57    844   DR-1  1932-03-22
+    3   DR-3 -47.15 -126.72    734   DR-3  1939-01-07
+    4   DR-3 -47.15 -126.72    735   DR-3  1930-01-12
+    5   DR-3 -47.15 -126.72    751   DR-3  1930-02-26
+    6   DR-3 -47.15 -126.72    752   DR-3         NaN
+    7  MSK-4 -48.87 -123.40    837  MSK-4  1932-01-14
+    
+    
+    ________________________________________________________________________________________________________________________________
+    
+    
+    
+    Many-to-many data merge
+The final merging scenario occurs when both DataFrames do not have unique keys for a merge. What happens here is that for each duplicated key, every pairwise combination will be created.
+
+Two example DataFrames that share common key values have been pre-loaded: df1 and df2. Another DataFrame df3, which is the result of df1 merged with df2, has been pre-loaded. All three DataFrames have been printed - look at the output and notice how pairwise combinations have been created. This example is to help you develop your intuition for many-to-many merges.
+
+Here, you'll work with the site and visited DataFrames from before, and a new survey DataFrame. Your task is to merge site and visited as you did in the earlier exercises. You will then merge this merged DataFrame with survey.
+
+Begin by exploring the site, visited, and survey DataFrames in the IPython Shell.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Merge the site and visited DataFrames on the 'name' column of site and 'site' column of visited, exactly as you did in the previous two exercises. Save the result as m2m.
+Merge the m2m and survey DataFrames on the 'ident' column of m2m and 'taken' column of survey.
+Hit 'Submit Answer' to print the first 20 lines of the merged DataFrame!
+
+
+    
+    
+# Merge site and visited: m2m
+m2m = pd.merge(left=site, right=visited, left_on='name', right_on='site')
+
+# Merge m2m and survey: m2m
+m2m = pd.merge(left=m2m, right=survey, left_on='ident', right_on='taken')
+
+# Print the first 20 lines of m2m
+print(m2m.head(20))
+
+
+  c1  c2
+0  a   1
+1  a   2
+2  b   3
+3  b   4
+  c1  c2
+0  a  10
+1  a  20
+2  b  30
+3  b  40
+  c1  c2_x  c2_y
+0  a     1    10
+1  a     1    20
+2  a     2    10
+3  a     2    20
+4  b     3    30
+5  b     3    40
+6  b     4    30
+7  b     4    40
+
+<script.py> output:
+         name    lat    long  ident   site       dated  taken person quant  \
+    0    DR-1 -49.85 -128.57    619   DR-1  1927-02-08    619   dyer   rad   
+    1    DR-1 -49.85 -128.57    619   DR-1  1927-02-08    619   dyer   sal   
+    2    DR-1 -49.85 -128.57    622   DR-1  1927-02-10    622   dyer   rad   
+    3    DR-1 -49.85 -128.57    622   DR-1  1927-02-10    622   dyer   sal   
+    4    DR-1 -49.85 -128.57    844   DR-1  1932-03-22    844    roe   rad   
+    5    DR-3 -47.15 -126.72    734   DR-3  1939-01-07    734     pb   rad   
+    6    DR-3 -47.15 -126.72    734   DR-3  1939-01-07    734   lake   sal   
+    7    DR-3 -47.15 -126.72    734   DR-3  1939-01-07    734     pb  temp   
+    8    DR-3 -47.15 -126.72    735   DR-3  1930-01-12    735     pb   rad   
+    9    DR-3 -47.15 -126.72    735   DR-3  1930-01-12    735    NaN   sal   
+    10   DR-3 -47.15 -126.72    735   DR-3  1930-01-12    735    NaN  temp   
+    11   DR-3 -47.15 -126.72    751   DR-3  1930-02-26    751     pb   rad   
+    12   DR-3 -47.15 -126.72    751   DR-3  1930-02-26    751     pb  temp   
+    13   DR-3 -47.15 -126.72    751   DR-3  1930-02-26    751   lake   sal   
+    14   DR-3 -47.15 -126.72    752   DR-3         NaN    752   lake   rad   
+    15   DR-3 -47.15 -126.72    752   DR-3         NaN    752   lake   sal   
+    16   DR-3 -47.15 -126.72    752   DR-3         NaN    752   lake  temp   
+    17   DR-3 -47.15 -126.72    752   DR-3         NaN    752    roe   sal   
+    18  MSK-4 -48.87 -123.40    837  MSK-4  1932-01-14    837   lake   rad   
+    19  MSK-4 -48.87 -123.40    837  MSK-4  1932-01-14    837   lake   sal   
+    
+        reading  
+    0      9.82  
+    1      0.13  
+    2      7.80  
+    3      0.09  
+    4     11.25  
+    5      8.41  
+    6      0.05  
+    7    -21.50  
+    8      7.22  
+    9      0.06  
+    10   -26.00  
+    11     4.35  
+    12   -18.50  
+    13     0.10  
+    14     2.19  
+    15     0.09  
+    16   -16.00  
+    17    41.60  
+    18     1.46  
+    19     0.21
+    
+   
 ===============================================================================================================
 
 4
@@ -928,6 +1251,53 @@ Cleaning data for analysis
 
 
 Here, you'll dive into some of the grittier aspects of data cleaning. You'll learn about string manipulation and pattern matching to deal with unstructured data, and then explore techniques to deal with missing or duplicate data. You'll also learn the valuable skill of programmatically checking your data for consistency, which will give you confidence that your code is running correctly and that the results of your analysis are reliable!
+
+
+Converting data types
+In this exercise, you'll see how ensuring all categorical variables in a DataFrame are of type category reduces memory usage.
+
+The tips dataset has been loaded into a DataFrame called tips. This data contains information about how much a customer tipped, whether the customer was male or female, a smoker or not, etc.
+
+Look at the output of tips.info() in the IPython Shell. You'll note that two columns that should be categorical - sex and smoker - are instead of type object, which is pandas' way of storing arbitrary strings. Your job is to convert these two columns to type category and note the reduced memory usage.
+
+Instructions
+100 XP
+Convert the sex column of the tips DataFrame to type 'category' using the .astype() method.
+Convert the smoker column of the tips DataFrame.
+Print the memory usage of tips after converting the data types of the columns. Use the .info() method to do this.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ======================================================================================================================

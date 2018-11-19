@@ -465,25 +465,391 @@ In this chapter, you'll build on your knowledge of iterators and be introduced t
 
 
 
+Write a basic list comprehension
+In this exercise, you will practice what you've learned from the video about writing list comprehensions. You will write a list comprehension and identify the output that will be produced.
+
+The following list has been pre-loaded in the environment.
+
+doctor = ['house', 'cuddy', 'chase', 'thirteen', 'wilson']
+How would a list comprehension that produces a list of the first character of each string in doctor look like? Note that the list comprehension uses doc as the iterator variable. What will the output be?
+
+
+_________________________________________________
+
+List comprehension over iterables
+You know that list comprehensions can be built over iterables. Given the following objects below, which of these can we build list comprehensions over?
+
+doctor = ['house', 'cuddy', 'chase', 'thirteen', 'wilson']
+
+range(50)
+
+underwood = 'After all, we are nothing more or less than what we choose to reveal.'
+
+jean = '24601'
+
+flash = ['jay garrick', 'barry allen', 'wally west', 'bart allen']
+
+valjean = 24601
+
+___________________________________________________________
+
+
+Writing list comprehensions
+You now have all the knowledge necessary to begin writing list comprehensions! Your job in this exercise is to write a list comprehension that produces a list of the squares of the numbers ranging from 0 to 9.
+
+Instructions
+100 XP
+Using the range of numbers from 0 to 9 as your iterable and i as your iterator variable, write a list comprehension that produces a list of numbers consisting of the squared values of i.
+
+# Create list comprehension: squares
+squares = [i**2 for i in range(0,10)]
 
 
 
+___________________________________________________________________________________
 
 
 
+Nested list comprehensions
+Great! At this point, you have a good grasp of the basic syntax of list comprehensions. Let's push your code-writing skills a little further. In this exercise, you will be writing a list comprehension within another list comprehension, or nested list comprehensions. It sounds a little tricky, but you can do it!
+
+Let's step aside for a while from strings. One of the ways in which lists can be used are in representing multi-dimension objects such as matrices. Matrices can be represented as a list of lists in Python. For example a 5 x 5 matrix with values 0 to 4 in each row can be written as:
+
+matrix = [[0, 1, 2, 3, 4],
+          [0, 1, 2, 3, 4],
+          [0, 1, 2, 3, 4],
+          [0, 1, 2, 3, 4],
+          [0, 1, 2, 3, 4]]
+Your task is to recreate this matrix by using nested listed comprehensions. Recall that you can create one of the rows of the matrix with a single list comprehension. To create the list of lists, you simply have to supply the list comprehension as the output expression of the overall list comprehension:
+
+[[output expression] for iterator variable in iterable]
+
+Note that here, the output expression is itself a list comprehension.
+
+Instructions
+100 XP
+In the inner list comprehension - that is, the output expression of the nested list comprehension - create a list of values from 0 to 4 using range(). Use col as the iterator variable.
+In the iterable part of your nested list comprehension, use range() to count 5 rows - that is, create a list of values from 0 to 4. Use row as the iterator variable; note that you won't be needing this to create values in the list of lists.
 
 
 
+# Create a 5 x 5 matrix using a list of lists: matrix
+matrix = [[col for col in range(5)] for row in range(5)]
+
+# Print the matrix
+for row in matrix:
+    print(row)
+
+
+<script.py> output:
+    [0, 1, 2, 3, 4]
+    [0, 1, 2, 3, 4]
+    [0, 1, 2, 3, 4]
+    [0, 1, 2, 3, 4]
+    [0, 1, 2, 3, 4]
+    
+    
+    
+  ______________________________________________________________________________________________________________________________
+  
+
+sing conditionals in comprehensions (1)
+You've been using list comprehensions to build lists of values, sometimes using operations to create these values.
+
+An interesting mechanism in list comprehensions is that you can also create lists with values that meet only a certain condition. One way of doing this is by using conditionals on iterator variables. In this exercise, you will do exactly that!
+
+Recall from the video that you can apply a conditional statement to test the iterator variable by adding an if statement in the optional predicate expression part after the for statement in the comprehension:
+
+[ output expression for iterator variable in iterable if predicate expression ].
+
+You will use this recipe to write a list comprehension for this exercise. You are given a list of strings fellowship and, using a list comprehension, you will create a list that only includes the members of fellowship that have 7 characters or more.
+
+Instructions
+100 XP
+Use member as the iterator variable in the list comprehension. For the conditional, use len() to evaluate the iterator variable. Note that you only want strings with 7 characters or more.
+
+# Create a list of strings: fellowship
+fellowship = ['frodo', 'samwise', 'merry', 'aragorn', 'legolas', 'boromir', 'gimli']
+
+# Create list comprehension: new_fellowship
+new_fellowship = [member for member in fellowship if len(member) >= 7]
+
+# Print the new list
+print(new_fellowship)
+
+<script.py> output:
+    ['samwise', 'aragorn', 'legolas', 'boromir']
+    
+    
+    _____________________________________________________________________________________________________________________________________
+    
+    
+    
+Using conditionals in comprehensions (2)
+In the previous exercise, you used an if conditional statement in the predicate expression part of a list comprehension to evaluate an iterator variable. In this exercise, you will use an if-else statement on the output expression of the list.
+
+You will work on the same list, fellowship and, using a list comprehension and an if-else conditional statement in the output expression, create a list that keeps members of fellowship with 7 or more characters and replaces others with an empty string. Use member as the iterator variable in the list comprehension.
+
+Instructions
+100 XP
+In the output expression, keep the string as-is if the number of characters is >= 7, else replace it with an empty string - that is, '' or "".
+
+
+  # Create a list of strings: fellowship
+fellowship = ['frodo', 'samwise', 'merry', 'aragorn', 'legolas', 'boromir', 'gimli']
+
+# Create list comprehension: new_fellowship
+new_fellowship = [member if len(member) >= 7 else "" for member in fellowship]
+
+# Print the new list
+print(new_fellowship)
+
+
+<script.py> output:
+    ['', 'samwise', '', 'aragorn', 'legolas', 'boromir', '']
+    
+    
+    _____________________________________________________________________________________________________________________
+    
+    
+   Dict comprehensions
+Comprehensions aren't relegated merely to the world of lists. There are many other objects you can build using comprehensions, such as dictionaries, pervasive objects in Data Science. You will create a dictionary using the comprehension syntax for this exercise. In this case, the comprehension is called a dict comprehension.
+
+Recall that the main difference between a list comprehension and a dict comprehension is the use of curly braces {} instead of []. Additionally, members of the dictionary are created using a colon :, as in <key> : <value>.
+
+You are given a list of strings fellowship and, using a dict comprehension, create a dictionary with the members of the list as the keys and the length of each string as the corresponding values.
+
+Instructions
+100 XP
+Create a dict comprehension where the key is a string in fellowship and the value is the length of the string. Remember to use the syntax <key> : <value> in the output expression part of the comprehension to create the members of the dictionary. Use member as the iterator variable.
+    
+    
+ # Create a list of strings: fellowship
+fellowship = ['frodo', 'samwise', 'merry', 'aragorn', 'legolas', 'boromir', 'gimli']
+
+# Create dict comprehension: new_fellowship
+new_fellowship = {member:len(member) for member in fellowship}
+
+# Print the new list
+print(new_fellowship)
+
+<script.py> output:
+    {'frodo': 5, 'samwise': 7, 'boromir': 7, 'aragorn': 7, 'gimli': 5, 'merry': 5, 'legolas': 7}
+
+    
+    ________________________________________________________________________________________________________________________
+    
+    
+    List comprehensions vs generators
+You've seen from the videos that list comprehensions and generator expressions look very similar in their syntax, except for the use of parentheses () in generator expressions and brackets [] in list comprehensions.
+
+In this exercise, you will recall the difference between list comprehensions and generators. To help with that task, the following code has been pre-loaded in the environment:
+
+# List of strings
+fellowship = ['frodo', 'samwise', 'merry', 'aragorn', 'legolas', 'boromir', 'gimli']
+
+# List comprehension
+fellow1 = [member for member in fellowship if len(member) >= 7]
+
+# Generator expression
+fellow2 = (member for member in fellowship if len(member) >= 7)
+Try to play around with fellow1 and fellow2 by figuring out their types and printing out their values. Based on your observations and what you can recall from the video, select from the options below the best description for the difference between list comprehensions and generator
+    
+ _______________________________________________________________________________________________________________________
+
+
+Write your own generator expressions
+You are familiar with what generators and generator expressions are, as well as its difference from list comprehensions. In this exercise, you will practice building generator expressions on your own.
+
+Recall that generator expressions basically have the same syntax as list comprehensions, except that it uses parentheses () instead of brackets []; this should make things feel familiar! Furthermore, if you have ever iterated over a dictionary with .items(), or used the range() function, for example, you have already encountered and used generators before, without knowing it! When you use these functions, Python creates generators for you behind the scenes.
+
+Now, you will start simple by creating a generator object that produces numeric values.
+
+Instructions
+100 XP
+Create a generator object that will produce values from 0 to 30. Assign the result to result and use num as the iterator variable in the generator expression.
+Print the first 5 values by using next() appropriately in print().
+Print the rest of the values by using a for loop to iterate over the generator object.
+
+  # Create generator object: result
+result = (num for num in range(0,31))
+
+# Print the first 5 values
+print(next(result))
+print(next(result))
+print(next(result))
+print(next(result))
+print(next(result))
+
+# Print the rest of the values
+for value in result:
+    print(value)
+ 
+    
+  <script.py> output:
+    0
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+    8
+    9
+    10
+    11
+    12
+    13
+    14
+    15
+    16
+    17
+    18
+    19
+    20
+    21
+    22
+    23
+    24
+    25
+    26
+    27
+    28
+    29
+    30  
+    
+    
+ __________________________________________________________________________________________________________
+ 
+ Changing the output in generator expressions
+Great! At this point, you already know how to write a basic generator expression. In this exercise, you will push this idea a little further by adding to the output expression of a generator expression. Because generator expressions and list comprehensions are so alike in syntax, this should be a familiar task for you!
+
+You are given a list of strings lannister and, using a generator expression, create a generator object that you will iterate over to print its values.
+
+Instructions
+100 XP
+Write a generator expression that will generate the lengths of each string in lannister. Use person as the iterator variable. Assign the result to lengths.
+Supply the correct iterable in the for loop for printing the values in the generator object.
+
+
+# Create a list of strings: lannister
+lannister = ['cersei', 'jaime', 'tywin', 'tyrion', 'joffrey']
+
+# Create a generator object: lengths
+lengths = (len(person) for person in lannister)
+
+# Iterate over and print the values in lengths
+for value in lengths:
+    print(value)
+
+
+<script.py> output:
+    6
+    5
+    5
+    6
+    7
+
+
+____________________________________________________________________________________________________________________
+
+
+Build a generator
+In previous exercises, you've dealt mainly with writing generator expressions, which uses comprehension syntax. Being able to use comprehension syntax for generator expressions made your work so much easier!
+
+Now, recall from the video that not only are there generator expressions, there are generator functions as well. Generator functions are functions that, like generator expressions, yield a series of values, instead of returning a single value. A generator function is defined as you do a regular function, but whenever it generates a value, it uses the keyword yield instead of return.
+
+In this exercise, you will create a generator function with a similar mechanism as the generator expression you defined in the previous exercise:
+
+lengths = (len(person) for person in lannister)
+Instructions
+100 XP
+Complete the function header for the function get_lengths() that has a single parameter, input_list.
+In the for loop in the function definition, yield the length of the strings in input_list.
+Complete the iterable part of the for loop for printing the values generated by the get_lengths() generator function. Supply the call to get_lengths(), passing in the list lannister.
 
 
 
+# Create a list of strings
+lannister = ['cersei', 'jaime', 'tywin', 'tyrion', 'joffrey']
+
+# Define generator function get_lengths
+def get_lengths(input_list):
+    """Generator function that yields the
+    length of the strings in input_list."""
+
+    # Yield the length of a string
+    for person in input_list:
+        yield len(person)
+
+# Print the values generated by get_lengths()
+for value in get_lengths(lannister):
+    print(value)
 
 
 
+<script.py> output:
+    6
+    5
+    5
+    6
+    7
+    
+    _______________________________________________________________________________________________________________________________
+    
+    
+    List comprehensions for time-stamped data
+You will now make use of what you've learned from this chapter to solve a simple data extraction problem. You will also be introduced to a data structure, the pandas Series, in this exercise. We won't elaborate on it much here, but what you should know is that it is a data structure that you will be working with a lot of times when analyzing data from pandas DataFrames. You can think of DataFrame columns as single-dimension arrays called Series.
+
+In this exercise, you will be using a list comprehension to extract the time from time-stamped Twitter data. The pandas package has been imported as pd and the file 'tweets.csv' has been imported as the df DataFrame for your use.
+
+Instructions
+100 XP
+Extract the column 'created_at' from df and assign the result to tweet_time. Fun fact: the extracted column in tweet_time here is a Series data structure!
+Create a list comprehension that extracts the time from each row in tweet_time. Each row is a string that represents a timestamp, and you will access the 12th to 19th characters in the string to extract the time. Use entry as the iterator variable and assign the result to tweet_clock_time. Remember that Python uses 0-based indexing!
 
 
+# Extract the created_at column from df: tweet_time
+tweet_time = df.loc[:,'created_at']
+
+# Extract the clock time: tweet_clock_time
+tweet_clock_time = [entry[11:19] for entry in tweet_time]
+
+# Print the extracted times
+print(tweet_clock_time)
 
 
+<script.py> output:
+    ['23:40:17', '23:40:17', '23:40:17', '23:40:17', '23:40:17', '23:40:17', '23:40:18', '23:40:17', '23:40:18', '23:40:18', '23:40:18', '23:40:17', '23:40:18', '23:40:18', '23:40:17', '23:40:18', '23:40:18', '23:40:17', '23:40:18', '23:40:17', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:17', '23:40:18', '23:40:18', '23:40:17', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:18', '23:40:19', '23:40:18', '23:40:18', '23:40:18', '23:40:19', '23:40:19', '23:40:19', '23:40:18', '23:40:19', '23:40:19', '23:40:19', '23:40:18', '23:40:19', '23:40:19', '23:40:19', '23:40:18', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19']
+    
+    
+    ______________________________________________________________________________________________________________________
+    
+    
+    
+    onditional list comprehensions for time-stamped data
+Great, you've successfully extracted the data of interest, the time, from a pandas DataFrame! Let's tweak your work further by adding a conditional that further specifies which entries to select.
+
+In this exercise, you will be using a list comprehension to extract the time from time-stamped Twitter data. You will add a conditional expression to the list comprehension so that you only select the times in which entry[17:19] is equal to '19'. The pandas package has been imported as pd and the file 'tweets.csv' has been imported as the df DataFrame for your use.
+
+Instructions
+100 XP
+Extract the column 'created_at' from df and assign the result to tweet_time.
+Create a list comprehension that extracts the time from each row in tweet_time. Each row is a string that represents a timestamp, and you will access the 12th to 19th characters in the string to extract the time. Use entry as the iterator variable and assign the result to tweet_clock_time. Additionally, add a conditional expression that checks whether entry[17:19] is equal to '19'.
+
+# Extract the created_at column from df: tweet_time
+tweet_time = df['created_at']
+
+# Extract the clock time: tweet_clock_time
+tweet_clock_time = [entry[11:19] for entry in tweet_time if entry[17:19] == '19']
+
+# Print the extracted times
+print(tweet_clock_time)
+
+
+<script.py> output:
+    ['23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19', '23:40:19']
 
 
 
@@ -498,5 +864,460 @@ Bringing it all together!
 
 
 This chapter will allow you to apply your newly acquired skills towards wrangling and extracting meaningful information from a real-world dataset - the World Bank's World Development Indicators dataset! You'll have the chance to write your own functions and list comprehensions as you work with iterators and generators and solidify your Python Data Science chops. Enjoy!
+
+
+
+Dictionaries for data science
+For this exercise, you'll use what you've learned about the zip() function and combine two lists into a dictionary.
+
+These lists are actually extracted from a bigger dataset file of world development indicators from the World Bank. For pedagogical purposes, we have pre-processed this dataset into the lists that you'll be working with.
+
+The first list feature_names contains header names of the dataset and the second list row_vals contains actual values of a row from the dataset, corresponding to each of the header names.
+
+Instructions
+100 XP
+Create a zip object by calling zip() and passing to it feature_names and row_vals. Assign the result to zipped_lists.
+Create a dictionary from the zipped_lists zip object by calling dict() with zipped_lists. Assign the resulting dictionary to rs_dict.
+
+
+# Zip lists: zipped_lists
+zipped_lists = zip(feature_names, row_vals)
+
+# Create a dictionary: rs_dict
+rs_dict = dict(zipped_lists)
+
+# Print the dictionary
+print(rs_dict)
+
+
+
+
+
+<script.py> output:
+    {'IndicatorName': 'Adolescent fertility rate (births per 1,000 women ages 15-19)', 'CountryName': 'Arab World', 'IndicatorCode': 'SP.ADO.TFRT', 'Year': '1960', 'Value': '133.56090740552298', 'CountryCode': 'ARB'}
+
+
+_____________________________________________________________________________________
+
+Writing a function to help you
+Suppose you needed to repeat the same process done in the previous exercise to many, many rows of data. Rewriting your code again and again could become very tedious, repetitive, and unmaintainable.
+
+In this exercise, you will create a function to house the code you wrote earlier to make things easier and much more concise. Why? This way, you only need to call the function and supply the appropriate lists to create your dictionaries! Again, the lists feature_names and row_vals are preloaded and these contain the header names of the dataset and actual values of a row from the dataset, respectively.
+
+Instructions
+100 XP
+Define the function lists2dict() with two parameters: first is list1 and second is list2.
+Return the resulting dictionary rs_dict in lists2dict().
+Call the lists2dict() function with the arguments feature_names and row_vals. Assign the result of the function call to rs_fxn.
+
+
+# Define lists2dict()
+def lists2dict(list1, list2):
+    """Return a dictionary where list1 provides
+    the keys and list2 provides the values."""
+
+    # Zip lists: zipped_lists
+    zipped_lists = zip(list1, list2)
+
+    # Create a dictionary: rs_dict
+    rs_dict = dict(zipped_lists)
+
+    # Return the dictionary
+    return rs_dict
+
+# Call lists2dict: rs_fxn
+rs_fxn = lists2dict(feature_names, row_vals)
+
+# Print rs_fxn
+print(rs_fxn)
+
+
+
+______________________________________________________________________________________________________
+
+
+Using a list comprehension
+This time, you're going to use the lists2dict() function you defined in the last exercise to turn a bunch of lists into a list of dictionaries with the help of a list comprehension.
+
+The lists2dict() function has already been preloaded, together with a couple of lists, feature_names and row_lists. feature_names contains the header names of the World Bank dataset and row_lists is a list of lists, where each sublist is a list of actual values of a row from the dataset.
+
+Your goal is to use a list comprehension to generate a list of dicts, where the keys are the header names and the values are the row entries.
+
+Instructions
+100 XP
+Inspect the contents of row_lists by printing the first two lists in row_lists.
+Create a list comprehension that generates a dictionary using lists2dict() for each sublist in row_lists. The keys are from the feature_names list and the values are the row entries in row_lists. Use sublist as your iterator variable and assign the resulting list of dictionaries to list_of_dicts.
+Look at the first two dictionaries in list_of_dicts by printing them out.
+
+# Print the first two lists in row_lists
+print(row_lists[0])
+print(row_lists[1])
+
+# Turn list of lists into list of dicts: list_of_dicts
+list_of_dicts = [lists2dict(feature_names, sublist) for sublist in row_lists]
+
+# Print the first two dictionaries in list_of_dicts
+print(list_of_dicts[0])
+print(list_of_dicts[1])
+
+
+
+___________________________________________________________________________________________________________________________________________
+
+
+Turning this all into a DataFrame
+You've zipped lists together, created a function to house your code, and even used the function in a list comprehension to generate a list of dictionaries. That was a lot of work and you did a great job!
+
+You will now use of all these to convert the list of dictionaries into a pandas DataFrame. You will see how convenient it is to generate a DataFrame from dictionaries with the DataFrame() function from the pandas package.
+
+The lists2dict() function, feature_names list, and row_lists list have been preloaded for this exercise.
+
+Go for it!
+
+Instructions
+100 XP
+To use the DataFrame() function you need, first import the pandas package with the alias pd.
+Create a DataFrame from the list of dictionaries in list_of_dicts by calling pd.DataFrame(). Assign the resulting DataFrame to df.
+Inspect the contents of df by printing the head of the DataFrame.
+
+# Import the pandas package
+import pandas as pd
+
+# Turn list of lists into list of dicts: list_of_dicts
+list_of_dicts = [lists2dict(feature_names, sublist) for sublist in row_lists]
+
+# Turn list of dicts into a DataFrame: df
+df = pd.DataFrame(list_of_dicts)
+
+# Print the head of the DataFrame
+print(df.head())
+
+
+<script.py> output:
+      CountryCode CountryName   IndicatorCode  \
+    0         ARB  Arab World     SP.ADO.TFRT   
+    1         ARB  Arab World     SP.POP.DPND   
+    2         ARB  Arab World  SP.POP.DPND.OL   
+    3         ARB  Arab World  SP.POP.DPND.YG   
+    4         ARB  Arab World  MS.MIL.XPRT.KD   
+    
+                                           IndicatorName               Value  Year  
+    0  Adolescent fertility rate (births per 1,000 wo...  133.56090740552298  1960  
+    1  Age dependency ratio (% of working-age populat...    87.7976011532547  1960  
+    2  Age dependency ratio, old (% of working-age po...   6.634579191565161  1960  
+    3  Age dependency ratio, young (% of working-age ...   81.02332950839141  1960  
+    4        Arms exports (SIPRI trend indicator values)           3000000.0  1960
+
+
+___________________________________________________________________________________________________________________________________
+
+
+Processing data in chunks (1)
+Sometimes, data sources can be so large in size that storing the entire dataset in memory becomes too resource-intensive. In this exercise, you will process the first 1000 rows of a file line by line, to create a dictionary of the counts of how many times each country appears in a column in the dataset.
+
+The csv file 'world_dev_ind.csv' is in your current directory for your use. To begin, you need to open a connection to this file using what is known as a context manager. For example, the command with open('datacamp.csv') as datacamp binds the csv file 'datacamp.csv' as datacamp in the context manager. Here, the with statement is the context manager, and its purpose is to ensure that resources are efficiently allocated when opening a connection to a file.
+
+If you'd like to learn more about context managers, refer to the DataCamp course on Importing Data in Python.
+
+Instructions
+100 XP
+Use open() to bind the csv file 'world_dev_ind.csv' as file in the context manager.
+Complete the for loop so that it iterates 1000 times to perform the loop body and process only the first 1000 rows of data of the file.
+
+
+# Open a connection to the file
+with open('world_dev_ind.csv') as file:
+
+    # Skip the column names
+    file.readline()
+
+    # Initialize an empty dictionary: counts_dict
+    counts_dict = {}
+
+    # Process only the first 1000 rows
+    for j in range(0,1000):
+
+        # Split the current line into a list: line
+        line = file.readline().split(',')
+
+        # Get the value for the first column: first_col
+        first_col = line[0]
+
+        # If the column value is in the dict, increment its value
+        if first_col in counts_dict.keys():
+            counts_dict[first_col] += 1
+
+        # Else, add to the dict and set value to 1
+        else:
+            counts_dict[first_col] = 1
+
+# Print the resulting dictionary
+print(counts_dict)
+
+
+
+<script.py> output:
+    {'Euro area': 119, 'Arab World': 80, 'Central Europe and the Baltics': 71, 'Europe & Central Asia (developing only)': 89, 'East Asia & Pacific (all income levels)': 122, 'Fragile and conflict affected situations': 76, 'Caribbean small states': 77, 'Europe & Central Asia (all income levels)': 109, 'European Union': 116, 'Heavily indebted poor countries (HIPC)': 18, 'East Asia & Pacific (developing only)': 123}
+    
+    
+    
+    _______________________________________________________________________________________________________________
+    
+    
+    
+Writing a generator to load data in chunks (2)
+In the previous exercise, you processed a file line by line for a given number of lines. What if, however, you want to do this for the entire file?
+
+In this case, it would be useful to use generators. Generators allow users to lazily evaluate data. This concept of lazy evaluation is useful when you have to deal with very large datasets because it lets you generate values in an efficient manner by yielding only chunks of data at a time instead of the whole thing at once.
+
+In this exercise, you will define a generator function read_large_file() that produces a generator object which yields a single line from a file each time next() is called on it. The csv file 'world_dev_ind.csv' is in your current directory for your use.
+
+Note that when you open a connection to a file, the resulting file object is already a generator! So out in the wild, you won't have to explicitly create generator objects in cases such as this. However, for pedagogical reasons, we are having you practice how to do this here with the read_large_file() function. Go for it!
+
+Instructions
+100 XP
+Instructions
+100 XP
+In the function read_large_file(), read a line from file_object by using the method readline(). Assign the result to data.
+In the function read_large_file(), yield the line read from the file data.
+In the context manager, create a generator object gen_file by calling your generator function read_large_file() and passing file to it.
+Print the first three lines produced by the generator object gen_file using next().
+
+
+# Define read_large_file()
+def read_large_file(file_object):
+    """A generator function to read a large file lazily."""
+
+    # Loop indefinitely until the end of the file
+    while True:
+
+        # Read a line from the file: data
+        data = file_object.readline()
+
+        # Break if this is the end of the file
+        if not data:
+            break
+
+        # Yield the line of data
+        yield data
+        
+        
+# Open a connection to the file
+with open('world_dev_ind.csv') as file:
+
+    # Create a generator object for the file: gen_file
+    gen_file = read_large_file(file)
+
+    # Print the first three lines of the file
+    print(next(gen_file))
+    print(next(gen_file))
+    print(next(gen_file))
+
+
+_______________________________________________________________________________________________________________
+
+
+Writing a generator to load data in chunks (3)
+Great! You've just created a generator function that you can use to help you process large files.
+
+Now let's use your generator function to process the World Bank dataset like you did previously. You will process the file line by line, to create a dictionary of the counts of how many times each country appears in a column in the dataset. For this exercise, however, you won't process just 1000 rows of data, you'll process the entire dataset!
+
+The generator function read_large_file() and the csv file 'world_dev_ind.csv' are preloaded and ready for your use. Go for it!
+
+Instructions
+100 XP
+Bind the file 'world_dev_ind.csv' to file in the context manager with open().
+Complete the for loop so that it iterates over the generator from the call to read_large_file() to process all the rows of the file.
+
+
+# Initialize an empty dictionary: counts_dict
+counts_dict = {}
+
+# Open a connection to the file
+with open('world_dev_ind.csv') as file:
+
+    # Iterate over the generator from read_large_file()
+    for line in read_large_file(file):
+
+        row = line.split(',')
+        first_col = row[0]
+
+        if first_col in counts_dict.keys():
+            counts_dict[first_col] += 1
+        else:
+            counts_dict[first_col] = 1
+
+# Print            
+print(counts_dict)
+
+<script.py> output:
+    {'Other small states': 63, 'Fragile and conflict affected situations': 76, 'Least developed countries: UN classification': 78, 'Middle East & North Africa (developing only)': 94, 'Low & middle income': 138, 'Heavily indebted poor countries (HIPC)': 99, 'European Union': 116, 'OECD members': 130, 'Latin America & Caribbean (all income levels)': 130, 'Central Europe and the Baltics': 71, 'East Asia & Pacific (developing only)': 123, 'North America': 123, 'Small states': 69, 'East Asia & Pacific (all income levels)': 122, 'Middle East & North Africa (all income levels)': 89, 'Pacific island small states': 66, 'Lower middle income': 126, 'CountryName': 1, 'High income': 131, 'Caribbean small states': 77, 'Europe & Central Asia (developing only)': 89, 'Low income': 80, 'High income: OECD': 127, 'Middle income': 138, 'Latin America & Caribbean (developing only)': 133, 'High income: nonOECD': 68, 'Europe & Central Asia (all income levels)': 109, 'Euro area': 119, 'South Asia': 36, 'Arab World': 80}
+    
+    
+    
+    ____________________________________________________________________________________________________________________
+
+
+
+
+Writing an iterator to load data in chunks (1)
+Another way to read data too large to store in memory in chunks is to read the file in as DataFrames of a certain length, say, 100. For example, with the pandas package (imported as pd), you can do pd.read_csv(filename, chunksize=100). This creates an iterable reader object, which means that you can use next() on it.
+
+In this exercise, you will read a file in small DataFrame chunks with read_csv(). You're going to use the World Bank Indicators data 'ind_pop.csv', available in your current directory, to look at the urban population indicator for numerous countries and years.
+
+Instructions
+100 XP
+Use pd.read_csv() to read in 'ind_pop.csv' in chunks of size 10. Assign the result to df_reader.
+Print the first two chunks from df_reader.
+
+# Import the pandas package
+import pandas as pd
+
+# Initialize reader object: df_reader
+df_reader = pd.read_csv('ind_pop.csv', chunksize=10)
+
+# Print two chunks
+print(next(df_reader))
+print(next(df_reader))
+
+
+
+<script.py> output:
+                                     CountryName CountryCode  \
+    0                                 Arab World         ARB   
+    1                     Caribbean small states         CSS   
+    2             Central Europe and the Baltics         CEB   
+    3    East Asia & Pacific (all income levels)         EAS   
+    4      East Asia & Pacific (developing only)         EAP   
+    5                                  Euro area         EMU   
+    6  Europe & Central Asia (all income levels)         ECS   
+    7    Europe & Central Asia (developing only)         ECA   
+    8                             European Union         EUU   
+    9   Fragile and conflict affected situations         FCS   
+    
+                       IndicatorName      IndicatorCode  Year      Value  
+    0  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  31.285384  
+    1  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  31.597490  
+    2  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  44.507921  
+    3  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  22.471132  
+    4  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  16.917679  
+    5  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  62.096947  
+    6  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  55.378977  
+    7  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  38.066129  
+    8  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  61.212898  
+    9  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  17.891972  
+                                          CountryName CountryCode  \
+    10         Heavily indebted poor countries (HIPC)         HPC   
+    11                                    High income         HIC   
+    12                           High income: nonOECD         NOC   
+    13                              High income: OECD         OEC   
+    14  Latin America & Caribbean (all income levels)         LCN   
+    15    Latin America & Caribbean (developing only)         LAC   
+    16   Least developed countries: UN classification         LDC   
+    17                            Low & middle income         LMY   
+    18                                     Low income         LIC   
+    19                            Lower middle income         LMC   
+    
+                        IndicatorName      IndicatorCode  Year      Value  
+    10  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  12.236046  
+    11  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  62.680332  
+    12  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  56.107863  
+    13  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  64.285435  
+    14  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  49.284688  
+    15  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  44.863308  
+    16  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960   9.616261  
+    17  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  21.272894  
+    18  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  11.498396  
+    19  Urban population (% of total)  SP.URB.TOTL.IN.ZS  1960  19.810513
+    
+    _____________________________________________________________________________________________________________________________
+    
+    
+Writing an iterator to load data in chunks (2)
+In the previous exercise, you used read_csv() to read in DataFrame chunks from a large dataset. In this exercise, you will read in a file using a bigger DataFrame chunk size and then process the data from the first chunk.
+
+To process the data, you will create another DataFrame composed of only the rows from a specific country. You will then zip together two of the columns from the new DataFrame, 'Total Population' and 'Urban population (% of total)'. Finally, you will create a list of tuples from the zip object, where each tuple is composed of a value from each of the two columns mentioned.
+
+You're going to use the data from 'ind_pop_data.csv', available in your current directory. Pandas has been imported as pd.
+
+Instructions
+100 XP
+Use pd.read_csv() to read in the file in 'ind_pop_data.csv' in chunks of size 1000. Assign the result to urb_pop_reader.
+Get the first DataFrame chunk from the iterable urb_pop_reader and assign this to df_urb_pop.
+Select only the rows of df_urb_pop that have a 'CountryCode' of 'CEB'. To do this, compare whether df_urb_pop['CountryCode'] is equal to 'CEB' within the square brackets in df_urb_pop[____].
+Using zip(), zip together the 'Total Population' and 'Urban population (% of total)' columns of df_pop_ceb. Assign the resulting zip object to pops.
+
+
+# Initialize reader object: urb_pop_reader
+urb_pop_reader = pd.read_csv('ind_pop_data.csv', chunksize=1000)
+
+# Get the first DataFrame chunk: df_urb_pop
+df_urb_pop = next(urb_pop_reader)
+
+# Check out the head of the DataFrame
+print(df_urb_pop.head())
+
+# Check out specific country: df_pop_ceb
+df_pop_ceb = df_urb_pop[df_urb_pop['CountryCode']=='CEB']
+
+# Zip DataFrame columns of interest: pops
+pops = zip(df_pop_ceb['Total Population'], df_pop_ceb['Urban population (% of total)'])
+
+# Turn zip object into list: pops_list
+pops_list = list(pops)
+
+# Print pops_list
+print(pops_list)
+
+
+
+
+<script.py> output:
+                                   CountryName CountryCode  Year  \
+    0                               Arab World         ARB  1960   
+    1                   Caribbean small states         CSS  1960   
+    2           Central Europe and the Baltics         CEB  1960   
+    3  East Asia & Pacific (all income levels)         EAS  1960   
+    4    East Asia & Pacific (developing only)         EAP  1960   
+    
+       Total Population  Urban population (% of total)  
+    0      9.249590e+07                      31.285384  
+    1      4.190810e+06                      31.597490  
+    2      9.140158e+07                      44.507921  
+    3      1.042475e+09                      22.471132  
+    4      8.964930e+08                      16.917679  
+    [(91401583.0, 44.5079211390026), (92237118.0, 45.206665319194), (93014890.0, 45.866564696018), (93845749.0, 46.5340927663649), (94722599.0, 47.2087429803526)]
+
+
+___________________________________________________________________________________________________________
+
+Writing an iterator to load data in chunks (3)
+You're getting used to reading and processing data in chunks by now. Let's push your skills a little further by adding a column to a DataFrame.
+
+Starting from the code of the previous exercise, you will be using a list comprehension to create the values for a new column 'Total Urban Population' from the list of tuples that you generated earlier. Recall from the previous exercise that the first and second elements of each tuple consist of, respectively, values from the columns 'Total Population' and 'Urban population (% of total)'. The values in this new column 'Total Urban Population', therefore, are the product of the first and second element in each tuple. Furthermore, because the 2nd element is a percentage, you need to divide the entire result by 100, or alternatively, multiply it by 0.01.
+
+You will also plot the data from this new column to create a visualization of the urban population data.
+
+The packages pandas and matplotlib.pyplot have been imported as pd and plt respectively for your use.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Write a list comprehension to generate a list of values from pops_list for the new column 'Total Urban Population'. The output expression should be the product of the first and second element in each tuple in pops_list. Because the 2nd element is a percentage, you also need to either multiply the result by 0.01 or divide it by 100. In addition, note that the column 'Total Urban Population' should only be able to take on integer values. To ensure this, make sure you cast the output expression to an integer with int().
+Create a scatter plot where the x-axis are values from the 'Year' column and the y-axis are values from the 'Total Urban Population' column.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

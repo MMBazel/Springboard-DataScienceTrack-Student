@@ -374,13 +374,116 @@ print(d[:3])
 
 ===============================================================================================================================
 
+Using pandas to import flat files as DataFrames (1)
+In the last exercise, you were able to import flat files containing columns with different datatypes as numpy arrays. However, the DataFrame object in pandas is a more appropriate structure in which to store such data and, thankfully, we can easily import files of mixed data types as DataFrames using the pandas functions read_csv() and read_table().
+
+Instructions
+100 XP
+Import the pandas package using the alias pd.
+Read titanic.csv into a DataFrame called df. The file name is already stored in the file object.
+In a print() call, view the head of the DataFrame.
+
+# Import pandas as pd
+import pandas as pd
+
+# Assign the filename: file
+file = 'titanic.csv'
+
+# Read the file into a DataFrame: df
+df = pd.read_csv(file)
+
+# View the head of the DataFrame
+print(df.head())
+
+
+<script.py> output:
+       PassengerId  Survived  Pclass     Sex   Age  SibSp  Parch  \
+    0            1         0       3    male  22.0      1      0   
+    1            2         1       1  female  38.0      1      0   
+    2            3         1       3  female  26.0      0      0   
+    3            4         1       1  female  35.0      1      0   
+    4            5         0       3    male  35.0      0      0   
+    
+                 Ticket     Fare Cabin Embarked  
+    0         A/5 21171   7.2500   NaN        S  
+    1          PC 17599  71.2833   C85        C  
+    2  STON/O2. 3101282   7.9250   NaN        S  
+    3            113803  53.1000  C123        S  
+    4            373450   8.0500   NaN        S
 
 
 
 
+===============================================================================================
+
+Using pandas to import flat files as DataFrames (2)
+In the last exercise, you were able to import flat files into a pandas DataFrame. As a bonus, it is then straightforward to retrieve the corresponding numpy array using the attribute values. You'll now have a chance to do this using the MNIST dataset, which is available as digits.csv.
+
+Instructions
+100 XP
+Import the first 5 rows of the file into a DataFrame using the function pd.read_csv() and assign the result to data. You'll need to use the arguments nrows and header (there is no header in this file).
+Build a numpy array from the resulting DataFrame in data and assign to data_array.
+Execute print(type(data_array)) to print the datatype of data_array.
 
 
+# Assign the filename: file
+file = 'digits.csv'
 
+# Read the first 5 rows of the file into a DataFrame: data
+data = pd.read_csv(file, header=None, nrows=5)
+
+# Build a numpy array from the DataFrame: data_array
+data_array = np.array(data)
+
+# Print the datatype of data_array to the shell
+print(type(data_array))
+
+<script.py> output:
+    <class 'numpy.ndarray'>
+=============================================================================================================
+
+Customizing your pandas import
+The pandas package is also great at dealing with many of the issues you will encounter when importing data as a data scientist, such as comments occurring in flat files, empty lines and missing values. Note that missing values are also commonly referred to as NA or NaN. To wrap up this chapter, you're now going to import a slightly corrupted copy of the Titanic dataset titanic_corrupt.txt, which
+
+contains comments after the character '#'
+is tab-delimited.
+Instructions
+100 XP
+Complete the sep (the pandas version of delim), comment and na_values arguments of pd.read_csv(). comment takes characters that comments occur after in the file, which in this case is '#'. na_values takes a list of strings to recognize as NA/NaN, in this case the string 'Nothing'.
+Execute the rest of the code to print the head of the resulting DataFrame and plot the histogram of the 'Age' of passengers aboard the Titanic.
+
+# Import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+
+# Assign filename: file
+file = 'titanic_corrupt.txt'
+
+# Import file: data
+data = pd.read_csv(file, sep='\t', comment='#', na_values='Nothing')
+
+# Print the head of the DataFrame
+print(data.head())
+
+# Plot 'Age' variable in a histogram
+pd.DataFrame.hist(data[['Age']])
+plt.xlabel('Age (years)')
+plt.ylabel('count')
+plt.show()
+
+<script.py> output:
+       PassengerId  Survived  Pclass     Sex   Age  SibSp  Parch  \
+    0            1         0       3    male  22.0      1      0   
+    1            2         1       1  female  38.0      1      0   
+    2            3         1       3  female  26.0      0      0   
+    3            4         1       1  female  35.0      1      0   
+    4            5         0       3    male  35.0      0      0   
+    
+                 Ticket    Fare Cabin Embarked  
+    0         A/5 21171   7.250   NaN       S   
+    1          PC 17599     NaN   NaN      NaN  
+    2  STON/O2. 3101282   7.925   NaN        S  
+    3            113803  53.100  C123        S  
+    4            373450   8.050   NaN        S
 
 
 

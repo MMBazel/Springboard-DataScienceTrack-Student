@@ -502,9 +502,955 @@ Importing data from other file types
 You've learned how to import flat files, but there are many other file types you will potentially have to work with as a data scientist. In this chapter, you'll learn how to import data into Python from a wide array of important file types. You will be importing file types such as pickled files, Excel spreadsheets, SAS and Stata files, HDF5 files, a file type for storing large quantities of numerical data, and MATLAB files.
 
 
+Loading a pickled file
+There are a number of datatypes that cannot be saved easily to flat files, such as lists and dictionaries. If you want your files to be human readable, you may want to save them as text files in a clever manner. JSONs, which you will see in a later chapter, are appropriate for Python dictionaries.
+
+However, if you merely want to be able to import them into Python, you can serialize them. All this means is converting the object into a sequence of bytes, or a bytestream.
+
+In this exercise, you'll import the pickle package, open a previously pickled data structure from a file and load it.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import the pickle package.
+Complete the second argument of open() so that it is read only for a binary file. This argument will be a string of two letters, one signifying 'read only', the other 'binary'.
+Pass the correct argument to pickle.load(); it should use the variable that is bound to open.
+Print the data, d.
+Print the datatype of d; take your mind back to your previous use of the function type().
+
+
+# Import pickle package
+import pickle
+
+# Open pickle file and load data: d
+with open('data.pkl', 'rb') as file:
+    d = pickle.load(file)
+
+# Print d
+print(d)
+
+# Print datatype of d
+print(type(d))
+
+<script.py> output:
+    {'Airline': '8', 'June': '69.4', 'Aug': '85', 'Mar': '84.4'}
+    <class 'dict'>
+
+==========================================================================================================================
+
+Listing sheets in Excel files
+Whether you like it or not, any working data scientist will need to deal with Excel spreadsheets at some point in time. You won't always want to do so in Excel, however!
+
+Here, you'll learn how to use pandas to import Excel spreadsheets and how to list the names of the sheets in any loaded .xlsx file.
+
+Recall from the video that, given an Excel file imported into a variable spreadsheet, you can retrieve a list of the sheet names using the attribute spreadsheet.sheet_names.
+
+Specifically, you'll be loading and checking out the spreadsheet 'battledeath.xlsx', modified from the Peace Research Institute Oslo's (PRIO) dataset. This data contains age-adjusted mortality rates due to war in various countries over several years.
+
+Instructions
+100 XP
+Assign the filename to the variable file.
+Pass the correct argument to pd.ExcelFile() to load the file using pandas.
+Print the sheetnames of the Excel spreadsheet by passing the necessary argument to the print() function.
+
+# Import pandas
+import pandas as pd
+
+# Assign spreadsheet filename: file
+file = 'battledeath.xlsx'
+
+# Load spreadsheet: xl
+xl = pd.ExcelFile(file)
+
+# Print sheet names
+print(xl.sheet_names)
+
+===========================================================================================================================
+
+Importing sheets from Excel files
+In the previous exercises, you saw that the Excel file contains two sheets, '2002' and '2004'. The next step is to import these.
+
+In this exercise, you'll learn how to import any given sheet of your loaded .xlsx file as a DataFrame. You'll be able to do so by specifying either the sheet's name or its index.
+
+The spreadsheet 'battledeath.xlsx' is already loaded as xl.
+
+Instructions
+100 XP
+Load the sheet '2004' into the DataFrame df1 using its name as a string.
+Print the head of df1 to the shell.
+Load the sheet 2002 into the DataFrame df2 using its index (0).
+Print the head of df2 to the shell.
+
+# Load a sheet into a DataFrame by name: df1
+df1 = xl.parse('2004')
+
+# Print the head of the DataFrame df1
+print(df1.head())
+
+# Load a sheet into a DataFrame by index: df2
+df2 = xl.parse(0)
+
+# Print the head of the DataFrame df2
+print(df2.head())
+
+
+<script.py> output:
+      War(country)      2004
+    0  Afghanistan  9.451028
+    1      Albania  0.130354
+    2      Algeria  3.407277
+    3      Andorra  0.000000
+    4       Angola  2.597931
+      War, age-adjusted mortality due to       2002
+    0                        Afghanistan  36.083990
+    1                            Albania   0.128908
+    2                            Algeria  18.314120
+    3                            Andorra   0.000000
+    4                             Angola  18.964560
+
+
+=======================================================================================================
+
+Customizing your spreadsheet import
+Here, you'll parse your spreadsheets and use additional arguments to skip rows, rename columns and select only particular columns.
+
+The spreadsheet 'battledeath.xlsx' is already loaded as xl.
+
+As before, you'll use the method parse(). This time, however, you'll add the additional arguments skiprows, names and parse_cols. These skip rows, name the columns and designate which columns to parse, respectively. All these arguments can be assigned to lists containing the specific row numbers, strings and column numbers, as appropriate.
+
+Instructions
+100 XP
+Parse the first sheet by index. In doing so, skip the first row of data and name the columns 'Country' and 'AAM due to War (2002)' using the argument names. The values passed to skiprows and names all need to be of type list.
+Parse the second sheet by index. In doing so, parse only the first column with the parse_cols parameter, skip the first row and rename the column 'Country'. The argument passed to parse_cols also needs to be of type list.
+
+# Parse the first sheet and rename the columns: df1
+df1 = xl.parse(0, skiprows=[1], names=['Country','AAM due to War (2002)'])
+
+# Print the head of the DataFrame df1
+print(df1.head())
+
+# Parse the first column of the second sheet and rename the column: df2
+df2 = xl.parse(1, parse_cols=[0], skiprows=[1], names=['Country'])
+
+# Print the head of the DataFrame df2
+print(df2.head())
+
+
+
+<script.py> output:
+                   Country  AAM due to War (2002)
+    0              Albania               0.128908
+    1              Algeria              18.314120
+    2              Andorra               0.000000
+    3               Angola              18.964560
+    4  Antigua and Barbuda               0.000000
+                   Country
+    0              Albania
+    1              Algeria
+    2              Andorra
+    3               Angola
+    4  Antigua and Barbuda
+
+
+============================================================================================================================
+
+Importing SAS files
+In this exercise, you'll figure out how to import a SAS file as a DataFrame using SAS7BDAT and pandas. The file 'sales.sas7bdat' is already in your working directory and both pandas and matplotlib.pyplot have already been imported as follows:
+
+import pandas as pd
+import matplotlib.pyplot as plt
+The data are adapted from the website of the undergraduate text book Principles of Econometrics by Hill, Griffiths and Lim.
+
+Instructions
+100 XP
+Import the module SAS7BDAT from the library sas7bdat.
+In the context of the file 'sales.sas7bdat', load its contents to a DataFrame df_sas, using the method to_data_frame() on the object file.
+Print the head of the DataFrame df_sas.
+Execute your entire script to produce a histogram plot!
+
+
+# Import sas7bdat package
+from sas7bdat import SAS7BDAT
+
+# Save file to a DataFrame: df_sas
+with SAS7BDAT('sales.sas7bdat') as file:
+    df_sas = file.to_data_frame()
+
+# Print head of DataFrame
+print(df_sas.head())
+
+# Plot histogram of DataFrame features (pandas and pyplot already imported)
+pd.DataFrame.hist(df_sas[['P']])
+plt.ylabel('count')
+plt.show()
+
+<script.py> output:
+         YEAR     P           S
+    0  1950.0  12.9  181.899994
+    1  1951.0  11.9  245.000000
+    2  1952.0  10.7  250.199997
+    3  1953.0  11.3  265.899994
+    4  1954.0  11.2  248.500000
+    
+    ======================================================================================================================
+    Using read_stata to import Stata files
+The pandas package has been imported in the environment as pd and the file disarea.dta is in your working directory. The data consist of disease extents for several diseases in various countries (more information can be found here).
+
+What is the correct way of using the read_stata() function to import disarea.dta into the object df?
+
+
+=================================================================================================
+
+Importing Stata files
+Here, you'll gain expertise in importing Stata files as DataFrames using the pd.read_stata() function from pandas. The last exercise's file, 'disarea.dta', is still in your working directory.
+
+Instructions
+100 XP
+Use pd.read_stata() to load the file 'disarea.dta' into the DataFrame df.
+Print the head of the DataFrame df.
+Visualize your results by plotting a histogram of the column disa10. We’ve already provided this code for you, so just run it!
+
+# Import pandas
+import pandas as pd
+
+# Load Stata file into a pandas DataFrame: df
+df = pd.read_stata('disarea.dta')
+
+# Print the head of the DataFrame df
+print(df.head())
+
+# Plot histogram of one column of the DataFrame
+pd.DataFrame.hist(df[['disa10']])
+plt.xlabel('Extent of disease')
+plt.ylabel('Number of countries')
+plt.show()
+
+
+
+<script.py> output:
+      wbcode               country  disa1  disa2  disa3  disa4  disa5  disa6  \
+    0    AFG           Afghanistan   0.00   0.00   0.76   0.73    0.0   0.00   
+    1    AGO                Angola   0.32   0.02   0.56   0.00    0.0   0.00   
+    2    ALB               Albania   0.00   0.00   0.02   0.00    0.0   0.00   
+    3    ARE  United Arab Emirates   0.00   0.00   0.00   0.00    0.0   0.00   
+    4    ARG             Argentina   0.00   0.24   0.24   0.00    0.0   0.23   
+    
+       disa7  disa8   ...    disa16  disa17  disa18  disa19  disa20  disa21  \
+    0   0.00    0.0   ...       0.0     0.0     0.0    0.00    0.00     0.0   
+    1   0.56    0.0   ...       0.0     0.4     0.0    0.61    0.00     0.0   
+    2   0.00    0.0   ...       0.0     0.0     0.0    0.00    0.00     0.0   
+    3   0.00    0.0   ...       0.0     0.0     0.0    0.00    0.00     0.0   
+    4   0.00    0.0   ...       0.0     0.0     0.0    0.00    0.05     0.0   
+    
+       disa22  disa23  disa24  disa25  
+    0    0.00    0.02    0.00    0.00  
+    1    0.99    0.98    0.61    0.00  
+    2    0.00    0.00    0.00    0.16  
+    3    0.00    0.00    0.00    0.00  
+    4    0.00    0.01    0.00    0.11  
+    
+    [5 rows x 27 columns]
+
+
+
+===================================================================================================
+
+
+Using File to import HDF5 files
+The h5py package has been imported in the environment and the file LIGO_data.hdf5 is loaded in the object h5py_file.
+
+What is the correct way of using the h5py function, File(), to import the file in h5py_file into an object, h5py_data, for reading only?
+
+
+===================================================================================================
+
+Using h5py to import HDF5 files
+The file 'LIGO_data.hdf5' is already in your working directory. In this exercise, you'll import it using the h5py library. You'll also print out its datatype to confirm you have imported it correctly. You'll then study the structure of the file in order to see precisely what HDF groups it contains.
+
+You can find the LIGO data plus loads of documentation and tutorials here. There is also a great tutorial on Signal Processing with the data here.
+
+Instructions
+100 XP
+Import the package h5py.
+Assign the name of the file to the variable file.
+Load the file as read only into the variable data.
+Print the datatype of data.
+Print the names of the groups in the HDF5 file 'LIGO_data.hdf5'.
+
+# Import packages
+import numpy as np
+import h5py
+
+# Assign filename: file
+file = 'LIGO_data.hdf5'
+
+# Load file: data
+data = h5py.File(file, 'r')
+
+# Print the datatype of the loaded file
+print(type(data))
+
+# Print the keys of the file
+for key in data.keys():
+    print(key)
+
+
+==========================================================================================================================
+
+Extracting data from your HDF5 file
+In this exercise, you'll extract some of the LIGO experiment's actual data from the HDF5 file and you'll visualize it.
+
+To do so, you'll need to first explore the HDF5 group 'strain'.
+
+Instructions
+100 XP
+Assign the HDF5 group data['strain'] to group.
+In the for loop, print out the keys of the HDF5 group in group.
+Assign to the variable strain the values of the time series data data['strain']['Strain'] using the attribute .value.
+Set num_samples equal to 10000, the number of time points we wish to sample.
+Execute the rest of the code to produce a plot of the time series data in LIGO_data.hdf5.
+
+# Get the HDF5 group: group
+group = data['strain']
+
+# Check out keys of group
+for key in group.keys():
+    print(key)
+
+# Set variable equal to time series data: strain
+strain = data['strain']['Strain'].value
+
+# Set number of time points to sample: num_samples
+num_samples = 10000
+
+# Set time vector
+time = np.arange(0, 1, 1/num_samples)
+
+# Plot data
+plt.plot(time, strain[:num_samples])
+plt.xlabel('GPS Time (s)')
+plt.ylabel('strain')
+plt.show()
+
+==================================================================================================================================
+
+Loading .mat files
+In this exercise, you'll figure out how to load a MATLAB file using scipy.io.loadmat() and you'll discover what Python datatype it yields.
+
+The file 'albeck_gene_expression.mat' is in your working directory. This file contains gene expression data from the Albeck Lab at UC Davis. You can find the data and some great documentation here.
+
+Instructions
+100 XP
+Import the package scipy.io.
+Load the file 'albeck_gene_expression.mat' into the variable mat; do so using the function scipy.io.loadmat().
+Use the function type() to print the datatype of mat to the IPython shell.
+
+# Import package
+import scipy.io
+
+# Load MATLAB file: mat
+mat = scipy.io.loadmat('albeck_gene_expression.mat')
+
+# Print the datatype type of mat
+print(type(mat))
+
+================================================================================================================
+
+
+The structure of .mat in Python
+Here, you'll discover what is in the MATLAB dictionary that you loaded in the previous exercise.
+
+The file 'albeck_gene_expression.mat' is already loaded into the variable mat. The following libraries have already been imported as follows:
+
+import scipy.io
+import matplotlib.pyplot as plt
+import numpy as np
+Once again, this file contains gene expression data from the Albeck Lab at UCDavis. You can find the data and some great documentation here.
+
+Instructions
+100 XP
+Use the method .keys() on the dictionary mat to print the keys. Most of these keys (in fact the ones that do NOT begin and end with '__') are variables from the corresponding MATLAB environment.
+Print the type of the value corresponding to the key 'CYratioCyt' in mat. Recall that mat['CYratioCyt'] accesses the value.
+Print the shape of the value corresponding to the key 'CYratioCyt' using the numpy function shape().
+Execute the entire script to see some oscillatory gene expression data!
+
+# Print the keys of the MATLAB dictionary
+print(mat.keys())
+
+# Print the type of the value corresponding to the key 'CYratioCyt'
+print(type(mat['CYratioCyt']))
+
+# Print the shape of the value corresponding to the key 'CYratioCyt'
+print(np.shape(mat['CYratioCyt']))
+
+# Subset the array and plot it
+data = mat['CYratioCyt'][25, 5:]
+fig = plt.figure()
+plt.plot(data)
+plt.xlabel('time (min.)')
+plt.ylabel('normalized fluorescence (measure of expression)')
+plt.show()
+
+
+
+<script.py> output:
+    dict_keys(['rfpNuc', 'cfpNuc', '__globals__', '__version__', 'rfpCyt', 'CYratioCyt', 'yfpNuc', '__header__', 'yfpCyt', 'cfpCyt'])
+    <class 'numpy.ndarray'>
+    (200, 137)
+    
+   
+
+
 ===============================================================================================================================
 
 
 3. Working with relational databases in Python
 
 In this chapter, you'll learn how to extract meaningful data from relational databases, an essential element of any data scientist's toolkit. You will be learning about the relational model, creating SQL queries, filtering and ordering your SQL records, and advanced querying by JOINing database tables.
+
+Creating a database engine
+Here, you're going to fire up your very first SQL engine. You'll create an engine to connect to the SQLite database 'Chinook.sqlite', which is in your working directory. Remember that to create an engine to connect to 'Northwind.sqlite', Hugo executed the command
+
+engine = create_engine('sqlite:///Northwind.sqlite')
+Here, 'sqlite:///Northwind.sqlite' is called the connection string to the SQLite database Northwind.sqlite. A little bit of background on the Chinook database: the Chinook database contains information about a semi-fictional digital media store in which media data is real and customer, employee and sales data has been manually created.
+
+Why the name Chinook, you ask? According to their website,
+
+The name of this sample database was based on the Northwind database. Chinooks are winds in the interior West of North America, where the Canadian Prairies and Great Plains meet various mountain ranges. Chinooks are most prevalent over southern Alberta in Canada. Chinook is a good name choice for a database that intends to be an alternative to Northwind.
+
+Instructions
+100 XP
+Import the function create_engine from the module sqlalchemy.
+Create an engine to connect to the SQLite database 'Chinook.sqlite' and assign it to engine.
+
+
+# Import necessary module
+from sqlalchemy import create_engine
+
+# Create engine: engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+
+====================================================================================================================
+
+What are the tables in the database?
+In this exercise, you'll once again create an engine to connect to 'Chinook.sqlite'. Before you can get any data out of the database, however, you'll need to know what tables it contains!
+
+To this end, you'll save the table names to a list using the method table_names() on the engine and then you will print the list.
+
+Instructions
+100 XP
+Import the function create_engine from the module sqlalchemy.
+Create an engine to connect to the SQLite database 'Chinook.sqlite' and assign it to engine.
+Using the method table_names() on the engine engine, assign the table names of 'Chinook.sqlite' to the variable table_names.
+Print the object table_names to the shell.
+
+
+# Import necessary module
+from sqlalchemy import create_engine
+
+# Create engine: engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+
+# Save the table names to a list: table_names
+table_names = engine.table_names()
+
+# Print the table names to the shell
+print(table_names)
+
+
+<script.py> output:
+    ['Album', 'Artist', 'Customer', 'Employee', 'Genre', 'Invoice', 'InvoiceLine', 'MediaType', 'Playlist', 'PlaylistTrack', 'Track']
+    
+    
+    ========================================================================================================================
+    
+Workflow of SQL querying
+● Import packages and functions
+● Create the database engine
+● Connect to the engine
+● Query the database
+● Save query results to a DataFrame
+● Close the connection
+
+Your first SQL query
+In [1]: from sqlalchemy import create_engine
+In [2]: import pandas as pd
+In [3]: engine = create_engine('sqlite:///Northwind.sqlite')
+In [4]: con = engine.connect()
+In [5]: rs = con.execute("SELECT * FROM Orders")
+In [6]: df = pd.DataFrame(rs.fetchall())
+In [7]: con.close() 
+
+
+Printing your query results
+In [8]: print(df.head())
+ 0 1 2 3 4
+0 10248 VINET 5 7/4/1996 12:00:00 AM 8/1/1996 12:00:00 AM
+1 10251 VICTE 3 7/8/1996 12:00:00 AM 8/5/1996 12:00:00 AM
+2 10254 CHOPS 5 7/11/1996 12:00:00 AM 8/8/1996 12:00:00 AM
+3 10256 WELLI 3 7/15/1996 12:00:00 AM 8/12/1996 12:00:00 AM
+4 10258 ERNSH 1 7/17/1996 12:00:00 AM 8/14/1996 12:00:00 AM 
+
+
+Set the DataFrame column names
+In [1]: from sqlalchemy import create_engine
+In [2]: import pandas as pd
+In [3]: engine = create_engine('sqlite:///Northwind.sqlite')
+In [4]: con = engine.connect()
+In [5]: rs = con.execute("SELECT * FROM Orders")
+In [6]: df = pd.DataFrame(rs.fetchall())
+In [7]: df.columns = rs.keys()
+In [8]: con.close()
+
+
+Set the data frame column names
+In [9]: print(df.head())
+ OrderID CustomerID EmployeeID OrderDate
+0 10248 VINET 5 7/4/1996 12:00:00 AM
+1 10251 VICTE 3 7/8/1996 12:00:00 AM
+2 10254 CHOPS 5 7/11/1996 12:00:00 AM
+3 10256 WELLI 3 7/15/1996 12:00:00 AM
+4 10258 ERNSH 1 7/17/1996 12:00:00 AM 
+
+
+Using the context manager
+In [1]: from sqlalchemy import create_engine
+In [2]: import pandas as pd
+In [3]: engine = create_engine('sqlite:///Northwind.sqlite')
+In [4]: with engine.connect() as con:
+ ...: rs = con.execute("SELECT OrderID, OrderDate,
+ShipName FROM Orders")
+ ...: df = pd.DataFrame(rs.fetchmany(size=5))
+ ...: df.columns = rs.keys()
+ 
+ 
+ 
+ 
+ 
+ ==============================================================================================================
+ 
+ 
+The Hello World of SQL Queries!
+Now, it's time for liftoff! In this exercise, you'll perform the Hello World of SQL queries, SELECT, in order to retrieve all columns of the table Album in the Chinook database. Recall that the query SELECT * selects all columns.
+
+Instructions
+100 XP
+Open the engine connection as con using the method connect() on the engine.
+Execute the query that selects ALL columns from the Album table. Store the results in rs.
+Store all of your query results in the DataFrame df by applying the fetchall() method to the results rs.
+Close the connection!
+
+
+# Import packages
+from sqlalchemy import create_engine
+import pandas as pd
+
+# Create engine: engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+
+# Open engine connection: con
+con = engine.connect()
+
+# Perform query: rs
+rs = con.execute("SELECT * FROM Album")
+
+# Save results of the query to DataFrame: df
+df = pd.DataFrame(rs.fetchall())
+
+# Close connection
+con.close()
+
+# Print head of DataFrame df
+print(df.head())
+
+
+<script.py> output:
+       0                                      1  2
+    0  1  For Those About To Rock We Salute You  1
+    1  2                      Balls to the Wall  2
+    2  3                      Restless and Wild  2
+    3  4                      Let There Be Rock  1
+    4  5                               Big Ones  3
+
+======================================================================================================================
+
+
+Customizing the Hello World of SQL Queries
+Congratulations on executing your first SQL query! Now you're going to figure out how to customize your query in order to:
+
+Select specified columns from a table;
+Select a specified number of rows;
+Import column names from the database table.
+Recall that Hugo performed a very similar query customization in the video:
+
+engine = create_engine('sqlite:///Northwind.sqlite')
+
+with engine.connect() as con:
+    rs = con.execute("SELECT OrderID, OrderDate, ShipName FROM Orders")
+    df = pd.DataFrame(rs.fetchmany(size=5))
+    df.columns = rs.keys()
+Packages have already been imported as follows:
+
+from sqlalchemy import create_engine
+import pandas as pd
+The engine has also already been created:
+
+engine = create_engine('sqlite:///Chinook.sqlite')
+The engine connection is already open with the statement
+
+with engine.connect() as con:
+All the code you need to complete is within this context.
+
+Instructions
+100 XP
+Execute the SQL query that selects the columns LastName and Title from the Employee table. Store the results in the variable rs.
+Apply the method fetchmany() to rs in order to retrieve 3 of the records. Store them in the DataFrame df.
+Using the rs object, set the DataFrame's column names to the corresponding names of the table columns.
+
+
+# Open engine in context manager
+# Perform query and save results to DataFrame: df
+with engine.connect() as con:
+    rs = con.execute("SELECT LastName, Title FROM Employee")
+    df = pd.DataFrame(rs.fetchmany(size=3))
+    df.columns = rs.keys()
+
+# Print the length of the DataFrame df
+print(len(df))
+
+# Print the head of the DataFrame df
+print(df.head())
+
+
+<script.py> output:
+    3
+      LastName                Title
+    0    Adams      General Manager
+    1  Edwards        Sales Manager
+    2  Peacock  Sales Support Agent
+    
+    
+    ============================================================================================================================
+    
+    
+Filtering your database records using SQL's WHERE
+You can now execute a basic SQL query to select records from any table in your database and you can also perform simple query customizations to select particular columns and numbers of rows.
+
+There are a couple more standard SQL query chops that will aid you in your journey to becoming an SQL ninja.
+
+Let's say, for example that you wanted to get all records from the Customer table of the Chinook database for which the Country is 'Canada'. You can do this very easily in SQL using a SELECT statement followed by a WHERE clause as follows:
+
+SELECT * FROM Customer WHERE Country = 'Canada'
+In fact, you can filter any SELECT statement by any condition using a WHERE clause. This is called filtering your records.
+
+In this interactive exercise, you'll select all records of the Employee table for which 'EmployeeId' is greater than or equal to 6.
+
+Packages are already imported as follows:
+
+import pandas as pd
+from sqlalchemy import create_engine
+Query away!
+
+Instructions
+100 XP
+Complete the argument of create_engine() so that the engine for the SQLite database 'Chinook.sqlite' is created.
+Execute the query that selects all records from the Employee table where 'EmployeeId' is greater than or equal to 6. Use the >= operator and assign the results to rs.
+Apply the method fetchall() to rs in order to fetch all records in rs. Store them in the DataFrame df.
+Using the rs object, set the DataFrame's column names to the corresponding names of the table columns.
+
+
+
+# Create engine: engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+
+# Open engine in context manager
+# Perform query and save results to DataFrame: df
+with engine.connect() as con:
+    rs = con.execute("SELECT * FROM Employee where EmployeeId>= 6")
+    df = pd.DataFrame(rs.fetchall())
+    df.columns = rs.keys()
+
+# Print the head of the DataFrame df
+print(df.head())
+
+
+<script.py> output:
+       EmployeeId  LastName FirstName       Title  ReportsTo            BirthDate  \
+    0           6  Mitchell   Michael  IT Manager          1  1973-07-01 00:00:00   
+    1           7      King    Robert    IT Staff          6  1970-05-29 00:00:00   
+    2           8  Callahan     Laura    IT Staff          6  1968-01-09 00:00:00   
+    
+                  HireDate                      Address        City State Country  \
+    0  2003-10-17 00:00:00         5827 Bowness Road NW     Calgary    AB  Canada   
+    1  2004-01-02 00:00:00  590 Columbia Boulevard West  Lethbridge    AB  Canada   
+    2  2004-03-04 00:00:00                  923 7 ST NW  Lethbridge    AB  Canada   
+    
+      PostalCode              Phone                Fax                    Email  
+    0    T3B 0C5  +1 (403) 246-9887  +1 (403) 246-9899  michael@chinookcorp.com  
+    1    T1K 5N8  +1 (403) 456-9986  +1 (403) 456-8485   robert@chinookcorp.com  
+    2    T1H 1Y8  +1 (403) 467-3351  +1 (403) 467-8772    laura@chinookcorp.com
+========================================================================================================================
+
+
+Ordering your SQL records with ORDER BY
+You can also order your SQL query results. For example, if you wanted to get all records from the Customer table of the Chinook database and order them in increasing order by the column SupportRepId, you could do so with the following query:
+
+"SELECT * FROM Customer ORDER BY SupportRepId"
+In fact, you can order any SELECT statement by any column.
+
+In this interactive exercise, you'll select all records of the Employee table and order them in increasing order by the column BirthDate.
+
+Packages are already imported as follows:
+
+import pandas as pd
+from sqlalchemy import create_engine
+Get querying!
+
+Instructions
+100 XP
+Using the function create_engine(), create an engine for the SQLite database Chinook.sqlite and assign it to the variable engine.
+In the context manager, execute the query that selects all records from the Employee table and orders them in increasing order by the column BirthDate. Assign the result to rs.
+In a call to pd.DataFrame(), apply the method fetchall() to rs in order to fetch all records in rs. Store them in the DataFrame df.
+Set the DataFrame's column names to the corresponding names of the table columns.
+
+
+
+# Create engine: engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+
+# Open engine in context manager
+with engine.connect() as con:
+    rs = con.execute("SELECT * FROM Employee ORDER BY BirthDate ASC")
+    df = pd.DataFrame(rs.fetchall())
+
+    # Set the DataFrame's column names
+    df.columns = rs.keys()
+
+# Print head of DataFrame
+print(df.head())
+
+
+<script.py> output:
+       EmployeeId  LastName FirstName                Title  ReportsTo  \
+    0           4      Park  Margaret  Sales Support Agent        2.0   
+    1           2   Edwards     Nancy        Sales Manager        1.0   
+    2           1     Adams    Andrew      General Manager        NaN   
+    3           5   Johnson     Steve  Sales Support Agent        2.0   
+    4           8  Callahan     Laura             IT Staff        6.0   
+    
+                 BirthDate             HireDate              Address        City  \
+    0  1947-09-19 00:00:00  2003-05-03 00:00:00     683 10 Street SW     Calgary   
+    1  1958-12-08 00:00:00  2002-05-01 00:00:00         825 8 Ave SW     Calgary   
+    2  1962-02-18 00:00:00  2002-08-14 00:00:00  11120 Jasper Ave NW    Edmonton   
+    3  1965-03-03 00:00:00  2003-10-17 00:00:00         7727B 41 Ave     Calgary   
+    4  1968-01-09 00:00:00  2004-03-04 00:00:00          923 7 ST NW  Lethbridge   
+    
+      State Country PostalCode              Phone                Fax  \
+    0    AB  Canada    T2P 5G3  +1 (403) 263-4423  +1 (403) 263-4289   
+    1    AB  Canada    T2P 2T3  +1 (403) 262-3443  +1 (403) 262-3322   
+    2    AB  Canada    T5K 2N1  +1 (780) 428-9482  +1 (780) 428-3457   
+    3    AB  Canada    T3B 1Y7   1 (780) 836-9987   1 (780) 836-9543   
+    4    AB  Canada    T1H 1Y8  +1 (403) 467-3351  +1 (403) 467-8772   
+    
+                          Email  
+    0  margaret@chinookcorp.com  
+    1     nancy@chinookcorp.com  
+    2    andrew@chinookcorp.com  
+    3     steve@chinookcorp.com  
+    4     laura@chinookcorp.com
+
+
+==================================================================================================================
+
+andas and The Hello World of SQL Queries!
+Here, you'll take advantage of the power of pandas to write the results of your SQL query to a DataFrame in one swift line of Python code!
+
+You'll first import pandas and create the SQLite 'Chinook.sqlite' engine. Then you'll query the database to select all records from the Album table.
+
+Recall that to select all records from the Orders table in the Northwind database, Hugo executed the following command:
+
+df = pd.read_sql_query("SELECT * FROM Orders", engine)
+Instructions
+100 XP
+Instructions
+100 XP
+Import the pandas package using the alias pd.
+Using the function create_engine(), create an engine for the SQLite database Chinook.sqlite and assign it to the variable engine.
+Use the pandas function read_sql_query() to assign to the variable df the DataFrame of results from the following query: select all records from the table Album.
+The remainder of the code is included to confirm that the DataFrame created by this method is equal to that created by the previous method that you learned.
+
+
+# Import packages
+from sqlalchemy import create_engine
+import pandas as pd
+
+# Create engine: engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+
+# Execute query and store records in DataFrame: df
+df = pd.read_sql_query("SELECT * FROM Album", engine)
+
+# Print head of DataFrame
+print(df.head())
+
+# Open engine in context manager and store query result in df1
+with engine.connect() as con:
+    rs = con.execute("SELECT * FROM Album")
+    df1 = pd.DataFrame(rs.fetchall())
+    df1.columns = rs.keys()
+
+# Confirm that both methods yield the same result
+print(df.equals(df1))
+
+
+<script.py> output:
+       AlbumId                                  Title  ArtistId
+    0        1  For Those About To Rock We Salute You         1
+    1        2                      Balls to the Wall         2
+    2        3                      Restless and Wild         2
+    3        4                      Let There Be Rock         1
+    4        5                               Big Ones         3
+    True
+
+
+=====================================================================================================================
+
+
+Pandas for more complex querying
+Here, you'll become more familiar with the pandas function read_sql_query() by using it to execute a more complex query: a SELECT statement followed by both a WHERE clause AND an ORDER BY clause.
+
+You'll build a DataFrame that contains the rows of the Employee table for which the EmployeeId is greater than or equal to 6 and you'll order these entries by BirthDate.
+
+Instructions
+100 XP
+Using the function create_engine(), create an engine for the SQLite database Chinook.sqlite and assign it to the variable engine.
+Use the pandas function read_sql_query() to assign to the variable df the DataFrame of results from the following query: select all records from the Employee table where the EmployeeId is greater than or equal to 6 and ordered by BirthDate (make sure to use WHERE and ORDER BY in this precise order).
+
+
+# Import packages
+from sqlalchemy import create_engine
+import pandas as pd
+
+# Create engine: engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+
+# Execute query and store records in DataFrame: df
+df = pd.read_sql_query("SELECT * FROM Employee WHERE EmployeeId >= 6 ORDER BY BirthDate",engine)
+
+# Print head of DataFrame
+print(df.head())
+
+
+<script.py> output:
+       EmployeeId  LastName FirstName       Title  ReportsTo            BirthDate  \
+    0           8  Callahan     Laura    IT Staff          6  1968-01-09 00:00:00   
+    1           7      King    Robert    IT Staff          6  1970-05-29 00:00:00   
+    2           6  Mitchell   Michael  IT Manager          1  1973-07-01 00:00:00   
+    
+                  HireDate                      Address        City State Country  \
+    0  2004-03-04 00:00:00                  923 7 ST NW  Lethbridge    AB  Canada   
+    1  2004-01-02 00:00:00  590 Columbia Boulevard West  Lethbridge    AB  Canada   
+    2  2003-10-17 00:00:00         5827 Bowness Road NW     Calgary    AB  Canada   
+    
+      PostalCode              Phone                Fax                    Email  
+    0    T1H 1Y8  +1 (403) 467-3351  +1 (403) 467-8772    laura@chinookcorp.com  
+    1    T1K 5N8  +1 (403) 456-9986  +1 (403) 456-8485   robert@chinookcorp.com  
+    2    T3B 0C5  +1 (403) 246-9887  +1 (403) 246-9899  michael@chinookcorp.com
+
+
+====================================================================================================================
+
+The power of SQL lies in relationships between tables: INNER JOIN
+Here, you'll perform your first INNER JOIN! You'll be working with your favourite SQLite database, Chinook.sqlite. For each record in the Album table, you'll extract the Title along with the Name of the Artist. The latter will come from the Artist table and so you will need to INNER JOIN these two tables on the ArtistID column of both.
+
+Recall that to INNER JOIN the Orders and Customers tables from the Northwind database, Hugo executed the following SQL query:
+
+"SELECT OrderID, CompanyName FROM Orders INNER JOIN Customers on Orders.CustomerID = Customers.CustomerID"
+The following code has already been executed to import the necessary packages and to create the engine:
+
+import pandas as pd
+from sqlalchemy import create_engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+Instructions
+100 XP
+Instructions
+100 XP
+Assign to rs the results from the following query: select all the records, extracting the Title of the record and Name of the artist of each record from the Album table and the Artist table, respectively. To do so, INNER JOIN these two tables on the ArtistID column of both.
+In a call to pd.DataFrame(), apply the method fetchall() to rs in order to fetch all records in rs. Store them in the DataFrame df.
+Set the DataFrame's column names to the corresponding names of the table columns.
+
+
+
+# Open engine in context manager
+# Perform query and save results to DataFrame: df
+with engine.connect() as con:
+    rs = con.execute("SELECT Title, Name from Album INNER JOIN Artist ON Album.ArtistID = ARTIST.ArtistID")
+    df = pd.DataFrame(rs.fetchall())
+    df.columns = rs.keys()
+
+# Print head of DataFrame df
+print(df.head())
+
+
+<script.py> output:
+                                       Title       Name
+    0  For Those About To Rock We Salute You      AC/DC
+    1                      Balls to the Wall     Accept
+    2                      Restless and Wild     Accept
+    3                      Let There Be Rock      AC/DC
+    4                               Big Ones  Aerosmith
+
+==================================================================================================================
+
+
+Filtering your INNER JOIN
+Congrats on performing your first INNER JOIN! You're now going to finish this chapter with one final exercise in which you perform an INNER JOIN and filter the result using a WHERE clause.
+
+Recall that to INNER JOIN the Orders and Customers tables from the Northwind database, Hugo executed the following SQL query:
+
+"SELECT OrderID, CompanyName FROM Orders INNER JOIN Customers on Orders.CustomerID = Customers.CustomerID"
+The following code has already been executed to import the necessary packages and to create the engine:
+
+import pandas as pd
+from sqlalchemy import create_engine
+engine = create_engine('sqlite:///Chinook.sqlite')
+Instructions
+100 XP
+Instructions
+100 XP
+Use the pandas function read_sql_query() to assign to the variable df the DataFrame of results from the following query: select all records from PlaylistTrack INNER JOIN Track on PlaylistTrack.TrackId = Track.TrackId that satisfy the condition Milliseconds < 250000.
+
+
+
+# Execute query and store records in DataFrame: df
+df = pd.read_sql_query("SELECT * FROM PlaylistTrack INNER JOIN Track on PlaylistTrack.TrackId = Track.TrackId WHERE Milliseconds < 250000", engine)
+
+# Print head of DataFrame
+print(df.head())
+
+
+
+<script.py> output:
+       PlaylistId  TrackId  TrackId              Name  AlbumId  MediaTypeId  \
+    0           1     3390     3390  One and the Same      271            2   
+    1           1     3392     3392     Until We Fall      271            2   
+    2           1     3393     3393     Original Fire      271            2   
+    3           1     3394     3394       Broken City      271            2   
+    4           1     3395     3395          Somedays      271            2   
+    
+       GenreId Composer  Milliseconds    Bytes  UnitPrice  
+    0       23     None        217732  3559040       0.99  
+    1       23     None        230758  3766605       0.99  
+    2       23     None        218916  3577821       0.99  
+    3       23     None        228366  3728955       0.99  
+    4       23     None        213831  3497176       0.99
+
+
+
+
+
+
+
+
+

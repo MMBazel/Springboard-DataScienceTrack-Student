@@ -1,0 +1,749 @@
+Course Description
+As a Data Scientist, on a daily basis you will need to clean data, wrangle and munge it, visualize it, build predictive models and interpret these models. Before doing any of these, however, you will need to know how to get data into Python. In the prequel to this course, you have already learnt many ways to import data into Python: (i) from flat files such as .txts and .csvs; (ii) from files native to other software such as Excel spreadsheets, Stata, SAS and MATLAB files; (iii) from relational databases such as SQLite & PostgreSQL. In this course, you'll extend this knowledge base by learning to import data (i) from the web and (ii) a special and essential case of this: pulling data from Application Programming Interfaces, also known as APIs, such as the Twitter streaming API, which allows us to stream real-time tweets.
+
+=============================================================================
+
+1
+Importing data from the Internet
+
+The web is a rich source of data from which you can extract various types of insights and findings. In this chapter, you will learn how to get data from the web, whether it be stored in files or in HTML. You'll also learn the basics of scraping and parsing web data.
+
+
+You’ll learn how to…
+● Import and locally save datasets from the web
+● Load datasets into pandas DataFrames
+● Make HTTP requests (GET requests)
+● Scrape web data such as HTML
+● Parse HTML into useful data (BeautifulSoup)
+● Use the urllib and requests packages 
+
+
+The urllib package
+● Provides interface for fetching data across the web
+● urlopen() - accepts URLs instead of file names
+
+
+How to automate file download in Python
+In [1]: from urllib.request import urlretrieve
+In [2]: url = 'http://archive.ics.uci.edu/ml/machine-learningdatabases/wine-quality/winequality-white.csv'
+In [3]: urlretrieve(url, 'winequality-white.csv')
+Out[3]: ('winequality-white.csv', <http.client.HTTPMessage at
+0x103cf1128>)
+
+
+=============================================================================================================================
+
+
+Importing flat files from the web: your turn!
+You are about to import your first file from the web! The flat file you will import will be 'winequality-red.csv' from the University of California, Irvine's Machine Learning repository. The flat file contains tabular data of physiochemical properties of red wine, such as pH, alcohol content and citric acid content, along with wine quality rating.
+
+The URL of the file is
+
+'https://s3.amazonaws.com/assets.datacamp.com/production/course_1606/datasets/winequality-red.csv'
+After you import it, you'll check your working directory to confirm that it is there and then you'll load it into a pandas DataFrame.
+
+Instructions
+100 XP
+Import the function urlretrieve from the subpackage urllib.request.
+Assign the URL of the file to the variable url.
+Use the function urlretrieve() to save the file locally as 'winequality-red.csv'.
+Execute the remaining code to load 'winequality-red.csv' in a pandas DataFrame and to print its head to the shell.
+
+
+# Import package
+from urllib.request import urlretrieve
+
+# Import pandas
+import pandas as pd
+
+# Assign url of file: url
+url = 'https://s3.amazonaws.com/assets.datacamp.com/production/course_1606/datasets/winequality-red.csv'
+
+# Save file locally
+urlretrieve(url,'winequality-red.csv')
+
+# Read file into a DataFrame and print its head
+df = pd.read_csv('winequality-red.csv', sep=';')
+print(df.head())
+
+<script.py> output:
+       fixed acidity  volatile acidity  citric acid  residual sugar  chlorides  \
+    0            7.4              0.70         0.00             1.9      0.076   
+    1            7.8              0.88         0.00             2.6      0.098   
+    2            7.8              0.76         0.04             2.3      0.092   
+    3           11.2              0.28         0.56             1.9      0.075   
+    4            7.4              0.70         0.00             1.9      0.076   
+    
+       free sulfur dioxide  total sulfur dioxide  density    pH  sulphates  \
+    0                 11.0                  34.0   0.9978  3.51       0.56   
+    1                 25.0                  67.0   0.9968  3.20       0.68   
+    2                 15.0                  54.0   0.9970  3.26       0.65   
+    3                 17.0                  60.0   0.9980  3.16       0.58   
+    4                 11.0                  34.0   0.9978  3.51       0.56   
+    
+       alcohol  quality  
+    0      9.4        5  
+    1      9.8        5  
+    2      9.8        5  
+    3      9.8        6  
+    4      9.4        5
+
+
+==========================================================================================================================
+
+
+Opening and reading flat files from the web
+You have just imported a file from the web, saved it locally and loaded it into a DataFrame. If you just wanted to load a file from the web into a DataFrame without first saving it locally, you can do that easily using pandas. In particular, you can use the function pd.read_csv() with the URL as the first argument and the separator sep as the second argument.
+
+The URL of the file, once again, is
+
+'https://s3.amazonaws.com/assets.datacamp.com/production/course_1606/datasets/winequality-red.csv'
+Instructions
+100 XP
+Instructions
+100 XP
+Assign the URL of the file to the variable url.
+Read file into a DataFrame df using pd.read_csv(), recalling that the separator in the file is ';'.
+Print the head of the DataFrame df.
+Execute the rest of the code to plot histogram of the first feature in the DataFrame df.
+
+# Import packages
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Assign url of file: url
+url = 'https://s3.amazonaws.com/assets.datacamp.com/production/course_1606/datasets/winequality-red.csv'
+
+# Read file into a DataFrame: df
+df = pd.read_csv(url,sep=';')
+
+# Print the head of the DataFrame
+print(df.head())
+
+# Plot first column of df
+pd.DataFrame.hist(df.ix[:, 0:1])
+plt.xlabel('fixed acidity (g(tartaric acid)/dm$^3$)')
+plt.ylabel('count')
+plt.show()
+
+
+<script.py> output:
+       fixed acidity  volatile acidity  citric acid  residual sugar  chlorides  \
+    0            7.4              0.70         0.00             1.9      0.076   
+    1            7.8              0.88         0.00             2.6      0.098   
+    2            7.8              0.76         0.04             2.3      0.092   
+    3           11.2              0.28         0.56             1.9      0.075   
+    4            7.4              0.70         0.00             1.9      0.076   
+    
+       free sulfur dioxide  total sulfur dioxide  density    pH  sulphates  \
+    0                 11.0                  34.0   0.9978  3.51       0.56   
+    1                 25.0                  67.0   0.9968  3.20       0.68   
+    2                 15.0                  54.0   0.9970  3.26       0.65   
+    3                 17.0                  60.0   0.9980  3.16       0.58   
+    4                 11.0                  34.0   0.9978  3.51       0.56   
+    
+       alcohol  quality  
+    0      9.4        5  
+    1      9.8        5  
+    2      9.8        5  
+    3      9.8        6  
+    4      9.4        5
+		
+		=========================================================================================================================
+Importing non-flat files from the web
+Congrats! You've just loaded a flat file from the web into a DataFrame without first saving it locally using the pandas function pd.read_csv(). This function is super cool because it has close relatives that allow you to load all types of files, not only flat ones. In this interactive exercise, you'll use pd.read_excel() to import an Excel spreadsheet.
+
+The URL of the spreadsheet is
+
+'http://s3.amazonaws.com/assets.datacamp.com/course/importing_data_into_r/latitude.xls'
+Your job is to use pd.read_excel() to read in all of its sheets, print the sheet names and then print the head of the first sheet using its name, not its index.
+
+Note that the output of pd.read_excel() is a Python dictionary with sheet names as keys and corresponding DataFrames as corresponding values.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Assign the URL of the file to the variable url.
+Read the file in url into a dictionary xl using pd.read_excel() recalling that, in order to import all sheets you need to pass None to the argument sheetname.
+Print the names of the sheets in the Excel spreadsheet; these will be the keys of the dictionary xl.
+Print the head of the first sheet using the sheet name, not the index of the sheet! The sheet name is '1700'		
+		
+# Import package
+import pandas as pd
+
+# Assign url of file: url
+url = 'http://s3.amazonaws.com/assets.datacamp.com/course/importing_data_into_r/latitude.xls'
+
+# Read in all sheets of Excel file: xl
+x1 = pd.read_excel(url,sheetname=None)
+
+# Print the sheetnames to the shell
+print(x1.keys())
+
+# Print the head of the first sheet (using its name, NOT its index)
+print(x1['1700'].head())
+
+
+
+<script.py> output:
+    dict_keys(['1900', '1700'])
+                     country       1700
+    0            Afghanistan  34.565000
+    1  Akrotiri and Dhekelia  34.616667
+    2                Albania  41.312000
+    3                Algeria  36.720000
+    4         American Samoa -14.307000
+
+===============================================================================================================
+
+HTTP requests
+to import files
+from the web
+
+URL
+● Uniform/Universal Resource Locator
+● References to web resources
+● Focus: web addresses
+● Ingredients:
+● Protocol identifier - h!p:
+● Resource name - datacamp.com
+● These specify web addresses uniquely
+
+HTTP
+● HyperText Transfer Protocol
+● Foundation of data communication for the web
+● HTTPS - more secure form of HTTP
+● Going to a website = sending HTTP request
+● GET request
+● urlretrieve() performs a GET request
+● HTML - HyperText Markup Language
+
+GET requests using urllib
+In [1]: from urllib.request import urlopen, Request
+In [2]: url = "https://www.wikipedia.org/"
+In [3]: request = Request(url)
+In [4]: response = urlopen(request)
+In [5]: html = response.read()
+In [6]: response.close()
+
+
+GET requests using requests
+In [1]: import requests
+In [2]: url = "https://www.wikipedia.org/"
+In [3]: r = requests.get(url)
+In [4]: text = r.text
+
+
+=======================================================================================================================
+
+Performing HTTP requests in Python using urllib
+Now that you know the basics behind HTTP GET requests, it's time to perform some of your own. In this interactive exercise, you will ping our very own DataCamp servers to perform a GET request to extract information from our teach page, "http://www.datacamp.com/teach/documentation".
+
+In the next exercise, you'll extract the HTML itself. Right now, however, you are going to package and send the request and then catch the response.
+
+Instructions
+100 XP
+Import the functions urlopen and Request from the subpackage urllib.request.
+Package the request to the url "http://www.datacamp.com/teach/documentation" using the function Request() and assign it to request.
+Send the request and catch the response in the variable response with the function urlopen().
+Run the rest of the code to see the datatype of response and to close the connection!
+
+
+
+# Import packages
+from urllib.request import urlopen, Request
+
+# Specify the url
+url = "http://www.datacamp.com/teach/documentation"
+
+# This packages the request: request
+request = Request(url)
+
+# Sends the request and catches the response: response
+response = urlopen(request)
+
+# Print the datatype of response
+print(type(response))
+
+# Be polite and close the response!
+response.close()
+
+
+<script.py> output:
+    <class 'http.client.HTTPResponse'>
+
+========================================================================================================================
+
+Printing HTTP request results in Python using urllib
+You have just packaged and sent a GET request to "http://www.datacamp.com/teach/documentation" and then caught the response. You saw that such a response is a http.client.HTTPResponse object. The question remains: what can you do with this response?
+
+Well, as it came from an HTML page, you could read it to extract the HTML and, in fact, such a http.client.HTTPResponse object has an associated read() method. In this exercise, you'll build on your previous great work to extract the response and print the HTML.
+
+Instructions
+100 XP
+Send the request and catch the response in the variable response with the function urlopen(), as in the previous exercise.
+Extract the response using the read() method and store the result in the variable html.
+Print the string html.
+Hit submit to perform all of the above and to close the response: be tidy!
+
+
+# Import packages
+from urllib.request import urlopen, Request
+
+# Specify the url
+url = "http://www.datacamp.com/teach/documentation"
+
+# This packages the request
+request = Request(url)
+
+# Sends the request and catches the response: response
+response = urlopen(request)
+
+# Extract the response: html
+html = response.read()
+
+# Print the html
+print(html)
+
+# Be polite and close the response!
+response.close()
+
+<script.py> output:
+    b'<!doctype html>\n<html lang="en" data-direction="ltr">\n  <head>\n    <link href="https://fonts.intercomcdn.com" rel="preconnect" crossorigin>\n      <script src="https://www.googletagmanager.com/gtag/js?id=UA-39297847-9" async="async" nonce="2oAjk7hYqhPltzcK/U/0WX/lS3/Xw1GscdwR02MJ2F0="></script>\n      <script nonce="2oAjk7hYqhPltzcK/U/0WX/lS3/Xw1GscdwR02MJ2F0=">\n        window.dataLayer = window.dataLayer || [];\n        function gtag(){dataLayer.push(arguments);}\n        gtag(\'js\', new Date());\n        gtag(\'config\', \'UA-39297847-9\');\n</script>\n    <meta charset="utf-8">\n    <meta http-equiv="X-UA-Compatible" content="IE=edge">\n    <title>DataCamp Help Center</title>\n    <meta name="description" content="">\n    <meta name="viewport" content="width=device-width, initial-scale=1">\n      <meta name="intercom:trackingEvent" content="{&quot;name&quot;:&quot;Viewed Help Center&quot;,&quot;metadata&quot;:{&quot;action&quot;:&quot;viewed&quot;,&quot;object&quot;:&quot;educate_home&quot;,&quot;place&quot;:&quot;help_center&quot;,&quot;owner&quot;:&quot;educate&quot;}}" />\n\n    <link rel="stylesheet" media="all" href="https://intercom.help/_assets/application-cf96f613358ad1f77fb9ea03098706a52f28f50d9c46df57184f74e53e1941ba.css" />\n    <link rel="canonical" href="http://instructor-support.datacamp.com/"/>\n\n        <link href="https://static.intercomassets.com/assets/educate/educate-favicon-64x64-at-2x-52016a3500a250d0b118c0a04ddd13b1a7364a27759483536dd1940bccdefc20.png" rel="shortcut icon" type="image/png" />\n      <style>\n        .header, .avatar__image-extra { background-color: #263e63; }\n        .article a, .c__primary { color: #263e63; }\n        .avatar__fallback { background-color: #263e63; }\n        article a.intercom-h2b-button { background-color: #263e63; border: 0; }\n      </style>\n\n      <meta property="og:title" content="DataCamp Help Center" />\n  <meta name="twitter:title" content="DataCamp Help Center" />\n\n\n<meta property="og:type" content="website" />\n<meta property="og:image" content="" />\n\n<meta name="twitter:image" content="" />\n\n  </head>\n  <body class="">\n    <header class="header">\n  <div class="container header__container o__ltr" dir="ltr">\n    <div class="content">\n      <div class="mo o__centered o__reversed header__meta_wrapper">\n        <div class="mo__body">\n          <div class="header__logo">\n            <a href="/">\n                <img alt="DataCamp Help Center" src="https://downloads.intercomcdn.com/i/o/81221/856b63d438031754b681746b/4ea2737e4266936fb423911d9c587812.png" />\n            </a>\n          </div>\n        </div>\n        <div class="mo__aside">\n          <div class="header__home__url">\n              <a target="_blank" rel=\'noopener\' href="http://www.datacamp.com/teach"><svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><title>Group 65</title><g stroke="#FFF" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 6.73v6.77H.5v-11h7.615M4.5 9.5l7-7M13.5 5.5v-5h-5"/></g></svg><span>Go to DataCamp</span></a>\n          </div>\n        </div>\n      </div>\n        <h1 class="header__headline">Advice and answers from the DataCamp Team</h1>\n        <form action="/" autocomplete="off" class="header__form search">\n          <input type="text" autocomplete="off" class="search__input js__search-input o__ltr" placeholder="Search for answers..." tabindex="1" name="q" value="">\n          <div class="search_icons">\n            <button type="submit" class="search__submit o__ltr"></button>\n            <a class="search__clear-text__icon">\n              <svg class="interface-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">\n                <path d="M8.018 6.643L5.375 4 4 5.375l2.643 2.643L4 10.643 5.375 12l2.643-2.625L10.625 12 12 10.643 9.357 8.018 12 5.375 10.643 4z" />\n              </svg>\n            </a>\n        </form>\n      </div>\n    </div>\n  </div>\n</header>\n\n    <div class="container">\n      <div class="content educate_content"><section class="section">\n    <div class="g__space">\n      <a href="/getting-started" class="paper ">\n        <div class="collection o__ltr">\n          <div class="collection__photo">\n            <svg role=\'img\' viewBox=\'0 0 48 48\'><g id="chat-star" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linejoin="round"><path d="M20 34.942c-2.083-.12-4.292-.42-6-.942L3 39l4-9c-3.858-3.086-6-7.246-6-12C1 8.61 10.328 1 21.835 1 33.343 1 43 8.61 43 18c0 1.044-.117 2.065-.342 3.057"></path><path d="M36.016 25L40 33h7l-6 5 3 9-8-5.494L28 47l3-9-6-5h7l4.016-8z"></path></g></svg>\n          </div>\n          <div class="collection_meta" dir="ltr">\n            <h2 class="t__h3 c__primary">Getting Started</h2>\n            <p class="paper__preview">Everything you need to know to begin your DataCamp journey!</p>\n            <div class="avatar">\n  <div class="avatar__photo avatars__images o__ltr">\n        <img src="https://static.intercomassets.com/avatars/2352718/square_128/Rebecca_Robins_-_Headshot-1535969735.jpg?1535969735" alt="Becca Robins avatar" class="avatar__image">\n\n        <img src="https://static.intercomassets.com/avatars/2678519/square_128/pic2-1539176502.JPG?1539176502" alt="Jen Bricker avatar" class="avatar__image">\n\n        <img src="https://static.intercomassets.com/avatars/2637958/square_128/YR_Headshot-1539175806.JPG?1539175806" alt="Yashas Roy avatar" class="avatar__image">\n\n      <span class="avatar__image avatar__fallback">+2</span>\n  </div>\n  <div class="avatar__info">\n    <div>\n      <span class="c__darker">\n        11 articles in this collection\n      </span>\n      <br>\n      Written by <span class=\'c__darker\'> Becca Robins,</span> <span class=\'c__darker\'> Jen Bricker,</span> <span class=\'c__darker\'> Yashas Roy</span> and 2 others\n    </div>\n  </div>\n</div>\n\n          </div>\n        </div>\n      </a>\n    </div>\n    <div class="g__space">\n      <a href="/courses" class="paper ">\n        <div class="collection o__ltr">\n          <div class="collection__photo">\n            <svg role=\'img\' viewBox=\'0 0 48 48\'><g id="devices-laptop" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round"><path d="M41 31H7V11h34v20z"></path><path d="M3 35V10a3 3 0 0 1 3-3h36a3 3 0 0 1 3 3v25m-16 0v2H19v-2H1v4a2 2 0 0 0 2 2h42a2 2 0 0 0 2-2v-4H29z" stroke-linejoin="round"></path></g></svg>\n          </div>\n          <div class="collection_meta" dir="ltr">\n            <h2 class="t__h3 c__primary">Courses</h2>\n            <p class="paper__preview">Everything you need to know about creating DataCamp courses.</p>\n            <div class="avatar">\n  <div class="avatar__photo avatars__images o__ltr">\n        <img src="https://static.intercomassets.com/avatars/2637958/square_128/YR_Headshot-1539175806.JPG?1539175806" alt="Yashas Roy avatar" class="avatar__image">\n\n        <img src="https://static.intercomassets.com/avatars/2247397/square_128/IMG_2763_final_square_small-1532522734.jpg?1532522734" alt="Nick Carchedi avatar" class="avatar__image">\n\n        <img src="https://static.intercomassets.com/avatars/2298587/square_128/about_pic-1539247923.jpg?1539247923" alt="Vincent Vankrunkelsven avatar" class="avatar__image">\n\n      <span class="avatar__image avatar__fallback">+6</span>\n  </div>\n  <div class="avatar__info">\n    <div>\n      <span class="c__darker">\n        73 articles in this collection\n      </span>\n      <br>\n      Written by <span class=\'c__darker\'> Yashas Roy,</span> <span class=\'c__darker\'> Nick Carchedi,</span> <span class=\'c__darker\'> Vincent Vankrunkelsven</span> and 6 others\n    </div>\n  </div>\n</div>\n\n          </div>\n        </div>\n      </a>\n    </div>\n    <div class="g__space">\n      <a href="/projects" class="paper ">\n        <div class="collection o__ltr">\n          <div class="collection__photo">\n            <svg role=\'img\' viewBox=\'0 0 48 48\'><g id="book-opened2"><path d="M24 11c0-3.866 10.297-7 23-7v33c-12.703 0-23 3.134-23 7 0-3.866-10.3-7-23-7V4c12.7 0 23 3.134 23 7zm0 0v32m-5-27.52c-3.22-1.232-7.773-2.128-13-2.48m13 8.48c-3.22-1.232-7.773-2.128-13-2.48m13 8.48c-3.22-1.232-7.773-2.128-13-2.48m13 8.48c-3.22-1.23-7.773-2.127-13-2.48m23-15.52c3.223-1.232 7.773-2.128 13-2.48m-13 8.48c3.223-1.232 7.773-2.128 13-2.48m-13 8.48c3.223-1.232 7.773-2.128 13-2.48m-13 8.48c3.223-1.23 7.773-2.127 13-2.48" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>\n          </div>\n          <div class="collection_meta" dir="ltr">\n            <h2 class="t__h3 c__primary">Projects</h2>\n            <p class="paper__preview">Everything you need to know about creating DataCamp projects.</p>\n            <div class="avatar">\n  <div class="avatar__photo avatars__images o__ltr">\n        <img src="https://static.intercomassets.com/avatars/2360843/square_128/20170928_DavidV_ByBBImagery-022-1380-1537479799.jpg?1537479799" alt="David Venturi avatar" class="avatar__image">\n\n  </div>\n  <div class="avatar__info">\n    <div>\n      <span class="c__darker">\n        14 articles in this collection\n      </span>\n      <br>\n      Written by <span class=\'c__darker\'> David Venturi</span>\n    </div>\n  </div>\n</div>\n\n          </div>\n        </div>\n      </a>\n    </div>\n    <div class="g__space">\n      <a href="/course-editor-basics" class="paper ">\n        <div class="collection o__ltr">\n          <div class="collection__photo">\n            <svg role=\'img\' viewBox=\'0 0 48 48\'><g id="book-bookmark" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round"><path d="M35 31l-6-6-6 6V7h12v24z"></path><path d="M35 9h6v38H11a4 4 0 0 1-4-4V5" stroke-linejoin="round"></path><path d="M39 9V1H11a4 4 0 0 0 0 8h12" stroke-linejoin="round"></path></g></svg>\n          </div>\n          <div class="collection_meta" dir="ltr">\n            <h2 class="t__h3 c__primary">Course Editor Basics</h2>\n            <p class="paper__preview">Everything you need to know to get going with our online course editor.</p>\n            <div class="avatar">\n  <div class="avatar__photo avatars__images o__ltr">\n        <img src="https://static.intercomassets.com/avatars/2247397/square_128/IMG_2763_final_square_small-1532522734.jpg?1532522734" alt="Nick Carchedi avatar" class="avatar__image">\n\n        <img src="https://static.intercomassets.com/avatars/2352718/square_128/Rebecca_Robins_-_Headshot-1535969735.jpg?1535969735" alt="Becca Robins avatar" class="avatar__image">\n\n  </div>\n  <div class="avatar__info">\n    <div>\n      <span class="c__darker">\n        4 articles in this collection\n      </span>\n      <br>\n      Written by <span class=\'c__darker\'> Nick Carchedi</span> and <span class=\'c__darker\'> Becca Robins</span>\n    </div>\n  </div>\n</div>\n\n          </div>\n        </div>\n      </a>\n    </div>\n    <div class="g__space">\n      <a href="/tips-and-tricks" class="paper ">\n        <div class="collection o__ltr">\n          <div class="collection__photo">\n            <svg role=\'img\' viewBox=\'0 0 48 48\'><g id="comms-mail" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linejoin="round"><path d="M47 3L1 22l18 7L47 3z"></path><path d="M47 3l-8 37-20-11L47 3zM19 29v16l7-12"></path></g></svg>\n          </div>\n          <div class="collection_meta" dir="ltr">\n            <h2 class="t__h3 c__primary">Tips &amp; Tricks</h2>\n            <p class="paper__preview">Become a DataCamp wizard!</p>\n            <div class="avatar">\n  <div class="avatar__photo avatars__images o__ltr">\n        <img src="https://static.intercomassets.com/avatars/2352718/square_128/Rebecca_Robins_-_Headshot-1535969735.jpg?1535969735" alt="Becca Robins avatar" class="avatar__image">\n\n  </div>\n  <div class="avatar__info">\n    <div>\n      <span class="c__darker">\n        6 articles in this collection\n      </span>\n      <br>\n      Written by <span class=\'c__darker\'> Becca Robins</span>\n    </div>\n  </div>\n</div>\n\n          </div>\n        </div>\n      </a>\n    </div>\n    <div class="g__space">\n      <a href="/frequently-asked-questions-faq" class="paper ">\n        <div class="collection o__ltr">\n          <div class="collection__photo">\n            <svg role=\'img\' viewBox=\'0 0 48 48\'><g id="chat-question" fill="none" fill-rule="evenodd"><path d="M47 21.268c0 10.363-10.297 18.765-23 18.765-2.835 0-5.55-.418-8.058-1.184L2.725 45 7.9 34.668c-4.258-3.406-6.9-8.15-6.9-13.4C1 10.904 11.297 2.502 24 2.502s23 8.402 23 18.766z" stroke-width="2" stroke-linejoin="round"></path><path d="M25 28.502a2 2 0 1 0 0 4 2 2 0 0 0 0-4" fill="#231F1F"></path><path d="M19 17.75c0-3.312 2.686-6.124 6-6.124 3.313 0 6 2.626 6 5.938 0 3.315-2.687 5.938-6 5.938V26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>\n          </div>\n          <div class="collection_meta" dir="ltr">\n            <h2 class="t__h3 c__primary">Frequently Asked Questions (FAQ)</h2>\n            <p class="paper__preview">Common questions that arise during content creation.</p>\n            <div class="avatar">\n  <div class="avatar__photo avatars__images o__ltr">\n        <img src="https://static.intercomassets.com/avatars/2366194/square_128/richie-in-hairnet-1537451295.JPG?1537451295" alt="Richie Cotton avatar" class="avatar__image">\n\n        <img src="https://static.intercomassets.com/avatars/2352718/square_128/Rebecca_Robins_-_Headshot-1535969735.jpg?1535969735" alt="Becca Robins avatar" class="avatar__image">\n\n        <img src="https://static.intercomassets.com/avatars/2637958/square_128/YR_Headshot-1539175806.JPG?1539175806" alt="Yashas Roy avatar" class="avatar__image">\n\n      <span class="avatar__image avatar__fallback">+3</span>\n  </div>\n  <div class="avatar__info">\n    <div>\n      <span class="c__darker">\n        43 articles in this collection\n      </span>\n      <br>\n      Written by <span class=\'c__darker\'> Richie Cotton,</span> <span class=\'c__darker\'> Becca Robins,</span> <span class=\'c__darker\'> Yashas Roy</span> and 3 others\n    </div>\n  </div>\n</div>\n\n          </div>\n        </div>\n      </a>\n    </div>\n    <div class="g__space">\n      <a href="/miscellaneous" class="paper ">\n        <div class="collection o__ltr">\n          <div class="collection__photo">\n            <svg role=\'img\' viewBox=\'0 0 48 48\'><g id="tools-edit"><path d="M14.932 43.968L2 47l3.033-12.93 31.2-31.203a4 4 0 0 1 5.658 0l4.247 4.243a4 4 0 0 1 0 5.656L14.932 43.968zm29.84-29.735L34.82 4.28m7.125 12.782L31.992 7.11M15.436 43.465l-9.9-9.9" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>\n          </div>\n          <div class="collection_meta" dir="ltr">\n            <h2 class="t__h3 c__primary">Miscellaneous</h2>\n            <p class="paper__preview">Have a question for DataCamp, but not about creating content? You&#39;ll probably find the answer here.</p>\n            <div class="avatar">\n  <div class="avatar__photo avatars__images o__ltr">\n        <img src="https://static.intercomassets.com/avatars/2352718/square_128/Rebecca_Robins_-_Headshot-1535969735.jpg?1535969735" alt="Becca Robins avatar" class="avatar__image">\n\n  </div>\n  <div class="avatar__info">\n    <div>\n      <span class="c__darker">\n        9 articles in this collection\n      </span>\n      <br>\n      Written by <span class=\'c__darker\'> Becca Robins</span>\n    </div>\n  </div>\n</div>\n\n          </div>\n        </div>\n      </a>\n    </div>\n</section>\n</div>\n    </div>\n    <footer class="footer">\n  <div class="container">\n    <div class="content">\n      <div class="u__cf"  dir="ltr">\n        <div class="footer__logo">\n          <a href="/">\n              <img alt="DataCamp Help Center" src="https://downloads.intercomcdn.com/i/o/81221/856b63d438031754b681746b/4ea2737e4266936fb423911d9c587812.png" />\n          </a>\n        </div>\n        <div class="footer__advert logo">\n          <img src="https://intercom.help/_assets/intercom-a6a6ac0f033657af1aebe2e9e15b94a3cd5eabf6ae8b9916df6ea49099a894d8.png" alt="Intercom" />\n          <a href="https://www.intercom.com/intercom-link?company=DataCamp&amp;solution=customer-support&amp;utm_campaign=intercom-link&amp;utm_content=We+run+on+Intercom&amp;utm_medium=help-center&amp;utm_referrer=http%3A%2F%2Finstructor-support.datacamp.com%2F&amp;utm_source=desktop-web">We run on Intercom</a>\n        </div>\n      </div>\n    </div>\n  </div>\n</footer>\n\n    \n  <script nonce="2oAjk7hYqhPltzcK/U/0WX/lS3/Xw1GscdwR02MJ2F0=">\n    window.intercomSettings = {"app_id":"ug0ps1rq"};\n</script>\n  <script nonce="2oAjk7hYqhPltzcK/U/0WX/lS3/Xw1GscdwR02MJ2F0=">\n    (function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic(\'reattach_activator\');ic(\'update\',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement(\'script\');s.type=\'text/javascript\';s.async=true;s.src="https://widget.intercom.io/widget/ug0ps1rq";var x=d.getElementsByTagName(\'script\')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent(\'onload\',l);}else{w.addEventListener(\'load\',l,false);}}})()\n</script>\n\n    \n\n    <script src="https://intercom.help/_assets/application-809c5f9ba0b658f344176473e8aaba9ba50950ba4af2d0b79bafeeb1f69f77fd.js" nonce="2oAjk7hYqhPltzcK/U/0WX/lS3/Xw1GscdwR02MJ2F0="></script>\n  </body>\n</html>\n'
+
+==========================================================================================================================
+
+Performing HTTP requests in Python using requests
+Now that you've got your head and hands around making HTTP requests using the urllib package, you're going to figure out how to do the same using the higher-level requests library. You'll once again be pinging DataCamp servers for their "http://www.datacamp.com/teach/documentation" page.
+
+Note that unlike in the previous exercises using urllib, you don't have to close the connection when using requests!
+
+Instructions
+100 XP
+Import the package requests.
+Assign the URL of interest to the variable url.
+Package the request to the URL, send the request and catch the response with a single function requests.get(), assigning the response to the variable r.
+Use the text attribute of the object r to return the HTML of the webpage as a string; store the result in a variable text.
+Hit submit to print the HTML of the webpage.
+
+
+# Import package
+import requests
+
+# Specify the url: url
+url = "http://www.datacamp.com/teach/documentation"
+
+# Packages the request, send the request and catch the response: r
+r = requests.get(url)
+
+# Extract the response: text
+text = r.text
+
+# Print the html
+print(text)
+
+
+
+<script.py> output:
+    <!doctype html>
+    <html lang="en" data-direction="ltr">
+      <head>
+        <link href="https://fonts.intercomcdn.com" rel="preconnect" crossorigin>
+          <script src="https://www.googletagmanager.com/gtag/js?id=UA-39297847-9" async="async" nonce="CnSi/h8qqixClNeuhpRjTAbm+EsRD6OZQxkEkv57tRo="></script>
+          <script nonce="CnSi/h8qqixClNeuhpRjTAbm+EsRD6OZQxkEkv57tRo=">
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-39297847-9');
+    </script>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>DataCamp Help Center</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+          <meta name="intercom:trackingEvent" content="{&quot;name&quot;:&quot;Viewed Help Center&quot;,&quot;metadata&quot;:{&quot;action&quot;:&quot;viewed&quot;,&quot;object&quot;:&quot;educate_home&quot;,&quot;place&quot;:&quot;help_center&quot;,&quot;owner&quot;:&quot;educate&quot;}}" />
+    
+        <link rel="stylesheet" media="all" href="https://intercom.help/_assets/application-cf96f613358ad1f77fb9ea03098706a52f28f50d9c46df57184f74e53e1941ba.css" />
+        <link rel="canonical" href="http://instructor-support.datacamp.com/"/>
+    
+            <link href="https://static.intercomassets.com/assets/educate/educate-favicon-64x64-at-2x-52016a3500a250d0b118c0a04ddd13b1a7364a27759483536dd1940bccdefc20.png" rel="shortcut icon" type="image/png" />
+          <style>
+            .header, .avatar__image-extra { background-color: #263e63; }
+            .article a, .c__primary { color: #263e63; }
+            .avatar__fallback { background-color: #263e63; }
+            article a.intercom-h2b-button { background-color: #263e63; border: 0; }
+          </style>
+    
+          <meta property="og:title" content="DataCamp Help Center" />
+      <meta name="twitter:title" content="DataCamp Help Center" />
+    
+    
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="" />
+    
+    <meta name="twitter:image" content="" />
+    
+      </head>
+      <body class="">
+        <header class="header">
+      <div class="container header__container o__ltr" dir="ltr">
+        <div class="content">
+          <div class="mo o__centered o__reversed header__meta_wrapper">
+            <div class="mo__body">
+              <div class="header__logo">
+                <a href="/">
+                    <img alt="DataCamp Help Center" src="https://downloads.intercomcdn.com/i/o/81221/856b63d438031754b681746b/4ea2737e4266936fb423911d9c587812.png" />
+                </a>
+              </div>
+            </div>
+            <div class="mo__aside">
+              <div class="header__home__url">
+                  <a target="_blank" rel='noopener' href="http://www.datacamp.com/teach"><svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><title>Group 65</title><g stroke="#FFF" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 6.73v6.77H.5v-11h7.615M4.5 9.5l7-7M13.5 5.5v-5h-5"/></g></svg><span>Go to DataCamp</span></a>
+              </div>
+            </div>
+          </div>
+            <h1 class="header__headline">Advice and answers from the DataCamp Team</h1>
+            <form action="/" autocomplete="off" class="header__form search">
+              <input type="text" autocomplete="off" class="search__input js__search-input o__ltr" placeholder="Search for answers..." tabindex="1" name="q" value="">
+              <div class="search_icons">
+                <button type="submit" class="search__submit o__ltr"></button>
+                <a class="search__clear-text__icon">
+                  <svg class="interface-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                    <path d="M8.018 6.643L5.375 4 4 5.375l2.643 2.643L4 10.643 5.375 12l2.643-2.625L10.625 12 12 10.643 9.357 8.018 12 5.375 10.643 4z" />
+                  </svg>
+                </a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+        <div class="container">
+          <div class="content educate_content"><section class="section">
+        <div class="g__space">
+          <a href="/getting-started" class="paper ">
+            <div class="collection o__ltr">
+              <div class="collection__photo">
+                <svg role='img' viewBox='0 0 48 48'><g id="chat-star" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linejoin="round"><path d="M20 34.942c-2.083-.12-4.292-.42-6-.942L3 39l4-9c-3.858-3.086-6-7.246-6-12C1 8.61 10.328 1 21.835 1 33.343 1 43 8.61 43 18c0 1.044-.117 2.065-.342 3.057"></path><path d="M36.016 25L40 33h7l-6 5 3 9-8-5.494L28 47l3-9-6-5h7l4.016-8z"></path></g></svg>
+              </div>
+              <div class="collection_meta" dir="ltr">
+                <h2 class="t__h3 c__primary">Getting Started</h2>
+                <p class="paper__preview">Everything you need to know to begin your DataCamp journey!</p>
+                <div class="avatar">
+      <div class="avatar__photo avatars__images o__ltr">
+            <img src="https://static.intercomassets.com/avatars/2352718/square_128/Rebecca_Robins_-_Headshot-1535969735.jpg?1535969735" alt="Becca Robins avatar" class="avatar__image">
+    
+            <img src="https://static.intercomassets.com/avatars/2678519/square_128/pic2-1539176502.JPG?1539176502" alt="Jen Bricker avatar" class="avatar__image">
+    
+            <img src="https://static.intercomassets.com/avatars/2637958/square_128/YR_Headshot-1539175806.JPG?1539175806" alt="Yashas Roy avatar" class="avatar__image">
+    
+          <span class="avatar__image avatar__fallback">+2</span>
+      </div>
+      <div class="avatar__info">
+        <div>
+          <span class="c__darker">
+            11 articles in this collection
+          </span>
+          <br>
+          Written by <span class='c__darker'> Becca Robins,</span> <span class='c__darker'> Jen Bricker,</span> <span class='c__darker'> Yashas Roy</span> and 2 others
+        </div>
+      </div>
+    </div>
+    
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="g__space">
+          <a href="/courses" class="paper ">
+            <div class="collection o__ltr">
+              <div class="collection__photo">
+                <svg role='img' viewBox='0 0 48 48'><g id="devices-laptop" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round"><path d="M41 31H7V11h34v20z"></path><path d="M3 35V10a3 3 0 0 1 3-3h36a3 3 0 0 1 3 3v25m-16 0v2H19v-2H1v4a2 2 0 0 0 2 2h42a2 2 0 0 0 2-2v-4H29z" stroke-linejoin="round"></path></g></svg>
+              </div>
+              <div class="collection_meta" dir="ltr">
+                <h2 class="t__h3 c__primary">Courses</h2>
+                <p class="paper__preview">Everything you need to know about creating DataCamp courses.</p>
+                <div class="avatar">
+      <div class="avatar__photo avatars__images o__ltr">
+            <img src="https://static.intercomassets.com/avatars/2637958/square_128/YR_Headshot-1539175806.JPG?1539175806" alt="Yashas Roy avatar" class="avatar__image">
+    
+            <img src="https://static.intercomassets.com/avatars/2247397/square_128/IMG_2763_final_square_small-1532522734.jpg?1532522734" alt="Nick Carchedi avatar" class="avatar__image">
+    
+            <img src="https://static.intercomassets.com/avatars/2298587/square_128/about_pic-1539247923.jpg?1539247923" alt="Vincent Vankrunkelsven avatar" class="avatar__image">
+    
+          <span class="avatar__image avatar__fallback">+6</span>
+      </div>
+      <div class="avatar__info">
+        <div>
+          <span class="c__darker">
+            73 articles in this collection
+          </span>
+          <br>
+          Written by <span class='c__darker'> Yashas Roy,</span> <span class='c__darker'> Nick Carchedi,</span> <span class='c__darker'> Vincent Vankrunkelsven</span> and 6 others
+        </div>
+      </div>
+    </div>
+    
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="g__space">
+          <a href="/projects" class="paper ">
+            <div class="collection o__ltr">
+              <div class="collection__photo">
+                <svg role='img' viewBox='0 0 48 48'><g id="book-opened2"><path d="M24 11c0-3.866 10.297-7 23-7v33c-12.703 0-23 3.134-23 7 0-3.866-10.3-7-23-7V4c12.7 0 23 3.134 23 7zm0 0v32m-5-27.52c-3.22-1.232-7.773-2.128-13-2.48m13 8.48c-3.22-1.232-7.773-2.128-13-2.48m13 8.48c-3.22-1.232-7.773-2.128-13-2.48m13 8.48c-3.22-1.23-7.773-2.127-13-2.48m23-15.52c3.223-1.232 7.773-2.128 13-2.48m-13 8.48c3.223-1.232 7.773-2.128 13-2.48m-13 8.48c3.223-1.232 7.773-2.128 13-2.48m-13 8.48c3.223-1.23 7.773-2.127 13-2.48" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+              </div>
+              <div class="collection_meta" dir="ltr">
+                <h2 class="t__h3 c__primary">Projects</h2>
+                <p class="paper__preview">Everything you need to know about creating DataCamp projects.</p>
+                <div class="avatar">
+      <div class="avatar__photo avatars__images o__ltr">
+            <img src="https://static.intercomassets.com/avatars/2360843/square_128/20170928_DavidV_ByBBImagery-022-1380-1537479799.jpg?1537479799" alt="David Venturi avatar" class="avatar__image">
+    
+      </div>
+      <div class="avatar__info">
+        <div>
+          <span class="c__darker">
+            14 articles in this collection
+          </span>
+          <br>
+          Written by <span class='c__darker'> David Venturi</span>
+        </div>
+      </div>
+    </div>
+    
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="g__space">
+          <a href="/course-editor-basics" class="paper ">
+            <div class="collection o__ltr">
+              <div class="collection__photo">
+                <svg role='img' viewBox='0 0 48 48'><g id="book-bookmark" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round"><path d="M35 31l-6-6-6 6V7h12v24z"></path><path d="M35 9h6v38H11a4 4 0 0 1-4-4V5" stroke-linejoin="round"></path><path d="M39 9V1H11a4 4 0 0 0 0 8h12" stroke-linejoin="round"></path></g></svg>
+              </div>
+              <div class="collection_meta" dir="ltr">
+                <h2 class="t__h3 c__primary">Course Editor Basics</h2>
+                <p class="paper__preview">Everything you need to know to get going with our online course editor.</p>
+                <div class="avatar">
+      <div class="avatar__photo avatars__images o__ltr">
+            <img src="https://static.intercomassets.com/avatars/2247397/square_128/IMG_2763_final_square_small-1532522734.jpg?1532522734" alt="Nick Carchedi avatar" class="avatar__image">
+    
+            <img src="https://static.intercomassets.com/avatars/2352718/square_128/Rebecca_Robins_-_Headshot-1535969735.jpg?1535969735" alt="Becca Robins avatar" class="avatar__image">
+    
+      </div>
+      <div class="avatar__info">
+        <div>
+          <span class="c__darker">
+            4 articles in this collection
+          </span>
+          <br>
+          Written by <span class='c__darker'> Nick Carchedi</span> and <span class='c__darker'> Becca Robins</span>
+        </div>
+      </div>
+    </div>
+    
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="g__space">
+          <a href="/tips-and-tricks" class="paper ">
+            <div class="collection o__ltr">
+              <div class="collection__photo">
+                <svg role='img' viewBox='0 0 48 48'><g id="comms-mail" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linejoin="round"><path d="M47 3L1 22l18 7L47 3z"></path><path d="M47 3l-8 37-20-11L47 3zM19 29v16l7-12"></path></g></svg>
+              </div>
+              <div class="collection_meta" dir="ltr">
+                <h2 class="t__h3 c__primary">Tips &amp; Tricks</h2>
+                <p class="paper__preview">Become a DataCamp wizard!</p>
+                <div class="avatar">
+      <div class="avatar__photo avatars__images o__ltr">
+            <img src="https://static.intercomassets.com/avatars/2352718/square_128/Rebecca_Robins_-_Headshot-1535969735.jpg?1535969735" alt="Becca Robins avatar" class="avatar__image">
+    
+      </div>
+      <div class="avatar__info">
+        <div>
+          <span class="c__darker">
+            6 articles in this collection
+          </span>
+          <br>
+          Written by <span class='c__darker'> Becca Robins</span>
+        </div>
+      </div>
+    </div>
+    
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="g__space">
+          <a href="/frequently-asked-questions-faq" class="paper ">
+            <div class="collection o__ltr">
+              <div class="collection__photo">
+                <svg role='img' viewBox='0 0 48 48'><g id="chat-question" fill="none" fill-rule="evenodd"><path d="M47 21.268c0 10.363-10.297 18.765-23 18.765-2.835 0-5.55-.418-8.058-1.184L2.725 45 7.9 34.668c-4.258-3.406-6.9-8.15-6.9-13.4C1 10.904 11.297 2.502 24 2.502s23 8.402 23 18.766z" stroke-width="2" stroke-linejoin="round"></path><path d="M25 28.502a2 2 0 1 0 0 4 2 2 0 0 0 0-4" fill="#231F1F"></path><path d="M19 17.75c0-3.312 2.686-6.124 6-6.124 3.313 0 6 2.626 6 5.938 0 3.315-2.687 5.938-6 5.938V26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+              </div>
+              <div class="collection_meta" dir="ltr">
+                <h2 class="t__h3 c__primary">Frequently Asked Questions (FAQ)</h2>
+                <p class="paper__preview">Common questions that arise during content creation.</p>
+                <div class="avatar">
+      <div class="avatar__photo avatars__images o__ltr">
+            <img src="https://static.intercomassets.com/avatars/2366194/square_128/richie-in-hairnet-1537451295.JPG?1537451295" alt="Richie Cotton avatar" class="avatar__image">
+    
+            <img src="https://static.intercomassets.com/avatars/2352718/square_128/Rebecca_Robins_-_Headshot-1535969735.jpg?1535969735" alt="Becca Robins avatar" class="avatar__image">
+    
+            <img src="https://static.intercomassets.com/avatars/2637958/square_128/YR_Headshot-1539175806.JPG?1539175806" alt="Yashas Roy avatar" class="avatar__image">
+    
+          <span class="avatar__image avatar__fallback">+3</span>
+      </div>
+      <div class="avatar__info">
+        <div>
+          <span class="c__darker">
+            43 articles in this collection
+          </span>
+          <br>
+          Written by <span class='c__darker'> Richie Cotton,</span> <span class='c__darker'> Becca Robins,</span> <span class='c__darker'> Yashas Roy</span> and 3 others
+        </div>
+      </div>
+    </div>
+    
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="g__space">
+          <a href="/miscellaneous" class="paper ">
+            <div class="collection o__ltr">
+              <div class="collection__photo">
+                <svg role='img' viewBox='0 0 48 48'><g id="tools-edit"><path d="M14.932 43.968L2 47l3.033-12.93 31.2-31.203a4 4 0 0 1 5.658 0l4.247 4.243a4 4 0 0 1 0 5.656L14.932 43.968zm29.84-29.735L34.82 4.28m7.125 12.782L31.992 7.11M15.436 43.465l-9.9-9.9" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+              </div>
+              <div class="collection_meta" dir="ltr">
+                <h2 class="t__h3 c__primary">Miscellaneous</h2>
+                <p class="paper__preview">Have a question for DataCamp, but not about creating content? You&#39;ll probably find the answer here.</p>
+                <div class="avatar">
+      <div class="avatar__photo avatars__images o__ltr">
+            <img src="https://static.intercomassets.com/avatars/2352718/square_128/Rebecca_Robins_-_Headshot-1535969735.jpg?1535969735" alt="Becca Robins avatar" class="avatar__image">
+    
+      </div>
+      <div class="avatar__info">
+        <div>
+          <span class="c__darker">
+            9 articles in this collection
+          </span>
+          <br>
+          Written by <span class='c__darker'> Becca Robins</span>
+        </div>
+      </div>
+    </div>
+    
+              </div>
+            </div>
+          </a>
+        </div>
+    </section>
+    </div>
+        </div>
+        <footer class="footer">
+      <div class="container">
+        <div class="content">
+          <div class="u__cf"  dir="ltr">
+            <div class="footer__logo">
+              <a href="/">
+                  <img alt="DataCamp Help Center" src="https://downloads.intercomcdn.com/i/o/81221/856b63d438031754b681746b/4ea2737e4266936fb423911d9c587812.png" />
+              </a>
+            </div>
+            <div class="footer__advert logo">
+              <img src="https://intercom.help/_assets/intercom-a6a6ac0f033657af1aebe2e9e15b94a3cd5eabf6ae8b9916df6ea49099a894d8.png" alt="Intercom" />
+              <a href="https://www.intercom.com/intercom-link?company=DataCamp&amp;solution=customer-support&amp;utm_campaign=intercom-link&amp;utm_content=We+run+on+Intercom&amp;utm_medium=help-center&amp;utm_referrer=http%3A%2F%2Finstructor-support.datacamp.com%2F&amp;utm_source=desktop-web">We run on Intercom</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    
+        
+      <script nonce="CnSi/h8qqixClNeuhpRjTAbm+EsRD6OZQxkEkv57tRo=">
+        window.intercomSettings = {"app_id":"ug0ps1rq"};
+    </script>
+      <script nonce="CnSi/h8qqixClNeuhpRjTAbm+EsRD6OZQxkEkv57tRo=">
+        (function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src="https://widget.intercom.io/widget/ug0ps1rq";var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()
+    </script>
+    
+        
+    
+        <script src="https://intercom.help/_assets/application-809c5f9ba0b658f344176473e8aaba9ba50950ba4af2d0b79bafeeb1f69f77fd.js" nonce="CnSi/h8qqixClNeuhpRjTAbm+EsRD6OZQxkEkv57tRo="></script>
+      </body>
+    </html>
+
+============================================================================================================
+
+
+
+Scraping the web
+in Python
+
+HTML
+● Mix of unstructured and structured data
+● Structured data:
+● Has pre-defined data model, or
+● Organized in a defined manner
+● Unstructured data: neither of these properties
+
+
+BeautifulSoup
+● Parse and extract structured data from HTML
+● Make tag soup beautiful and extract information
+
+
+BeautifulSoup
+In [1]: from bs4 import BeautifulSoup
+In [2]: import requests
+In [3]: url = 'https://www.crummy.com/software/BeautifulSoup/'
+In [4]: r = requests.get(url)
+In [5]: html_doc = r.text
+In [6]: soup = BeautifulSoup(html_doc)
+
+
+Pre!ified Soup
+In [7]: print(soup.prettify())
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/transitional.dtd">
+<html>
+ <head>
+ <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+ <title>
+ Beautiful Soup: We called him Tortoise because he taught us.
+ </title>
+ <link href="mailto:leonardr@segfault.org" rev="made"/>
+ <link href="/nb/themes/Default/nb.css" rel="stylesheet" type="text/css"/>
+ <meta content="Beautiful Soup: a library designed for screen-scraping HTML and XML." name="Description"/>
+ <meta content="Markov Approximation 1.4 (module: leonardr)" name="generator"/>
+ <meta content="Leonard Richardson" name="author"/>
+ </head>
+ <body alink="red" bgcolor="white" link="blue" text="black" vlink="660066">
+ <img align="right" src="10.1.jpg" width="250"/>
+ <br/>
+ <p>
+ 
+ 
+ 
+
+
+
+
+
+
+===============================================================================
+
+2
+Interacting with APIs to import data from the web
+
+In this chapter, you will push further on your knowledge of importing data from the web. You will learn the basics of extracting data from APIs, gain insight on the importance of APIs and practice getting data from them with dives into the OMDB and Library of Congress APIs.
+
+
+================================================================================
+
+3
+Diving deep into the Twitter API
+
+In this chapter, you will consolidate your knowledge of interacting with APIs in a deep dive into the Twitter streaming API. You'll learn how to stream real-time Twitter data and to analyze and visualize it!

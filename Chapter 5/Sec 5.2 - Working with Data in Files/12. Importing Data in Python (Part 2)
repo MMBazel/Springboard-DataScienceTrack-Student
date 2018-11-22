@@ -1,6 +1,13 @@
 Course Description
 As a Data Scientist, on a daily basis you will need to clean data, wrangle and munge it, visualize it, build predictive models and interpret these models. Before doing any of these, however, you will need to know how to get data into Python. In the prequel to this course, you have already learnt many ways to import data into Python: (i) from flat files such as .txts and .csvs; (ii) from files native to other software such as Excel spreadsheets, Stata, SAS and MATLAB files; (iii) from relational databases such as SQLite & PostgreSQL. In this course, you'll extend this knowledge base by learning to import data (i) from the web and (ii) a special and essential case of this: pulling data from Application Programming Interfaces, also known as APIs, such as the Twitter streaming API, which allows us to stream real-time tweets.
 
+● Importing text files and flat files
+● Importing files in other formats
+● Writing SQL queries
+● Ge!ing data from relational databases
+● Pulling data from the web
+● Pulling data from APIs
+
 =============================================================================
 
 1
@@ -725,11 +732,468 @@ In [7]: print(soup.prettify())
  <br/>
  <p>
  
+ ===========================================================================================================
  
+ Parsing HTML with BeautifulSoup
+In this interactive exercise, you'll learn how to use the BeautifulSoup package to parse, prettify and extract information from HTML. You'll scrape the data from the webpage of Guido van Rossum, Python's very own Benevolent Dictator for Life. In the following exercises, you'll prettify the HTML and then extract the text and the hyperlinks.
+
+The URL of interest is url = 'https://www.python.org/~guido/'.
+
+Instructions
+100 XP
+Import the function BeautifulSoup from the package bs4.
+Assign the URL of interest to the variable url.
+Package the request to the URL, send the request and catch the response with a single function requests.get(), assigning the response to the variable r.
+Use the text attribute of the object r to return the HTML of the webpage as a string; store the result in a variable html_doc.
+Create a BeautifulSoup object soup from the resulting HTML using the function BeautifulSoup().
+Use the method prettify() on soup and assign the result to pretty_soup.
+Hit submit to print to prettified HTML to your shell!
  
 
+# Import packages
+import requests
+from bs4 import BeautifulSoup
+
+# Specify url: url
+url = 'https://www.python.org/~guido/'
+
+# Package the request, send the request and catch the response: r
+r = requests.get(url)
+
+# Extracts the response as html: html_doc
+html_doc = r.text
+
+# Create a BeautifulSoup object from the HTML: soup
+soup = BeautifulSoup(html_doc)
+
+# Prettify the BeautifulSoup object: pretty_soup
+pretty_soup = soup.prettify()
+
+# Print the response
+print(pretty_soup)
 
 
+<script.py> output:
+    <html>
+     <head>
+      <title>
+       Guido's Personal Home Page
+      </title>
+     </head>
+     <body bgcolor="#FFFFFF" text="#000000">
+      <h1>
+       <a href="pics.html">
+        <img border="0" src="images/IMG_2192.jpg"/>
+       </a>
+       Guido van Rossum - Personal Home Page
+      </h1>
+      <p>
+       <a href="http://www.washingtonpost.com/wp-srv/business/longterm/microsoft/stories/1998/raymond120398.htm">
+        <i>
+         "Gawky and proud of it."
+        </i>
+       </a>
+       <h3>
+        <a href="http://metalab.unc.edu/Dave/Dr-Fun/df200004/df20000406.jpg">
+         Who
+    I Am
+        </a>
+       </h3>
+       <p>
+        Read
+    my
+        <a href="http://neopythonic.blogspot.com/2016/04/kings-day-speech.html">
+         "King's
+    Day Speech"
+        </a>
+        for some inspiration.
+        <p>
+         I am the author of the
+         <a href="http://www.python.org">
+          Python
+         </a>
+         programming language.  See also my
+         <a href="Resume.html">
+          resume
+         </a>
+         and my
+         <a href="Publications.html">
+          publications list
+         </a>
+         , a
+         <a href="bio.html">
+          brief bio
+         </a>
+         , assorted
+         <a href="http://legacy.python.org/doc/essays/">
+          writings
+         </a>
+         ,
+         <a href="http://legacy.python.org/doc/essays/ppt/">
+          presentations
+         </a>
+         and
+         <a href="interviews.html">
+          interviews
+         </a>
+         (all about Python), some
+         <a href="pics.html">
+          pictures of me
+         </a>
+         ,
+         <a href="http://neopythonic.blogspot.com">
+          my new blog
+         </a>
+         , and
+    my
+         <a href="http://www.artima.com/weblogs/index.jsp?blogger=12088">
+          old
+    blog
+         </a>
+         on Artima.com.  I am
+         <a href="https://twitter.com/gvanrossum">
+          @gvanrossum
+         </a>
+         on Twitter.  I
+    also have
+    a
+         <a href="https://plus.google.com/u/0/115212051037621986145/posts">
+          G+
+    profile
+         </a>
+         .
+         <p>
+          In January 2013 I joined
+          <a href="http://www.dropbox.com">
+           Dropbox
+          </a>
+          .  I work on various Dropbox
+    products and have 50% for my Python work, no strings attached.
+    Previously, I have worked for Google, Elemental Security, Zope
+    Corporation, BeOpen.com, CNRI, CWI, and SARA.  (See
+    my
+          <a href="Resume.html">
+           resume
+          </a>
+          .)  I created Python while at CWI.
+          <h3>
+           How to Reach Me
+          </h3>
+          <p>
+           You can send email for me to guido (at) python.org.
+    I read everything sent there, but if you ask
+    me a question about using Python, it's likely that I won't have time
+    to answer it, and will instead refer you to
+    help (at) python.org,
+           <a href="http://groups.google.com/groups?q=comp.lang.python">
+            comp.lang.python
+           </a>
+           or
+           <a href="http://stackoverflow.com">
+            StackOverflow
+           </a>
+           .  If you need to
+    talk to me on the phone or send me something by snail mail, send me an
+    email and I'll gladly email you instructions on how to reach me.
+           <h3>
+            My Name
+           </h3>
+           <p>
+            My name often poses difficulties for Americans.
+            <p>
+             <b>
+              Pronunciation:
+             </b>
+             in Dutch, the "G" in Guido is a hard G,
+    pronounced roughly like the "ch" in Scottish "loch".  (Listen to the
+             <a href="guido.au">
+              sound clip
+             </a>
+             .)  However, if you're
+    American, you may also pronounce it as the Italian "Guido".  I'm not
+    too worried about the associations with mob assassins that some people
+    have. :-)
+             <p>
+              <b>
+               Spelling:
+              </b>
+              my last name is two words, and I'd like to keep it
+    that way, the spelling on some of my credit cards notwithstanding.
+    Dutch spelling rules dictate that when used in combination with my
+    first name, "van" is not capitalized: "Guido van Rossum".  But when my
+    last name is used alone to refer to me, it is capitalized, for
+    example: "As usual, Van Rossum was right."
+              <p>
+               <b>
+                Alphabetization:
+               </b>
+               in America, I show up in the alphabet under
+    "V".  But in Europe, I show up under "R".  And some of my friends put
+    me under "G" in their address book...
+               <h3>
+                More Hyperlinks
+               </h3>
+               <ul>
+                <li>
+                 Here's a collection of
+                 <a href="http://legacy.python.org/doc/essays/">
+                  essays
+                 </a>
+                 relating to Python
+    that I've written, including the foreword I wrote for Mark Lutz' book
+    "Programming Python".
+                 <p>
+                  <li>
+                   I own the official
+                   <a href="images/license.jpg">
+                    <img align="center" border="0" height="75" src="images/license_thumb.jpg" width="100">
+                     Python license.
+                    </img>
+                   </a>
+                   <p>
+                   </p>
+                  </li>
+                 </p>
+                </li>
+               </ul>
+               <h3>
+                The Audio File Formats FAQ
+               </h3>
+               <p>
+                I was the original creator and maintainer of the Audio File Formats
+    FAQ.  It is now maintained by Chris Bagwell
+    at
+                <a href="http://www.cnpbagwell.com/audio-faq">
+                 http://www.cnpbagwell.com/audio-faq
+                </a>
+                .  And here is a link to
+                <a href="http://sox.sourceforge.net/">
+                 SOX
+                </a>
+                , to which I contributed
+    some early code.
+               </p>
+              </p>
+             </p>
+            </p>
+           </p>
+          </p>
+         </p>
+        </p>
+       </p>
+      </p>
+     </body>
+    </html>
+    <hr>
+     <a href="images/internetdog.gif">
+      "On the Internet, nobody knows you're
+    a dog."
+     </a>
+     <hr>
+     </hr>
+    </hr>
+
+In [1]: 
+
+==================================================================================================
+urning a webpage into data using BeautifulSoup: getting the text
+As promised, in the following exercises, you'll learn the basics of extracting information from HTML soup. In this exercise, you'll figure out how to extract the text from the BDFL's webpage, along with printing the webpage's title.
+
+Instructions
+100 XP
+In the sample code, the HTML response object html_doc has already been created: your first task is to Soupify it using the function BeautifulSoup() and to assign the resulting soup to the variable soup.
+Extract the title from the HTML soup soup using the attribute title and assign the result to guido_title.
+Print the title of Guido's webpage to the shell using the print() function.
+Extract the text from the HTML soup soup using the method get_text() and assign to guido_text.
+Hit submit to print the text from Guido's webpage to the shell.
+
+
+
+# Import packages
+import requests
+from bs4 import BeautifulSoup
+
+# Specify url: url
+url = 'https://www.python.org/~guido/'
+
+# Package the request, send the request and catch the response: r
+r = requests.get(url)
+
+# Extract the response as html: html_doc
+html_doc = r.text
+
+# Create a BeautifulSoup object from the HTML: soup
+soup = BeautifulSoup(html_doc)
+
+# Get the title of Guido's webpage: guido_title
+guido_title = soup.title
+
+# Print the title of Guido's webpage to the shell
+print(guido_title)
+
+# Get Guido's text: guido_text
+guido_text = soup.get_text()
+
+# Print Guido's text to the shell
+print(guido_text)
+
+
+<script.py> output:
+    <title>Guido's Personal Home Page</title>
+    
+    
+    Guido's Personal Home Page
+    
+    
+    
+    
+    Guido van Rossum - Personal Home Page
+    "Gawky and proud of it."
+    Who
+    I Am
+    Read
+    my "King's
+    Day Speech" for some inspiration.
+    
+    I am the author of the Python
+    programming language.  See also my resume
+    and my publications list, a brief bio, assorted writings, presentations and interviews (all about Python), some
+    pictures of me,
+    my new blog, and
+    my old
+    blog on Artima.com.  I am
+    @gvanrossum on Twitter.  I
+    also have
+    a G+
+    profile.
+    
+    In January 2013 I joined
+    Dropbox.  I work on various Dropbox
+    products and have 50% for my Python work, no strings attached.
+    Previously, I have worked for Google, Elemental Security, Zope
+    Corporation, BeOpen.com, CNRI, CWI, and SARA.  (See
+    my resume.)  I created Python while at CWI.
+    
+    How to Reach Me
+    You can send email for me to guido (at) python.org.
+    I read everything sent there, but if you ask
+    me a question about using Python, it's likely that I won't have time
+    to answer it, and will instead refer you to
+    help (at) python.org,
+    comp.lang.python or
+    StackOverflow.  If you need to
+    talk to me on the phone or send me something by snail mail, send me an
+    email and I'll gladly email you instructions on how to reach me.
+    
+    My Name
+    My name often poses difficulties for Americans.
+    
+    Pronunciation: in Dutch, the "G" in Guido is a hard G,
+    pronounced roughly like the "ch" in Scottish "loch".  (Listen to the
+    sound clip.)  However, if you're
+    American, you may also pronounce it as the Italian "Guido".  I'm not
+    too worried about the associations with mob assassins that some people
+    have. :-)
+    
+    Spelling: my last name is two words, and I'd like to keep it
+    that way, the spelling on some of my credit cards notwithstanding.
+    Dutch spelling rules dictate that when used in combination with my
+    first name, "van" is not capitalized: "Guido van Rossum".  But when my
+    last name is used alone to refer to me, it is capitalized, for
+    example: "As usual, Van Rossum was right."
+    
+    Alphabetization: in America, I show up in the alphabet under
+    "V".  But in Europe, I show up under "R".  And some of my friends put
+    me under "G" in their address book...
+    
+    
+    More Hyperlinks
+    
+    Here's a collection of essays relating to Python
+    that I've written, including the foreword I wrote for Mark Lutz' book
+    "Programming Python".
+    I own the official 
+    Python license.
+    
+    The Audio File Formats FAQ
+    I was the original creator and maintainer of the Audio File Formats
+    FAQ.  It is now maintained by Chris Bagwell
+    at http://www.cnpbagwell.com/audio-faq.  And here is a link to
+    SOX, to which I contributed
+    some early code.
+    
+    
+    
+    "On the Internet, nobody knows you're
+    a dog."
+
+In [1]: 
+
+======================================================================================================
+
+Turning a webpage into data using BeautifulSoup: getting the hyperlinks
+In this exercise, you'll figure out how to extract the URLs of the hyperlinks from the BDFL's webpage. In the process, you'll become close friends with the soup method find_all().
+
+Instructions
+100 XP
+Use the method find_all() to find all hyperlinks in soup, remembering that hyperlinks are defined by the HTML tag <a>; store the result in the variable a_tags.
+The variable a_tags is a results set: your job now is to enumerate over it, using a for loop and to print the actual URLs of the hyperlinks; to do this, for every element link in a_tags, you want to print() link.get('href').
+
+
+# Import packages
+import requests
+from bs4 import BeautifulSoup
+
+# Specify url
+url = 'https://www.python.org/~guido/'
+
+# Package the request, send the request and catch the response: r
+r = requests.get(url)
+
+# Extracts the response as html: html_doc
+html_doc = r.text
+
+# create a BeautifulSoup object from the HTML: soup
+soup = BeautifulSoup(html_doc)
+
+# Print the title of Guido's webpage
+print(soup.title)
+
+# Find all 'a' tags (which define hyperlinks): a_tags
+a_tags = soup.find_all('a')
+
+# Print the URLs to the shell
+for link in a_tags:
+    print(link.get('href'))
+
+<script.py> output:
+    <title>Guido's Personal Home Page</title>
+    pics.html
+    http://www.washingtonpost.com/wp-srv/business/longterm/microsoft/stories/1998/raymond120398.htm
+    http://metalab.unc.edu/Dave/Dr-Fun/df200004/df20000406.jpg
+    http://neopythonic.blogspot.com/2016/04/kings-day-speech.html
+    http://www.python.org
+    Resume.html
+    Publications.html
+    bio.html
+    http://legacy.python.org/doc/essays/
+    http://legacy.python.org/doc/essays/ppt/
+    interviews.html
+    pics.html
+    http://neopythonic.blogspot.com
+    http://www.artima.com/weblogs/index.jsp?blogger=12088
+    https://twitter.com/gvanrossum
+    https://plus.google.com/u/0/115212051037621986145/posts
+    http://www.dropbox.com
+    Resume.html
+    http://groups.google.com/groups?q=comp.lang.python
+    http://stackoverflow.com
+    guido.au
+    http://legacy.python.org/doc/essays/
+    images/license.jpg
+    http://www.cnpbagwell.com/audio-faq
+    http://sox.sourceforge.net/
+    images/internetdog.gif
 
 
 
@@ -741,9 +1205,1093 @@ Interacting with APIs to import data from the web
 In this chapter, you will push further on your knowledge of importing data from the web. You will learn the basics of extracting data from APIs, gain insight on the importance of APIs and practice getting data from them with dives into the OMDB and Library of Congress APIs.
 
 
+
+Application Programming Interface
+● Protocols and routines
+● Building and interacting with
+so!ware applications
+
+
+JSONs
+● JavaScript Object Notation
+● Real-time server-to-browser communication
+● Douglas Crockford
+● Human readable
+
+
+JSONs
+{'Actors': 'Samuel L. Jackson, Julianna Margulies, Nathan
+Phillips, Rachel Blanchard',
+ 'Awards': '3 wins & 7 nominations.',
+ 'Country': 'Germany, USA, Canada',
+ 'Director': 'David R. Ellis',
+ 'Genre': 'Action, Adventure, Crime',
+ 'Language': 'English',
+ 'Rated': 'R',
+ 'Released': '18 Aug 2006',
+ 'Runtime': '105 min',
+ 'Title': 'Snakes on a Plane',
+ 'Type': 'movie',
+ 'Writer': 'John Heffernan (screenplay), Sebastian Gutierrez
+(screenplay), David Dalessandro (story), John Heffernan (story)',
+ 'Year': '2006',
+ 'imdbID': 'tt0417148',
+ 'imdbRating': '5.6',
+ 'imdbVotes': '114,668'}
+
+
+Loading JSONs in Python
+In [1]: import json
+In [2]: with open('snakes.json', 'r') as json_file:
+ ...: json_data = json.load(json_file)
+
+In [3]: type(json_data)
+Out[3]: dict
+
+
+
+Exploring JSONs in Python
+In [4]: for key, value in json_data.items():
+ ...: print(key + ':', value)
+Title: Snakes on a Plane
+Country: Germany, USA, Canada
+Response: True
+Language: English
+Awards: 3 wins & 7 nominations.
+Year: 2006
+Actors: Samuel L. Jackson, Julianna Margulies
+Runtime: 105 min
+Genre: Action, Adventure, Crime
+imdbID: tt0417148
+Director: David R. Ellis
+imdbRating: 5.6
+Rated: R
+Released: 18 Aug 2006
+
+
+==============================================================================================================
+
+Loading and exploring a JSON
+Now that you know what a JSON is, you'll load one into your Python environment and explore it yourself. Here, you'll load the JSON 'a_movie.json' into the variable json_data, which will be a dictionary. You'll then explore the JSON contents by printing the key-value pairs of json_data to the shell.
+
+Instructions
+100 XP
+Load the JSON 'a_movie.json' into the variable json_data within the context provided by the with statement. To do so, use the function json.load() within the context manager.
+Use a for loop to print all key-value pairs in the dictionary json_data. Recall that you can access a value in a dictionary using the syntax: dictionary[key].
+
+
+# Load JSON: json_data
+with open("a_movie.json") as json_file:
+    json_data = json.load(json_file)
+
+# Print each key-value pair in json_data
+for k in json_data.keys():
+    print(k + ': ', json_data[k])
+
+
+
+<script.py> output:
+    Released:  01 Oct 2010
+    imdbID:  tt1285016
+    Awards:  Won 3 Oscars. Another 165 wins & 168 nominations.
+    DVD:  11 Jan 2011
+    BoxOffice:  $96,400,000
+    Genre:  Biography, Drama
+    Language:  English, French
+    Response:  True
+    Writer:  Aaron Sorkin (screenplay), Ben Mezrich (book)
+    imdbVotes:  550,434
+    Poster:  https://m.media-amazon.com/images/M/MV5BMTM2ODk0NDAwMF5BMl5BanBnXkFtZTcwNTM1MDc2Mw@@._V1_SX300.jpg
+    Country:  USA
+    Plot:  Harvard student Mark Zuckerberg creates the social networking site that would become known as Facebook, but is later sued by two brothers who claimed he stole their idea, and the co-founder who was later squeezed out of the business.
+    Production:  Columbia Pictures
+    Runtime:  120 min
+    Website:  http://www.thesocialnetwork-movie.com/
+    Title:  The Social Network
+    Actors:  Jesse Eisenberg, Rooney Mara, Bryan Barter, Dustin Fitzsimons
+    Rated:  PG-13
+    Metascore:  95
+    Director:  David Fincher
+    imdbRating:  7.7
+    Ratings:  [{'Value': '7.7/10', 'Source': 'Internet Movie Database'}, {'Value': '95%', 'Source': 'Rotten Tomatoes'}, {'Value': '95/100', 'Source': 'Metacritic'}]
+    Type:  movie
+    Year:  2010
+
+
+
+===================================================================================================
+
+Pop quiz: Exploring your JSON
+Load the JSON 'a_movie.json' into a variable, which will be a dictionary. Do so by copying, pasting and executing the following code in the IPython Shell:
+
+import json
+with open("a_movie.json") as json_file:
+    json_data = json.load(json_file)
+Print the values corresponding to the keys 'Title' and 'Year' and answer the following question about the movie that the JSON describes:
+
+Which of the following statements is true of the movie in question?
+
+======================================================================================================
+
+Herein, you’ll learn
+● What APIs are
+● Why APIs are important
+● In the exercises:
+● Connecting to APIs
+● Pulling data from APIs
+● Parsing data from APIs
+
+What is an API?
+● Set of protocols and routines
+● Bunch of code
+● Allows two so!ware programs to
+communicate with each other
+
+
+Connecting to an API in Python
+In [1]: import requests
+In [2]: url = 'http://www.omdbapi.com/?t=hackers'
+In [3]: r = requests.get(url)
+In [4]: json_data = r.json()
+In [5]: for key, value in json_data.items():
+ ...: print(key + ':', value
+ 
+ 
+ What was that URL?
+ h!p - making an HTTP request
+● www.omdbapi.com - querying the OMDB API
+● ?t=hackers
+● Query string
+● Return data for a movie with title (t) ‘Hackers’
+
+
+API requests
+Now it's your turn to pull some movie data down from the Open Movie Database (OMDB) using their API. The movie you'll query the API about is The Social Network. Recall that, in the video, to query the API about the movie Hackers, Hugo's query string was 'http://www.omdbapi.com/?t=hackers' and had a single argument t=hackers.
+
+Note: recently, OMDB has changed their API: you now also have to specify an API key. This means you'll have to add another argument to the URL: apikey=ff21610b.
+
+Instructions
+100 XP
+Import the requests package.
+Assign to the variable url the URL of interest in order to query 'http://www.omdbapi.com' for the data corresponding to the movie The Social Network. The query string should have two arguments: apikey=ff21610b and t=the+social+network. You can combine them as follows: apikey=ff21610b&t=the+social+network.
+Print the text of the reponse object r by using its text attribute and passing the result to the print() function.
+
+
+# Import requests package
+import requests
+
+# Assign URL to variable: url
+url = 'http://www.omdbapi.com/?apikey=ff21610b&t=the+social+network'
+
+# Package the request, send the request and catch the response: r
+r = requests.get(url)
+
+# Print the text of the response
+print(r.text)
+
+
+
+<script.py> output:
+    
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <title>OMDb API - The Open Movie Database</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
+        <link rel="stylesheet" href="./src/style.css" media="screen">
+        <link rel="stylesheet" href="./src/bootswatch.min.css">
+        <script type="text/javascript" src="./src/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="./src/bootstrap.min.js"></script>
+        <script type="text/javascript" src="./src/application.js"></script>
+        <script>
+            (function (i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+    
+            ga('create', 'UA-91042892-1', 'auto');
+            ga('send', 'pageview');
+        </script>
+    </head>
+    <body>
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a href="#top" class="navbar-brand">OMDb API</a>
+                    <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                        <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar">
+                        </span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse" id="navbar-main">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#usage">Usage</a></li>
+                        <li><a href="#parameters">Parameters</a></li>
+                        <li><a href="#examples">Examples</a></li>
+                        <li><a href="#changeLog">Change Log</a></li>
+                        <li><a href="apikey.aspx">API Key</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li style="background: #e6461a;"><a href="https://www.patreon.com/bePatron?u=5038490" target="_blank">Become a Patron</a></li>
+                        <li><a href="/cdn-cgi/l/email-protection#630105110a1719230502070a0d04100a040d020f4d000c0e" target="_blank">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="page-header" id="banner">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h1>OMDb API</h1>
+                        <p class="lead">The Open Movie Database</p>
+                        <p>The OMDb API is a RESTful web service to obtain movie information, all content and images on the site are contributed and maintained by our users.
+                        <br /><br />
+                        If you find this service useful, please consider making a <a href="https://www.paypal.me/FritzAPI" target="_blank" rel="nofollow">one-time donation</a> or <a href="https://www.patreon.com/bePatron?u=5038490" target="_blank">become a patron</a>.</p>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="well sponsor">
+                            <span style="float: left; margin-right: 15px;"><img src="./src/poster.jpg" width="170" height="250"></span>
+                            <h4 style="margin-bottom: 0.4em;">Poster API</h4>
+                            <div class="clearfix" />
+                            <p>The Poster API is only available to patrons. <br /><br />
+                            Currently over 280,000 posters, updated daily with resolutions up to 2000x3000.
+                            </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="bs-component">
+                            <div class="alert alert-dismissable alert-info">
+                                <button type="button" class="close" data-dismiss="alert">×</button>
+                                <h4>Attention Users</h4>
+                                <p>
+                                11/02/17 - <b>FREE KEYS!</b> The "open" API is finally open again!
+                                <br /><br />
+                                08/20/17 - <b>Bug Tracking</b> I created a <a href="https://github.com/omdbapi/OMDb-API/issues" style="color:white;" target="_blank">GitHub repository</a> for tracking bugs.
+                                <br /><br />
+                                <a href="https://www.patreon.com/bePatron?u=5038490" target="_blank" class="btn btn-default btn-sm" style="background-color:#e6461a;color:#fff;text-decoration:none;border:1px solid white;">
+                                    <svg class="s6W-components-Icon--iconSvg" style="position: relative; top: 1px;" viewBox="0 0 8 8" width="13px" height="13px" fill="#fff" data-reactid=".0.0.0.0.0.0.$socialPatreon"><path d="M2.32061871,0.367894189 C3.18961652,-0.0376047918 4.20711396,-0.109604611 5.12711165,0.16039471 C5.93360962,0.39539412 6.6591078,0.894392865 7.17010651,1.55889119 C7.67510524,2.21138955 7.96860451,3.02288751 7.99660444,3.84638544 C8.03210435,4.6978833 7.78560497,5.55788114 7.30110618,6.25987938 C6.59110797,7.31187673 5.35311108,7.98687503 4.07861429,7.999375 C3.44061589,8.000375 2.80261749,7.999875 2.1651191,7.999375 C2.17011908,6.65887837 2.1656191,5.31838174 2.16811909,3.97788511 C2.17011908,3.47138639 2.39811851,2.97288764 2.77711756,2.63638849 C3.13911665,2.30838931 3.6371154,2.13588974 4.12461417,2.17238965 C4.6291129,2.20338957 5.11311169,2.45838893 5.42761089,2.85238794 C5.75061008,3.24938694 5.89160973,3.7853856 5.80860994,4.29038433 C5.72761014,4.82138299 5.39511098,5.30638177 4.93061214,5.57838109 C4.39361349,5.90388027 3.69011526,5.91288025 3.13711665,5.61888099 C3.13761665,6.05337989 3.13661665,6.4883788 3.13761665,6.92337771 C3.63111541,7.06737734 4.15961408,7.09187728 4.66161282,6.97737757 C5.40461095,6.81487798 6.07610926,6.35987912 6.50610818,5.73538069 C6.91610715,5.14988217 7.10560668,4.41738401 7.03460685,3.70738579 C6.97460701,3.05588743 6.69410771,2.42788901 6.25160882,1.94539022 C5.84160985,1.49439136 5.29311123,1.16939217 4.69811273,1.03189252 C4.01411445,0.869392928 3.27411631,0.952892718 2.64611789,1.26789193 C1.6451204,1.7543907 0.962622121,2.82088802 0.952122147,3.93238523 C0.950122152,5.28788182 0.951622148,6.64337841 0.95112215,7.999375 C0.634622945,8.000375 0.317623743,7.999875 0.000124540763,7.999875 C0.000124540763,6.67387833 0.000624539506,5.34838167 0.000124540763,4.022885 C-0.00437544792,3.45688642 0.113124257,2.89038785 0.344123676,2.37338915 C0.7321227,1.49639135 1.4476209,0.769393179 2.32061871,0.367894189"></path></svg>&nbsp;&nbsp;Become a Patron
+                                </a>
+                                </p>
+                            </div>
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Sponsors</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <a href="https://emby.media/" target="_blank">Emby</a>, <a href="https://trakt.tv/" target="_blank">Trakt</a>, <a href="https://fullscreenmedia.co/" target="_blank">Fullscreen</a>, <a href="http://filebot.net/" target="_blank">FileBot</a>, <a href="http://whatmovieshouldiwatchtonight.com/" target="_blank" title="What Movie Should I Watch Tonight?">WMSIWT</a>, <a href="http://www.galvanize.com/" target="_blank">Galvanize</a>, <a href="http://www.direktpoint.pl/" target="_blank">Direktpoint</a>, <a href="https://www.cordcutting.com/" target="_blank">Cordcutting.com</a>, <a href="https://www.rrbone.net/" target="_blank">rrbone</a>, <a href="http://www.freetvmov.com/" target="_blank">Free TV Mov</a>, <a href="https://frontendmasters.com/" target="_blank">Frontend Masters</a>, <a href="https://www.netflixreleases.com/" target="_blank">NetflixReleases</a>, <a href="https://reelgood.com/" target="_blank">Reelgood</a>, <a href="http://xirvik.com/" target="_blank">Xirvik Servers</a>, <a href="https://www.algwebsites.co.uk/" target="_blank">ALG Websites</a>, <a href="https://massflix.com/" target="_blank">MassFlix</a>, <a href="https://www.yidio.com/" target="_blank">Yidio</a>, <a href="https://indexed.dk/" target="_blank">Indexed</a>, <a href="https://mi.tv/co/programacion" target="_blank">mi.tv</a>, <a href="https://couchpop.com/" target="_blank">Couchpop</a>, <a href="https://key.video/" target="_blank">Key Video</a>, <a href="https://www.whats-on-netflix.com/" target="_blank">What's on Netflix</a>, <a href="https://www.celebrityhow.com/" target="_blank">CelebrityHow</a>, <a href="https://www.iflicksapp.com/" target="_blank">iFlicks</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- Usage -->
+            <div class="bs-docs-section" id="usage">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="page-header">
+                            <h1>Usage</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="bs-component">
+                            <p>Send all data requests to:</p>
+                            <pre>http://www.omdbapi.com/?apikey=[yourkey]&</pre>
+                            <br />
+                            <p>Poster API requests:</p>
+                            <pre>http://img.omdbapi.com/?apikey=[yourkey]&</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Parameters -->
+            <div class="bs-docs-section" id="parameters">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="page-header">
+                            <h1>Parameters</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="bs-component">
+                            <h4>By ID or Title</h4>
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Required</th>
+                                        <th>Valid Options</th>
+                                        <th>Default Value</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>i</td>
+                                        <td><span class="label label-success">Optional*</span></td>
+                                        <td></td>
+                                        <td>&lt;empty&gt;</td>
+                                        <td>A valid IMDb ID (e.g. tt1285016)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>t</td>
+                                        <td><span class="label label-success">Optional*</span></td>
+                                        <td></td>
+                                        <td>&lt;empty&gt;</td>
+                                        <td>Movie title to search for.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>type</td>
+                                        <td><span class="label label-default">No</span></td>
+                                        <td>movie, series, episode</td>
+                                        <td>&lt;empty&gt;</td>
+                                        <td>Type of result to return.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>y</td>
+                                        <td><span class="label label-default">No</span></td>
+                                        <td></td>
+                                        <td>&lt;empty&gt;</td>
+                                        <td>Year of release.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>plot</td>
+                                        <td><span class="label label-default">No</span></td>
+                                        <td>short, full</td>
+                                        <td>short</td>
+                                        <td>Return short or full plot.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>r</td>
+                                        <td><span class="label label-default">No</span></td>
+                                        <td>json, xml</td>
+                                        <td>json</td>
+                                        <td>The data type to return.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>callback</td>
+                                        <td><span class="label label-default">No</span></td>
+                                        <td></td>
+                                        <td>&lt;empty&gt;</td>
+                                        <td>JSONP callback name.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>v</td>
+                                        <td><span class="label label-default">No</span></td>
+                                        <td></td>
+                                        <td>1</td>
+                                        <td>API version (reserved for future use).</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <small>*Please note while both "i" and "t" are optional at least one argument is required.</small>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="bs-component">
+                            <h4>By Search</h4>
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Required</th>
+                                        <th>Valid options</th>
+                                        <th>Default Value</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>s</td>
+                                        <td><span class="label label-success">Yes</span></td>
+                                        <td></td>
+                                        <td>&lt;empty&gt;</td>
+                                        <td>Movie title to search for.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>type</td>
+                                        <td><span class="label label-default">No</span></td>
+                                        <td>movie, series, episode</td>
+                                        <td>&lt;empty&gt;</td>
+                                        <td>Type of result to return.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>y</td>
+                                        <td><span class="label label-default">No</span></td>
+                                        <td></td>
+                                        <td>&lt;empty&gt;</td>
+                                        <td>Year of release.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>r</td>
+                                        <td><span class="label label-default">No</span></td>
+                                        <td>json, xml</td>
+                                        <td>json</td>
+                                        <td>The data type to return.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>page <span class="label label-info">New!</span></td>
+                                        <td><span class="label label-default">No</span></td>
+                                        <td>1-100</td>
+                                        <td>1</td>
+                                        <td>Page number to return.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>callback</td>
+                                        <td><span class="label label-default">No</span></td>
+                                        <td></td>
+                                        <td>&lt;empty&gt;</td>
+                                        <td>JSONP callback name.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>v</td>
+                                        <td><span class="label label-default">No</span></td>
+                                        <td></td>
+                                        <td>1</td>
+                                        <td>API version (reserved for future use).</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Examples -->
+            <div class="bs-docs-section" id="examples">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="page-header">
+                            <h1>Examples</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="bs-component">
+                            <form class="well form-search" id="search-by-title-form" onsubmit="return false;">
+                            <fieldset>
+                                <legend>By Title</legend>
+                            </fieldset>
+                            <div>
+                                <label class="control-label" for="t">Title:</label>
+                                <input type="text" id="t" name="t" class="input-small">
+                                &nbsp;&nbsp;
+                                <label class="control-label" for="y">Year:</label>
+                                <input type="text" id="y" name="y" class="input-small" style="width: 100px;">
+                                &nbsp;&nbsp;
+                                <label class="control-label">Plot:</label>
+                                <select name="plot" style="width: 100px;">
+                                    <option value="" selected="">Short</option>
+                                    <option value="full">Full</option>
+                                </select>
+                                &nbsp;&nbsp;
+                                <label class="control-label">Response:</label>
+                                <select name="r" style="width: 100px;">
+                                    <option value="">JSON</option>
+                                    <option value="xml">XML</option>
+                                </select>
+                                &nbsp;&nbsp;
+                                <button id="search-by-title-button" type="button" class="btn-sm btn-primary">Search</button>
+                                <button id="search-by-title-reset" type="reset" class="btn-sm">Reset</button>
+                            </div>
+                            <div class="hide" id="search-by-title-request">
+                                <br />
+                                <p>Request:</p>
+                                <pre class="alert alert-box"><a href="javascript:;" target="_blank"></a></pre>
+                            </div>
+                            <div id="search-by-title-progress" class="hide progress progress-info progress-striped active">
+                                <div class="progress-bar" style="width: 100%;">
+                                </div>
+                            </div>
+                            <div class="hide" id="search-by-title-response">
+                                <p>Response:</p>
+                                <pre class="alert alert-success" style="margin-bottom: 0px; white-space: normal;"></pre>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="bs-component">
+                            <form class="well form-search" id="search-by-id-form" onsubmit="return false;">
+                            <fieldset>
+                                <legend>By ID</legend>
+                            </fieldset>
+                            <div>
+                                <label class="control-label" for="i">ID:</label>
+                                <input type="text" id="i" name="i" class="input-small" placeholder="IMDb ID">
+                                &nbsp;&nbsp;
+                                <label class="control-label">Plot:</label>
+                                <select name="plot" style="width: 100px;">
+                                    <option value="" selected="">Short</option>
+                                    <option value="full">Full</option>
+                                </select>
+                                &nbsp;&nbsp;
+                                <label class="control-label">Response:</label>
+                                <select name="r" style="width: 100px;">
+                                    <option value="">JSON</option>
+                                    <option value="xml">XML</option>
+                                </select>
+                                &nbsp;&nbsp;
+                                <button id="search-by-id-button" type="button" class="btn-sm btn-primary">Search</button>
+                                <button id="search-by-id-reset" type="reset" class="btn-sm">Reset</button>
+                            </div>
+                            <div class="hide" id="search-by-id-request">
+                                <br />
+                                <p>Request:</p>
+                                <pre class="alert alert-box"><a href="javascript:;" target="_blank"></a></pre>
+                            </div>
+                            <div id="search-by-id-progress" class="hide progress progress-info progress-striped active">
+                                <div class="progress-bar" style="width: 100%;">
+                                </div>
+                            </div>
+                            <div class="hide" id="search-by-id-response">
+                                <p>Response:</p>
+                                <pre class="alert alert-success" style="margin-bottom: 0px; white-space: normal;"></pre>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Change Log -->
+            <div class="bs-docs-section" id="changeLog">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="page-header">
+                            <h1>Change Log</h1>
+                        </div>
+                    </div>
+                </div>
+                <ul>
+                    <li>05/10/17
+                        <ul>
+                        <li><b>New API Keys!</b> Due to some security concerns on how the keys were being distributed I updated the form to email them and also changed the algorithm used, which means your older keys not obtained through email will eventually stop working.</li>
+                        </ul>
+                    </li>
+                    <li>01/12/17
+                        <ul>
+                        <li>Removed single character restriction from title/search results.</li>
+                        </ul>
+                    </li>
+                    <li>06/11/16
+                        <ul>
+                        <li>"totalSeasons" count has been added to series results.</li>
+                        </ul>
+                    </li>
+                    <li>1/20/16
+                        <ul>
+                            <li>To accommodate search paging "totalResults" is now returned at the root level.</li>
+                        </ul>
+                    </li>
+                    <li>12/12/15
+                        <ul>
+                            <li>Search pagination added: <a href="http://www.omdbapi.com/?s=Batman&page=2" target="_blank">http://www.omdbapi.com/?s=Batman&<b>page=2</b></a></li>
+                        </ul>
+                    </li>
+                    <li>11/16/15
+                        <ul>
+                            <li>Season+Episode now works with "i" parameter: <a href="http://www.omdbapi.com/?i=tt0944947&Season=1" target="_blank">http://www.omdbapi.com/?<b>i=tt0944947</b>&Season=1</a></li>
+                            <li>Fixed the max pool size connection issues.</li>
+                        </ul>
+                    </li>
+                    <li>10/18/15
+                        <ul>
+                            <li>You can now return all episodes by using just the "Season" parameter: <a href="http://www.omdbapi.com/?t=Game of Thrones&Season=1" target="_blank">http://www.omdbapi.com/?t=Game of Thrones&<b>Season=1</b></a></li>
+                        </ul>
+                    </li>
+                    <li>9/9/15
+                        <ul>
+                            <li>New server is up, response times should be < 500ms.</li>
+                            <li>Setup a CDN/Caching service with <a href="http://www.cloudflare.com" target="_blank">CloudFlare</a></li>
+                        </ul>
+                    </li>
+                    <li>8/15/15
+                        <ul>
+                            <li>Created and Fixed a bad parsing error with JSON response. -Sorry about that!</li>
+                            <li>HTTPS (with TLS) is now active: <a href="https://www.omdbapi.com" target="_blank">https://www.omdbapi.com/</a></li>
+                        </ul>
+                    </li>
+                    <li>5/10/15
+                        <ul>
+                            <li>Season+Episode search parameters added: <a href="http://www.omdbapi.com/?t=Game of Thrones&Season=1&Episode=1" target="_blank">http://www.omdbapi.com/?t=Game of Thrones&<b>Season=1</b>&<b>Episode=1</b></a></li>
+                        </ul>
+                    </li>
+                    <li>5/2/15
+                        <ul>
+                            <li>Poster API: Enabled client side caching.</li>
+                            <li>Database normalization.</li>
+                        </ul>
+                    </li>
+                    <li>3/27/15
+                        <ul>
+                            <li>Corrected JSON/JSONP response types per RFC standards.</li>
+                            <li>Changed Caching-control to Public.</li>
+                        </ul>
+                    </li>
+                    <li>3/15/15
+                        <ul>
+                            <li>Episodes will now return Season/Episode/SeriesID.</li>
+                        </ul>
+                    </li>
+                    <li>3/8/15
+                        <ul>
+                            <li>New caching system in place, response times should be much better.</li>
+                            <li>Set a max limit of 20 concurrent connections, if you get 403 errors you may need to delay your responses a bit.</li>
+                        </ul>
+                    </li>
+                    <li>2/15/15
+                        <ul>
+                            <li>Poster API: Now returns 404 error if poster not found.</li>
+                        </ul>
+                    </li>
+                    <li>1/1/15
+                        <ul>
+                            <li>You can now search by type! (movie, series, episode etc.)</li>
+                            <li>Dupes have been removed from database.</li>
+                            <li>Poster API images updated.</li>
+                        </ul>
+                    </li>
+                    <li>11/1/14
+                        <ul>
+                            <li>New site layout!</li>
+                            <li>Poster API still undergoing stress tests by donors.</li>
+                            <li>Fixed some issues causing invalid JSON/XML due to non escaped quotes.</li>
+                        </ul>
+                    </li>
+                    <li>12/25/13
+                        <ul>
+                            <li>Four new fields have been added to the response: Metascore, Language, Country and Awards.</li>
+                        </ul>
+                    </li>
+                    <li>10/7/13
+                        <ul>
+                            <li>Fixed two letter title searches! However single letter searches are no longer supported.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <footer>
+            <div class="row">
+              <div class="col-lg-12">
+                <ul class="list-unstyled">
+                  <li class="pull-right"><a href="#top">Back to top</a></li>
+                  <li><a href="legal.htm" target="_blank">Legal</a></li>
+                  <li><a href="https://www.paypal.me/FritzAPI" target="_blank">Donate</a></li>
+                </ul>
+                <p>API by <a href="/cdn-cgi/l/email-protection#e58783978c919fa58384818c8b82968c828b8489cb868a88">Brian Fritz</a>.</p>
+                <p>All content licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>.</p>
+                <p>This site is not endorsed by or affiliated with <a href="http://www.imdb.com/" target="_blank">IMDb.com</a>.</p><br />
+              </div>
+            </div>
+          </footer>
+        </div>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+    </html>
+
+<script.py> output:
+    {"Title":"The Social Network","Year":"2010","Rated":"PG-13","Released":"01 Oct 2010","Runtime":"120 min","Genre":"Biography, Drama","Director":"David Fincher","Writer":"Aaron Sorkin (screenplay), Ben Mezrich (book)","Actors":"Jesse Eisenberg, Rooney Mara, Bryan Barter, Dustin Fitzsimons","Plot":"Harvard student Mark Zuckerberg creates the social networking site that would become known as Facebook, but is later sued by two brothers who claimed he stole their idea, and the co-founder who was later squeezed out of the business.","Language":"English, French","Country":"USA","Awards":"Won 3 Oscars. Another 165 wins & 168 nominations.","Poster":"https://m.media-amazon.com/images/M/MV5BMTM2ODk0NDAwMF5BMl5BanBnXkFtZTcwNTM1MDc2Mw@@._V1_SX300.jpg","Ratings":[{"Source":"Internet Movie Database","Value":"7.7/10"},{"Source":"Rotten Tomatoes","Value":"95%"},{"Source":"Metacritic","Value":"95/100"}],"Metascore":"95","imdbRating":"7.7","imdbVotes":"550,434","imdbID":"tt1285016","Type":"movie","DVD":"11 Jan 2011","BoxOffice":"$96,400,000","Production":"Columbia Pictures","Website":"http://www.thesocialnetwork-movie.com/","Response":"True"}
+
+In [1]: 
+
+
+================================================================================
+
+JSON–from the web to Python
+Wow, congrats! You've just queried your first API programmatically in Python and printed the text of the response to the shell. However, as you know, your response is actually a JSON, so you can do one step better and decode the JSON. You can then print the key-value pairs of the resulting dictionary. That's what you're going to do now!
+
+Instructions
+100 XP
+Pass the variable url to the requests.get() function in order to send the relevant request and catch the response, assigning the resultant response message to the variable r.
+Apply the json() method to the response object r and store the resulting dictionary in the variable json_data.
+Hit Submit Answer to print the key-value pairs of the dictionary json_data to the shell.
+
+# Import package
+import requests
+
+# Assign URL to variable: url
+url = 'http://www.omdbapi.com/?apikey=ff21610b&t=social+network'
+
+# Package the request, send the request and catch the response: r
+r= requests.get(url)
+
+# Decode the JSON data into a dictionary: json_data
+json_data = r.json()
+
+# Print each key-value pair in json_data
+for k in json_data.keys():
+    print(k + ': ', json_data[k])
+
+<script.py> output:
+    Released:  01 Oct 2010
+    imdbID:  tt1285016
+    Awards:  Won 3 Oscars. Another 165 wins & 168 nominations.
+    DVD:  11 Jan 2011
+    BoxOffice:  $96,400,000
+    Genre:  Biography, Drama
+    Language:  English, French
+    Response:  True
+    Writer:  Aaron Sorkin (screenplay), Ben Mezrich (book)
+    imdbVotes:  550,434
+    Poster:  https://m.media-amazon.com/images/M/MV5BMTM2ODk0NDAwMF5BMl5BanBnXkFtZTcwNTM1MDc2Mw@@._V1_SX300.jpg
+    Country:  USA
+    Plot:  Harvard student Mark Zuckerberg creates the social networking site that would become known as Facebook, but is later sued by two brothers who claimed he stole their idea, and the co-founder who was later squeezed out of the business.
+    Production:  Columbia Pictures
+    Runtime:  120 min
+    Website:  http://www.thesocialnetwork-movie.com/
+    Title:  The Social Network
+    Actors:  Jesse Eisenberg, Rooney Mara, Bryan Barter, Dustin Fitzsimons
+    Rated:  PG-13
+    Metascore:  95
+    Director:  David Fincher
+    imdbRating:  7.7
+    Ratings:  [{'Value': '7.7/10', 'Source': 'Internet Movie Database'}, {'Value': '95%', 'Source': 'Rotten Tomatoes'}, {'Value': '95/100', 'Source': 'Metacritic'}]
+    Type:  movie
+    Year:  2010
+
+=================================================================================
+
+Checking out the Wikipedia API
+You're doing so well and having so much fun that we're going to throw one more API at you: the Wikipedia API (documented here). You'll figure out how to find and extract information from the Wikipedia page for Pizza. What gets a bit wild here is that your query will return nested JSONs, that is, JSONs with JSONs, but Python can handle that because it will translate them into dictionaries within dictionaries.
+
+The URL that requests the relevant query from the Wikipedia API is
+
+https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=pizza
+Instructions
+100 XP
+Assign the relevant URL to the variable url.
+Apply the json() method to the response object r and store the resulting dictionary in the variable json_data.
+The variable pizza_extract holds the HTML of an extract from Wikipedia's Pizza page as a string; use the function print() to print this string to the shell.
+
+
+# Import package
+import requests
+
+# Assign URL to variable: url
+url = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=pizza'
+
+# Package the request, send the request and catch the response: r
+r = requests.get(url)
+
+# Decode the JSON data into a dictionary: json_data
+json_data = r.json()
+
+# Print the Wikipedia page extract
+pizza_extract = json_data['query']['pages']['24768']['extract']
+print(pizza_extract)
+
+<script.py> output:
+    <p class="mw-empty-elt">
+    </p>
+    
+    <p><b>Pizza</b> is a savory dish of Italian origin, consisting of a usually round, flattened base of leavened wheat-based dough topped with tomatoes, cheese, and various other ingredients (anchovies, olives, meat, etc.) baked at a high temperature, traditionally in a  wood-fired oven. In formal settings, like a restaurant, pizza is  eaten with knife and fork, but in casual settings it is cut into wedges to be eaten while held in the hand. Small pizzas are sometimes called pizzettas.   
+    </p><p>The term <i>pizza</i> was first recorded in the 10th century in a Latin manuscript from the Southern Italian town of Gaeta in Lazio, on the border with Campania. Modern pizza was invented in Naples, and the dish and its variants have since become popular in many countries. Today it is one of the most popular foods in the world and a common fast food item in Europe and North America, available at  pizzerias (restaurants specializing in pizza),  restaurants offering Mediterranean cuisine, and via pizza delivery. Many companies sell ready-baked frozen pizzas to be reheated in an ordinary home oven. 
+    </p><p>The <i>Associazione Verace Pizza Napoletana</i> (lit. True Neapolitan Pizza Association) is  a non-profit organization founded in 1984 with headquarters in Naples which aims to promote traditional Neapolitan pizza. In 2009, upon Italy's request, Neapolitan pizza was registered with the European Union as a Traditional Speciality Guaranteed dish.</p>
+
+
 ================================================================================
 
 3
 Diving deep into the Twitter API
 
 In this chapter, you will consolidate your knowledge of interacting with APIs in a deep dive into the Twitter streaming API. You'll learn how to stream real-time Twitter data and to analyze and visualize it!
+
+
+
+
+Herein, you’ll learn
+● How to stream data from the Twi!er API
+● How to filter incoming tweets for keywords
+● About API Authentication and OAuth
+● How to use the Tweepy Python package
+
+Using Tweepy: Authentication handler
+ tw_auth.py
+import tweepy, json
+access_token = "..."
+access_token_secret = "..."
+consumer_key = "..."
+consumer_secret = "..."
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+
+
+
+Tweepy: define stream listener class
+ st_class.py
+class MyStreamListener(tweepy.StreamListener):
+ def __init__(self, api=None):
+ super(MyStreamListener, self).__init__()
+ self.num_tweets = 0
+ self.file = open("tweets.txt", "w")
+ def on_status(self, status):
+ tweet = status._json
+ self.file.write(json.dumps(tweet) + '\n')
+ tweet_list.append(status)
+ self.num_tweets += 1
+ if self.num_tweets < 100:
+ return True
+ else:
+ return False
+ self.file.close()
+ 
+ 
+ 
+ Using Tweepy: stream tweets!!
+# Create Streaming object and authenticate
+l = MyStreamListener()
+stream = tweepy.Stream(auth, l)
+# This line filters Twitter Streams to capture data by keywords:
+stream.filter(track=['apples', 'oranges'])
+
+
+==========================================================================
+
+API Authentication
+The package tweepy is great at handling all the Twitter API OAuth Authentication details for you. All you need to do is pass it your authentication credentials. In this interactive exercise, we have created some mock authentication credentials (if you wanted to replicate this at home, you would need to create a Twitter App as Hugo detailed in the video). Your task is to pass these credentials to tweepy's OAuth handler.
+
+Instructions
+100 XP
+Import the package tweepy.
+Pass the parameters consumer_key and consumer_secret to the function tweepy.OAuthHandler().
+Complete the passing of OAuth credentials to the OAuth handler auth by applying to it the method set_access_token(), along with arguments access_token and access_token_secret.
+
+# Import package
+import tweepy
+
+# Store OAuth authentication credentials in relevant variables
+access_token = "1092294848-aHN7DcRP9B4VMTQIhwqOYiB14YkW92fFO8k8EPy"
+access_token_secret = "X4dHmhPfaksHcQ7SCbmZa2oYBBVSD2g8uIHXsp5CTaksx"
+consumer_key = "nZ6EA0FxZ293SxGNg8g8aP0HM"
+consumer_secret = "fJGEodwe3KiKUnsYJC3VRndj7jevVvXbK2D5EiJ2nehafRgA6i"
+
+# Pass OAuth details to tweepy's OAuth handler
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+
+
+
+
+===============================================================================
+
+Streaming tweets
+Now that you have set up your authentication credentials, it is time to stream some tweets! We have already defined the tweet stream listener class, MyStreamListener, just as Hugo did in the introductory video. You can find the code for the tweet stream listener class here.
+
+Your task is to create the Streamobject and to filter tweets according to particular keywords.
+
+Instructions
+100 XP
+Create your Stream object with authentication by passing tweepy.Stream() the authentication handler auth and the Stream listener l;
+To filter Twitter streams, pass to the track argument in stream.filter() a list containing the desired keywords 'clinton', 'trump', 'sanders', and 'cruz'.
+
+
+
+# Initialize Stream listener
+l = MyStreamListener()
+
+# Create your Stream object with authentication
+stream = tweepy.Stream(auth, 1)
+
+
+# Filter Twitter Streams to capture data by the keywords:
+stream.filter(track=['clinton', 'trump', 'sanders','cruz'])
+
+
+======================================================================================================
+
+
+Load and explore your Twitter data
+Now that you've got your Twitter data sitting locally in a text file, it's time to explore it! This is what you'll do in the next few interactive exercises. In this exercise, you'll read the Twitter data into a list: tweets_data.
+
+Instructions
+100 XP
+Assign the filename 'tweets.txt' to the variable tweets_data_path.
+Initialize tweets_data as an empty list to store the tweets in.
+Within the for loop initiated by for line in tweets_file:, load each tweet into a variable, tweet, using json.loads(), then append tweet to tweets_data using the append() method.
+Hit submit and check out the keys of the first tweet dictionary printed to the shell.
+
+
+# Import package
+import json
+
+# String of path to file: tweets_data_path
+tweets_data_path = 'tweets.txt'
+
+# Initialize empty list to store tweets: tweets_data
+tweets_data=[]
+
+# Open connection to file
+tweets_file = open(tweets_data_path, "r")
+
+# Read in tweets and store in list: tweets_data
+for line in tweets_file:
+    tweet = json.loads(line)
+    tweets_data.append(tweet)
+
+# Close connection to file
+tweets_file.close()
+
+# Print the keys of the first tweet dict
+print(tweets_data[0].keys())
+
+<script.py> output:
+    dict_keys(['in_reply_to_status_id_str', 'id_str', 'in_reply_to_screen_name', 'retweeted', 'created_at', 'is_quote_status', 'favorite_count', 'possibly_sensitive', 'favorited', 'contributors', 'coordinates', 'in_reply_to_user_id', 'lang', 'place', 'user', 'entities', 'filter_level', 'in_reply_to_status_id', 'text', 'id', 'retweeted_status', 'in_reply_to_user_id_str', 'source', 'timestamp_ms', 'extended_entities', 'geo', 'retweet_count', 'truncated'])
+
+
+================================================================================================
+
+
+
+Twitter data to DataFrame
+Now you have the Twitter data in a list of dictionaries, tweets_data, where each dictionary corresponds to a single tweet. Next, you're going to extract the text and language of each tweet. The text in a tweet, t1, is stored as the value t1['text']; similarly, the language is stored in t1['lang']. Your task is to build a DataFrame in which each row is a tweet and the columns are 'text' and 'lang'.
+
+Instructions
+100 XP
+Use pd.DataFrame() to construct a DataFrame of tweet texts and languages; to do so, the first argument should be tweets_data, a list of dictionaries. The second argument to pd.DataFrame() is a list of the keys you wish to have as columns. Assign the result of the pd.DataFrame() call to df.
+Print the head of the DataFrame.
+
+# Import package
+import pandas as pd
+
+# Build DataFrame of tweet texts and languages
+df = pd.DataFrame(tweets_data, columns=['text','lang'])
+
+# Print head of DataFrame
+print(df.head())
+
+<script.py> output:
+                                                    text lang
+    0  b"RT @bpolitics: .@krollbondrating's Christoph...   en
+    1  b'RT @HeidiAlpine: @dmartosko Cruz video found...   en
+    2  b'Njihuni me Zonj\\xebn Trump !!! | Ekskluzive...   et
+    3  b"Your an idiot she shouldn't have tried to gr...   en
+    4  b'RT @AlanLohner: The anti-American D.C. elite...   en
+    
+    
+    =======================================================================================================
+    
+    
+   A little bit of Twitter text analysis
+Now that you have your DataFrame of tweets set up, you're going to do a bit of text analysis to count how many tweets contain the words 'clinton', 'trump', 'sanders' and 'cruz'. In the pre-exercise code, we have defined the following function word_in_text(), which will tell you whether the first argument (a word) occurs within the 2nd argument (a tweet).
+
+import re
+
+def word_in_text(word, text):
+    word = word.lower()
+    text = tweet.lower()
+    match = re.search(word, text)
+
+    if match:
+        return True
+    return False
+You're going to iterate over the rows of the DataFrame and calculate how many tweets contain each of our keywords! The list of objects for each candidate has been initialized to 0.
+
+Instructions
+100 XP
+Within the for loop for index, row in df.iterrows():, the code currently increases the value of clinton by 1 each time a tweet (text row) mentioning 'Clinton' is encountered; complete the code so that the same happens for trump, sanders and cruz. 
+    
+    # Initialize list to store tweet counts
+[clinton, trump, sanders, cruz] = [0, 0, 0, 0]
+
+# Iterate through df, counting the number of tweets in which
+# each candidate is mentioned
+for index, row in df.iterrows():
+    clinton += word_in_text('clinton', row['text'])
+    trump += word_in_text('trump', row['text'])
+    sanders += word_in_text('sanders', row['text'])
+    cruz += word_in_text('cruz', row['text'])
+
+
+    ===================================================================================================================
+    
+    Plotting your Twitter data
+Now that you have the number of tweets that each candidate was mentioned in, you can plot a bar chart of this data. You'll use the statistical data visualization library seaborn, which you may not have seen before, but we'll guide you through. You'll first import seaborn as sns. You'll then construct a barplot of the data using sns.barplot, passing it two arguments:
+
+a list of labels and
+a list containing the variables you wish to plot (clinton, trump and so on.)
+Hopefully, you'll see that Trump was unreasonably represented! We have already run the previous exercise solutions in your environment.
+
+Instructions
+100 XP
+Import both matplotlib.pyplot and seaborn using the aliases plt and sns, respectively.
+Complete the arguments of sns.barplot: the first argument should be the labels to appear on the x-axis; the second argument should be the list of the variables you wish to plot, as produced in the previous exercise.
+
+    # Import packages
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Set seaborn style
+sns.set(color_codes=True)
+
+# Create a list of labels:cd
+cd = ['clinton', 'trump', 'sanders', 'cruz']
+
+# Plot histogram
+ax = sns.barplot(cd, [clinton, trump, sanders, cruz])
+ax.set(ylabel="count")
+plt.show()
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

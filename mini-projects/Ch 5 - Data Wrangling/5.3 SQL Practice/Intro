@@ -1,0 +1,34 @@
+Project: SQL Practice
+3 - 5 Hours
+
+Steps:
+
+Download the SQL file and follow the instructions to log into the provided SQL platform.
+Fill in your answers to the questions in the SQL file.
+Add your SQL file to a GitHub repository and submit a link to it.
+
+Your project will be evaluated using this rubric (https://docs.google.com/document/d/1xR6CGuZLrzAAA2z_s_vhuOwYykq0cg2uDhsn2H3czo4/edit).
+
+Download project file(s).
+
+Learning Objective
+Work with SQL-based databases 
+Learn and write basic SQL queries up to basic aggregations and joins
+Comment on SQL code
+
+Criteria
+Meets Expectations
+Completion
+The code runs successfully.
+
+
+Process and understanding
+The submission shows that the correct solutions to all of the 10 problems have been produced.
+The submission demonstrates an understanding of the various types of joins, aggregations, filters, and subqueries.
+
+
+Presentation
+The project is delivered as a .sql file (as stated in the instructions), and uploaded to GitHub.
+ 
+
+Excellence: Student downloads the raw data files, sets up a local database, loads in the data, and uses a Jupyter notebook to set up a connection and query the data.

@@ -78,7 +78,19 @@ Include in your output the name of the court, and the name of the member
 formatted as a single column. Ensure no duplicate data, and order by
 the member name. */
 
-
+select f2.name, m2.firstname ||' ' || m2.surname as fullName
+from
+        (select b1.facid, b1.memid
+        from bookings b1
+        where b1.facid in
+                (select distinct f1.facid
+                from facilities f1 
+                where f1.name like ('Tennis Court%')
+                )
+        group by b1.facid, b1.memid) b2 
+left join facilities f2 on f2.facid = b2.facid
+left join members m2 on m2.memid = b2.memid
+order by (m2.firstname || m2.surname) desc 
 
 /* Q8: How can you produce a list of bookings on the day of 2012-09-14 which
 will cost the member (or guest) more than $30? Remember that guests have

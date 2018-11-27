@@ -1,0 +1,83 @@
+Course Description
+In this Python SQL course, you'll learn the basics of using Structured Query Language (SQL) with Python. This will be useful since whether you like it or not, databases are ubiquitous and, as a data scientist, you'll need to interact with them constantly. The Python SQL toolkit SQLAlchemy provides an accessible and intuitive way to query, build & write to SQLite, MySQL and Postgresql databases (among many others), all of which you will encounter in the daily life of a data scientist.
+
+=====================================================================================================================
+1
+Basics of Relational Databases
+
+In this chapter, you will become acquainted with the fundamentals of Relational Databases and the Relational Model. You will learn how to connect to a database and then interact with it by writing basic SQL queries, both in raw SQL as well as with SQLAlchemy, which provides a Pythonic way of interacting with databases.
+
+Connecting to a Database
+
+Meet SQLAlchemy
+● Two Main Pieces
+			● Core (Relational Model focused)
+			● ORM (User Data Model focused)
+
+
+Connecting to a database
+			In [1]: from sqlalchemy import create_engine
+			In [2]: engine = create_engine('sqlite:///census_nyc.sqlite')
+			In [3]: connection = engine.connect()
+
+								● Engine: common interface to the database from
+								SQLAlchemy; requires connection string before it can connect to a database
+								● Connection string: All the details required to find the
+								database (and login, if necessary)
+
+A word on connection strings
+● 'sqlite:///census_nyc.sqlite'
+Driver+Dialect Filename
+
+
+What’s in your database?
+		● Before querying your database, you’ll want to know what is in it: what the tables are, for example:
+								In [1]: from sqlalchemy import create_engine
+								In [2]: engine = create_engine('sqlite:///census_nyc.sqlite')
+								In [3]: print(engine.table_names())
+								Out[3]: ['census', 'state_fact']
+
+
+Reflection <= process that reads the database and builds a Table object that we can use in our code
+We've already created the engine so we begin by importing the MetaData and Table Objects needed for reflection
+
+					In [1]: from sqlalchemy import MetaData, Table
+					In [2]: metadata = MetaData()
+					In [3]: census = Table('census', metadata, autoload=True,
+					autoload_with=engine)
+					In [4]: print(repr(census))
+
+									Out[4]:
+									Table('census', MetaData(bind=None), Column('state',
+									VARCHAR(length=30), table=<census>), Column('sex',
+									VARCHAR(length=1), table=<census>), Column('age', INTEGER(),
+									table=<census>), Column('pop2000', INTEGER(), table=<census>),
+									Column('pop2008', INTEGER(), table=<census>), schema=None)
+
+=======================================================================================================================
+2
+Applying Filtering, Ordering and Grouping to Queries
+0%
+In this chapter, you will build on the database knowledge you began acquiring in the previous chapter by writing more nuanced queries that allow you to filter, order, and count your data, all within the Pythonic framework provided by SQLAlchemy!
+
+
+================================================================================================
+
+3
+Advanced SQLAlchemy Queries
+0%
+Herein, you will learn to perform advanced - and incredibly useful - queries that will enable you to interact with your data in powerful wayss.
+
+============================================================================================
+
+4
+Creating and Manipulating your own Databases
+0%
+In the previous chapters, you interacted with existing databases and queried them in various different ways. Now, you will learn how to build your own databases and keep them updated!
+
+====================================================================================================
+
+5
+Putting it all together
+0%
+Here, you will bring together all of the skills you acquired in the previous chapters to work on a real life project! From connecting to a database, to populating it, to reading and querying it, you will have a chance to apply all the key concepts you learned in this course. Enjoy!

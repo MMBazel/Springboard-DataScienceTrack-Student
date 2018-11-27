@@ -912,18 +912,436 @@ Execute stmt using the connection to get the count and store the results as resu
 Print the keys/column names of the results returned using results[0].keys().
 
 
+# Import func
+from sqlalchemy import func
+
+# Build an expression to calculate the sum of pop2008 labeled as population
+pop2008_sum = func.sum(census.columns.pop2008).label('population')
+
+# Build a query to select the state and sum of pop2008: stmt
+stmt = select([census.columns.state, pop2008_sum])
+
+# Group stmt by state
+stmt = stmt.group_by(census.columns.state)
+
+# Execute the statement and store all the records: results
+results = connection.execute(stmt).fetchall()
+
+# Print results
+print(results)
+
+# Print the keys/column names of the results returned
+print(results[0].keys())
+
+
+<script.py> output:
+    [('Alabama', 4649367), ('Alaska', 664546), ('Arizona', 6480767), ('Arkansas', 2848432), ('California', 36609002), ('Colorado', 4912947), ('Connecticut', 3493783), ('Delaware', 869221), ('District of Columbia', 588910), ('Florida', 18257662), ('Georgia', 9622508), ('Hawaii', 1250676), ('Idaho', 1518914), ('Illinois', 12867077), ('Indiana', 6373299), ('Iowa', 3000490), ('Kansas', 2782245), ('Kentucky', 4254964), ('Louisiana', 4395797), ('Maine', 1312972), ('Maryland', 5604174), ('Massachusetts', 6492024), ('Michigan', 9998854), ('Minnesota', 5215815), ('Mississippi', 2922355), ('Missouri', 5891974), ('Montana', 963802), ('Nebraska', 1776757), ('Nevada', 2579387), ('New Hampshire', 1314533), ('New Jersey', 8670204), ('New Mexico', 1974993), ('New York', 19465159), ('North Carolina', 9121606), ('North Dakota', 634282), ('Ohio', 11476782), ('Oklahoma', 3620620), ('Oregon', 3786824), ('Pennsylvania', 12440129), ('Rhode Island', 1046535), ('South Carolina', 4438870), ('South Dakota', 800997), ('Tennessee', 6202407), ('Texas', 24214127), ('Utah', 2730919), ('Vermont', 620602), ('Virginia', 7648902), ('Washington', 6502019), ('West Virginia', 1812879), ('Wisconsin', 5625013), ('Wyoming', 529490)]
+    ['state', 'population']
+
+In [1]: 
+
+__________________________________________________________________________________________________________________
+
+SQLAlchemy and Pandas
+● DataFrame can take a SQLAlchemy ResultSet
+● Make sure to set the DataFrame columns to the ResultSet
+keys
+
+
+DataFrame Example
+	In [1]: import pandas as pd
+	In [2]: df = pd.DataFrame(results)
+	In [3]: df.columns = results[0].keys()
+	In [4]: print(df)
+			Out[4]:
+			 sex pop2008_sum
+			0 F 2105442
+			1 F 2087705
+			2 F 2037280
+			3 F 2012742
+			4 F 2014825
+			5 F 1991082
+
+
+Graphing
+● We can graph just like we would normally
+
+Graphing Example
+		In [1]: import matplotlib.pyplot as plt
+		In [2]: df[10:20].plot.barh()
+		In [3]: plt.show()
 
 
 
+______________________________________________________________________________________________________________________
 
 
 
+SQLAlchemy ResultsProxy and Pandas Dataframes
+We can feed a ResultProxy directly into a pandas DataFrame, which is the workhorse of many Data Scientists in PythonLand. Jason demonstrated this in the video. In this exercise, you'll follow exactly the same approach to convert a ResultProxy into a DataFrame.
+
+Instructions
+100 XP
+Import pandas as pd.
+Create a DataFrame df using pd.DataFrame() on the ResultProxy results.
+Set the columns of the DataFrame df.columns to be the columns from the first result object results[0].keys().
+Print the DataFrame.
+
+
+# import pandas
+import pandas as pd
+
+# Create a DataFrame from the results: df
+df = pd.DataFrame(results)
+
+# Set column names
+df.columns = results[0].keys()
+
+# Print the Dataframe
+print(df)
+
+<script.py> output:
+            state  population
+    0  California    36609002
+    1       Texas    24214127
+    2    New York    19465159
+    3     Florida    18257662
+    4    Illinois    12867077
+
+
+__________________________________________________________________________________________________________________________
+
+
+From SQLAlchemy results to a Graph
+We can also take advantage of pandas and Matplotlib to build figures of our data. Remember that data visualization is essential for both exploratory data analysis and communication of your data!
+
+Instructions
+100 XP
+Import matplotlib.pyplot as plt.
+Create a DataFrame df using pd.DataFrame() on the provided results.
+Set the columns of the DataFrame df.columns to be the columns from the first result object results[0].keys().
+Print the DataFrame df.
+Use the plot.bar() method on df to create a bar plot of the results.
+Display the plot with plt.show().
+
+
+# Import pyplot as plt from matplotlib
+import matplotlib.pyplot as plt
+
+# Create a DataFrame from the results: df
+df = pd.DataFrame(results)
+
+# Set Column names
+df.columns = results[0].keys()
+
+# Print the DataFrame
+print(df)
+
+# Plot the DataFrame
+df.plot.bar()
+plt.show()
+
+<script.py> output:
+            state  population
+    0  California    36609002
+    1       Texas    24214127
+    2    New York    19465159
+    3     Florida    18257662
+    4    Illinois    12867077
+    
+    
+    
 ================================================================================================
 
 3
 Advanced SQLAlchemy Queries
-0%
+
 Herein, you will learn to perform advanced - and incredibly useful - queries that will enable you to interact with your data in powerful wayss.
+
+_______________________________________________________________________________________________________________________
+Calculating
+Values
+in a
+Query
+
+Math Operators
+	● addition +
+	● subtraction -
+	● multiplication *
+	● division /
+	● modulus %
+	● Work differently on different data types
+
+
+Calculating Difference
+	In [1]: stmt = select([census.columns.age,
+	 ...: (census.columns.pop2008-
+	 ...: census.columns.pop2000).label('pop_change')
+	 ...: ])
+	In [2]: stmt = stmt.group_by(census.columns.age)
+	In [3]: stmt = stmt.order_by(desc('pop_change'))
+	In [4]: stmt = stmt.limit(5)
+	In [5]: results = connection.execute(stmt).fetchall()
+	In [6]: print(results)
+			Out[6]: [(61, 52672), (85, 51901), (54, 50808), (58, 45575), (60,
+			44915)]
+
+
+
+Case Statement
+	● Used to treat data differently based on a condition
+	● Accepts a list of conditions to match and a column
+	to return if the condition matches
+	● The list of conditions ends with an else clause to
+	determine what to do when a record doesn’t match
+	any prior conditions
+
+
+Case Example
+	In [1]: from sqlalchemy import case
+	In [2]: stmt = select([
+	 ...: func.sum(
+	 ...: case([
+	 ...: (census.columns.state == 'New York',
+	 ...: census.columns.pop2008)
+	 ...: ], else_=0))])
+	In [3]: results = connection.execute(stmt).fetchall()
+	In [4]: print(results)
+		Out[4]:[(19465159,)]
+
+
+
+
+Cast Statement
+	● Converts data to another type
+	● Useful for converting
+		● integers to floats for division
+		● strings to dates and times
+	● Accepts a column or expression and the target Type
+
+
+
+
+Percentage Example
+		In [1]: from sqlalchemy import case, cast, Float
+		In [2]: stmt = select([
+		 ...: (func.sum(
+		 ...: case([
+		 ...: (census.columns.state == 'New York',
+		 ...: census.columns.pop2008)
+		 ...: ], else_=0)) /
+		 ...: cast(func.sum(census.columns.pop2008),
+		 ...: Float) * 100).label('ny_percent')])
+		In [3]: results = connection.execute(stmt).fetchall()
+		In [4]: print(results)
+				Out[4]: [(Decimal('6.4267619765'),)]
+
+
+
+_____________________________________________________________________________________________________________
+
+
+Connecting to a MySQL Database
+Before you jump into the calculation exercises, let's begin by connecting to our database. Recall that in the last chapter you connected to a PostgreSQL database. Now, you'll connect to a MySQL database, for which many prefer to use the pymysql database driver, which, like psycopg2 for PostgreSQL, you have to install prior to use.
+
+This connection string is going to start with 'mysql+pymysql://', indicating which dialect and driver you're using to establish the connection. The dialect block is followed by the 'username:password' combo. Next, you specify the host and port with the following '@host:port/'. Finally, you wrap up the connection string with the 'database_name'.
+
+Now you'll practice connecting to a MySQL database: it will be the same census database that you have already been working with. One of the great things about SQLAlchemy is that, after connecting, it abstracts over the type of database it has connected to and you can write the same SQLAlchemy code, regardless!
+
+Instructions
+100 XP
+Import the create_engine function from the sqlalchemy library.
+Create an engine to the census database by concatenating the following strings and passing them to create_engine():
+'mysql+pymysql://' (the dialect and driver).
+'student:datacamp' (the username and password).
+'@courses.csrrinzqubik.us-east-1.rds.amazonaws.com:3306/' (the host and port).
+'census' (the database name).
+Use the .table_names() method on engine to print the table names.
+
+
+# Import create_engine function
+from sqlalchemy import create_engine
+
+# Create an engine to the census database
+engine = create_engine('mysql+pymysql://student:datacamp@courses.csrrinzqubik.us-east-1.rds.amazonaws.com:3306/census')
+
+# Print the table names
+print(engine.table_names())
+
+<script.py> output:
+    ['census', 'state_fact']
+
+
+_____________________________________________________________________________________________________________
+
+Calculating a Difference between Two Columns
+Often, you'll need to perform math operations as part of a query, such as if you wanted to calculate the change in population from 2000 to 2008. For math operations on numbers, the operators in SQLAlchemy work the same way as they do in Python.
+
+You can use these operators to perform addition (+), subtraction (-), multiplication (*), division (/), and modulus (%) operations. Note: They behave differently when used with non-numeric column types.
+
+Let's now find the top 5 states by population growth between 2000 and 2008.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Define a select statement called stmt to return:
+i) The state column of the census table (census.columns.state).
+ii) The difference in population count between 2008 (census.columns.pop2008) and 2000 (census.columns.pop2000) labeled as 'pop_change'.
+Group the statement by census.columns.state.
+Order the statement by population change ('pop_change') in descending order. Do so by passing it desc('pop_change').
+Use the .limit() method on the statement to return only 5 records.
+Execute the statement and fetchall() the records.
+The print statement has already been written for you. Hit 'Submit Answer' to view the results!
+
+# Build query to return state names by population difference from 2008 to 2000: stmt
+stmt = select([census.columns.state, (census.columns.pop2008-census.columns.pop2000).label('pop_change')])
+
+# Append group by for the state: stmt
+stmt = stmt.group_by(census.columns.state)
+
+# Append order by for pop_change descendingly: stmt
+stmt = stmt.order_by(desc('pop_change'))
+
+# Return only 5 results: stmt
+stmt = stmt.limit(5)
+
+# Use connection to execute the statement and fetch all results
+results = connection.execute(stmt).fetchall()
+
+# Print the state and population change for each record
+for result in results:
+    print('{}:{}'.format(result.state, result.pop_change))
+
+
+<script.py> output:
+    California:105705
+    Florida:100984
+    Texas:51901
+    New York:47098
+    Pennsylvania:42387
+
+_______________________________________________________________________________________________________________
+
+
+Determining the Overall Percentage of Females
+It's possible to combine functions and operators in a single select statement as well. These combinations can be exceptionally handy when we want to calculate percentages or averages, and we can also use the case() expression to operate on data that meets specific criteria while not affecting the query as a whole. The case() expression accepts a list of conditions to match and the column to return if the condition matches, followed by an else_ if none of the conditions match. We can wrap this entire expression in any function or math operation we like.
+
+Often when performing integer division, we want to get a float back. While some databases will do this automatically, you can use the cast() function to convert an expression to a particular type.
+
+Instructions
+100 XP
+Import case, cast, and Float from sqlalchemy.
+Build an expression female_pop2000to calculate female population in 2000. To achieve this:
+Use case() inside func.sum().
+The first argument of case() is a list containing a tuple of
+i) A boolean checking that census.columns.sex is equal to 'F'.
+ii) The column census.columns.pop2000.
+The second argument is the else_ condition, which should be set to 0.
+Calculate the total population in 2000 and use cast() to convert it to Float.
+Build a query to calculate the percentage of females in 2000. To do this, divide female_pop2000 by total_pop2000 and multiply by 100.
+Execute the query and print percent_female.
+
+
+# import case, cast and Float from sqlalchemy
+from sqlalchemy import case, cast, Float
+
+# Build an expression to calculate female population in 2000
+female_pop2000 = func.sum(
+    case([
+        (census.columns.sex == 'F', census.columns.pop2000)
+    ], else_=0))
+
+# Cast an expression to calculate total population in 2000 to Float
+total_pop2000 = cast(func.sum(census.columns.pop2000), Float)
+
+# Build a query to calculate the percentage of females in 2000: stmt
+stmt = select([female_pop2000 / total_pop2000* 100])
+
+# Execute the query and store the scalar result: percent_female
+percent_female = connection.execute(stmt).scalar()
+
+# Print the percentage
+print(percent_female)
+
+
+<script.py> output:
+    51.0946743229
+    
+    ______________________________________________________________________________________________________________________
+    
+ SQL
+Relationships
+
+
+Relationships
+● Allow us to avoid duplicate data
+● Make it easy to change things in one place
+● Useful to break out information from a table we
+don’t need very o"en
+
+
+Automatic Joins
+		In [1]: stmt = select([census.columns.pop2008,
+		 ...: state_fact.columns.abbreviation])
+		In [2]: results = connection.execute(stmt).fetchall()
+		In [3]: print(results)
+				Out[3]: [(95012, u'IL'),
+				 (95012, u'NJ'),
+				 (95012, u'ND'),
+				 (95012, u'OR'),
+				 (95012, u'DC'),
+				 (95012, u’WI'),
+				…
+
+
+ Join
+	● Accepts a Table and an optional expression that explains
+	how the two tables are related
+	● The expression is not needed if the relationship is
+	predefined and available via reflection
+	● Comes immediately a"er the select() clause and prior
+	to any where(), order_by or group_by() clauses   
+
+
+Select_from
+	● Used to replace the default, derived FROM clause with a join
+	● Wraps the join() clause
+
+
+Select_from Example
+	In [1]: stmt = select([func.sum(census.columns.pop2000)])
+	In [2]: stmt = stmt.select_from(census.join(state_fact))
+	In [3]: stmt = stmt.where(state_fact.columns.circuit_court
+	 == '10')
+	In [4]: result = connection.execute(stmt).scalar()
+	In [5]: print(result)
+			Out[5]: 14945252
+
+
+Joining Tables without Predefined Relationship
+	● Join accepts a Table and an optional expression that explains
+	how the two tables are related
+	● Will only join on data that match between the two columns
+	● Avoid joining on columns of different types
+
+Select_from Example
+	In [1]: stmt = select([func.sum(census.columns.pop2000)])
+	In [2]: stmt = stmt.select_from(
+	 ...: census.join(state_fact, census.columns.state
+	 ...: == state_fact.columns.name))
+	In [3]: stmt = stmt.where(
+	 ...: state_fact.columns.census_division_name ==
+	 ...: 'East South Central')
+	In [4]: result = connection.execute(stmt).scalar()
+	In [5]: print(result)
+			Out[5]: 16982311
+
+
+
+
+
+
 
 ============================================================================================
 

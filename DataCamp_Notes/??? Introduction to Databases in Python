@@ -1565,13 +1565,211 @@ Querying Hierarchical Data
 				 (u'HARDING', u'TAFT'), ...
 
 
+Group_by and Func
+● It’s important to target group_by() at the right alias
+● Be careful with what you perform functions on
+● If you don’t find yourself using both the alias and the table
+name for a query, don’t create the alias at all
+
+Querying Hierarchical Data
+		In [1]: managers = employees.alias()
+
+		In [2]: stmt = select([managers.columns.name,
+		 ...: func.sum(employees.columns.sal)])
+		In [3]: stmt = stmt.select_from(employees.join(
+		 ...: managers, managers.columns.id ==
+		 ...: employees.columns.manager)
+		In [4]: stmt = stmt.group_by(managers.columns.name)
+		In [5]: print(connection.execute(stmt).fetchall())
+				Out[5]: [(u'FILLMORE', Decimal('96000.00')),
+				 (u'GARFIELD', Decimal('83500.00')),
+				 (u'HARDING', Decimal('52000.00')),
+				 (u'JACKSON', Decimal('197000.00'))] 
 
 
 
 
+______________________________________________________________________________________
+
+
+Using alias to handle same table joined queries
+Often, you'll have tables that contain hierarchical data, such as employees and managers who are also employees. For this reason, you may wish to join a table to itself on different columns. The .alias() method, which creates a copy of a table, helps accomplish this task. Because it's the same table, you only need a where clause to specify the join condition.
+
+Here, you'll use the .alias() method to build a query to join the employees table against itself to determine to whom everyone reports.
+
+Instructions
+100 XP
+Save an alias of the employees table as managers. To do so, apply the method .alias() to employees.
+Build a query to select the employee name and their manager's name. The manager's name has already been selected for you. Use label to label the name column of employees as 'employee'.
+Append a where clause to stmt to match where the id column of the managers table corresponds to the mgr column of the employees table.
+Order the statement by the name column of the managers table.
+Execute the statement and store all the results. This code is already written. Hit 'Submit Answer' to print the names of the managers and all their employees.
+
+
+# Make an alias of the employees table: managers
+managers = employees.alias('managers')
+
+# Build a query to select manager's and their employees names: stmt
+stmt = select(
+    [managers.columns.name.label('manager'),
+     employees.columns.name.label('employee')]
+)
+
+# Match managers id with employees mgr: stmt
+stmt = stmt.where(managers.columns.id == employees.columns.mgr)
+
+# Order the statement by the managers name: stmt
+stmt = stmt.order_by(managers.columns.name)
+
+# Execute statement: results
+results = connection.execute(stmt).fetchall()
+
+# Print records
+for record in results:
+    print(record)
 
 
 
+
+<script.py> output:
+    ('FILLMORE', 'GRANT')
+    ('FILLMORE', 'ADAMS')
+    ('FILLMORE', 'MONROE')
+    ('GARFIELD', 'JOHNSON')
+    ('GARFIELD', 'LINCOLN')
+    ('GARFIELD', 'POLK')
+    ('GARFIELD', 'WASHINGTON')
+    ('HARDING', 'TAFT')
+    ('HARDING', 'HOOVER')
+    ('JACKSON', 'HARDING')
+    ('JACKSON', 'GARFIELD')
+    ('JACKSON', 'FILLMORE')
+    ('JACKSON', 'ROOSEVELT')
+
+In [1]: 
+
+__________________________________________________________________________________________________________________
+
+
+Leveraging Functions and Group_bys with Hierarchical Data
+It's also common to want to roll up data which is in a hierarchical table. Rolling up data requires making sure you're careful which alias you use to perform the group_bys and which table you use for the function.
+
+Here, your job is to get a count of employees for each manager.
+
+Instructions
+100 XP
+Save an alias of the employees table as managers.
+Build a query to select the name column of the managers table and the count of the number of their employees. The function func.count() has been imported and will be useful! Use it to count the id column of the employees table.
+Using a .where() clause, filter the records where the id column of the managers table and mgr column of the employees table are equal.
+Group the query by the name column of the managers table.
+Execute the statement and store all the results. Print the names of the managers and their employees. This code has already been written so hit 'Submit Answer' and check out the results!
+
+# Make an alias of the employees table: managers
+managers = employees.alias('managers')
+
+# Build a query to select managers and counts of their employees: stmt
+stmt = select([managers.columns.name, func.count(employees.columns.id)])
+
+# Append a where clause that ensures the manager id and employee mgr are equal
+stmt = stmt.where(managers.columns.id == employees.columns.mgr)
+
+# Group by Managers Name
+stmt = stmt.group_by(managers.columns.name)
+
+# Execute statement: results
+results = connection.execute(stmt).fetchall()
+
+# print manager
+for record in results:
+    print(record)
+
+
+script.py> output:
+    ('FILLMORE', 3)
+    ('GARFIELD', 4)
+    ('HARDING', 2)
+    ('JACKSON', 4)
+    
+    _____________________________________________________________________________________________________________
+    
+   Handling
+Large
+ResultSets
+
+Dealing with Large ResultSets
+	● fetchmany() lets us specify how many rows we want to
+	act upon
+	● We can loop over fetchmany()
+	● It returns an empty list when there are no more records
+	● We have to close the ResultProxy a"erwards
+
+
+Fetching Many Rows
+		In [1]: while more_results:
+			 ...: partial_results = results_proxy.fetchmany(50)
+			 ...: if partial_results == []:
+				 ...: more_results = False
+			 ...: for row in partial_results:
+				 ...: state_count[row.state] += 1
+		In [2]: results_proxy.close()
+
+
+
+
+Working on Blocks of Records
+Fantastic work so far! As Jason discussed in the video, sometimes you may have the need to work on a large ResultProxy, and you may not have the memory to load all the results at once. To work around that issue, you can get blocks of rows from the ResultProxy by using the .fetchmany() method inside a loop. With .fetchmany(), give it an argument of the number of records you want. When you reach an empty list, there are no more rows left to fetch, and you have processed all the results of the query. Then you need to use the .close() method to close out the connection to the database.
+
+You'll now have the chance to practice this on a large ResultProxy called results_proxy that has been pre-loaded for you to work with.
+
+Instructions
+100 XP
+Use a while loop that checks if there are more_results.
+Inside the loop, apply the method .fetchmany() to results_proxy to get 50 records at a time and store those records as partial_results.
+After fetching the records, if partial_results is an empty list (that is, if it is equal to []), set more_results to False.
+Loop over the partial_results and, if row.state is a key in the state_count dictionary, increment state_count[row.state] by 1; otherwise set state_count[row.state] to 1.
+After the while loop, close the ResultProxy results_proxy using .close().
+Hit 'Submit Answer' to print state_count.
+
+______________________________________________________________________________________________________________________
+
+Working on Blocks of Records
+Fantastic work so far! As Jason discussed in the video, sometimes you may have the need to work on a large ResultProxy, and you may not have the memory to load all the results at once. To work around that issue, you can get blocks of rows from the ResultProxy by using the .fetchmany() method inside a loop. With .fetchmany(), give it an argument of the number of records you want. When you reach an empty list, there are no more rows left to fetch, and you have processed all the results of the query. Then you need to use the .close() method to close out the connection to the database.
+
+You'll now have the chance to practice this on a large ResultProxy called results_proxy that has been pre-loaded for you to work with.
+
+Instructions
+0 XP
+Use a while loop that checks if there are more_results.
+Inside the loop, apply the method .fetchmany() to results_proxy to get 50 records at a time and store those records as partial_results.
+After fetching the records, if partial_results is an empty list (that is, if it is equal to []), set more_results to False.
+Loop over the partial_results and, if row.state is a key in the state_count dictionary, increment state_count[row.state] by 1; otherwise set state_count[row.state] to 1.
+After the while loop, close the ResultProxy results_proxy using .close().
+Hit 'Submit Answer' to print state_count.
+
+# Start a while loop checking for more results
+while more_results:
+    # Fetch the first 50 results from the ResultProxy: partial_results
+    partial_results = results_proxy.fetchmany(50)
+
+    # if empty list, set more_results to False
+    if partial_results == []:
+        more_results = False
+
+    # Loop over the fetched records and increment the count for the state
+    for row in partial_results:
+        if row.state in state_count:
+            state_count[row.state] += 1
+        else:
+            state_count[row.state] = 1
+
+# Close the ResultProxy, and thus the connection
+results_proxy.close()
+
+# Print the count by state
+print(state_count)
+
+<script.py> output:
+    {'District of Columbia': 172, 'Florida': 172, 'Idaho': 172, 'Massachusetts': 16, 'New Jersey': 172, 'Maryland': 49, 'North Dakota': 75, 'Illinois': 172}
 
 
 

@@ -1780,6 +1780,90 @@ Creating and Manipulating your own Databases
 0%
 In the previous chapters, you interacted with existing databases and queried them in various different ways. Now, you will learn how to build your own databases and keep them updated!
 
+
+Creating
+Databases
+and
+Tables
+
+Creating Databases
+● Varies by the database type
+● Databases like PostgreSQL and MySQL have
+command line tools to initialize the database
+● With SQLite, the create_engine() statement will
+create the database and file is they do not already exist
+
+
+Building a Table
+	In [1]: from sqlalchemy import (Table, Column, String,
+	 ...: Integer, Decimal, Boolean)
+	 
+	In [2]: employees = Table('employees', metadata,
+		 ...: Column('id', Integer()),
+		 ...: Column('name', String(255)),
+		 ...: Column('salary', Decimal()),
+		 ...: Column('active', Boolean()))
+	In [3]: metadata.create_all(engine)
+	In [4]: engine.table_names()
+		Out[4]: [u'employees']
+
+
+Creating Tables
+		● Still uses the Table object like we did for reflection
+		● Replaces the autoload keyword arguments with
+		Column objects
+		● Creates the tables in the actual database by using
+		the create_all() method on the MetaData
+		instance
+		● You need to use other tools to handle database
+		table updates, such as Alembic or raw SQL
+
+
+Creating Tables - Additional Column Options
+		● unique forces all values for the data in a column to be
+		unique
+		● nullable determines if a column can be empty in a
+		row
+		● default sets a default value if one
+		isn’t supplied.
+
+
+
+
+Building a Table with Additional Options
+		In [1]: employees = Table('employees', metadata,
+		 ...: Column('id', Integer()),
+		 ...: Column('name', String(255), unique=True,
+		 ...: nullable=False),
+		 ...: Column('salary', Float(), default=100.00),
+		 ...: Column('active', Boolean(), default=True))
+		In [2]: employees.constraints
+		
+		Out[2]: {CheckConstraint(...
+		Column('name', String(length=255), table=<employees>,
+		 nullable=False),
+		Column('salary', Float(), table=<employees>,
+		 default=ColumnDefault(100.0)),
+		Column('active', Boolean(), table=<employees>,
+		 default=ColumnDefault(True)) ...
+		UniqueConstraint(Column('name', String(length=255),
+		 table=<employees>, nullable=False))}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ====================================================================================================
 
 5

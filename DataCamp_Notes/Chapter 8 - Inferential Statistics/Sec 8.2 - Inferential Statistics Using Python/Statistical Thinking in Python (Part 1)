@@ -11,8 +11,327 @@ After all of the hard work of acquiring data and getting them into a form you ca
 Graphical exploratory data analysis
 Look before you leap! A very important proverb, indeed. Prior to diving in headlong into sophisticated statistical inference techniques, you should first explore your data by plotting them and computing simple summary statistics. This process, called exploratory data analysis, is a crucial first step in statistical analysis of data. So it is a fitting subject for the first chapter of Statistical Thinking in Python.
 
+_________________________________________________________________________________________
+
+EDA: The process of organizing, plo!ing, and
+summarizing a data set
 
 
+Ex: 2008 US swing state election results
+
+
+In [1]: import pandas as pd
+In [2]: df_swing = pd.read_csv('2008_swing_states.csv')
+In [3]: df_swing[['state', 'county', 'dem_share']]
+Out[3]:
+ state county dem_share
+0 PA Erie County 60.08
+1 PA Bradford County 40.64
+2 PA Tioga County 36.07
+3 PA McKean County 41.21
+4 PA Potter County 31.04
+5 PA Wayne County 43.78
+6 PA Susquehanna County 44.08
+7 PA Warren County 46.85
+8 OH Ashtabula County 56.94 
+_________________________________________________________________________________________
+
+
+Plotting a histogram
+
+Generating a histogram
+In [1]: import matplotlib.pyplot as plt
+In [2]: _ = plt.hist(df_swing['dem_share'])
+In [3]: _ = plt.xlabel('percent of vote for Obama')
+In [4]: _ = plt.ylabel('number of counties')
+In [5]: plt.show() 
+
+
+Se!ing the bins of a histogram
+In [1]: bin_edges = [0, 10, 20, 30, 40, 50,
+ ...: 60, 70, 80, 90, 100]
+In [2]: _ = plt.hist(df_swing['dem_share'], bins=bin_edges)
+In [3]: plt.show()
+
+
+In [1]: _ = plt.hist(df_swing['dem_share'], bins=20)
+In [2]: plt.show()
+
+
+Seaborn - ● An excellent Matplotlib-based statistical data
+visualization package wri!en by Michael Waskom
+
+
+Se!ing Seaborn styling
+In [1]: import seaborn as sns
+In [2]: sns.set()
+In [3]: _ = plt.hist(df_swing['dem_share'])
+In [4]: _ = plt.xlabel('percent of vote for Obama')
+In [5]: _ = plt.ylabel('number of counties')
+In [6]: plt.show() 
+
+
+____________________________________________________________________________________________________________-
+
+Plotting a histogram of iris data
+For the exercises in this section, you will use a classic data set collected by botanist Edward Anderson and made famous by Ronald Fisher, one of the most prolific statisticians in history. Anderson carefully measured the anatomical properties of samples of three different species of iris, Iris setosa, Iris versicolor, and Iris virginica. The full data set is available as part of scikit-learn. Here, you will work with his measurements of petal length.
+
+Plot a histogram of the petal lengths of his 50 samples of Iris versicolor using matplotlib/seaborn's default settings. Recall that to specify the default seaborn style, you can use sns.set(), where sns is the alias that seaborn is imported as.
+
+The subset of the data set containing the Iris versicolor petal lengths in units of centimeters (cm) is stored in the NumPy array versicolor_petal_length.
+
+In the video, Justin plotted the histograms by using the pandas library and indexing the DataFrame to extract the desired column. Here, however, you only need to use the provided NumPy array. Also, Justin assigned his plotting statements (except for plt.show()) to the dummy variable _. This is to prevent unnecessary output from being displayed. It is not required for your solutions to these exercises, however it is good practice to use it. Alternatively, if you are working in an interactive environment such as a Jupyter notebook, you could use a ; after your plotting statements to achieve the same effect. Justin prefers using _. Therefore, you will see it used in the solution code.
+
+Instructions
+100 XP
+Import matplotlib.pyplot and seaborn as their usual aliases (plt and sns).
+Use seaborn to set the plotting defaults.
+Plot a histogram of the Iris versicolor petal lengths using plt.hist() and the provided NumPy array versicolor_petal_length.
+Show the histogram using plt.show().
+
+# Import plotting modules
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+# Set default Seaborn style
+sns.set()
+
+# Plot histogram of versicolor petal lengths
+_ = plt.hist(versicolor_petal_length)
+
+# Show histogram
+plt.show()
+
+
+____________________________________________________________________________________________________________________--
+
+Axis labels!
+In the last exercise, you made a nice histogram of petal lengths of Iris versicolor, but you didn't label the axes! That's ok; it's not your fault since we didn't ask you to. Now, add axis labels to the plot using plt.xlabel() and plt.ylabel(). Don't forget to add units and assign both statements to _. The packages matplotlib.pyplot and seaborn are already imported with their standard aliases. This will be the case in what follows, unless specified otherwise.
+
+Instructions
+100 XP
+Label the axes. Don't forget that you should always include units in your axis labels. Your y-axis label is just 'count'. Your x-axis label is 'petal length (cm)'. The units are essential!
+Display the plot constructed in the above steps using plt.show().
+
+# Plot histogram of versicolor petal lengths
+_ = plt.hist(versicolor_petal_length)
+
+# Label axes
+_ = plt.xlabel('petal length (cm)')
+_ = plt.ylabel('count')
+
+# Show histogram
+plt.show()
+
+____________________________________________________________________________________________________________________--
+
+Adjusting the number of bins in a histogram
+The histogram you just made had ten bins. This is the default of matplotlib. The "square root rule" is a commonly-used rule of thumb for choosing number of bins: choose the number of bins to be the square root of the number of samples. Plot the histogram of Iris versicolor petal lengths again, this time using the square root rule for the number of bins. You specify the number of bins using the bins keyword argument of plt.hist().
+
+The plotting utilities are already imported and the seaborn defaults already set. The variable you defined in the last exercise, versicolor_petal_length, is already in your namespace.
+
+Instructions
+100 XP
+Import numpy as np. This gives access to the square root function, np.sqrt().
+Determine how many data points you have using len().
+Compute the number of bins using the square root rule.
+Convert the number of bins to an integer using the built in int() function.
+Generate the histogram and make sure to use the bins keyword argument.
+Hit 'Submit Answer' to plot the figure and see the fruit of your labors!
+
+
+# Import numpy
+import numpy as np
+
+# Compute number of data points: n_data
+n_data = len(versicolor_petal_length)
+
+# Number of bins is the square root of number of data points: n_bins
+n_bins = np.sqrt(n_data)
+
+# Convert number of bins to integer: n_bins
+n_bins = int(n_bins)
+
+# Plot the histogram
+_ = plt.hist(versicolor_petal_length, bins=n_bins) 
+
+# Label axes
+_ = plt.xlabel('petal length (cm)')
+_ = plt.ylabel('count')
+
+# Show histogram
+plt.show()
+
+
+______________________________________________________________________________________________________________
+Plot all of your data:
+Bee swarm plots
+
+
+Binning bias - The same data may be interpreted differently
+depending on choice of bins
+
+
+Generating a bee swarm plot
+In [1]: _ = sns.swarmplot(x='state', y='dem_share', data=df_swing)
+In [2]: _ = plt.xlabel('state')
+In [3]: _ = plt.ylabel('percent of vote for Obama')
+In [4]: plt.show()
+
+
+
+_________________________________________________________________________________________
+
+Bee swarm plot
+Make a bee swarm plot of the iris petal lengths. Your x-axis should contain each of the three species, and the y-axis the petal lengths. A data frame containing the data is in your namespace as df.
+
+For your reference, the code Justin used to create the bee swarm plot in the video is provided below:
+
+_ = sns.swarmplot(x='state', y='dem_share', data=df_swing)
+_ = plt.xlabel('state')
+_ = plt.ylabel('percent of vote for Obama')
+plt.show()
+In the IPython Shell, you can use sns.swarmplot? or help(sns.swarmplot) for more details on how to make bee swarm plots using seaborn.
+
+Instructions
+100 XP
+Instructions
+100 XP
+In the IPython Shell, inspect the DataFrame df using df.head(). This will let you identify which column names you need to pass as the x and y keyword arguments in your call to sns.swarmplot().
+Use sns.swarmplot() to make a bee swarm plot from the DataFrame containing the Fisher iris data set, df. The x-axis should contain each of the three species, and the y-axis should contain the petal lengths.
+Label the axes.
+Show your plot.
+
+# Create bee swarm plot with Seaborn's default settings
+_ = sns.swarmplot(x='species',y='petal length (cm)',data=df)
+
+# Label the axes
+_ = plt.xlabel('species')
+_ = plt.ylabel('petal length (cm)')
+
+# Show the plot
+plt.show()
+
+_________________________________________________________________________________________________________-
+
+Plot all of your data:
+ECDFs
+
+Making an ECDF
+In [1]: import numpy as np
+In [2]: x = np.sort(df_swing['dem_share'])
+In [3]: y = np.arange(1, len(x)+1) / len(x)
+In [4]: _ = plt.plot(x, y, marker='.', linestyle='none')
+In [5]: _ = plt.xlabel('percent of vote for Obama')
+In [6]: _ = plt.ylabel('ECDF')
+In [7]: plt.margins(0.02) # Keeps data off plot edges
+In [8]: plt.show()
+
+
+______________________________________________________________________________________________
+
+Computing the ECDF
+In this exercise, you will write a function that takes as input a 1D array of data and then returns the x and y values of the ECDF. You will use this function over and over again throughout this course and its sequel. ECDFs are among the most important plots in statistical analysis. You can write your own function, foo(x,y) according to the following skeleton:
+
+def foo(a,b):
+    """State what function does here"""
+    # Computation performed here
+    return x, y
+The function foo() above takes two arguments a and b and returns two values x and y. The function header def foo(a,b): contains the function signature foo(a,b), which consists of the function name, along with its parameters. For more on writing your own functions, see DataCamp's course Python Data Science Toolbox (Part 1) here!
+
+Instructions
+100 XP
+Instructions
+100 XP
+Define a function with the signature ecdf(data). Within the function definition,
+Compute the number of data points, n, using the len() function.
+The x-values are the sorted data. Use the np.sort() function to perform the sorting.
+The y data of the ECDF go from 1/n to 1 in equally spaced increments. You can construct this using np.arange(). Remember, however, that the end value in np.arange() is not inclusive. Therefore, np.arange() will need to go from 1 to n+1. Be sure to divide this by n.
+The function returns the values x and y.
+
+
+def ecdf(data):
+    """Compute ECDF for a one-dimensional array of measurements."""
+    # Number of data points: n
+    n = len(data)
+
+    # x-data for the ECDF: x
+    x = np.sort(data)
+
+    # y-data for the ECDF: y
+    y = np.arange(1, n+1) / n
+
+    return x, y
+
+
+_______________________________________________________________________________________________________________--
+
+
+Plotting the ECDF
+You will now use your ecdf() function to compute the ECDF for the petal lengths of Anderson's Iris versicolor flowers. You will then plot the ECDF. Recall that your ecdf() function returns two arrays so you will need to unpack them. An example of such unpacking is x, y = foo(data), for some function foo().
+
+Instructions
+100 XP
+Use ecdf() to compute the ECDF of versicolor_petal_length. Unpack the output into x_vers and y_vers.
+Plot the ECDF as dots. Remember to include marker = '.' and linestyle = 'none' in addition to x_vers and y_vers as arguments inside plt.plot().
+Label the axes. You can label the y-axis 'ECDF'.
+Show your plot.
+
+# Compute ECDF for versicolor data: x_vers, y_vers
+x_vers, y_vers = ecdf(versicolor_petal_length)
+
+# Generate plot
+_ = plt.plot(x_vers, y_vers, marker = '.', linestyle = 'none')
+
+# Label the axes
+_ = plt.xlabel('species')
+_ = plt.ylabel('ECDF')
+
+
+# Display the plot
+plt.show()
+_________________________________________________________________________________________________________--
+
+Comparison of ECDFs
+ECDFs also allow you to compare two or more distributions (though plots get cluttered if you have too many). Here, you will plot ECDFs for the petal lengths of all three iris species. You already wrote a function to generate ECDFs so you can put it to good use!
+
+To overlay all three ECDFs on the same plot, you can use plt.plot() three times, once for each ECDF. Remember to include marker='.' and linestyle='none' as arguments inside plt.plot().
+
+Instructions
+100 XP
+Compute ECDFs for each of the three species using your ecdf() function. The variables setosa_petal_length, versicolor_petal_length, and virginica_petal_length are all in your namespace. Unpack the ECDFs into x_set, y_set, x_vers, y_vers and x_virg, y_virg, respectively.
+Plot all three ECDFs on the same plot as dots. To do this, you will need three plt.plot() commands. Assign the result of each to _.
+A legend and axis labels have been added for you, so hit 'Submit Answer' to see all the ECDFs!
+
+# Compute ECDFs
+x_set, y_set = ecdf(setosa_petal_length)
+x_vers, y_vers = ecdf(versicolor_petal_length)
+x_virg, y_virg = ecdf(virginica_petal_length)
+
+
+
+# Plot all ECDFs on the same plot
+_ = plt.plot(x_set, y_set, marker = '.', linestyle = 'none')
+_ = plt.plot(x_vers, y_vers, marker = '.', linestyle = 'none')
+_ = plt.plot(x_virg, y_virg, marker = '.', linestyle = 'none')
+
+
+# Annotate the plot
+plt.legend(('setosa', 'versicolor', 'virginica'), loc='lower right')
+_ = plt.xlabel('petal length (cm)')
+_ = plt.ylabel('ECDF')
+
+# Display the plot
+plt.show()
+
+_______________________________________________________________________________________________________________---
+
+
+Coming up…
+● Thinking probabilistically
+● Discrete and continuous distributions
+● The power of hacker statistics using np.random()
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -21,16 +340,652 @@ Look before you leap! A very important proverb, indeed. Prior to diving in headl
 Quantitative exploratory data analysis
 In the last chapter, you learned how to graphically explore data. In this chapter, you will compute useful summary statistics, which serve to concisely describe salient features of a data set with a few numbers.
 
+Mean vote percentage
+    In [1]: import numpy as np
+    In [2]: np.mean(dem_share_PA)
+    Out[2]: 45.476417910447765
+
+Computing the Median
+    In [1]: np.median(dem_share_UT)
+    Out[1]: 22.469999999999999
+
+
+____________________________________________________________________________
+
+Computing means
+The mean of all measurements gives an indication of the typical magnitude of a measurement. It is computed using np.mean().
+
+Instructions
+100 XP
+Compute the mean petal length of Iris versicolor from Anderson's classic data set. The variable versicolor_petal_length is provided in your namespace. Assign the mean to mean_length_vers.
+Hit submit to print the result.
+
+# Compute the mean: mean_length_vers
+mean_length_vers = np.mean(versicolor_petal_length)
+
+# Print the result with some nice formatting
+print('I. versicolor:', mean_length_vers, 'cm')
+
+______________________________________________________________________________________
+
+Percentiles,
+outliers,
+and box plots
+
+
+Computing percentiles
+      In [1]: np.percentile(df_swing['dem_share'], [25, 50, 75])
+          Out[1]: array([ 37.3025, 43.185 , 49.925 ])
+
+
+Generating a box plot
+      In [1]: import matplotlib.pyplot as plt
+      In [2]: import seaborn as sns
+      In [3]: _ = sns.boxplot(x='east_west', y='dem_share',
+       ...: data=df_all_states)
+      In [4]: _ = plt.xlabel('region')
+      In [5]: _ = plt.ylabel('percent of vote for Obama')
+      In [6]: plt.show()
+
+
+_____________________________________________________________________________________________________
+
+Computing percentiles
+In this exercise, you will compute the percentiles of petal length of Iris versicolor.
+
+Instructions
+100 XP
+Create percentiles, a NumPy array of percentiles you want to compute. These are the 2.5th, 25th, 50th, 75th, and 97.5th. You can do so by creating a list containing these ints/floats and convert the list to a NumPy array using np.array(). For example, np.array([30, 50]) would create an array consisting of the 30th and 50th percentiles.
+Use np.percentile() to compute the percentiles of the petal lengths from the Iris versicolor samples. The variable versicolor_petal_length is in your namespace.
+Print the percentiles.
 
 
 
+# Specify array of percentiles: percentiles
+percentiles = np.array([2.5,25,50,75,97.5])
 
+# Compute percentiles: ptiles_vers
+ptiles_vers = np.percentile(versicolor_petal_length, percentiles)
+
+# Print the result
+print(ptiles_vers)
+
+
+<script.py> output:
+    [3.3    4.     4.35   4.6    4.9775]
+
+
+___________________________________________________________________________________________________-
+
+Comparing percentiles to ECDF
+To see how the percentiles relate to the ECDF, you will plot the percentiles of Iris versicolor petal lengths you calculated in the last exercise on the ECDF plot you generated in chapter 1. The percentile variables from the previous exercise are available in the workspace as ptiles_vers and percentiles.
+
+Note that to ensure the Y-axis of the ECDF plot remains between 0 and 1, you will need to rescale the percentiles array accordingly - in this case, dividing it by 100.
+
+Instructions
+100 XP
+Plot the percentiles as red diamonds on the ECDF. Pass the x and y co-ordinates - ptiles_vers and percentiles/100 - as positional arguments and specify the marker='D', color='red' and linestyle='none' keyword arguments. The argument for the y-axis - percentiles/100 has been specified for you.
+Display the plot.
+
+# Plot the ECDF
+_ = plt.plot(x_vers, y_vers, '.')
+_ = plt.xlabel('petal length (cm)')
+_ = plt.ylabel('ECDF')
+
+# Overlay percentiles as red diamonds.
+_ = plt.plot(ptiles_vers, percentiles/100, marker='D', color='red',
+         linestyle='none')
+
+# Show the plot
+plt.show()
+
+___________________________________________________________________________________________________
+
+Box-and-whisker plot
+Making a box plot for the petal lengths is unnecessary because the iris data set is not too large and the bee swarm plot works fine. However, it is always good to get some practice. Make a box plot of the iris petal lengths. You have a pandas DataFrame, df, which contains the petal length data, in your namespace. Inspect the data frame df in the IPython shell using df.head() to make sure you know what the pertinent columns are.
+
+For your reference, the code used to produce the box plot in the video is provided below:
+
+_ = sns.boxplot(x='east_west', y='dem_share', data=df_all_states)
+
+_ = plt.xlabel('region')
+
+_ = plt.ylabel('percent of vote for Obama')
+
+In the IPython Shell, you can use sns.boxplot? or help(sns.boxplot) for more details on how to make box plots using seaborn.
+
+Instructions
+100 XP
+The set-up is exactly the same as for the bee swarm plot; you just call sns.boxplot() with the same keyword arguments as you would sns.swarmplot(). The x-axis is 'species' and y-axis is 'petal length (cm)'.
+Don't forget to label your axes!
+Display the figure using the normal call.
+
+# Create box plot with Seaborn's default settings
+_ = sns.boxplot(x='species',y='petal length (cm)',data=df)
+
+# Label the axes
+_=plt.xlabel('species')
+_=plt.ylabel('petal length (cm)')
+
+
+# Show the plot
+plt.show()
+
+_____________________________________________________________________________________________________________-
+
+
+Variance and
+standard deviation
+
+Variance =
+● The mean squared distance of the data from their
+mean
+● Informally, a measure of the spread of data
+
+Compute the Variance
+In [1]: np.var(dem_share_FL)
+Out[1]: 147.44278618846064
+
+
+Computing the std dev
+In [1]: np.std(dem_share_FL)
+Out[1]: 12.142602117687158
+In [2]: np.sqrt(np.var(dem_share_FL))
+Out[2]: 12.142602117687158
+
+______________________________________________________________________________________________________________
+
+
+Computing the variance
+It is important to have some understanding of what commonly-used functions are doing under the hood. Though you may already know how to compute variances, this is a beginner course that does not assume so. In this exercise, we will explicitly compute the variance of the petal length of Iris veriscolor using the equations discussed in the videos. We will then use np.var() to compute it.
+
+Instructions
+100 XP
+Create an array called differences that is the difference between the petal lengths (versicolor_petal_length) and the mean petal length. The variable versicolor_petal_length is already in your namespace as a NumPy array so you can take advantage of NumPy's vectorized operations.
+Square each element in this array. For example, x**2 squares each element in the array x. Store the result as diff_sq.
+Compute the mean of the elements in diff_sq using np.mean(). Store the result as variance_explicit.
+Compute the variance of versicolor_petal_length using np.var(). Store the result as variance_np.
+Print both variance_explicit and variance_np in one print call to make sure they are consistent.
+
+# Array of differences to mean: differences
+differences = versicolor_petal_length - np.mean(versicolor_petal_length)
+
+# Square the differences: diff_sq
+diff_sq = differences**2
+
+# Compute the mean square difference: variance_explicit
+variance_explicit = np.mean(diff_sq)
+
+# Compute the variance using NumPy: variance_np
+variance_np = np.var(versicolor_petal_length)
+
+# Print the results
+print(variance_explicit, variance_np)
+
+
+<script.py> output:
+    0.21640000000000004 0.21640000000000004
+		
+		
+		_______________________________________________________________________________________________________________
+		
+The standard deviation and the variance
+As mentioned in the video, the standard deviation is the square root of the variance. You will see this for yourself by computing the standard deviation using np.std() and comparing it to what you get by computing the variance with np.var() and then computing the square root.
+
+Instructions
+100 XP
+Compute the variance of the data in the versicolor_petal_length array using np.var() and store it in a variable called variance.
+
+Print the square root of this value.
+
+Print the standard deviation of the data in the versicolor_petal_length array using np.std().
+
+# Compute the variance: variance
+variance = np.var(versicolor_petal_length)
+
+# Print the square root of the variance
+print(np.sqrt(variance))
+
+# Print the standard deviation
+print(np.std(versicolor_petal_length))
+
+<script.py> output:
+    0.4651881339845203
+    0.4651881339845203
+		
+		______________________________________________________________________________________________________________--
+		
+		Covariance and the
+Pearson correlation
+coefficient
+
+
+Generating a sca"er plot
+In [1]: _ = plt.plot(total_votes/1000, dem_share,
+ ...: marker='.', linestyle='none')
+In [2]: _ = plt.xlabel('total votes (thousands)')
+In [3]: _ = plt.ylabel('percent of vote for Obama')
+
+
+Covariance - A measure of how two quantities vary together
+
+Pearson correlation coefficient
+ρ = Pearson correlation = covariance/ (std of x)*(std of y) = variability due to codependence / independent variability
+
+
+Both measures only linear relationship between two variables, i.e. when the correlation coefficient is zero, covariance is also zero. Further, the two measures are unaffected by the change in location. Correlation is a special case of covariance which can be obtained when the data is standardized.
+
+
+_____________________________________________________________________________________________________________________
+
+Scatter plots
+When you made bee swarm plots, box plots, and ECDF plots in previous exercises, you compared the petal lengths of different species of iris. But what if you want to compare two properties of a single species? This is exactly what we will do in this exercise. We will make a scatter plot of the petal length and width measurements of Anderson's Iris versicolor flowers. If the flower scales (that is, it preserves its proportion as it grows), we would expect the length and width to be correlated.
+
+For your reference, the code used to produce the scatter plot in the video is provided below:
+
+_ = plt.plot(total_votes/1000, dem_share, marker='.', linestyle='none')
+
+_ = plt.xlabel('total votes (thousands)')
+
+_ = plt.ylabel('percent of vote for Obama')
+
+
+Instructions
+100 XP
+Instructions
+100 XP
+Use plt.plot() with the appropriate keyword arguments to make a scatter plot of versicolor petal length (x-axis) versus petal width (y-axis). The variables versicolor_petal_length and versicolor_petal_width are already in your namespace. Do not forget to use the marker='.' and linestyle='none' keyword arguments.
+Label the axes.
+Display the plot.
+
+
+# Make a scatter plot
+_=plt.plot(x=versicolor_petal_length,y=versicolor_petal_width,marker='.', linestyle='none')
+
+
+# Label the axes
+_= plt.xlabel('versicolor_petal_length')
+_= plt.ylabel('versicolor_petal_width')
+
+# Show the result
+plt.show()
+
+________________________________________________________________________________________________________________
+
+Variance and covariance by looking
+Consider four scatter plots of x-y data, appearing to the right. Which has, respectively,
+
+the highest variance in the variable x,
+the highest covariance,
+negative covariance?
+
+______________________________________________________________________________________________________________
+
+Computing the covariance
+The covariance may be computed using the Numpy function np.cov(). For example, we have two sets of data x and y, np.cov(x, y) returns a 2D array where entries [0,1] and [1,0] are the covariances. Entry [0,0] is the variance of the data in x, and entry [1,1] is the variance of the data in y. This 2D output array is called the covariance matrix, since it organizes the self- and covariance.
+
+To remind you how the I. versicolor petal length and width are related, we include the scatter plot you generated in a previous exercise.
+
+Instructions
+100 XP
+Use np.cov() to compute the covariance matrix for the petal length (versicolor_petal_length) and width (versicolor_petal_width) of I. versicolor.
+Print the covariance matrix.
+Extract the covariance from entry [0,1] of the covariance matrix. Note that by symmetry, entry [1,0] is the same as entry [0,1].
+Print the covariance.
+
+
+# Compute the covariance matrix: covariance_matrix
+covariance_matrix = np.cov(versicolor_petal_length, versicolor_petal_width)
+
+# Print covariance matrix
+print(covariance_matrix)
+
+# Extract covariance of length and width of petals: petal_cov
+petal_cov = covariance_matrix[0,1]
+
+# Print the length/width covariance
+print(petal_cov)
+
+<script.py> output:
+    [[0.22081633 0.07310204]
+     [0.07310204 0.03910612]]
+    0.07310204081632653
+
+____________________________________________________________________________________________________________-
+
+Computing the Pearson correlation coefficient
+As mentioned in the video, the Pearson correlation coefficient, also called the Pearson r, is often easier to interpret than the covariance. It is computed using the np.corrcoef() function. Like np.cov(), it takes two arrays as arguments and returns a 2D array. Entries [0,0] and [1,1] are necessarily equal to 1 (can you think about why?), and the value we are after is entry [0,1].
+
+In this exercise, you will write a function, pearson_r(x, y) that takes in two arrays and returns the Pearson correlation coefficient. You will then use this function to compute it for the petal lengths and widths of I. versicolor.
+
+Again, we include the scatter plot you generated in a previous exercise to remind you how the petal width and length are related.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Define a function with signature pearson_r(x, y).
+Use np.corrcoef() to compute the correlation matrix of x and y (pass them to np.corrcoef() in that order).
+The function returns entry [0,1] of the correlation matrix.
+Compute the Pearson correlation between the data in the arrays versicolor_petal_length and versicolor_petal_width. Assign the result to r.
+Print the result.
+
+def pearson_r(x, y):
+    """Compute Pearson correlation coefficient between two arrays."""
+    # Compute correlation matrix: corr_mat
+    corr_mat = np.corrcoef(x,y)
+
+    # Return entry [0,1]
+    return corr_mat[0,1]
+
+# Compute Pearson correlation coefficient for I. versicolor: r
+r = pearson_r(versicolor_petal_length, versicolor_petal_width)
+
+# Print the result
+print(r)
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 3
 Thinking probabilistically-- Discrete variables
 Statistical inference rests upon probability. Because we can very rarely say anything meaningful with absolute certainty from data, we use probabilistic language to make quantitative statements about data. In this chapter, you will learn how to think probabilistically about discrete quantities, those that can only take certain values, like integers. It is an important first step in building the probabilistic language necessary to think statistically.
+
+
+Probabilistic logic
+and statistical
+inference
+
+
+________________________________________________________________________________________________________
+
+Random number
+generators and
+hacker statistics
+
+Hacker Statistics 
+	- Uses simulated repeated measurements to compute probabilities.
+
+
+The np.random module
+	● Suite of functions based on random number generation
+	● np.random.random():
+	 draw a number between 0 and 1
+
+
+
+Bernoulli trial - 
+An experiment that has two options,
+"success" (True) and "failure" (False).
+
+
+Random number seed
+Integer fed into random number generating
+algorithm
+● Manually seed random number generator if
+you need reproducibility
+● Specified using np.random.seed()
+
+
+Simulating 4 coin flips
+		In [1]: import numpy as np
+		In [2]: np.random.seed(42)
+		In [3]: random_numbers = np.random.random(size=4)
+		In [4]: random_numbers
+		Out[4]: array([ 0.37454012, 0.95071431, 0.73199394,
+		0.59865848])
+		In [5]: heads = random_numbers < 0.5
+		In [6]: heads
+		Out[6]: array([ True, False, False, False], dtype=bool)
+		In [7]: np.sum(heads)
+		Out[7]: 1
+
+Simulating 4 coin flips
+		In [1]: n_all_heads = 0 # Initialize number of 4-heads trials
+		In [2]: for _ in range(10000):
+		 ...: heads = np.random.random(size=4) < 0.5
+		 ...: n_heads = np.sum(heads)
+		 ...: if n_heads == 4:
+		 ...: n_all_heads += 1
+		 ...:
+		 ...:
+		In [3]: n_all_heads / 10000
+		Out[3]: 0.0621
+
+
+Hacker stats probabilities
+● Determine how to simulate data
+● Simulate many many times
+● Probability is approximately fraction of trials
+with the outcome of interest
+
+________________________________________________________________________________
+
+Generating random numbers using the np.random module
+We will be hammering the np.random module for the rest of this course and its sequel. Actually, you will probably call functions from this module more than any other while wearing your hacker statistician hat. Let's start by taking its simplest function, np.random.random() for a test spin. The function returns a random number between zero and one. Call np.random.random() a few times in the IPython shell. You should see numbers jumping around between zero and one.
+
+In this exercise, we'll generate lots of random numbers between zero and one, and then plot a histogram of the results. If the numbers are truly random, all bars in the histogram should be of (close to) equal height.
+
+You may have noticed that, in the video, Justin generated 4 random numbers by passing the keyword argument size=4 to np.random.random(). Such an approach is more efficient than a for loop: in this exercise, however, you will write a for loop to experience hacker statistics as the practice of repeating an experiment over and over again.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Seed the random number generator using the seed 42.
+Initialize an empty array, random_numbers, of 100,000 entries to store the random numbers. Make sure you use np.empty(100000) to do this.
+Write a for loop to draw 100,000 random numbers using np.random.random(), storing them in the random_numbers array. To do so, loop over range(100000).
+Plot a histogram of random_numbers. It is not necessary to label the axes in this case because we are just checking the random number generator. Hit 'Submit Answer' to show your plot.
+
+# Seed the random number generator
+np.random.seed(42)
+
+# Initialize random numbers: random_numbers
+random_numbers = np.empty(100000)
+
+# Generate random numbers by looping over range(100000)
+for i in range(100000):
+    random_numbers[i] = np.random.random()
+
+# Plot a histogram
+_ = plt.hist(random_numbers)
+
+# Show the plot
+plt.show()
+
+__________________________________________________________________________________________________________________________
+
+
+The np.random module and Bernoulli trials
+You can think of a Bernoulli trial as a flip of a possibly biased coin. Specifically, each coin flip has a probability p of landing heads (success) and probability 1−p of landing tails (failure). In this exercise, you will write a function to perform n Bernoulli trials, perform_bernoulli_trials(n, p), which returns the number of successes out of n Bernoulli trials, each of which has probability p of success. To perform each Bernoulli trial, use the np.random.random() function, which returns a random number between zero and one.
+
+Instructions
+100 XP
+Define a function with signature perform_bernoulli_trials(n, p).
+Initialize to zero a variable n_success the counter of Trues, which are Bernoulli trial successes.
+Write a for loop where you perform a Bernoulli trial in each iteration and increment the number of success if the result is True. Perform n iterations by looping over range(n).
+To perform a Bernoulli trial, choose a random number between zero and one using np.random.random(). If the number you chose is less than p, increment n_success (use the += 1 operator to achieve this).
+The function returns the number of successes n_success.
+
+
+def perform_bernoulli_trials(n, p):
+    """Perform n Bernoulli trials with success probability p
+    and return number of successes."""
+    # Initialize number of successes: n_success
+    n_success = 0
+
+
+    # Perform trials
+    for i in range(n):
+        # Choose random number between zero and one: random_number
+        random_number = np.random.random()
+
+        # If less than p, it's a success so add one to n_success
+        if random_number<p:
+            n_success += 1
+
+    return n_success
+
+________________________________________________________________________________________________________________________
+
+How many defaults might we expect?
+Let's say a bank made 100 mortgage loans. It is possible that anywhere between 0 and 100 of the loans will be defaulted upon. You would like to know the probability of getting a given number of defaults, given that the probability of a default is p = 0.05. To investigate this, you will do a simulation. You will perform 100 Bernoulli trials using the perform_bernoulli_trials() function you wrote in the previous exercise and record how many defaults we get. Here, a success is a default. (Remember that the word "success" just means that the Bernoulli trial evaluates to True, i.e., did the loan recipient default?) You will do this for another 100 Bernoulli trials. And again and again until we have tried it 1000 times. Then, you will plot a histogram describing the probability of the number of defaults.
+
+Instructions
+100 XP
+Seed the random number generator to 42.
+Initialize n_defaults, an empty array, using np.empty(). It should contain 1000 entries, since we are doing 1000 simulations.
+Write a for loop with 1000 iterations to compute the number of defaults per 100 loans using the perform_bernoulli_trials() function. It accepts two arguments: the number of trials n - in this case 100 - and the probability of success p - in this case the probability of a default, which is 0.05. On each iteration of the loop store the result in an entry of n_defaults.
+Plot a histogram of n_defaults. Include the normed=True keyword argument so that the height of the bars of the histogram indicate the probability.
+Show your plot.
+
+
+# Seed random number generator
+np.random.seed(42)
+
+# Initialize the number of defaults: n_defaults
+n_defaults = np.empty(1000)
+
+# Compute the number of defaults
+for i in range(1000):
+    n_defaults[i] = perform_bernoulli_trials(100,0.05)
+
+
+# Plot the histogram with default number of bins; label your axes
+_ = plt.hist(n_defaults, normed=True)
+_ = plt.xlabel('number of defaults out of 100 loans')
+_ = plt.ylabel('probability')
+
+# Show the plot
+plt.show()
+
+
+______________________________________________________________________________________________________________________
+
+Will the bank fail?
+Plot the number of defaults you got from the previous exercise, in your namespace as n_defaults, as a CDF. The ecdf() function you wrote in the first chapter is available.
+
+If interest rates are such that the bank will lose money if 10 or more of its loans are defaulted upon, what is the probability that the bank will lose money?
+
+Instructions
+100 XP
+Instructions
+100 XP
+Compute the x and y values for the ECDF of n_defaults.
+Plot the ECDF, making sure to label the axes. Remember to include marker = '.' and linestyle = 'none' in addition to x and y in your call plt.plot().
+Show the plot.
+Compute the total number of entries in your n_defaults array that were greater than or equal to 10. To do so, compute a boolean array that tells you whether a given entry of n_defaults is >= 10. Then sum all the entries in this array using np.sum(). For example, np.sum(n_defaults <= 5) would compute the number of defaults with 5 or fewer defaults.
+The probability that the bank loses money is the fraction of n_defaults that are greater than or equal to 10. Print this result by hitting 'Submit Answer'!
+
+# Compute ECDF: x, y
+x, y = ecdf(n_defaults)
+
+# Plot the ECDF with labeled axes
+_ = plt.plot(x=x,y=y,marker='.',linestyle='none')
+_=plt.xlabel('xlabel')
+_=plt.ylabel('ylabel')
+
+
+# Show the plot
+plt.show()
+
+# Compute the number of 100-loan simulations with 10 or more defaults: n_lose_money
+n_lose_money = np.sum(n_defaults>=10)
+
+# Compute and print probability of losing money
+print('Probability of losing money =', n_lose_money / len(n_defaults))
+
+
+
+_________________________________________________________________________________________________
+
+Probability
+distributions and
+stories: The
+Binomial
+distribution
+
+PMF - The set of probabilities of discrete outcomes
+
+Probability Distribution - ● A mathematical description of outcomes
+Discrete Uniform distribution: the story - The outcome of rolling a single fair die is
+Discrete Uniformly distributed.
+Binomial distribution: the story - 
+
+Binomial distribution: the story
+● The number r of successes in n Bernoulli trials with
+probability p of success, is Binomially distributed
+● The number r of heads in 4 coin flips with probability
+0.5 of heads, is Binomially distributed
+
+
+Sampling from the Binomial Distribution
+
+In [1]: np.random.binomial(4, 0.5)
+Out[1]: 2
+In [2]: np.random.binomial(4, 0.5, size=10)
+Out[2]: array([4, 3, 2, 1, 1, 0, 3, 2, 3, 0]) 
+
+
+The Binomial PMF
+In [1]: samples = np.random.binomial(60, 0.1, size=10000) 
+
+The Binomial CDF
+In [1]: import matplotlib.pyplot as plt
+In [2]: import seaborn as sns
+In [3]: sns.set()
+In [4]: x, y = ecdf(samples)
+In [5]: _ = plt.plot(x, y, marker='.', linestyle='none')
+In [6]: plt.margins(0.02)
+In [7]: _ = plt.xlabel('number of successes')
+In [8]: _ = plt.ylabel('CDF')
+In [9]: plt.show() 
+
+
+
+
+
+
+_____________________________________________________________________________________________________
+Sampling out of the Binomial distribution
+Compute the probability mass function for the number of defaults we would expect for 100 loans as in the last section, but instead of simulating all of the Bernoulli trials, perform the sampling using np.random.binomial(). This is identical to the calculation you did in the last set of exercises using your custom-written perform_bernoulli_trials() function, but far more computationally efficient. Given this extra efficiency, we will take 10,000 samples instead of 1000. After taking the samples, plot the CDF as last time. This CDF that you are plotting is that of the Binomial distribution.
+
+Note: For this exercise and all going forward, the random number generator is pre-seeded for you (with np.random.seed(42)) to save you typing that each time.
+
+Instructions
+100 XP
+Draw samples out of the Binomial distribution using np.random.binomial(). You should use parameters n = 100 and p = 0.05, and set the size keyword argument to 10000.
+Compute the CDF using your previously-written ecdf() function.
+Plot the CDF with axis labels. The x-axis here is the number of defaults out of 100 loans, while the y-axis is the CDF.
+Show the plot.
+
+# Take 10,000 samples out of the binomial distribution: n_defaults
+n_defaults = np.random.binomial(n=100,p=0.05,size=10000)
+
+# Compute CDF: x, y
+x,y=ecdf(n_defaults)
+
+# Plot the CDF with axis labels
+_=plt.plot(x,y,marker='.',linestyle='none')
+_=plt.xlabel('number of defaults out of 100 loans')
+_=plt.ylabel('CDF')
+
+
+# Show the plot
+plt.show()
+
+________________________________________________________________________________________________________
+
+Plotting the Binomial PMF
+As mentioned in the video, plotting a nice looking PMF requires a bit of matplotlib trickery that we will not go into here. Instead, we will plot the PMF of the Binomial distribution as a histogram with skills you have already learned. The trick is setting up the edges of the bins to pass to plt.hist() via the bins keyword argument. We want the bins centered on the integers. So, the edges of the bins should be -0.5, 0.5, 1.5, 2.5, ... up to max(n_defaults) + 1.5. You can generate an array like this using np.arange() and then subtracting 0.5 from the array.
+
+You have already sampled out of the Binomial distribution during your exercises on loan defaults, and the resulting samples are in the NumPy array n_defaults.
+
+Instructions
+100 XP
+Using np.arange(), compute the bin edges such that the bins are centered on the integers. Store the resulting array in the variable bins.
+Use plt.hist() to plot the histogram of n_defaults with the normed=True and bins=bins keyword arguments.
+Show the plot.
+
 
 
 

@@ -986,6 +986,159 @@ Using np.arange(), compute the bin edges such that the bins are centered on the 
 Use plt.hist() to plot the histogram of n_defaults with the normed=True and bins=bins keyword arguments.
 Show the plot.
 
+# Compute bin edges: bins
+bins = np.arange(0, max(n_defaults) + 1.5) - 0.5
+
+# Generate histogram
+_ = plt.hist(n_defaults, normed=True, bins=bins)
+
+# Label axes
+_ = plt.xlabel('number of successes')
+_ = plt.ylabel('PMF')
+
+# Show the plot
+plt.show()
+
+
+Hint
+The bin edges can be computed using np.arange(), going from 0 to max(n_defaults) + 1.5. Be sure to subtract 0.5 from this array and store it in the variable bins.
+You can generate the histogram with plt.hist(), including the arguments normed=True and bins=bins alongside n_defaults.
+Label your axes with plt.xlabel() and plt.ylabel(). Note that we are now plotting the PMF on the Y axis.
+Show your plot with plt.show().
+
+
+________________________________________________________________________________________________________
+
+Poisson processes
+and the Poisson
+distribution
+
+
+Poisson process - ● The timing of the next event is completely
+independent of when the previous event happened
+
+
+
+Examples of Poisson processes
+● Natural births in a given hospital
+● Hit on a website during a given hour
+● Meteor strikes
+● Molecular collisions in a gas
+● Aviation incidents
+● Buses in Poissonville
+
+
+Poisson distribution
+● The number r of arrivals of a Poisson process in a
+given time interval with average rate of λ arrivals
+per interval is Poisson distributed.
+● The number r of hits on a website in one hour with
+an average hit rate of 6 hits per hour is Poisson
+distributed.
+
+
+
+Poisson Distribution
+● Limit of the Binomial distribution for low
+probability of success and large number of trials.
+● That is, for rare events.
+
+
+The Poisson CDF
+In [1]: samples = np.random.poisson(6, size=10000)
+In [2]: x, y = ecdf(samples)
+In [3]: _ = plt.plot(x, y, marker='.', linestyle='none')
+In [4]: plt.margins(0.02)
+In [5]: _ = plt.xlabel('number of successes')
+In [6]: _ = plt.ylabel('CDF')
+In [7]: plt.show()
+
+____________________________________________________________________________________________________________
+
+
+Relationship between Binomial and Poisson distributions
+You just heard that the Poisson distribution is a limit of the Binomial distribution for rare events. This makes sense if you think about the stories. Say we do a Bernoulli trial every minute for an hour, each with a success probability of 0.1. We would do 60 trials, and the number of successes is Binomially distributed, and we would expect to get about 6 successes. This is just like the Poisson story we discussed in the video, where we get on average 6 hits on a website per hour. So, the Poisson distribution with arrival rate equal to np approximates a Binomial distribution for n Bernoulli trials with probability p of success (with n large and p small). Importantly, the Poisson distribution is often simpler to work with because it has only one parameter instead of two for the Binomial distribution.
+
+Let's explore these two distributions computationally. You will compute the mean and standard deviation of samples from a Poisson distribution with an arrival rate of 10. Then, you will compute the mean and standard deviation of samples from a Binomial distribution with parameters n and p such that np=10.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Using the np.random.poisson() function, draw 10000 samples from a Poisson distribution with a mean of 10.
+Make a list of the n and p values to consider for the Binomial distribution. Choose n = [20, 100, 1000] and p = [0.5, 0.1, 0.01] so that np is always 10.
+Using np.random.binomial() inside the provided for loop, draw 10000 samples from a Binomial distribution with each n, p pair and print the mean and standard deviation of the samples. There are 3 n, p pairs: 20, 0.5, 100, 0.1, and 1000, 0.01. These can be accessed inside the loop as n[i], p[i].
+
+# Draw 10,000 samples out of Poisson distribution: samples_poisson
+samples_poisson = np.random.poisson(10, size=10000)
+
+# Print the mean and standard deviation
+print('Poisson:     ', np.mean(samples_poisson),
+                       np.std(samples_poisson))
+
+# Specify values of n and p to consider for Binomial: n, p
+n = [20, 100, 1000]
+p = [0.5, 0.1, 0.01]
+
+# Draw 10,000 samples for each n,p pair: samples_binomial
+for i in range(3):
+    samples_binomial = np.random.binomial(n[i], p[i], size=10000)
+
+    # Print results
+    print('n =', n[i], 'Binom:', np.mean(samples_binomial),
+                                 np.std(samples_binomial))
+
+
+<script.py> output:
+    Poisson:      10.0186 3.144813832327758
+    n = 20 Binom: 9.9637 2.2163443572694206
+    n = 100 Binom: 9.9947 3.0135812433050484
+    n = 1000 Binom: 9.9985 3.139378561116833
+
+
+Correct! When we have rare events (low p, high n), the Binomial distribution is Poisson. This has a single parameter, the mean number of successes per time interval, in our case the mean number of no-hitters per season.
+
+
+_____________________________________________________________________________________________________________
+
+
+Was 2015 anomalous?
+1990 and 2015 featured the most no-hitters of any season of baseball (there were seven). Given that there are on average 251/115 no-hitters per season, what is the probability of having seven or more in a season?
+
+Instructions
+100 XP
+Draw 10000 samples from a Poisson distribution with a mean of 251/115 and assign to n_nohitters.
+Determine how many of your samples had a result greater than or equal to 7 and assign to n_large.
+Compute the probability, p_large, of having 7 or more no-hitters by dividing n_large by the total number of samples (10000).
+Hit 'Submit Answer' to print the probability that you calculated.
+
+# Draw 10,000 samples out of Poisson distribution: n_nohitters
+n_nohitters = np.random.poisson(251/115, size=10000)
+
+# Compute number of samples that are seven or greater: n_large
+n_large = np.sum(n_nohitters >= 7)
+
+# Compute probability of getting seven or more: p_large
+p_large = np.sum(n_large/10000)
+
+# Print the result
+print('Probability of seven or more no-hitters:', p_large)
+
+
+<script.py> output:
+    Probability of seven or more no-hitters: 0.0067
+
+The result is about 0.007. This means that it is not that improbable to see a 7-or-more no-hitter season in a century. We have seen two in a century and a half, so it is not unreasonable.
+___________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
 
 
 

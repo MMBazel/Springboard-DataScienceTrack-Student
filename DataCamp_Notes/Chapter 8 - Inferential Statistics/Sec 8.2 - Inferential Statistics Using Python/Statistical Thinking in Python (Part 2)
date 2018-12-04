@@ -376,6 +376,175 @@ Bootstrap confidence intervals
 To "pull yourself up by your bootstraps" is a classic idiom meaning that you achieve a difficult task by yourself with no help at all. In statistical inference, you want to know what would happen if you could repeat your data acquisition an infinite number of times. This task is impossible, but can we use only the data we actually have to get close to the same result as an infinitude of experiments? The answer is yes! The technique to do it is aptly called bootstrapping. This chapter will introduce you to this extraordinarily powerful tool.
 
 
+
+Bootstrapping
+● The use of resampled data to
+perform statistical inference
+
+
+Bootstrap sample
+● A resampled array of the data
+
+Bootstrap replicate
+● A statistic computed from a resampled array
+
+
+Resampling engine: np.random.choice()
+In [1]: import numpy as np
+In [2]: np.random.choice([1,2,3,4,5], size=5)
+Out[2]: array([5, 3, 5, 5, 2])
+
+
+
+Computing a bootstrap replicate
+In [1]: bs_sample = np.random.choice(michelson_speed_of_light,
+ ...: size=100)
+In [2]: np.mean(bs_sample)
+Out[2]: 299847.79999999999
+In [3]: np.median(bs_sample)
+Out[3]: 299845.0
+In [4]: np.std(bs_sample)
+Out[4]: 83.564286025729331
+
+
+Getting the terminology down
+Getting tripped up over terminology is a common cause of frustration in students. Unfortunately, you often will read and hear other data scientists using different terminology for bootstrap samples and replicates. This is even more reason why we need everything to be clear and consistent for this course. So, before going forward discussing bootstrapping, let's get our terminology down. If we have a data set with n repeated measurements, a bootstrap sample is an array of length n that was drawn from the original data with replacement. What is a bootstrap replicate?
+
+A single value of a statistic computed from a bootstrap sample.
+
+_________________________________________________________________________________________________________________________
+
+Bootstrapping by hand
+To help you gain intuition about how bootstrapping works, imagine you have a data set that has only three points, [-1, 0, 1]. How many unique bootstrap samples can be drawn (e.g., [-1, 0, 1] and [1, 0, -1] are unique), and what is the maximum mean you can get from a bootstrap sample? It might be useful to jot down the samples on a piece of paper.
+
+(These are too few data to get meaningful results from bootstrap procedures, but this example is useful for intuition.)
+
+_____________________________________________________________________________________________________________
+
+Visualizing bootstrap samples
+In this exercise, you will generate bootstrap samples from the set of annual rainfall data measured at the Sheffield Weather Station in the UK from 1883 to 2015. The data are stored in the NumPy array rainfall in units of millimeters (mm). By graphically displaying the bootstrap samples with an ECDF, you can get a feel for how bootstrap sampling allows probabilistic descriptions of data.
+
+Instructions
+100 XP
+Write a for loop to acquire 50 bootstrap samples of the rainfall data and plot their ECDF.
+Use np.random.choice() to generate a bootstrap sample from the NumPy array rainfall. Be sure that the size of the resampled array is len(rainfall).
+Use the function ecdf() that you wrote in the prequel to this course to generate the x and y values for the ECDF of the bootstrap sample bs_sample.
+Plot the ECDF values. Specify color='gray' (to make gray dots) and alpha=0.1 (to make them semi-transparent, since we are overlaying so many) in addition to the marker='.' and linestyle='none' keyword arguments.
+Use ecdf() to generate x and y values for the ECDF of the original rainfall data available in the array rainfall.
+Plot the ECDF values of the original data.
+Hit 'Submit Answer' to visualize the samples!
+
+for _ in range(50):
+    # Generate bootstrap sample: bs_sample
+    bs_sample = np.random.choice(rainfall, size=len(rainfall))
+
+    # Compute and plot ECDF from bootstrap sample
+    x, y = ecdf(bs_sample)
+    _ = plt.plot(x, y, marker='.', linestyle='none',
+                 color='gray', alpha=0.1)
+
+# Compute and plot ECDF from original data
+x, y = ecdf(rainfall)
+_ = plt.plot(x, y, marker='.')
+
+# Make margins and label axes
+plt.margins(0.02)
+_ = plt.xlabel('yearly rainfall (mm)')
+_ = plt.ylabel('ECDF')
+
+# Show the plot
+plt.show()
+
+___________________________________________________________________________________________________________________
+
+Generating many bootstrap replicates
+The function bootstrap_replicate_1d() from the video is available in your namespace. Now you'll write another function, draw_bs_reps(data, func, size=1), which generates many bootstrap replicates from the data set. This function will come in handy for you again and again as you compute confidence intervals and later when you do hypothesis tests.
+
+For your reference, the bootstrap_replicate_1d() function is provided below:
+
+def bootstrap_replicate_1d(data, func):
+    return func(np.random.choice(data, size=len(data)))
+Instructions
+100 XP
+Define a function with call signature draw_bs_reps(data, func, size=1).
+Using np.empty(), initialize an array called bs_replicates of size size to hold all of the bootstrap replicates.
+Write a for loop that ranges over size and computes a replicate using bootstrap_replicate_1d(). Refer to the exercise description above to see the function signature of bootstrap_replicate_1d(). Store the replicate in the appropriate index of bs_replicates.
+Return the array of replicates bs_replicates. This has already been done for you.
+
+
+def draw_bs_reps(data, func, size=1):
+    """Draw bootstrap replicates."""
+
+    # Initialize array of replicates: bs_replicates
+    bs_replicates = np.empty(size)
+
+    # Generate replicates
+    for i in range(size):
+        bs_replicates[i] =  bootstrap_replicate_1d(data,func)  
+
+    return bs_replicates
+
+_____________________________________________________________________________________________________________________
+
+Bootstrap replicates of the mean and the SEM
+In this exercise, you will compute a bootstrap estimate of the probability density function of the mean annual rainfall at the Sheffield Weather Station. Remember, we are estimating the mean annual rainfall we would get if the Sheffield Weather Station could repeat all of the measurements from 1883 to 2015 over and over again. This is a probabilistic estimate of the mean. You will plot the PDF as a histogram, and you will see that it is Normal.
+
+In fact, it can be shown theoretically that under not-too-restrictive conditions, the value of the mean will always be Normally distributed. (This does not hold in general, just for the mean and a few other statistics.) The standard deviation of this distribution, called the standard error of the mean, or SEM, is given by the standard deviation of the data divided by the square root of the number of data points. I.e., for a data set, sem = np.std(data) / np.sqrt(len(data)). Using hacker statistics, you get this same result without the need to derive it, but you will verify this result from your bootstrap replicates.
+
+The dataset has been pre-loaded for you into an array called rainfall.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Draw 10000 bootstrap replicates of the mean annual rainfall using your draw_bs_reps() function and the rainfall array. Hint: Pass in np.mean for func to compute the mean.
+As a reminder, draw_bs_reps() accepts 3 arguments: data, func, and size.
+Compute and print the standard error of the mean of rainfall.
+The formula to compute this is np.std(data) / np.sqrt(len(data)).
+Compute and print the standard deviation of your bootstrap replicates bs_replicates.
+Make a histogram of the replicates using the normed=True keyword argument and 50 bins.
+Hit 'Submit Answer' to see the plot!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ___________________________________________________________________________________________________________________________
 
 

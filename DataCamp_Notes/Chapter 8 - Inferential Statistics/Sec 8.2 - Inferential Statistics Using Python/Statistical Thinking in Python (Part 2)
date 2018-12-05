@@ -506,44 +506,242 @@ Make a histogram of the replicates using the normed=True keyword argument and 50
 Hit 'Submit Answer' to see the plot!
 
 
+# Take 10,000 bootstrap replicates of the mean: bs_replicates
+bs_replicates = draw_bs_reps(rainfall, np.mean, size=10000)
+
+# Compute and print SEM
+sem = np.std(rainfall) / np.sqrt(len(rainfall))
+print(sem)
+
+# Compute and print standard deviation of bootstrap replicates
+bs_std = np.std(bs_replicates)
+print(bs_std)
+
+# Make a histogram of the results
+_ = plt.hist(bs_replicates, bins=50, normed=True)
+_ = plt.xlabel('mean annual rainfall (mm)')
+_ = plt.ylabel('PDF')
+
+# Show the plot
+plt.show()
+
+
+Great work! Notice that the SEM we got from the known expression and the bootstrap replicates is the same and the distribution of the bootstrap replicates of the mean is Normal.
+
+
+_________________________________________________________________________________________________________________________
+
+Confidence intervals of rainfall data
+A confidence interval gives upper and lower bounds on the range of parameter values you might expect to get if we repeat our measurements. For named distributions, you can compute them analytically or look them up, but one of the many beautiful properties of the bootstrap method is that you can take percentiles of your bootstrap replicates to get your confidence interval. Conveniently, you can use the np.percentile() function.
+
+Use the bootstrap replicates you just generated to compute the 95% confidence interval. That is, give the 2.5th and 97.5th percentile of your bootstrap replicates stored as bs_replicates. What is the 95% confidence interval?
+
+
+In [1]: np.percentile(bs_replicates, 97.5)
+Out[1]: 820.95043233082697
+
+___________________________________________________________________________________________________________________________________
+
+
+Bootstrap replicates of other statistics
+We saw in a previous exercise that the mean is Normally distributed. This does not necessarily hold for other statistics, but no worry: as hackers, we can always take bootstrap replicates! In this exercise, you'll generate bootstrap replicates for the variance of the annual rainfall at the Sheffield Weather Station and plot the histogram of the replicates.
+
+Here, you will make use of the draw_bs_reps() function you defined a few exercises ago. It is provided below for your reference:
+
+def draw_bs_reps(data, func, size=1):
+    return np.array([bootstrap_replicate_1d(data, func) for _ in range(size)])
+Instructions
+100 XP
+Draw 10000 bootstrap replicates of the variance in annual rainfall, stored in the rainfall dataset, using your draw_bs_reps() function. Hint: Pass in np.var for computing the variance.
+Divide your variance replicates (bs_replicates) by 100 to put the variance in units of square centimeters for convenience.
+Make a histogram of bs_replicates using the normed=True keyword argument and 50 bins.
+
+# Generate 10,000 bootstrap replicates of the variance: bs_replicates
+bs_replicates = draw_bs_reps(rainfall, np.var,size=10000)
+
+# Put the variance in units of square centimeters
+bs_replicates = bs_replicates/100
+
+# Make a histogram of the results
+_ = plt.hist(bs_replicates, bins=50, normed=True)
+_ = plt.xlabel('variance of annual rainfall (sq. cm)')
+_ = plt.ylabel('PDF')
+
+# Show the plot
+plt.show()
+
+Great work! This is not normally distributed, as it has a longer tail to the right. Note that you can also compute a confidence interval on the variance, or any other statistic, using np.percentile() with your bootstrap replicates.
+____________________________________________________________________________________________________________
+
+
+Confidence interval on the rate of no-hitters
+Consider again the inter-no-hitter intervals for the modern era of baseball. Generate 10,000 bootstrap replicates of the optimal parameter τ. Plot a histogram of your replicates and report a 95% confidence interval.
+
+Instructions
+100 XP
+Generate 10000 bootstrap replicates of τ from the nohitter_times data using your draw_bs_reps() function. Recall that the the optimal τ is calculated as the mean of the data.
+Compute the 95% confidence interval using np.percentile() and passing in two arguments: The array bs_replicates, and the list of percentiles - in this case 2.5 and 97.5.
+Print the confidence interval.
+Plot a histogram of your bootstrap replicates. This has been done for you, so hit 'Submit Answer' to see the plot!
+
+
+# Draw bootstrap replicates of the mean no-hitter time (equal to tau): bs_replicates
+bs_replicates = draw_bs_reps(nohitter_times, np.mean, size=10000)
+
+# Compute the 95% confidence interval: conf_int
+conf_int = np.percentile(bs_replicates,[2.5,97.5])
+
+# Print the confidence interval
+print('95% confidence interval =', conf_int, 'games')
+
+# Plot the histogram of the replicates
+_ = plt.hist(bs_replicates, bins=50, normed=True)
+_ = plt.xlabel(r'$\tau$ (games)')
+_ = plt.ylabel('PDF')
+
+# Show the plot
+plt.show()
+
+
+This gives you an estimate of what the typical time between no-hitters is. It could be anywhere between 660 and 870 games.
+
+_________________________________________________________________________________________________________________________________
+
+
+Pairs bootstrap
+
+
+Nonparametric inference - ● Make no assumptions about the model or
+probability distribution underlying the data
+
+
+Pairs bootstrap for linear regression
+● Resample data in pairs
+● Compute slope and intercept from resampled data
+● Each slope and intercept is a bootstrap replicate
+● Compute confidence intervals from percentiles of bootstrap
+replicates
+
+
+Generating a pairs bootstrap sample
+In [1]: np.arange(7)
+Out[1]: array([0, 1, 2, 3, 4, 5, 6])
+In [1]: inds = np.arange(len(total_votes))
+In [2]: bs_inds = np.random.choice(inds, len(inds))
+In [3]: bs_total_votes = total_votes[bs_inds]
+In [4]: bs_dem_share = dem_share[bs_inds] 
 
 
 
+Computing a pairs bootstrap replicate
+In [1]: bs_slope, bs_intercept = np.polyfit(bs_total_votes,
+ ...: bs_dem_share, 1)
+In [2]: bs_slope, bs_intercept
+Out[2]: (3.9053605692223672e-05, 40.387910131803025)
+In [3]: np.polyfit(total_votes, dem_share, 1) # fit of original
+Out[3]: array([ 4.03707170e-05, 4.01139120e+01])
 
 
+___________________________________________________________________________________________________________________________
 
 
+A function to do pairs bootstrap
+As discussed in the video, pairs bootstrap involves resampling pairs of data. Each collection of pairs fit with a line, in this case using np.polyfit(). We do this again and again, getting bootstrap replicates of the parameter values. To have a useful tool for doing pairs bootstrap, you will write a function to perform pairs bootstrap on a set of x,y data.
+
+Instructions
+100 XP
+Define a function with call signature draw_bs_pairs_linreg(x, y, size=1) to perform pairs bootstrap estimates on linear regression parameters.
+Use np.arange() to set up an array of indices going from 0 to len(x). These are what you will resample and use them to pick values out of the x and y arrays.
+Use np.empty() to initialize the slope and intercept replicate arrays to be of size size.
+Write a for loop to:
+Resample the indices inds. Use np.random.choice() to do this.
+Make new x and y arrays bs_x and bs_y using the the resampled indices bs_inds. To do this, slice x and y with bs_inds.
+Use np.polyfit() on the new x and y arrays and store the computed slope and intercept.
+Return the pair bootstrap replicates of the slope and intercept.
 
 
+def draw_bs_pairs_linreg(x, y, size=1):
+    """Perform pairs bootstrap for linear regression."""
+
+    # Set up array of indices to sample from: inds
+    inds = np.arange(len(x))
+
+    # Initialize replicates: bs_slope_reps, bs_intercept_reps
+    bs_slope_reps = np.empty(size)
+    bs_intercept_reps = np.empty(size)
+
+    # Generate replicates
+    for i in range(size):
+        bs_inds = np.random.choice(inds, size=len(inds))
+        bs_x, bs_y = x[bs_inds], y[bs_inds]
+        bs_slope_reps[i], bs_intercept_reps[i] = np.polyfit(bs_x,bs_y,1)
+
+    return bs_slope_reps, bs_intercept_reps
 
 
+_________________________________________________________________________________________________________________________
 
 
+Pairs bootstrap of literacy/fertility data
+Using the function you just wrote, perform pairs bootstrap to plot a histogram describing the estimate of the slope from the illiteracy/fertility data. Also report the 95% confidence interval of the slope. The data is available to you in the NumPy arrays illiteracy and fertility.
+
+As a reminder, draw_bs_pairs_linreg() has a function signature of draw_bs_pairs_linreg(x, y, size=1), and it returns two values: bs_slope_reps and bs_intercept_reps.
+
+Instructions
+100 XP
+Use your draw_bs_pairs_linreg() function to take 1000 bootstrap replicates of the slope and intercept. The x-axis data is illiteracy and y-axis data is fertility.
+Compute and print the 95% bootstrap confidence interval for the slope.
+Plot and show a histogram of the slope replicates. Be sure to label your axes. This has been done for you, so click 'Submit Answer' to see your histogram!
 
 
+# Generate replicates of slope and intercept using pairs bootstrap
+bs_slope_reps, bs_intercept_reps = draw_bs_pairs_linreg(illiteracy, fertility, size=1000)
+
+# Compute and print 95% CI for slope
+print(np.percentile(bs_slope_reps, [2.5,97.5]))
+
+# Plot the histogram
+_ = plt.hist(bs_slope_reps, bins=50, normed=True)
+_ = plt.xlabel('slope')
+_ = plt.ylabel('PDF')
+plt.show()
 
 
+<script.py> output:
+    [ 0.04378061  0.0551616 ]
+    
+    
+    ______________________________________________________________________________________________________________________
+    
+    Plotting bootstrap regressions
+A nice way to visualize the variability we might expect in a linear regression is to plot the line you would get from each bootstrap replicate of the slope and intercept. Do this for the first 100 of your bootstrap replicates of the slope and intercept (stored as bs_slope_reps and bs_intercept_reps).
 
+Instructions
+100 XP
+Generate an array of x-values consisting of 0 and 100 for the plot of the regression lines. Use the np.array() function for this.
+Write a for loop in which you plot a regression line with a slope and intercept given by the pairs bootstrap replicates. Do this for 100 lines.
+When plotting the regression lines in each iteration of the for loop, recall the regression equation y = a*x + b. Here, a is bs_slope_reps[i] and b is bs_intercept_reps[i].
+Specify the keyword arguments linewidth=0.5, alpha=0.2, and color='red' in your call to plt.plot().
+Make a scatter plot with illiteracy on the x-axis and fertility on the y-axis. Remember to specify the marker='.' and linestyle='none' keyword arguments.
+Label the axes, set a 2% margin, and show the plot. This has been done for you, so hit 'Submit Answer' to visualize the bootstrap regressions!
 
+# Generate array of x-values for bootstrap lines: x
+x = np.array([0, 100])
 
+# Plot the bootstrap lines
+for i in range(100):
+    _ = plt.plot(x, 
+                 bs_slope_reps[i] * x + bs_intercept_reps[i],
+                 linewidth=0.5, alpha=0.2, color='red')
 
+# Plot the data
+_ = plt.plot(illiteracy, fertility, marker='.', linestyle='none')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Label axes, set the margins, and show the plot
+_ = plt.xlabel('illiteracy')
+_ = plt.ylabel('fertility')
+plt.margins(0.02)
+plt.show()
 
 ___________________________________________________________________________________________________________________________
 
@@ -553,6 +751,34 @@ ________________________________________________________________________________
 Introduction to hypothesis testing
 0%
 You now know how to define and estimate parameters given a model. But the question remains: how reasonable is it to observe your data if a model is true? This question is addressed by hypothesis tests. They are the icing on the inference cake. After completing this chapter, you will be able to carefully construct and test hypotheses using hacker statistics.
+
+____________________________________________________________________________________________________________________
+
+Formulating and
+simulating
+hypotheses
+
+
+
+Hypothesis testing - Assessment of how reasonable the observed data
+are assuming a hypothesis is true
+
+Null hypothesis - ● Another name for the hypothesis you are testing
+
+
+Permutation ● Random reordering of entries in an array
+
+
+Generating a permutation sample
+In [1]: import numpy as np
+In [2]: dem_share_both = np.concatenate(
+ ...: (dem_share_PA, dem_share_OH))
+In [3]: dem_share_perm = np.random.permutation(dem_share_both)
+In [4]: perm_sample_PA = dem_share_perm[:len(dem_share_PA)]
+In [5]: perm_sample_OH = dem_share_perm[len(dem_share_PA):]
+
+
+
 
 
 ________________________________________________________________________________________________________________________

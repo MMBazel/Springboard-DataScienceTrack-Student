@@ -1076,23 +1076,87 @@ One sample test
 
 Two sample T-Test
 ● Compare two sets of data
+_____________________________________________________________________________________________________________________________
+
+A one-sample bootstrap hypothesis test
+Another juvenile frog was studied, Frog C, and you want to see if Frog B and Frog C have similar impact forces. Unfortunately, you do not have Frog C's impact forces available, but you know they have a mean of 0.55 N. Because you don't have the original data, you cannot do a permutation test, and you cannot assess the hypothesis that the forces from Frog B and Frog C come from the same distribution. You will therefore test another, less restrictive hypothesis: The mean strike force of Frog B is equal to that of Frog C.
+
+To set up the bootstrap hypothesis test, you will take the mean as our test statistic. Remember, your goal is to calculate the probability of getting a mean impact force less than or equal to what was observed for Frog B if the hypothesis that the true mean of Frog B's impact forces is equal to that of Frog C is true. You first translate all of the data of Frog B such that the mean is 0.55 N. This involves adding the mean force of Frog C and subtracting the mean force of Frog B from each measurement of Frog B. This leaves other properties of Frog B's distribution, such as the variance, unchanged.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Translate the impact forces of Frog B such that its mean is 0.55 N.
+Use your draw_bs_reps() function to take 10,000 bootstrap replicates of the mean of your translated forces.
+Compute the p-value by finding the fraction of your bootstrap replicates that are less than the observed mean impact force of Frog B. Note that the variable of interest here is force_b.
+Print your p-value.
+
+# Make an array of translated impact forces: translated_force_b
+translated_force_b = force_b - np.mean(force_b)+0.55
+
+# Take bootstrap replicates of Frog B's translated impact forces: bs_replicates
+bs_replicates = draw_bs_reps(translated_force_b, np.mean, 10000)
+
+# Compute fraction of replicates that are less than the observed Frog B force: p
+p = np.sum(bs_replicates <= np.mean(force_b)) / 10000
+
+# Print the p-value
+print('p = ', p)
+
+
+<script.py> output:
+    p =  0.0046
+    
+    
+  Great work! The low p-value suggests that the null hypothesis that Frog B and Frog C have the same mean impact force is false.
+  
+  __________________________________________________________________________________________________________________
+  
+  
+A two-sample bootstrap hypothesis test for difference of means
+We now want to test the hypothesis that Frog A and Frog B have the same mean impact force, but not necessarily the same distribution, which is also impossible with a permutation test.
+
+To do the two-sample bootstrap test, we shift both arrays to have the same mean, since we are simulating the hypothesis that their means are, in fact, equal. We then draw bootstrap samples out of the shifted arrays and compute the difference in means. This constitutes a bootstrap replicate, and we generate many of them. The p-value is the fraction of replicates with a difference in means greater than or equal to what was observed.
+
+The objects forces_concat and empirical_diff_means are already in your namespace.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Compute the mean of all forces (from forces_concat) using np.mean().
+Generate shifted data sets for both force_a and force_b such that the mean of each is the mean of the concatenated array of impact forces.
+Generate 10,000 bootstrap replicates of the mean each for the two shifted arrays.
+Compute the bootstrap replicates of the difference of means by subtracting the replicates of the shifted impact force of Frog B from those of Frog A.
+Compute and print the p-value from your bootstrap replicates.
 
 
 
+# Compute mean of all forces: mean_force
+mean_force = np.mean(forces_concat)
+
+# Generate shifted arrays
+force_a_shifted = force_a - np.mean(force_a) + mean_force
+force_b_shifted = force_b - np.mean(force_b) + mean_force
+
+# Compute 10,000 bootstrap replicates from shifted arrays
+bs_replicates_a = draw_bs_reps(force_a_shifted, np.mean, size=10000)
+bs_replicates_b = draw_bs_reps(force_b_shifted, np.mean, size=10000)
+
+# Get replicates of difference of means: bs_replicates
+bs_replicates = bs_replicates_a - bs_replicates_b
+
+# Compute and print p-value: p
+p = np.sum(bs_replicates >= empirical_diff_means) / len(bs_replicates)
+print('p-value =', p)
 
 
+script.py> output:
+    p-value = 0.0043
 
 
-
-
-
-
-
-
-
-
-
-
+Nice work! You got a similar result as when you did the permutation test. Nonetheless, remember that it is important to carefully think about what question you want to ask. Are you only interested in the mean impact force, or in the distribution of impact forces?
 
 
 ________________________________________________________________________________________________________________________
@@ -1103,6 +1167,23 @@ ________________________________________________________________________________
 Hypothesis test examples
 0%
 As you saw from the last chapter, hypothesis testing can be a bit tricky. You need to define the null hypothesis, figure out how to simulate it, and define clearly what it means to be "more extreme" in order to compute the p-value. Like any skill, practice makes perfect, and this chapter gives you some good practice with hypothesis tests.
+
+_____________________________________________________________________________________________________________________
+
+A/B testing
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ____________________________________________________________________________________________________________________

@@ -1,5 +1,5 @@
 ![alt text](
-       https://github.com/MMBazel/springboard-program/blob/master/small_logo.png?raw=true
+       https://github.com/MMBazel/springboard-program/blob/master/0.jpg
       )
 
 

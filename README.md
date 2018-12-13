@@ -105,4 +105,4 @@ story.
               related directly to the specialization of your choice.
 	      
 	      
-	      My Capstone Project: [Predicting Qualifieds from First Call](https://github.com/MMBazel/springboard-program/tree/master/capstone1)
+My Capstone Project: [Predicting Qualifieds from First Call](https://github.com/MMBazel/springboard-program/tree/master/capstone1)

@@ -42,6 +42,11 @@ Topics covered:
 * Data in databases: Get an overview of relational and NoSQL databases and practice data querying with SQL
 * APIs: Collect data from the internet using Application Programming Interfaces (APIs)
 
+Projects:
+* [Mini Project: SQL Practice](https://github.com/MMBazel/springboard-program/tree/master/mini-projects/Ch%205%20-%20Data%20Wrangling/5.3%20SQL%20Practice)
+
+
+
 ## 3. Data Story
 
 ## 4. Statistical Inference

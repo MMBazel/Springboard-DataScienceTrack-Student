@@ -103,3 +103,6 @@ story.
               more data or a different algorithm is needed to best solve the problem.
               If you choose one of our specialization tracks, your second capstone project will be
               related directly to the specialization of your choice.
+	      
+	      
+	      My Capstone Project: [Predicting Qualifieds from First Call](https://github.com/MMBazel/springboard-program/tree/master/capstone1)

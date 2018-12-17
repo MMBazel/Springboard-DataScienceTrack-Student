@@ -756,6 +756,110 @@ print("Root Mean Squared Error: {}".format(rmse))
   
 _____________________________________________________________________________________________________________________________________
 
+Cross-validation
+
+
+Cross-validation motivation
+● Model performance is dependent on way the data is split
+● Not representative of the model’s ability to generalize
+● Solution: Cross-validation!
+
+
+Cross-validation and model performance
+● 5 folds = 5-fold CV
+● 10 folds = 10-fold CV
+● k folds = k-fold CV
+● More folds = More computationally expensive
+
+
+Cross-validation in scikit-learn
+In [1]: from sklearn.model_selection import cross_val_score
+In [2]: reg = linear_model.LinearRegression()
+In [3]: cv_results = cross_val_score(reg, X, y, cv=5)
+In [4]: print(cv_results)
+[ 0.63919994 0.71386698 0.58702344 0.07923081 -0.25294154]
+In [5]: np.mean(cv_results)
+Out[5]: 0.35327592439587058
+
+_____________________________________________________________________________________________________________________________________
+
+
+5-fold cross-validation
+Cross-validation is a vital step in evaluating a model. It maximizes the amount of data that is used to train the model, as during the course of training, the model is not only trained, but also tested on all of the available data.
+
+In this exercise, you will practice 5-fold cross validation on the Gapminder data. By default, scikit-learn's cross_val_score() function uses R2 as the metric of choice for regression. Since you are performing 5-fold cross-validation, the function will return 5 scores. Your job is to compute these 5 scores and then take their average.
+
+The DataFrame has been loaded as df and split into the feature/target variable arrays X and y. The modules pandas and numpy have been imported as pd and np, respectively.
+
+Instructions
+100 XP
+Import LinearRegression from sklearn.linear_model and cross_val_score from sklearn.model_selection.
+Create a linear regression regressor called reg.
+Use the cross_val_score() function to perform 5-fold cross-validation on X and y.
+Compute and print the average cross-validation score. You can use NumPy's mean() function to compute the average.
+
+
+# Import the necessary modules
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import cross_val_score
+
+# Create a linear regression object: reg
+reg = LinearRegression()
+
+# Compute 5-fold cross-validation scores: cv_scores
+cv_scores = cross_val_score(reg,X,y, cv=5)
+
+# Print the 5-fold cross-validation scores
+print(cv_scores)
+
+print("Average 5-Fold CV Score: {}".format(np.mean(cv_scores)))
+
+
+<script.py> output:
+    [ 0.81720569  0.82917058  0.90214134  0.80633989  0.94495637]
+    Average 5-Fold CV Score: 0.8599627722793232
+_____________________________________________________________________________________________________________________________________
+
+
+K-Fold CV comparison
+Cross validation is essential but do not forget that the more folds you use, the more computationally expensive cross-validation becomes. In this exercise, you will explore this for yourself. Your job is to perform 3-fold cross-validation and then 10-fold cross-validation on the Gapminder dataset.
+
+In the IPython Shell, you can use %timeit to see how long each 3-fold CV takes compared to 10-fold CV by executing the following cv=3 and cv=10:
+
+%timeit cross_val_score(reg, X, y, cv = ____)
+pandas and numpy are available in the workspace as pd and np. The DataFrame has been loaded as df and the feature/target variable arrays X and y have been created.
+
+Instructions
+100 XP
+Import LinearRegression from sklearn.linear_model and cross_val_score from sklearn.model_selection.
+Create a linear regression regressor called reg.
+Perform 3-fold CV and then 10-fold CV. Compare the resulting mean scores.
+
+
+
+# Import necessary modules
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import cross_val_score 
+
+# Create a linear regression object: reg
+reg = LinearRegression()
+
+# Perform 3-fold CV
+cvscores_3 = cross_val_score(reg, X, y,cv=3)
+print(np.mean(cvscores_3))
+
+# Perform 10-fold CV
+cvscores_10 =cross_val_score(reg, X, y,cv=10)
+print(np.mean(cvscores_10))
+
+
+<script.py> output:
+    0.871871278262
+    0.843612862013
+    
+ Excellent! Did you use %timeit in the IPython Shell to see how much longer it takes 10-fold cross-validation to run compared to 3-fold cross-validation?   
+
+_____________________________________________________________________________________________________________________________________
 
 
 

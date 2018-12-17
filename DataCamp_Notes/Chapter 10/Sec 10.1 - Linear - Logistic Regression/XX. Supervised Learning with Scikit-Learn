@@ -1,0 +1,163 @@
+Supervised Learning with scikit-learn
+Course Description
+At the end of day, the value of Data Scientists rests on their ability to describe the world and to make predictions. Machine Learning is the field of teaching machines and computers to learn from existing data to make predictions on new data - will a given tumor be benign or malignant? Which of your customers will take their business elsewhere? Is a particular email spam or not? In this course, you'll learn how to use Python to perform supervised learning, an essential component of Machine Learning. You'll learn how to build predictive models, how to tune their parameters and how to tell how well they will perform on unseen data, all the while using real world datasets. You'll do so using scikit-learn, one of the most popular and user-friendly machine learning libraries for Python.
+_____________________________________________________________________________________________________________________________________
+
+1
+Classification
+
+In this chapter, you will be introduced to classification problems and learn how to solve them using supervised learning techniques. Classification problems are prevalent in a variety of domains, ranging from finance to healthcare. Here, you will have the chance to apply what you are learning to a political dataset, where you classify the party affiliation of United States Congressmen based on their voting records.
+
+
+What is machine learning?
+● The art and science of:
+			● Giving computers the ability to learn to make decisions from data
+			● … without being explicitly programmed!
+● Examples:
+			● Learning to predict whether an email is spam or not
+			● Clustering wikipedia entries into different categories
+● Supervised learning: Uses labeled data
+● Unsupervised learning: Uses unlabeled data
+
+
+Unsupervised learning
+● Uncovering hidden pa"erns from unlabeled data
+● Example:
+			● Grouping customers into distinct categories (Clustering)
+
+
+
+
+Reinforcement learning
+● So#ware agents interact with an environment
+			● Learn how to optimize their behavior
+			● Given a system of rewards and punishments
+			● Draws inspiration from behavioral psychology
+● Applications
+			● Economics
+			● Genetics
+			● Game playing
+● AlphaGo: First computer to defeat the world champion in Go
+
+
+Supervised learning
+● Predictor variables/features and a target variable
+● Aim: Predict the target variable, given the predictor variables
+			● Classification: Target variable consists of categories
+			● Regression: Target variable is continuous
+			
+			
+			
+Naming conventions
+● Features = predictor variables = independent variables
+● Target variable = dependent variable = response variable			
+			
+			
+	Supervised learning
+● Automate time-consuming or expensive manual tasks
+			● Example: Doctor’s diagnosis
+● Make predictions about the future
+			● Example: Will a customer click on an ad or not?
+● Need labeled data
+			● Historical data with labels
+			● Experiments to get labeled data
+			● Crowd-sourcing labeled data		
+	
+	
+	Supervised learning in Python
+● We will use scikit-learn/sklearn
+			● Integrates well with the SciPy stack
+● Other libraries
+			● TensorFlow
+			● keras
+	
+	_____________________________________________________________________________________________________________________________________
+	
+Exploratory data
+analysis
+
+The Iris dataset
+			● Features:
+						● Petal length
+						● Petal width
+						● Sepal length
+						● Sepal width
+			● Target variable: Species
+						● Versicolor
+						● Virginica
+						● Setosa
+	
+	
+	
+The Iris dataset in scikit-learn
+
+In [1]: from sklearn import datasets
+In [2]: import pandas as pd
+In [3]: import numpy as np
+In [4]: import matplotlib.pyplot as plt
+In [5]: plt.style.use('ggplot')
+In [6]: iris = datasets.load_iris()
+In [7]: type(iris)
+				Out[7]: sklearn.datasets.base.Bunch
+In [8]: print(iris.keys())
+dict_keys(['data', 'target_names', 'DESCR', 'feature_names', 'target'])
+In [9]: type(iris.data), type(iris.target)
+				Out[9]: (numpy.ndarray, numpy.ndarray)
+In [10]: iris.data.shape
+				Out[10]: (150, 4)
+In [11]: iris.target_names
+				Out[11]: array(['setosa', 'versicolor', 'virginica'], dtype='<U10')
+
+	
+	
+In [12]: X = iris.data
+In [13]: y = iris.target
+In [14]: df = pd.DataFrame(X, columns=iris.feature_names)
+In [15]: print(df.head())
+ sepal length (cm) sepal width (cm) petal length (cm) petal width (cm)
+0 5.1 3.5 1.4 0.2
+1 4.9 3.0 1.4 0.2
+2 4.7 3.2 1.3 0.2
+3 4.6 3.1 1.5 0.2
+4 5.0 3.6 1.4 0.2
+	
+In [16]: _ = pd.scatter_matrix(df, c = y, figsize = [8, 8],
+ ...: s=150, marker = 'D') 
+ 
+ 
+	
+	
+	
+	
+	
+	
+_____________________________________________________________________________________________________________________________________
+
+2
+Regression
+
+In the previous chapter, you made use of image and political datasets to predict binary as well as multiclass outcomes. But what if your problem requires a continuous outcome? Regression, which is the focus of this chapter, is best suited to solving such problems. You will learn about fundamental concepts in regression and apply them to predict the life expectancy in a given country using Gapminder data.
+
+
+
+_____________________________________________________________________________________________________________________________________
+
+3
+Fine-tuning your model
+
+Having trained your model, your next task is to evaluate its performance. What metrics can you use to gauge how good your model is? So far, you have used accuracy for classification and R-squared for regression. In this chapter, you will learn about some of the other metrics available in scikit-learn that will allow you to assess your model's performance in a more nuanced manner. You will then learn to optimize both your classification as well as regression models using hyperparameter tuning.
+
+
+
+
+
+_____________________________________________________________________________________________________________________________________
+
+4
+Preprocessing and pipelines
+
+This chapter will introduce the notion of pipelines and how scikit-learn allows for transformers and estimators to be chained together and used as a single unit. Pre-processing techniques will be then be introduced as a way to enhance model performance and pipelines will be the glue that ties together concepts in the prior chapters.
+
+
+
+

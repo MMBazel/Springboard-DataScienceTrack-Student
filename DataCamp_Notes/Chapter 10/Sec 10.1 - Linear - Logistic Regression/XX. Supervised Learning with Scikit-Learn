@@ -1759,7 +1759,201 @@ In [11]: ridge.score(X_test, y_test)
 _____________________________________________________________________________________________________________________________________
 
 
+Exploring categorical features
+The Gapminder dataset that you worked with in previous chapters also contained a categorical 'Region' feature, which we dropped in previous exercises since you did not have the tools to deal with it. Now however, you do, so we have added it back in!
+
+Your job in this exercise is to explore this feature. Boxplots are particularly useful for visualizing categorical features such as this.
+
+Instructions
+100 XP
+Import pandas as pd.
+Read the CSV file 'gapminder.csv' into a DataFrame called df.
+Use pandas to create a boxplot showing the variation of life expectancy ('life') by region ('Region'). To do so, pass the column names in to df.boxplot() (in that order).
 
 
+# Import pandas
+import pandas as pd
+
+# Read 'gapminder.csv' into a DataFrame: df
+df = pd.read_csv('gapminder.csv')
+
+# Create a boxplot of life expectancy per region
+df.boxplot('life', 'Region', rot=60)
+
+# Show the plot
+plt.show()
+
+_____________________________________________________________________________________________________________________________________
+
+Creating dummy variables
+As Andy discussed in the video, scikit-learn does not accept non-numerical features. You saw in the previous exercise that the 'Region' feature contains very useful information that can predict life expectancy. For example, Sub-Saharan Africa has a lower life expectancy compared to Europe and Central Asia. Therefore, if you are trying to predict life expectancy, it would be preferable to retain the 'Region' feature. To do this, you need to binarize it by creating dummy variables, which is what you will do in this exercise.
+
+Instructions
+100 XP
+Use the pandas get_dummies() function to create dummy variables from the df DataFrame. Store the result as df_region.
+Print the columns of df_region. This has been done for you.
+Use the get_dummies() function again, this time specifying drop_first=True to drop the unneeded dummy variable (in this case, 'Region_America').
+Hit 'Submit Answer to print the new columns of df_region and take note of how one column was dropped!
+
+
+# Create dummy variables: df_region
+df_region = pd.get_dummies(df)
+
+# Print the columns of df_region
+print(df_region.columns)
+
+# Create dummy variables with drop_first=True: df_region
+df_region = pd.get_dummies(df, drop_first=True)
+
+# Print the new columns of df_region
+print(df_region.columns)
+
+<script.py> output:
+    Index(['population', 'fertility', 'HIV', 'CO2', 'BMI_male', 'GDP',
+           'BMI_female', 'life', 'child_mortality', 'Region_America',
+           'Region_East Asia & Pacific', 'Region_Europe & Central Asia',
+           'Region_Middle East & North Africa', 'Region_South Asia',
+           'Region_Sub-Saharan Africa'],
+          dtype='object')
+    Index(['population', 'fertility', 'HIV', 'CO2', 'BMI_male', 'GDP',
+           'BMI_female', 'life', 'child_mortality', 'Region_East Asia & Pacific',
+           'Region_Europe & Central Asia', 'Region_Middle East & North Africa',
+           'Region_South Asia', 'Region_Sub-Saharan Africa'],
+          dtype='object')
+	  
+ _____________________________________________________________________________________________________________________________________
+	  
+	  
+	  
+Regression with categorical features
+Having created the dummy variables from the 'Region' feature, you can build regression models as you did before. Here, you'll use ridge regression to perform 5-fold cross-validation.
+
+The feature array X and target variable array y have been pre-loaded.
+
+Instructions
+100 XP
+Import Ridge from sklearn.linear_model and cross_val_score from sklearn.model_selection.
+Instantiate a ridge regressor called ridge with alpha=0.5 and normalize=True.
+Perform 5-fold cross-validation on X and y using the cross_val_score() function.
+Print the cross-validated scores.
+
+# Import necessary modules
+from sklearn.linear_model import Ridge
+from sklearn.model_selection import cross_val_score
+
+# Instantiate a ridge regressor: ridge
+ridge = Ridge(alpha=0.5, normalize=True)
+
+# Perform 5-fold cross-validation: ridge_cv
+ridge_cv = cross_val_score(ridge, X, y,cv=5)
+
+# Print the cross-validated scores
+print(ridge_cv)
+
+
+<script.py> output:
+    [ 0.86808336  0.80623545  0.84004203  0.7754344   0.87503712]
+    
+    ________________________________________________________________________________________________________________________
+    
+    
+   Handling missing
+data
+
+
+PIMA Indians dataset
+In [1]: df = pd.read_csv('diabetes.csv')
+In [2]: df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 768 entries, 0 to 767
+Data columns (total 9 columns):
+pregnancies 768 non-null int64
+glucose 768 non-null int64
+diastolic 768 non-null int64
+triceps 768 non-null int64
+insulin 768 non-null int64
+bmi 768 non-null float64
+dpf 768 non-null float64
+age 768 non-null int64
+diabetes 768 non-null int64
+dtypes: float64(2), int64(7)
+memory usage: 54.1 KB
+None
+
+
+PIMA Indians dataset
+In [3]: print(df.head())
+ pregnancies glucose diastolic triceps insulin bmi dpf age \
+0 6 148 72 35 0 33.6 0.627 50
+1 1 85 66 29 0 26.6 0.351 31
+2 8 183 64 0 0 23.3 0.672 32
+3 1 89 66 23 94 28.1 0.167 21
+4 0 137 40 35 168 43.1 2.288 33
+ diabetes
+0 1
+1 0
+2 1
+3 0
+4 1 
+
+
+
+
+Dropping missing data
+In [8]: df.insulin.replace(0, np.nan, inplace=True)
+In [9]: df.triceps.replace(0, np.nan, inplace=True)
+In [10]: df.bmi.replace(0, np.nan, inplace=True)
+In [11]: df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 768 entries, 0 to 767
+Data columns (total 9 columns):
+pregnancies 768 non-null int64
+glucose 768 non-null int64
+diastolic 768 non-null int64
+triceps 541 non-null float64
+insulin 394 non-null float64
+bmi 757 non-null float64
+dpf 768 non-null float64
+age 768 non-null int64
+diabetes 768 non-null int64
+dtypes: float64(4), int64(5)
+memory usage: 54.1 KB
+
+Dropping missing data
+In [12]: df = df.dropna()
+In [13]: df.shape
+Out[13]: (393, 9)
+
+
+
+Imputing missing data
+In [1]: from sklearn.preprocessing import Imputer
+In [2]: imp = Imputer(missing_values='NaN', strategy='mean', axis=0)
+In [3]: imp.fit(X)
+In [4]: X = imp.transform(X)
+● Making an educated guess about the missing values
+● Example: Using the mean of the non-missing entries
+
+
+
+
+
+Imputing within a pipeline
+In [1]: from sklearn.pipeline import Pipeline
+In [2]: from sklearn.preprocessing import Imputer
+In [3]: imp = Imputer(missing_values='NaN', strategy='mean', axis=0)
+In [4]: logreg = LogisticRegression()
+In [5]: steps = [('imputation', imp),
+ ...: ('logistic_regression', logreg)]
+In [6]: pipeline = Pipeline(steps)
+In [7]: X_train, X_test, y_train, y_test = train_test_split(X, y,
+ ...: test_size=0.3, random_state=42) 
+ In [8]: pipeline.fit(X_train, y_train)
+In [9]: y_pred = pipeline.predict(X_test)
+In [10]: pipeline.score(X_test, y_test)
+Out[10]: 0.75324675324675328
+
+
+	  
 
 

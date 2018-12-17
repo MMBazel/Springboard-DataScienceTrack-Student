@@ -1168,7 +1168,290 @@ print(classification_report(y_test, y_pred))
 
 Excellent work! By analyzing the confusion matrix and classification report, you can get a much better understanding of your classifier's performance.
 
+_____________________________________________________________________________________________________________________________________
 
+Logistic regression
+and the ROC curve
+
+
+
+Logistic regression for binary classification
+● Logistic regression outputs probabilities
+● If the probability ‘p’ is greater than 0.5:
+		● The data is labeled ‘1’
+● If the probability ‘p’ is less than 0.5:
+		● The data is labeled ‘0’ 
+
+
+
+Logistic regression in scikit-learn
+In [1]: from sklearn.linear_model import LogisticRegression
+In [2]: from sklearn.model_selection import train_test_split
+In [3]: logreg = LogisticRegression()
+In [4]: X_train, X_test, y_train, y_test = train_test_split(X, y,
+ ...: test_size=0.4, random_state=42)
+In [5]: logreg.fit(X_train, y_train)
+In [6]: y_pred = logreg.predict(X_test)
+
+
+
+
+Probability thresholds
+● By default, logistic regression threshold = 0.5
+● Not specific to logistic regression
+		● k-NN classifiers also have thresholds
+● What happens if we vary the threshold?
+
+
+
+Plo!ing the ROC curve
+In [1]: from sklearn.metrics import roc_curve
+In [2]: y_pred_prob = logreg.predict_proba(X_test)[:,1]
+In [3]: fpr, tpr, thresholds = roc_curve(y_test, y_pred_prob)
+In [4]: plt.plot([0, 1], [0, 1], 'k--')
+In [5]: plt.plot(fpr, tpr, label='Logistic Regression')
+In [6]: plt.xlabel('False Positive Rate’)
+In [7]: plt.ylabel('True Positive Rate')
+In [8]: plt.title('Logistic Regression ROC Curve')
+In [9]: plt.show();
+
+
+
+
+Plo!ing the ROC curve
+logreg.predict_proba(X_test)[:,1]
+
+_____________________________________________________________________________________________________________________________________
+
+Building a logistic regression model
+Time to build your first logistic regression model! As Hugo showed in the video, scikit-learn makes it very easy to try different models, since the Train-Test-Split/Instantiate/Fit/Predict paradigm applies to all classifiers and regressors - which are known in scikit-learn as 'estimators'. You'll see this now for yourself as you train a logistic regression model on exactly the same data as in the previous exercise. Will it outperform k-NN? There's only one way to find out!
+
+The feature and target variable arrays X and y have been pre-loaded, and train_test_split has been imported for you from sklearn.model_selection.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import:
+LogisticRegression from sklearn.linear_model.
+confusion_matrix and classification_report from sklearn.metrics.
+Create training and test sets with 40% (or 0.4) of the data used for testing. Use a random state of 42. This has been done for you.
+Instantiate a LogisticRegression classifier called logreg.
+Fit the classifier to the training data and predict the labels of the test set.
+Compute and print the confusion matrix and classification report. This has been done for you, so hit 'Submit Answer' to see how logistic regression compares to k-NN!
+
+
+# Import the necessary modules
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, classification_report
+
+# Create training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.4, random_state=42)
+
+# Create the classifier: logreg
+logreg = LogisticRegression()
+
+# Fit the classifier to the training data
+logreg.fit(X_train, y_train)
+
+# Predict the labels of the test set: y_pred
+y_pred = logreg.predict(X_test)
+
+# Compute and print the confusion matrix and classification report
+print(confusion_matrix(y_test, y_pred))
+print(classification_report(y_test, y_pred))
+
+
+
+<script.py> output:
+    [[176  30]
+     [ 35  67]]
+                 precision    recall  f1-score   support
+    
+              0       0.83      0.85      0.84       206
+              1       0.69      0.66      0.67       102
+    
+    avg / total       0.79      0.79      0.79       308
+
+
+
+You now know how to use logistic regression for binary classification - great work! Logistic regression is used in a variety of machine learning applications and will become a vital part of your data science toolbox.
+
+_____________________________________________________________________________________________________________________________________
+
+Plotting an ROC curve
+Great job in the previous exercise - you now have a new addition to your toolbox of classifiers!
+
+Classification reports and confusion matrices are great methods to quantitatively evaluate model performance, while ROC curves provide a way to visually evaluate models. As Hugo demonstrated in the video, most classifiers in scikit-learn have a .predict_proba() method which returns the probability of a given sample being in a particular class. Having built a logistic regression model, you'll now evaluate its performance by plotting an ROC curve. In doing so, you'll make use of the .predict_proba() method and become familiar with its functionality.
+
+Here, you'll continue working with the PIMA Indians diabetes dataset. The classifier has already been fit to the training data and is available as logreg.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import roc_curve from sklearn.metrics.
+Using the logreg classifier, which has been fit to the training data, compute the predicted probabilities of the labels of the test set X_test. Save the result as y_pred_prob.
+Use the roc_curve() function with y_test and y_pred_prob and unpack the result into the variables fpr, tpr, and thresholds.
+Plot the ROC curve with fpr on the x-axis and tpr on the y-axis.
+
+
+# Import necessary modules
+from sklearn.metrics import roc_curve
+
+# Compute predicted probabilities: y_pred_prob
+y_pred_prob = logreg.predict_proba(X_test)[:,1]
+
+# Generate ROC curve values: fpr, tpr, thresholds
+fpr, tpr, thresholds = roc_curve(y_test, y_pred_prob)
+
+# Plot ROC curve
+plt.plot([0, 1], [0, 1], 'k--')
+plt.plot(fpr, tpr, label='Logistic Regression')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve')
+plt.show()
+
+
+_____________________________________________________________________________________________________________________________________
+
+
+Precision-recall Curve
+When looking at your ROC curve, you may have noticed that the y-axis (True positive rate) is also known as recall. Indeed, in addition to the ROC curve, there are other ways to visually evaluate model performance. One such way is the precision-recall curve, which is generated by plotting the precision and recall for different thresholds. As a reminder, precision and recall are defined as:
+
+Precision=TPTP+FP
+Recall=TPTP+FN
+On the right, a precision-recall curve has been generated for the diabetes dataset. The classification report and confusion matrix are displayed in the IPython Shell.
+
+Study the precision-recall curve and then consider the statements given below. Choose the one statement that is not true. Note that here, the class is positive (1) if the individual has diabetes.
+
+
+Precision-recall Curve
+When looking at your ROC curve, you may have noticed that the y-axis (True positive rate) is also known as recall. Indeed, in addition to the ROC curve, there are other ways to visually evaluate model performance. One such way is the precision-recall curve, which is generated by plotting the precision and recall for different thresholds. As a reminder, precision and recall are defined as:
+
+Precision=TPTP+FP
+Recall=TPTP+FN
+On the right, a precision-recall curve has been generated for the diabetes dataset. The classification report and confusion matrix are displayed in the IPython Shell.
+
+Study the precision-recall curve and then consider the statements given below. Choose the one statement that is not true. Note that here, the class is positive (1) if the individual has diabetes.
+
+
+Possible Answers
+A recall of 1 corresponds to a classifier with a low threshold in which all females who contract diabetes were correctly classified as such, at the expense of many misclassifications of those who did not have diabetes.
+
+Precision is undefined for a classifier which makes no positive predictions, that is, classifies everyone as not having diabetes.
+
+When the threshold is very close to 1, precision is also 1, because the classifier is absolutely certain about its predictions.
+
+[!!!THIS IS INCORRECT!!!] Precision and recall take true negatives into consideration.
+_____________________________________________________________________________________________________________________________________
+
+Area under
+the ROC curve
+
+
+Area under the ROC curve (AUC)
+● Larger area under the ROC curve = be!er model
+
+
+
+
+AUC in scikit-learn
+In [1]: from sklearn.metrics import roc_auc_score
+In [2]: logreg = LogisticRegression()
+In [3]: X_train, X_test, y_train, y_test = train_test_split(X, y,
+ ...: test_size=0.4, random_state=42)
+In [4]: logreg.fit(X_train, y_train)
+In [5]: y_pred_prob = logreg.predict_proba(X_test)[:,1]
+In [6]: roc_auc_score(y_test, y_pred_prob)
+Out[6]: 0.997466216216
+
+
+
+AUC using cross-validation
+In [7]: from sklearn.model_selection import cross_val_score
+In [8]: cv_scores = cross_val_score(logreg, X, y, cv=5,
+ ...: scoring='roc_auc')
+In [9]: print(cv_scores)
+[ 0.99673203 0.99183007 0.99583796 1. 0.96140652]
+_____________________________________________________________________________________________________________________________________
+
+
+AUC computation
+Say you have a binary classifier that in fact is just randomly making guesses. It would be correct approximately 50% of the time, and the resulting ROC curve would be a diagonal line in which the True Positive Rate and False Positive Rate are always equal. The Area under this ROC curve would be 0.5. This is one way in which the AUC, which Hugo discussed in the video, is an informative metric to evaluate a model. If the AUC is greater than 0.5, the model is better than random guessing. Always a good sign!
+
+In this exercise, you'll calculate AUC scores using the roc_auc_score() function from sklearn.metrics as well as by performing cross-validation on the diabetes dataset.
+
+X and y, along with training and test sets X_train, X_test, y_train, y_test, have been pre-loaded for you, and a logistic regression classifier logreg has been fit to the training data.
+
+Instructions
+100 XP
+Import roc_auc_score from sklearn.metrics and cross_val_score from sklearn.model_selection.
+Using the logreg classifier, which has been fit to the training data, compute the predicted probabilities of the labels of the test set X_test. Save the result as y_pred_prob.
+Compute the AUC score using the roc_auc_score() function, the test set labels y_test, and the predicted probabilities y_pred_prob.
+Compute the AUC scores by performing 5-fold cross-validation. Use the cross_val_score() function and specify the scoring parameter to be 'roc_auc'.
+
+# Import necessary modules
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import roc_auc_score
+
+# Compute predicted probabilities: y_pred_prob
+y_pred_prob = logreg.predict_proba(X_test)[:,1]
+
+# Compute and print AUC score
+print("AUC: {}".format(roc_auc_score(y_test, y_pred_prob)))
+
+# Compute cross-validated AUC scores: cv_auc
+cv_auc = cross_val_score(logreg, X, y, cv=5, scoring='roc_auc')
+
+# Print list of AUC scores
+print("AUC scores computed using 5-fold cross-validation: {}".format(cv_auc))
+
+
+<script.py> output:
+    AUC: 0.8254806777079764
+    AUC scores computed using 5-fold cross-validation: [ 0.80148148  0.8062963   0.81481481  0.86245283  0.8554717 ]
+    
+    
+ _____________________________________________________________________________________________________________________________________
+ 
+ Hyperparameter
+tuning
+
+
+Hyperparameter tuning
+● Linear regression: Choosing parameters
+● Ridge/lasso regression: Choosing alpha
+● k-Nearest Neighbors: Choosing n_neighbors
+● Parameters like alpha and k: Hyperparameters
+● Hyperparameters cannot be learned by fi!ing the model
+
+
+    
+Choosing the correct hyperparameter
+● Try a bunch of different hyperparameter values
+● Fit all of them separately
+● See how well each performs
+● Choose the best performing one
+● It is essential to use cross-validation
+
+
+
+Grid search cross-validation
+
+
+
+GridSearchCV in scikit-learn
+In [1]: from sklearn.model_selection import GridSearchCV
+In [2]: param_grid = {'n_neighbors': np.arange(1, 50)}
+In [3]: knn = KNeighborsClassifier()
+In [4]: knn_cv = GridSearchCV(knn, param_grid, cv=5)
+In [5]: knn_cv.fit(X, y)
+In [6]: knn_cv.best_params_
+Out[6]: {'n_neighbors': 12}
+In [7]: knn_cv.best_score_
+Out[7]: 0.933216168717
 
 
 

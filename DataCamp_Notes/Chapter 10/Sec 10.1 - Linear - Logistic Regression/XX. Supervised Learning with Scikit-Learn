@@ -489,14 +489,6 @@ Use KNeighborsClassifier() to instantiate the classifier and specify the number 
 Use the .fit() method with X_train and y_train as arguments to fit the classifier to the training data.
 Use the .score() method on knn with X_train and y_train as arguments to compute the training set accuracy and then with X_test and y_test as arguments to compute the test set accuracy.
 
-_____________________________________________________________________________________________________________________________________
-
-
-
-
-
-
-
 
 _____________________________________________________________________________________________________________________________________
 
@@ -505,8 +497,276 @@ Regression
 
 In the previous chapter, you made use of image and political datasets to predict binary as well as multiclass outcomes. But what if your problem requires a continuous outcome? Regression, which is the focus of this chapter, is best suited to solving such problems. You will learn about fundamental concepts in regression and apply them to predict the life expectancy in a given country using Gapminder data.
 
+_____________________________________________________________________________________________________________________________________
+
+Introduction to
+regression
 
 
+
+Boston Housing Data
+In [1]: boston = pd.read_csv('boston.csv')
+In [2]: print(boston.head())
+ CRIM ZN INDUS CHAS NX RM AGE DIS RAD TAX \
+0 0.00632 18.0 2.31 0 0.538 6.575 65.2 4.0900 1 296.0
+1 0.02731 0.0 7.07 0 0.469 6.421 78.9 4.9671 2 242.0
+2 0.02729 0.0 7.07 0 0.469 7.185 61.1 4.9671 2 242.0
+3 0.03237 0.0 2.18 0 0.458 6.998 45.8 6.0622 3 222.0
+4 0.06905 0.0 2.18 0 0.458 7.147 54.2 6.0622 3 222.0
+ PTRATIO B LSTAT MEDV
+0 15.3 396.90 4.98 24.0
+1 17.8 396.90 9.14 21.6
+2 17.8 392.83 4.03 34.7
+3 18.7 394.63 2.94 33.4
+4 18.7 396.90 5.33 36.2 
+
+
+
+
+Creating feature and target arrays
+In [3]: X = boston.drop('MEDV', axis=1).values
+In [4]: y = boston['MEDV'].values
+
+
+
+Predicting house value from a single feature
+In [5]: X_rooms = X[:,5]
+In [6]: type(X_rooms), type(y)
+Out[6]: (numpy.ndarray, numpy.ndarray)
+In [7]: y = y.reshape(-1, 1)
+In [8]: X_rooms = X_rooms.reshape(-1, 1)
+
+
+
+Plo!ing house value vs. number of rooms
+In [9]: plt.scatter(X_rooms, y)
+In [10]: plt.ylabel('Value of house /1000 ($)')
+In [11]: plt.xlabel('Number of rooms')
+In [12]: plt.show();
+
+
+Fi!ing a regression model
+In [13]: import numpy as np
+In [14]: from sklearn import linear_model
+In [15]: reg = linear_model.LinearRegression()
+In [16]: reg.fit(X_rooms, y)
+In [17]: prediction_space = np.linspace(min(X_rooms),
+ ...: max(X_rooms)).reshape(-1, 1)
+In [18]: plt.scatter(X_rooms, y, color='blue')
+In [19]: plt.plot(prediction_space, reg.predict(prediction_space),
+ ...: color='black', linewidth=3)
+In [20]: plt.show()
+
+_____________________________________________________________________________________________________________________________________
+
+Importing data for supervised learning
+In this chapter, you will work with Gapminder data that we have consolidated into one CSV file available in the workspace as 'gapminder.csv'. Specifically, your goal will be to use this data to predict the life expectancy in a given country based on features such as the country's GDP, fertility rate, and population. As in Chapter 1, the dataset has been preprocessed.
+
+Since the target variable here is quantitative, this is a regression problem. To begin, you will fit a linear regression with just one feature: 'fertility', which is the average number of children a woman in a given country gives birth to. In later exercises, you will use all the features to build regression models.
+
+Before that, however, you need to import the data and get it into the form needed by scikit-learn. This involves creating feature and target variable arrays. Furthermore, since you are going to use only one feature to begin with, you need to do some reshaping using NumPy's .reshape() method. Don't worry too much about this reshaping right now, but it is something you will have to do occasionally when working with scikit-learn so it is useful to practice.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import numpy and pandas as their standard aliases.
+Read the file 'gapminder.csv' into a DataFrame df using the read_csv() function.
+Create array X for the 'fertility' feature and array y for the 'life' target variable.
+Reshape the arrays by using the .reshape() method and passing in -1 and 1.
+
+
+# Import numpy and pandas
+import numpy as np
+import pandas as pd
+
+# Read the CSV file into a DataFrame: df
+df = pd.read_csv('gapminder.csv')
+
+# Create arrays for features and target variable
+y = df['life'].values
+X = df['fertility'].values
+
+# Print the dimensions of X and y before reshaping
+print("Dimensions of y before reshaping: {}".format(y.shape))
+print("Dimensions of X before reshaping: {}".format(X.shape))
+
+# Reshape X and y
+y = y.reshape(-1,1)
+X = X.reshape(-1,1)
+
+# Print the dimensions of X and y after reshaping
+print("Dimensions of y after reshaping: {}".format(y.shape))
+print("Dimensions of X after reshaping: {}".format(X.shape))
+
+<script.py> output:
+    Dimensions of y before reshaping: (139,)
+    Dimensions of X before reshaping: (139,)
+    Dimensions of y after reshaping: (139, 1)
+    Dimensions of X after reshaping: (139, 1)
+
+Great work! Notice the differences in shape before and after applying the .reshape() method. Getting the feature and target variable arrays into the right format for scikit-learn is an important precursor to model building.
+
+_____________________________________________________________________________________________________________________________________
+
+Exploring the Gapminder data
+As always, it is important to explore your data before building models. On the right, we have constructed a heatmap showing the correlation between the different features of the Gapminder dataset, which has been pre-loaded into a DataFrame as df and is available for exploration in the IPython Shell. Cells that are in green show positive correlation, while cells that are in red show negative correlation. Take a moment to explore this: Which features are positively correlated with life, and which ones are negatively correlated? Does this match your intuition?
+
+Then, in the IPython Shell, explore the DataFrame using pandas methods such as .info(), .describe(), .head().
+
+In case you are curious, the heatmap was generated using Seaborn's heatmap function and the following line of code, where df.corr() computes the pairwise correlation between columns:
+
+sns.heatmap(df.corr(), square=True, cmap='RdYlGn')
+
+Once you have a feel for the data, consider the statements below and select the one that is not true. After this, Hugo will explain the mechanics of linear regression in the next video and you will be on your way building regression models!
+
+
+_____________________________________________________________________________________________________________________________________
+
+The basics of
+linear regression
+
+
+Regression mechanics
+● y = ax + b
+		● y = target
+		● x = single feature
+		● a, b = parameters of model
+● How do we choose a and b?
+● Define an error function for any given line
+		● Choose the line that minimizes the error function
+
+
+
+
+The loss function
+● Ordinary least squares (OLS): Minimize sum of squares of
+residuals
+
+
+Linear regression in higher dimensions
+y = a1x1 + a2x2 + b
+● To fit a linear regression model here:
+	● Need to specify 3 variables
+● In higher dimensions:
+y = a1x1 + a2x2 + a3x3 + anxn + b
+	● Must specify coefficient for each feature and the variable b
+● Scikit-learn API works exactly the same way:
+	● Pass two arrays: Features, and target
+	
+	
+	
+Linear regression on all features
+In [1]: from sklearn.model_selection import train_test_split
+In [2]: X_train, X_test, y_train, y_test = train_test_split(X, y,
+ ...: test_size = 0.3, random_state=42)
+In [3]: reg_all = linear_model.LinearRegression()
+In [4]: reg_all.fit(X_train, y_train)
+In [5]: y_pred = reg_all.predict(X_test)
+In [6]: reg_all.score(X_test, y_test)
+Out[6]: 0.71122600574849526
+	
+_____________________________________________________________________________________________________________________________________
+
+Fit & predict for regression
+Now, you will fit a linear regression and predict life expectancy using just one feature. You saw Andy do this earlier using the 'RM' feature of the Boston housing dataset. In this exercise, you will use the 'fertility' feature of the Gapminder dataset. Since the goal is to predict life expectancy, the target variable here is 'life'. The array for the target variable has been pre-loaded as y and the array for 'fertility' has been pre-loaded as X_fertility.
+
+A scatter plot with 'fertility' on the x-axis and 'life' on the y-axis has been generated. As you can see, there is a strongly negative correlation, so a linear regression should be able to capture this trend. Your job is to fit a linear regression and then predict the life expectancy, overlaying these predicted values on the plot to generate a regression line. You will also compute and print the R2 score using sckit-learn's .score() method.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import LinearRegression from sklearn.linear_model.
+Create a LinearRegression regressor called reg.
+Set up the prediction space to range from the minimum to the maximum of X_fertility. This has been done for you.
+Fit the regressor to the data (X_fertility and y) and compute its predictions using the .predict() method and the prediction_space array.
+Compute and print the R2 score using the .score() method.
+Overlay the plot with your linear regression line. This has been done for you, so hit 'Submit Answer' to see the result!
+
+
+# Import LinearRegression
+from sklearn.linear_model import LinearRegression
+
+# Create the regressor: reg
+reg = LinearRegression()
+
+# Create the prediction space
+prediction_space = np.linspace(min(X_fertility), max(X_fertility)).reshape(-1,1)
+
+# Fit the model to the data
+reg.fit(X_fertility, y)
+
+# Compute predictions over the prediction space: y_pred
+y_pred = reg.predict(prediction_space)
+
+# Print R^2 
+print(reg.score(X_fertility, y))
+
+# Plot regression line
+plt.plot(prediction_space, y_pred, color='black', linewidth=3)
+plt.show()
+
+_________________________________________________________________________________________________________________________
+
+Train/test split for regression
+As you learned in Chapter 1, train and test sets are vital to ensure that your supervised learning model is able to generalize well to new data. This was true for classification models, and is equally true for linear regression models.
+
+In this exercise, you will split the Gapminder dataset into training and testing sets, and then fit and predict a linear regression over all features. In addition to computing the R2 score, you will also compute the Root Mean Squared Error (RMSE), which is another commonly used metric to evaluate regression models. The feature array X and target variable array y have been pre-loaded for you from the DataFrame df.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import LinearRegression from sklearn.linear_model, mean_squared_error from sklearn.metrics, and train_test_split from sklearn.model_selection.
+Using X and y, create training and test sets such that 30% is used for testing and 70% for training. Use a random state of 42.
+Create a linear regression regressor called reg_all, fit it to the training set, and evaluate it on the test set.
+Compute and print the R2 score using the .score() method on the test set.
+Compute and print the RMSE. To do this, first compute the Mean Squared Error using the mean_squared_error() function with the arguments y_test and y_pred, and then take its square root using np.sqrt().
+
+
+# Import necessary modules
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import train_test_split
+
+# Create training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state=42)
+
+# Create the regressor: reg_all
+reg_all = LinearRegression()
+
+# Fit the regressor to the training data
+reg_all.fit(X_train, y_train)
+
+# Predict on the test data: y_pred
+y_pred = reg_all.predict(X_test)
+
+# Compute and print R^2 and RMSE
+print("R^2: {}".format(reg_all.score(X_test, y_test)))
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+print("Root Mean Squared Error: {}".format(rmse))
+
+
+<script.py> output:
+    R^2: 0.838046873142936
+    Root Mean Squared Error: 3.2476010800377213
+    
+  Excellent! Using all features has improved the model score. This makes sense, as the model has more information to learn from. However, there is one potential pitfall to this process. Can you spot it? You'll learn about this as well how to better validate your models in the next video!
+  
+_____________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+	
+	
+	
 _____________________________________________________________________________________________________________________________________
 
 3

@@ -1690,4 +1690,76 @@ This chapter will introduce the notion of pipelines and how scikit-learn allows 
 
 
 
+Preprocessing data
+Dealing with categorical features
+● Scikit-learn will not accept categorical features by default
+● Need to encode categorical features numerically
+● Convert to ‘dummy variables’
+	● 0: Observation was NOT that category
+	● 1: Observation was that category
+
+
+
+Dealing with categorical features in Python
+● scikit-learn: OneHotEncoder()
+● pandas: get_dummies()
+
+
+Automobile dataset
+● mpg: Target Variable
+● Origin: Categorical Feature
+
+
+
+Encoding dummy variables
+In [1]: import pandas as pd
+In [2]: df = pd.read_csv('auto.csv')
+In [3]: df_origin = pd.get_dummies(df)
+In [4]: print(df_origin.head())
+ mpg displ hp weight accel size origin_Asia origin_Europe \
+0 18.0 250.0 88 3139 14.5 15.0 0 0
+1 9.0 304.0 193 4732 18.5 20.0 0 0
+2 36.1 91.0 60 1800 16.4 10.0 1 0
+3 18.5 250.0 98 3525 19.0 15.0 0 0
+4 34.3 97.0 78 2188 15.8 10.0 0 1
+ origin_US
+0 1
+1 1
+2 0
+3 1
+4 0 
+
+
+
+
+Encoding dummy variables
+In [5]: df_origin = df_origin.drop('origin_Asia', axis=1)
+In [6]: print(df_origin.head())
+ mpg displ hp weight accel size origin_Europe origin_US
+0 18.0 250.0 88 3139 14.5 15.0 0 1
+1 9.0 304.0 193 4732 18.5 20.0 0 1
+2 36.1 91.0 60 1800 16.4 10.0 0 0
+3 18.5 250.0 98 3525 19.0 15.0 0 1
+4 34.3 97.0 78 2188 15.8 10.0 1 0
+
+
+
+Linear regression with dummy variables
+In [7]: from sklearn.model_selection import train_test_split
+In [8]: from sklearn.linear_model import Ridge
+In [9]: X_train, X_test, y_train, y_test = train_test_split(X, y,
+ ...: test_size=0.3, random_state=42)
+In [10]: ridge = Ridge(alpha=0.5, normalize=True).fit(X_train,
+ ...: y_train)
+In [11]: ridge.score(X_test, y_test)
+			Out[11]: 0.719064519022
+
+
+
+_____________________________________________________________________________________________________________________________________
+
+
+
+
+
 

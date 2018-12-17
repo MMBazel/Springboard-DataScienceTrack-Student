@@ -863,13 +863,199 @@ ________________________________________________________________________________
 
 
 
+Regularized
+regression
 
 
 
+Why regularize?
+● Recall: Linear regression minimizes a loss function
+● It chooses a coefficient for each feature variable
+● Large coefficients can lead to overfi"ing
+● Penalizing large coefficients: Regularization
 
+
+
+Ridge regression
+● Loss function = OLS loss function + α ∗
+!
+n
+i=1
+a2
+i
+● Alpha: Parameter we need to choose
+● Picking alpha here is similar to picking k in k-NN
+● Hyperparameter tuning (More in Chapter 3)
+● Alpha controls model complexity
+	● Alpha = 0: We get back OLS (Can lead to overfi"ing)
+	● Very high alpha: Can lead to underfi"ing
+
+
+
+Ridge regression in scikit-learn
+In [1]: from sklearn.linear_model import Ridge
+In [2]: X_train, X_test, y_train, y_test = train_test_split(X, y,
+ ...: test_size = 0.3, random_state=42)
+In [3]: ridge = Ridge(alpha=0.1, normalize=True)
+In [4]: ridge.fit(X_train, y_train)
+In [5]: ridge_pred = ridge.predict(X_test)
+In [6]: ridge.score(X_test, y_test)
+Out[6]: 0.69969382751273179
 
 	
 	
+	
+Lasso regression
+● Loss function = OLS loss function + α ∗
+!
+n
+i=1
+|ai|
+
+
+Lasso regression in scikit-learn
+In [1]: from sklearn.linear_model import Lasso
+In [2]: X_train, X_test, y_train, y_test = train_test_split(X, y,
+ ...: test_size = 0.3, random_state=42)
+In [3]: lasso = Lasso(alpha=0.1, normalize=True)
+In [4]: lasso.fit(X_train, y_train)
+In [5]: lasso_pred = lasso.predict(X_test)
+In [6]: lasso.score(X_test, y_test)
+Out[6]: 0.59502295353285506
+
+
+Lasso regression for feature selection
+● Can be used to select important features of a dataset
+● Shrinks the coefficients of less important features to exactly 0
+
+
+Lasso for feature selection in scikit-learn
+In [1]: from sklearn.linear_model import Lasso
+In [2]: names = boston.drop('MEDV', axis=1).columns
+In [3]: lasso = Lasso(alpha=0.1)
+In [4]: lasso_coef = lasso.fit(X, y).coef_
+In [5]: _ = plt.plot(range(len(names)), lasso_coef)
+In [6]: _ = plt.xticks(range(len(names)), names, rotation=60)
+In [7]: _ = plt.ylabel('Coefficients')
+In [8]: plt.show()
+
+_____________________________________________________________________________________________________________________________________
+
+
+Regularization I: Lasso
+In the video, you saw how Lasso selected out the 'RM' feature as being the most important for predicting Boston house prices, while shrinking the coefficients of certain other features to 0. Its ability to perform feature selection in this way becomes even more useful when you are dealing with data involving thousands of features.
+
+In this exercise, you will fit a lasso regression to the Gapminder data you have been working with and plot the coefficients. Just as with the Boston data, you will find that the coefficients of some features are shrunk to 0, with only the most important ones remaining.
+
+The feature and target variable arrays have been pre-loaded as X and y.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import Lasso from sklearn.linear_model.
+Instantiate a Lasso regressor with an alpha of 0.4 and specify normalize=True.
+Fit the regressor to the data and compute the coefficients using the coef_ attribute.
+Plot the coefficients on the y-axis and column names on the x-axis. This has been done for you, so hit 'Submit Answer' to view the plot!
+
+
+
+# Import Lasso
+from sklearn.linear_model import Lasso
+
+# Instantiate a lasso regressor: lasso
+lasso = Lasso(alpha=0.4,normalize=True)
+
+# Fit the regressor to the data
+lasso.fit(X,y)
+
+# Compute and print the coefficients
+lasso_coef = lasso.coef_
+print(lasso_coef)
+
+# Plot the coefficients
+plt.plot(range(len(df_columns)), lasso_coef)
+plt.xticks(range(len(df_columns)), df_columns.values, rotation=60)
+plt.margins(0.02)
+plt.show()
+
+
+<script.py> output:
+    [-0.         -0.         -0.          0.          0.          0.         -0.
+     -0.07087587]
+
+
+
+Great work! According to the lasso algorithm, it seems like 'child_mortality' is the most important feature when predicting life expectancy.
+_____________________________________________________________________________________________________________________________________
+
+
+Regularization II: Ridge
+Lasso is great for feature selection, but when building regression models, Ridge regression should be your first choice.
+
+Recall that lasso performs regularization by adding to the loss function a penalty term of the absolute value of each coefficient multiplied by some alpha. This is also known as L1 regularization because the regularization term is the L1 norm of the coefficients. This is not the only way to regularize, however.
+
+If instead you took the sum of the squared values of the coefficients multiplied by some alpha - like in Ridge regression - you would be computing the L2 norm. In this exercise, you will practice fitting ridge regression models over a range of different alphas, and plot cross-validated R2 scores for each, using this function that we have defined for you, which plots the R2 score as well as standard error for each alpha:
+
+def display_plot(cv_scores, cv_scores_std):
+    fig = plt.figure()
+    ax = fig.add_subplot(1,1,1)
+    ax.plot(alpha_space, cv_scores)
+
+    std_error = cv_scores_std / np.sqrt(10)
+
+    ax.fill_between(alpha_space, cv_scores + std_error, cv_scores - std_error, alpha=0.2)
+    ax.set_ylabel('CV Score +/- Std Error')
+    ax.set_xlabel('Alpha')
+    ax.axhline(np.max(cv_scores), linestyle='--', color='.5')
+    ax.set_xlim([alpha_space[0], alpha_space[-1]])
+    ax.set_xscale('log')
+    plt.show()
+Don't worry about the specifics of the above function works. The motivation behind this exercise is for you to see how the R2 score varies with different alphas, and to understand the importance of selecting the right value for alpha. You'll learn how to tune alpha in the next chapter.
+
+Instructions
+100 XP
+Instantiate a Ridge regressor and specify normalize=True.
+Inside the for loop:
+Specify the alpha value for the regressor to use.
+Perform 10-fold cross-validation on the regressor with the specified alpha. The data is available in the arrays X and y.
+Append the average and the standard deviation of the computed cross-validated scores. NumPy has been pre-imported for you as np.
+Use the display_plot() function to visualize the scores and standard deviations.
+
+
+# Import necessary modules
+from sklearn.linear_model import Ridge
+from sklearn.model_selection import cross_val_score
+
+# Setup the array of alphas and lists to store scores
+alpha_space = np.logspace(-4, 0, 50)
+ridge_scores = []
+ridge_scores_std = []
+
+# Create a ridge regressor: ridge
+ridge = Ridge(normalize=True)
+
+# Compute scores over range of alphas
+for alpha in alpha_space:
+
+    # Specify the alpha value to use: ridge.alpha
+    ridge.alpha = alpha
+    
+    # Perform 10-fold CV: ridge_cv_scores
+    ridge_cv_scores = cross_val_score(ridge, X, y, cv=10)
+    
+    # Append the mean of ridge_cv_scores to ridge_scores
+    ridge_scores.append(np.mean(ridge_cv_scores))
+    
+    # Append the std of ridge_cv_scores to ridge_scores_std
+    ridge_scores_std.append(np.std(ridge_cv_scores))
+
+# Display the plot
+display_plot(ridge_scores, ridge_scores_std)
+
+
+Great work! Notice how the cross-validation scores change with different alphas. Which alpha should you pick? How can you fine-tune your model? You'll learn all about this in the next chapter!
+
 	
 _____________________________________________________________________________________________________________________________________
 
@@ -877,6 +1063,115 @@ ________________________________________________________________________________
 Fine-tuning your model
 
 Having trained your model, your next task is to evaluate its performance. What metrics can you use to gauge how good your model is? So far, you have used accuracy for classification and R-squared for regression. In this chapter, you will learn about some of the other metrics available in scikit-learn that will allow you to assess your model's performance in a more nuanced manner. You will then learn to optimize both your classification as well as regression models using hyperparameter tuning.
+
+Classification metrics
+● Measuring model performance with accuracy:
+		● Fraction of correctly classified samples
+		● Not always a useful metric
+
+
+
+
+Class imbalance example: Emails
+● Spam classification
+		● 99% of emails are real; 1% of emails are spam
+● Could build a classifier that predicts ALL emails as real
+		● 99% accurate!
+		● But horrible at actually classifying spam
+		● Fails at its original purpose
+● Need more nuanced metrics
+
+
+
+
+Diagnosing classification predictions
+
+ Confusion matrix 
+ 
+ 
+Accuracy = (tp + tn)/(tp + tn + fp + fn)
+Precision = tp/(tp+fp)
+Recall= tp/(tp+fn)
+
+F1 Score:  2 * (precision * recall)/(precision + recall)
+
+High PRecision: Not many real emails predicted as spam
+High recall: Predicted mostspam emails correctly
+
+
+Confusion matrix in scikit-learn
+In [1]: from sklearn.metrics import classification_report
+In [2]: from sklearn.metrics import confusion_matrix
+In [3]: knn = KNeighborsClassifier(n_neighbors=8)
+In [4]: X_train, X_test, y_train, y_test = train_test_split(X, y,
+ ...: test_size=0.4, random_state=42)
+In [5]: knn.fit(X_train, y_train)
+In [6]: y_pred = knn.predict(X_test)
+
+
+
+
+Confusion matrix in scikit-learn
+In [7]: print(confusion_matrix(y_test, y_pred))
+[[52 7]
+ [ 3 112]]
+In [8]: print(classification_report(y_test, y_pred))
+ precision recall f1-score support
+ 0 0.95 0.88 0.91 59
+ 1 0.94 0.97 0.96 115
+avg / total 0.94 0.94 0.94 174
+
+
+_______________________________________________________________________________________________________________________________
+
+
+Metrics for classification
+In Chapter 1, you evaluated the performance of your k-NN classifier based on its accuracy. However, as Andy discussed, accuracy is not always an informative metric. In this exercise, you will dive more deeply into evaluating the performance of binary classifiers by computing a confusion matrix and generating a classification report.
+
+You may have noticed in the video that the classification report consisted of three rows, and an additional support column. The support gives the number of samples of the true response that lie in that class - so in the video example, the support was the number of Republicans or Democrats in the test set on which the classification report was computed. The precision, recall, and f1-score columns, then, gave the respective metrics for that particular class.
+
+Here, you'll work with the PIMA Indians dataset obtained from the UCI Machine Learning Repository. The goal is to predict whether or not a given female patient will contract diabetes based on features such as BMI, age, and number of pregnancies. Therefore, it is a binary classification problem. A target value of 0 indicates that the patient does not have diabetes, while a value of 1 indicates that the patient does have diabetes. As in Chapters 1 and 2, the dataset has been preprocessed to deal with missing values.
+
+The dataset has been loaded into a DataFrame df and the feature and target variable arrays X and y have been created for you. In addition, sklearn.model_selection.train_test_split and sklearn.neighbors.KNeighborsClassifier have already been imported.
+
+Your job is to train a k-NN classifier to the data and evaluate its performance by generating a confusion matrix and classification report.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import classification_report and confusion_matrix from sklearn.metrics.
+Create training and testing sets with 40% of the data used for testing. Use a random state of 42.
+Instantiate a k-NN classifier with 6 neighbors, fit it to the training data, and predict the labels of the test set.
+Compute and print the confusion matrix and classification report using the confusion_matrix() and classification_report() functions.
+
+
+# Import necessary modules
+from sklearn.metrics import classification_report 
+from sklearn.metrics import confusion_matrix
+
+# Create training and test set
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.4,random_state=42)
+
+# Instantiate a k-NN classifier: knn
+knn = KNeighborsClassifier(n_neighbors=6)
+
+# Fit the classifier to the training data
+knn.fit(X_train, y_train)
+
+# Predict the labels of the test data: y_pred
+y_pred = knn.predict(X_test)
+
+# Generate the confusion matrix and classification report
+print(confusion_matrix(y_test, y_pred))
+print(classification_report(y_test, y_pred))
+
+Excellent work! By analyzing the confusion matrix and classification report, you can get a much better understanding of your classifier's performance.
+
+
+
+
+
 
 
 

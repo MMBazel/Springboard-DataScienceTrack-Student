@@ -2076,3 +2076,431 @@ steps = [('imputation', imp),
         ('SVM', clf)]
 	
 	
+_________________________________________________________________________________________________________________________________
+
+Imputing missing data in a ML Pipeline II
+Having setup the steps of the pipeline in the previous exercise, you will now use it on the voting dataset to classify a Congressman's party affiliation. What makes pipelines so incredibly useful is the simple interface that they provide. You can use the .fit() and .predict() methods on pipelines just as you did with your classifiers and regressors!
+
+Practice this for yourself now and generate a classification report of your predictions. The steps of the pipeline have been set up for you, and the feature array X and target variable array y have been pre-loaded. Additionally, train_test_split and classification_report have been imported from sklearn.model_selection and sklearn.metrics respectively.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import the following modules:
+Imputer from sklearn.preprocessing and Pipeline from sklearn.pipeline.
+SVC from sklearn.svm.
+Create the pipeline using Pipeline() and steps.
+Create training and test sets. Use 30% of the data for testing and a random state of 42.
+Fit the pipeline to the training set and predict the labels of the test set.
+Compute the classification report.
+
+
+# Import necessary modules
+from sklearn.preprocessing import Imputer
+from sklearn.pipeline import Pipeline
+from sklearn.svm import SVC
+
+# Setup the pipeline steps: steps
+steps = [('imputation', Imputer(missing_values='NaN', strategy='most_frequent', axis=0)),
+        ('SVM', SVC())]
+
+# Create the pipeline: pipeline
+pipeline = Pipeline(steps)
+
+# Create training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=42)
+
+# Fit the pipeline to the train set
+pipeline.fit(X_train, y_train)
+
+# Predict the labels of the test set
+y_pred = pipeline.predict(X_test)
+
+# Compute metrics
+print(classification_report(y_test, y_pred))
+
+<script.py> output:
+                 precision    recall  f1-score   support
+    
+       democrat       0.99      0.96      0.98        85
+     republican       0.94      0.98      0.96        46
+    
+    avg / total       0.97      0.97      0.97       131
+    
+    
+    
+_________________________________________________________________________________________________________________________________
+
+
+Centering and
+scaling
+
+
+Why scale your data?
+In [1]: print(df.describe())
+ fixed acidity free sulfur dioxide total sulfur dioxide density \
+count 1599.000000 1599.000000 1599.000000 1599.000000
+mean 8.319637 15.874922 46.467792 0.996747
+std 1.741096 10.460157 32.895324 0.001887
+min 4.600000 1.000000 6.000000 0.990070
+25% 7.100000 7.000000 22.000000 0.995600
+50% 7.900000 14.000000 38.000000 0.996750
+75% 9.200000 21.000000 62.000000 0.997835
+max 15.900000 72.000000 289.000000 1.003690
+ pH sulphates alcohol quality
+count 1599.000000 1599.000000 1599.000000 1599.000000
+mean 3.311113 0.658149 10.422983 0.465291
+std 0.154386 0.169507 1.065668 0.498950
+min 2.740000 0.330000 8.400000 0.000000
+25% 3.210000 0.550000 9.500000 0.000000
+50% 3.310000 0.620000 10.200000 0.000000
+75% 3.400000 0.730000 11.100000 1.000000
+max 4.010000 2.000000 14.900000 1.000000 
+
+
+
+
+
+Why scale your data?
+● Many models use some form of distance to inform them
+● Features on larger scales can unduly influence the model
+● Example: k-NN uses distance explicitly when making predictions
+● We want features to be on a similar scale
+● Normalizing (or scaling and centering)
+
+
+
+
+Ways to normalize your data
+● Standardization: Subtract the mean and divide by variance
+	● All features are centered around zero and have variance one
+● Can also subtract the minimum and divide by the range
+	● Minimum zero and maximum one
+● Can also normalize so the data ranges from -1 to +1
+● See scikit-learn docs for further details
+
+
+
+
+Scaling in scikit-learn
+In [2]: from sklearn.preprocessing import scale
+In [3]: X_scaled = scale(X)
+In [4]: np.mean(X), np.std(X)
+		Out[4]: (8.13421922452, 16.7265339794)
+In [5]: np.mean(X_scaled), np.std(X_scaled)
+Out[5]: (2.54662653149e-15, 1.0)
+
+
+Scaling in a pipeline
+In [6]: from sklearn.preprocessing import StandardScaler
+In [7]: steps = [('scaler', StandardScaler()),
+ ...: ('knn', KNeighborsClassifier())]
+In [8]: pipeline = Pipeline(steps)
+In [9]: X_train, X_test, y_train, y_test = train_test_split(X, y,
+ ...: test_size=0.2, random_state=21)
+In [10]: knn_scaled = pipeline.fit(X_train, y_train)
+In [11]: y_pred = pipeline.predict(X_test)
+In [12]: accuracy_score(y_test, y_pred)
+			Out[12]: 0.956
+In [13]: knn_unscaled = KNeighborsClassifier().fit(X_train, y_train)
+In [14]: knn_unscaled.score(X_test, y_test)
+			Out[14]: 0.928
+
+
+
+CV and scaling in a pipeline
+In [14]: steps = [('scaler', StandardScaler()),
+ ...: (('knn', KNeighborsClassifier())]
+In [15]: pipeline = Pipeline(steps)
+In [16]: parameters = {knn__n_neighbors=np.arange(1, 50)}
+In [17]: X_train, X_test, y_train, y_test = train_test_split(X, y,
+ ...: test_size=0.2, random_state=21)
+In [18]: cv = GridSearchCV(pipeline, param_grid=parameters)
+In [19]: cv.fit(X_train, y_train)
+In [20]: y_pred = cv.predict(X_test)
+
+
+Scaling and CV in a pipeline
+In [21]: print(cv.best_params_)
+{'knn__n_neighbors': 41}
+In [22]: print(cv.score(X_test, y_test))
+0.956
+In [23]: print(classification_report(y_test, y_pred))
+ precision recall f1-score support
+ 0 0.97 0.90 0.93 39
+ 1 0.95 0.99 0.97 75
+avg / total 0.96 0.96 0.96 114
+
+
+_________________________________________________________________________________________________________________________________
+
+Centering and scaling your data
+In the video, Hugo demonstrated how significantly the performance of a model can improve if the features are scaled. Note that this is not always the case: In the Congressional voting records dataset, for example, all of the features are binary. In such a situation, scaling will have minimal impact.
+
+You will now explore scaling for yourself on a new dataset - White Wine Quality! Hugo used the Red Wine Quality dataset in the video. We have used the 'quality' feature of the wine to create a binary target variable: If 'quality' is less than 5, the target variable is 1, and otherwise, it is 0.
+
+The DataFrame has been pre-loaded as df, along with the feature and target variable arrays X and y. Explore it in the IPython Shell. Notice how some features seem to have different units of measurement. 'density', for instance, takes values between 0.98 and 1.04, while 'total sulfur dioxide' ranges from 9 to 440. As a result, it may be worth scaling the features here. Your job in this exercise is to scale the features and compute the mean and standard deviation of the unscaled features compared to the scaled features.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import scale from sklearn.preprocessing.
+Scale the features X using scale().
+Print the mean and standard deviation of the unscaled features X, and then the scaled features X_scaled. Use the numpy functions np.mean() and np.std() to compute the mean and standard deviations.
+
+
+
+# Import scale
+from sklearn.preprocessing import scale
+
+# Scale the features: X_scaled
+X_scaled = scale(X)
+
+# Print the mean and standard deviation of the unscaled features
+print("Mean of Unscaled Features: {}".format(np.mean(X))) 
+print("Standard Deviation of Unscaled Features: {}".format(np.std(X)))
+
+# Print the mean and standard deviation of the scaled features
+print("Mean of Scaled Features: {}".format(np.mean(X_scaled))) 
+print("Standard Deviation of Scaled Features: {}".format(np.std(X_scaled)))
+
+
+<script.py> output:
+    Mean of Unscaled Features: 18.432687072460002
+    Standard Deviation of Unscaled Features: 41.54494764094571
+    Mean of Scaled Features: 2.7314972981668206e-15
+    Standard Deviation of Scaled Features: 0.9999999999999999
+    
+    
+    
+_____________________________________________________________________________________________________________________________________
+
+
+
+Centering and scaling in a pipeline
+With regard to whether or not scaling is effective, the proof is in the pudding! See for yourself whether or not scaling the features of the White Wine Quality dataset has any impact on its performance. You will use a k-NN classifier as part of a pipeline that includes scaling, and for the purposes of comparison, a k-NN classifier trained on the unscaled data has been provided.
+
+The feature array and target variable array have been pre-loaded as X and y. Additionally, KNeighborsClassifier and train_test_split have been imported from sklearn.neighbors and sklearn.model_selection, respectively.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import the following modules:
+StandardScaler from sklearn.preprocessing.
+Pipeline from sklearn.pipeline.
+Complete the steps of the pipeline with StandardScaler() for 'scaler' and KNeighborsClassifier() for 'knn'.
+Create the pipeline using Pipeline() and steps.
+Create training and test sets, with 30% used for testing. Use a random state of 42.
+Fit the pipeline to the training set.
+Compute the accuracy scores of the scaled and unscaled models by using the .score() method inside the provided print() functions.
+Take Hint (-30 XP)
+
+
+
+# Import the necessary modules
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+# Setup the pipeline steps: steps
+steps = [('scaler', StandardScaler()),
+        ('knn', KNeighborsClassifier())]
+        
+# Create the pipeline: pipeline
+pipeline = Pipeline(steps)
+
+# Create train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3, random_state=42)
+
+# Fit the pipeline to the training set: knn_scaled
+knn_scaled = pipeline.fit(X_train, y_train)
+
+# Instantiate and fit a k-NN classifier to the unscaled data
+knn_unscaled = KNeighborsClassifier().fit(X_train, y_train)
+
+# Compute and print metrics
+print('Accuracy with Scaling: {}'.format(knn_scaled.score(X_test, y_test)))
+print('Accuracy without Scaling: {}'.format(knn_unscaled.score(X_test, y_test)))
+
+
+# Import the necessary modules
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+# Setup the pipeline steps: steps
+steps = [('scaler', StandardScaler()),
+        ('knn', KNeighborsClassifier())]
+        
+# Create the pipeline: pipeline
+pipeline = Pipeline(steps)
+
+# Create train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3, random_state=42)
+
+# Fit the pipeline to the training set: knn_scaled
+knn_scaled = pipeline.fit(X_train, y_train)
+
+# Instantiate and fit a k-NN classifier to the unscaled data
+knn_unscaled = KNeighborsClassifier().fit(X_train, y_train)
+
+# Compute and print metrics
+print('Accuracy with Scaling: {}'.format(knn_scaled.score(X_test, y_test)))
+print('Accuracy without Scaling: {}'.format(knn_unscaled.score(X_test, y_test)))
+
+
+______________________________________________________________________________________________________________________________
+
+
+Bringing it all together I: Pipeline for classification
+It is time now to piece together everything you have learned so far into a pipeline for classification! Your job in this exercise is to build a pipeline that includes scaling and hyperparameter tuning to classify wine quality.
+
+You'll return to using the SVM classifier you were briefly introduced to earlier in this chapter. The hyperparameters you will tune are C and gamma. C controls the regularization strength. It is analogous to the C you tuned for logistic regression in Chapter 3, while gamma controls the kernel coefficient: Do not worry about this now as it is beyond the scope of this course.
+
+The following modules have been pre-loaded: Pipeline, svm, train_test_split, GridSearchCV, classification_report, accuracy_score. The feature and target variable arrays X and y have also been pre-loaded.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Setup the pipeline with the following steps:
+Scaling, called 'scaler' with StandardScaler().
+Classification, called 'SVM' with SVC().
+Specify the hyperparameter space using the following notation: 'step_name__parameter_name'. Here, the step_name is SVM, and the parameter_names are C and gamma.
+Create training and test sets, with 20% of the data used for the test set. Use a random state of 21.
+Instantiate GridSearchCV with the pipeline and hyperparameter space and fit it to the training set. Use 3-fold cross-validation (This is the default, so you don't have to specify it).
+Predict the labels of the test set and compute the metrics. The metrics have been computed for you.
+
+
+# Setup the pipeline
+steps = [('scaler', StandardScaler()),
+         ('SVM', SVC())]
+
+pipeline = Pipeline(steps)
+
+# Specify the hyperparameter space
+parameters = {'SVM__C':[1, 10, 100],
+              'SVM__gamma':[0.1, 0.01]}
+
+# Create train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2, random_state=21)
+
+# Instantiate the GridSearchCV object: cv
+cv = GridSearchCV(pipeline, param_grid=parameters)
+
+# Fit to the training set
+cv.fit(X_train, y_train)
+
+# Predict the labels of the test set: y_pred
+y_pred = cv.predict(X_test)
+
+# Compute and print metrics
+print("Accuracy: {}".format(cv.score(X_test, y_test)))
+print(classification_report(y_test, y_pred))
+print("Tuned Model Parameters: {}".format(cv.best_params_))
+
+
+<script.py> output:
+    Accuracy: 0.7795918367346939
+                 precision    recall  f1-score   support
+    
+          False       0.83      0.85      0.84       662
+           True       0.67      0.63      0.65       318
+    
+    avg / total       0.78      0.78      0.78       980
+    
+    Tuned Model Parameters: {'SVM__C': 10, 'SVM__gamma': 0.1}
+    
+    
+
+
+______________________________________________________________________________________________________________________________
+
+
+Bringing it all together II: Pipeline for regression
+For this final exercise, you will return to the Gapminder dataset. Guess what? Even this dataset has missing values that we dealt with for you in earlier chapters! Now, you have all the tools to take care of them yourself!
+
+Your job is to build a pipeline that imputes the missing data, scales the features, and fits an ElasticNet to the Gapminder data. You will then tune the l1_ratio of your ElasticNet using GridSearchCV.
+
+All the necessary modules have been imported, and the feature and target variable arrays have been pre-loaded as X and y.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Set up a pipeline with the following steps:
+'imputation', which uses the Imputer() transformer and the 'mean' strategy to impute missing data ('NaN') using the mean of the column.
+'scaler', which scales the features using StandardScaler().
+'elasticnet', which instantiates an ElasticNet regressor.
+Specify the hyperparameter space for the l1 ratio using the following notation: 'step_name__parameter_name'. Here, the step_name is elasticnet, and the parameter_name is l1_ratio.
+Create training and test sets, with 40% of the data used for the test set. Use a random state of 42.
+Instantiate GridSearchCV with the pipeline and hyperparameter space. Use 3-fold cross-validation (This is the default, so you don't have to specify it).
+Fit the GridSearchCV object to the training set.
+Compute R2 and the best parameters. This has been done for you, so hit 'Submit Answer' to see the results!
+
+
+# Setup the pipeline steps: steps
+steps = [('imputation', Imputer(missing_values='NaN', strategy='mean', axis=0)),
+         ('scaler', StandardScaler()),
+         ('elasticnet', ElasticNet())]
+
+# Create the pipeline: pipeline 
+pipeline = Pipeline(steps)
+
+# Specify the hyperparameter space
+parameters = {'elasticnet__l1_ratio':np.linspace(0,1,30)}
+
+# Create train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.4,random_state=42)
+
+# Create the GridSearchCV object: gm_cv
+gm_cv = GridSearchCV(pipeline, param_grid = parameters)
+
+# Fit to the training set
+gm_cv.fit(X_train, y_train)
+
+# Compute and print the metrics
+r2 = gm_cv.score(X_test, y_test)
+print("Tuned ElasticNet Alpha: {}".format(gm_cv.best_params_))
+print("Tuned ElasticNet R squared: {}".format(r2))
+
+
+# Setup the pipeline steps: steps
+steps = [('imputation', Imputer(missing_values='NaN', strategy='mean', axis=0)),
+         ('scaler', StandardScaler()),
+         ('elasticnet', ElasticNet())]
+
+# Create the pipeline: pipeline 
+pipeline = Pipeline(steps)
+
+# Specify the hyperparameter space
+parameters = {'elasticnet__l1_ratio':np.linspace(0,1,30)}
+
+# Create train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.4,random_state=42)
+
+# Create the GridSearchCV object: gm_cv
+gm_cv = GridSearchCV(pipeline, param_grid = parameters)
+
+# Fit to the training set
+gm_cv.fit(X_train, y_train)
+
+# Compute and print the metrics
+r2 = gm_cv.score(X_test, y_test)
+print("Tuned ElasticNet Alpha: {}".format(gm_cv.best_params_))
+print("Tuned ElasticNet R squared: {}".format(r2))
+
+______________________________________________________________________________________________________________________________
+
+What you’ve learned
+● Using machine learning techniques to build predictive models
+		● For both regression and classification problems
+		● With real-world data
+● Underfi!ing and overfi!ing
+● Test-train split
+● Cross-validation
+● Grid search
+● Regularization, lasso and ridge regression
+● Data preprocessing
+● For more: Check out the scikit-learn documentation

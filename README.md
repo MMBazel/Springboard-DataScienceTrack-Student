@@ -43,7 +43,7 @@ Topics covered:
 * APIs: Collect data from the internet using Application Programming Interfaces (APIs)
 
 Projects:
-* >>>>> [Mini Project: SQL Practice](https://github.com/MMBazel/springboard-program/tree/master/mini-projects/Ch%205%20-%20Data%20Wrangling/5.3%20SQL%20Practice)
+* =====> [Mini Project: SQL Practice](https://github.com/MMBazel/springboard-program/tree/master/mini-projects/Ch%205%20-%20Data%20Wrangling/5.3%20SQL%20Practice)
 
 
 
@@ -78,7 +78,7 @@ Topics covered:
 
 ## 6. Capstone Project 1: Building a Data Product
 	      
-* >>>>> My Capstone Project: [Predicting Qualifieds from First Call](https://github.com/MMBazel/springboard-program/tree/master/capstone1)
+* =====> My Capstone Project: [Predicting Qualifieds from First Call](https://github.com/MMBazel/springboard-program/tree/master/capstone1)
 
 
 ## 7. The Natural Language Processing (NLP) Track

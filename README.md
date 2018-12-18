@@ -76,12 +76,12 @@ Topics covered:
 
 
 
-## Capstone Project 1: Building a Data Product
+## 6. Capstone Project 1: Building a Data Product
 	      
 My Capstone Project: [Predicting Qualifieds from First Call](https://github.com/MMBazel/springboard-program/tree/master/capstone1)
 
 
-## The Natural Language Processing (NLP) Track
+## 7. The Natural Language Processing (NLP) Track
 
 Topics covered:
 * How to work with text and natural language data
@@ -90,7 +90,8 @@ Topics covered:
 * Data Science at Scale using Spark
 * Software Engineering for Data Scientists
 
-## Second Capstone Project: NLP
+
+## 8. Second Capstone Project: NLP
 
 
 

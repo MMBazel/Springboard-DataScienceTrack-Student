@@ -88,21 +88,6 @@ Topics covered:
 
 
 
-## Capstone Project: Building a Data Product
-The capstone project is a key part of our curriculum that every student must complete.
-The projects are designed to provide you with the experience of working in a realistic data
-science scenario. Working with your mentor, you'll pick a data set and a problem of
-interest. From start to finish, your project will be targeted to a specific client (real or
-imaginary). Using the data science techniques, you've learned, you'll not only come up
-with a reasonable solution to the problem, but learn to present it to them as a compelling
-story.
-       You will work on two capstone projects that involve the following:
-              1. Formulating a problem based on exploratory data analysis;
-              2. Building a model and transforming data so that it can be input to an algorithm;
-              3. Iteratively evaluating performance, and adapting model/data input to figure out if
-              more data or a different algorithm is needed to best solve the problem.
-              If you choose one of our specialization tracks, your second capstone project will be
-              related directly to the specialization of your choice.
-	      
+## Capstone Project 1: Building a Data Product
 	      
 My Capstone Project: [Predicting Qualifieds from First Call](https://github.com/MMBazel/springboard-program/tree/master/capstone1)

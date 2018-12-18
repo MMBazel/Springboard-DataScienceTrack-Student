@@ -75,18 +75,6 @@ Topics covered:
 * Evaluating and tuning machine learning systems
 
 
-## 6. Career Resources
-Topics covered:
-* Anatomy of a tech company
-* Job search strategies that top candidates use
-* How to build your network and effectively use it to land interviews
-* Create a high-quality resume, LinkedIn profile and cover letter
-* Interview coaching and practice, including mock interviews for both technical and non-technical topics
-* Negotiation success tips
-* Practice interview questions for each technical topic
-* Algorithms and data structures to ace your coding interviews
-
-
 
 ## Capstone Project 1: Building a Data Product
 	      

@@ -1954,6 +1954,125 @@ In [10]: pipeline.score(X_test, y_test)
 Out[10]: 0.75324675324675328
 
 
-	  
+________________________________________________________________________________________________________________________
 
 
+
+Dropping missing data
+The voting dataset from Chapter 1 contained a bunch of missing values that we dealt with for you behind the scenes. Now, it's time for you to take care of these yourself!
+
+The unprocessed dataset has been loaded into a DataFrame df. Explore it in the IPython Shell with the .head() method. You will see that there are certain data points labeled with a '?'. These denote missing values. As you saw in the video, different datasets encode missing values in different ways. Sometimes it may be a '9999', other times a 0 - real-world data can be very messy! If you're lucky, the missing values will already be encoded as NaN. We use NaN because it is an efficient and simplified way of internally representing missing data, and it lets us take advantage of pandas methods such as .dropna() and .fillna(), as well as scikit-learn's Imputation transformer Imputer().
+
+In this exercise, your job is to convert the '?'s to NaNs, and then drop the rows that contain them from the DataFrame.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Explore the DataFrame df in the IPython Shell. Notice how the missing value is represented.
+Convert all '?' data points to np.nan.
+Count the total number of NaNs using the .isnull() and .sum() methods. This has been done for you.
+Drop the rows with missing values from df using .dropna().
+Hit 'Submit Answer' to see how many rows were lost by dropping the missing values.
+
+# Convert '?' to NaN
+df[df == '?'] = np.nan
+
+# Print the number of NaNs
+print(df.isnull().sum())
+
+# Print shape of original DataFrame
+print("Shape of Original DataFrame: {}".format(df.shape))
+
+# Drop missing values and print shape of new DataFrame
+df = df.dropna()
+
+# Print shape of new DataFrame
+print("Shape of DataFrame After Dropping All Rows with Missing Values: {}".format(df.shape))
+
+In [1]: df.head()
+Out[1]: 
+        party infants water budget physician salvador religious satellite aid  \
+0  republican       0     1      0         1        1         1         0   0   
+1  republican       0     1      0         1        1         1         0   0   
+2    democrat       ?     1      1         ?        1         1         0   0   
+3    democrat       0     1      1         0        ?         1         0   0   
+4    democrat       1     1      1         0        1         1         0   0   
+
+  missile immigration synfuels education superfund crime duty_free_exports  \
+0       0           1        ?         1         1     1                 0   
+1       0           0        0         1         1     1                 0   
+2       0           0        1         0         1     1                 0   
+3       0           0        1         0         1     0                 0   
+4       0           0        1         ?         1     1                 1   
+
+  eaa_rsa  
+0       1  
+1       ?  
+2       0  
+3       1  
+4       1
+
+<script.py> output:
+    party                  0
+    infants               12
+    water                 48
+    budget                11
+    physician             11
+    salvador              15
+    religious             11
+    satellite             14
+    aid                   15
+    missile               22
+    immigration            7
+    synfuels              21
+    education             31
+    superfund             25
+    crime                 17
+    duty_free_exports     28
+    eaa_rsa              104
+    dtype: int64
+    Shape of Original DataFrame: (435, 17)
+    Shape of DataFrame After Dropping All Rows with Missing Values: (232, 17)
+    
+    
+    
+    Great work! When many values in your dataset are missing, if you drop them, you may end up throwing away valuable information along with the missing data. It's better instead to develop an imputation strategy. This is where domain knowledge is useful, but in the absence of it, you can impute missing values with the mean or the median of the row or column that the missing value is in.
+    
+    
+    
+    
+    ________________________________________________________________________________________________________________________
+    
+    
+Imputing missing data in a ML Pipeline I
+As you've come to appreciate, there are many steps to building a model, from creating training and test sets, to fitting a classifier or regressor, to tuning its parameters, to evaluating its performance on new data. Imputation can be seen as the first step of this machine learning process, the entirety of which can be viewed within the context of a pipeline. Scikit-learn provides a pipeline constructor that allows you to piece together these steps into one process and thereby simplify your workflow.
+
+You'll now practice setting up a pipeline with two steps: the imputation step, followed by the instantiation of a classifier. You've seen three classifiers in this course so far: k-NN, logistic regression, and the decision tree. You will now be introduced to a fourth one - the Support Vector Machine, or SVM. For now, do not worry about how it works under the hood. It works exactly as you would expect of the scikit-learn estimators that you have worked with previously, in that it has the same .fit() and .predict() methods as before.
+
+Instructions
+100 XP
+Import Imputer from sklearn.preprocessing and SVC from sklearn.svm. SVC stands for Support Vector Classification, which is a type of SVM.
+Setup the Imputation transformer to impute missing data (represented as 'NaN') with the 'most_frequent' value in the column (axis=0).
+Instantiate a SVC classifier. Store the result in clf.
+Create the steps of the pipeline by creating a list of tuples:
+The first tuple should consist of the imputation step, using imp.
+The second should consist of the classifier.
+
+
+
+# Import the Imputer module
+from sklearn.preprocessing import Imputer
+from sklearn.svm import SVC
+
+# Setup the Imputation transformer: imp
+imp = Imputer(missing_values='NaN', strategy='most_frequent', axis=0)
+
+# Instantiate the SVC classifier: clf
+clf = SVC()
+
+# Setup the pipeline with the required steps: steps
+steps = [('imputation', imp),
+        ('SVM', clf)]
+	
+	

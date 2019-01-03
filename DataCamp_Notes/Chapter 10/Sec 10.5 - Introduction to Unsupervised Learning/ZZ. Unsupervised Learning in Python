@@ -110,6 +110,83 @@ In [4]: plt.scatter(xs, ys, c=labels)
 In [5]: plt.show()
 
 
+_______________________________________________________________________________________________________________
+
+Clustering 2D points
+From the scatter plot of the previous exercise, you saw that the points seem to separate into 3 clusters. You'll now create a KMeans model to find 3 clusters, and fit it to the data points from the previous exercise. After the model has been fit, you'll obtain the cluster labels for some new points using the .predict() method.
+
+You are given the array points from the previous exercise, and also an array new_points.
+
+Instructions
+100 XP
+Import KMeans from sklearn.cluster.
+Using KMeans(), create a KMeans instance called model to find 3 clusters. To specify the number of clusters, use the n_clusters keyword argument.
+Use the .fit() method of model to fit the model to the array of points points.
+Use the .predict() method of model to predict the cluster labels of new_points, assigning the result to labels.
+Hit 'Submit Answer' to see the cluster labels of new_points.
+
+
+
+# Import KMeans
+from sklearn.cluster import KMeans
+
+# Create a KMeans instance with 3 clusters: model
+model = KMeans(n_clusters=3)
+
+# Fit model to points
+model.fit(points)
+
+# Determine the cluster labels of new_points: labels
+labels = model.predict(new_points)
+
+# Print cluster labels of new_points
+print(labels)
+
+
+Great work! You've successfully performed k-Means clustering and predicted the labels of new points. But it is not easy to inspect the clustering by just looking at the printed labels. A visualization would be far more useful. In the next exercise, you'll inspect your clustering with a scatter plot!
+
+________________________________________________________________________________________________________________
+
+
+Inspect your clustering
+Let's now inspect the clustering you performed in the previous exercise!
+
+A solution to the previous exercise has already run, so new_points is an array of points and labels is the array of their cluster labels.
+
+Instructions
+100 XP
+Import matplotlib.pyplot as plt.
+Assign column 0 of new_points to xs, and column 1 of new_points to ys.
+Make a scatter plot of xs and ys, specifying the c=labels keyword arguments to color the points by their cluster label. Also specify alpha=0.5.
+Compute the coordinates of the centroids using the .cluster_centers_ attribute of model.
+Assign column 0 of centroids to centroids_x, and column 1 of centroids to centroids_y.
+Make a scatter plot of centroids_x and centroids_y, using 'D' (a diamond) as a marker by specifying the marker parameter. Set the size of the markers to be 50 using s=50.
+
+
+# Import pyplot
+import matplotlib.pyplot as plt
+
+# Assign the columns of new_points: xs and ys
+xs = new_points[:,0]
+ys = new_points[:,1]
+
+# Make a scatter plot of xs and ys, using labels to define the colors
+plt.scatter(xs, ys, c=labels, alpha=0.5)
+
+# Assign the cluster centers: centroids
+centroids = model.cluster_centers_
+
+# Assign the columns of centroids: centroids_x, centroids_y
+centroids_x = centroids[:,0]
+centroids_y = centroids[:,1]
+
+# Make a scatter plot of centroids_x and centroids_y
+plt.scatter(centroids_x, centroids_y, marker='D', s=50)
+plt.show()
+
+
+Fantastic! The clustering looks great! But how can you be sure that 3 clusters is the correct choice? In other words, how can you evaluate the quality of a clustering? Tune into the next video in which Ben will explain how to evaluate a clustering!
+
 
 
 ________________________________________________________________________________________________________________
@@ -197,6 +274,89 @@ How many clusters to choose?
 ● Choose an "elbow" in the inertia plot
 ● Where inertia begins to decrease more slowly
 ● E.g. for iris dataset, 3 is a good choice
+
+_______________________________________________________________________________________________________________
+
+How many clusters of grain?
+In the video, you learned how to choose a good number of clusters for a dataset using the k-means inertia graph. You are given an array samples containing the measurements (such as area, perimeter, length, and several others) of samples of grain. What's a good number of clusters in this case?
+
+KMeans and PyPlot (plt) have already been imported for you.
+
+This dataset was sourced from the UCI Machine Learning Repository.
+
+Instructions
+100 XP
+For each of the given values of k, perform the following steps:
+Create a KMeans instance called model with k clusters.
+Fit the model to the grain data samples.
+Append the value of the inertia_ attribute of model to the list inertias.
+The code to plot ks vs inertias has been written for you, so hit 'Submit Answer' to see the plot!
+
+ks = range(1, 6)
+inertias = []
+
+for k in ks:
+    # Create a KMeans instance with k clusters: model
+    model = KMeans(n_clusters=k)
+    
+    # Fit model to samples
+    model.fit(samples)
+    
+    # Append the inertia to the list of inertias
+    inertias.append(model.inertia_)
+    
+# Plot ks vs inertias
+plt.plot(ks, inertias, '-o')
+plt.xlabel('number of clusters, k')
+plt.ylabel('inertia')
+plt.xticks(ks)
+plt.show()
+
+Excellent job! The inertia decreases very slowly from 3 clusters to 4, so it looks like 3 clusters would be a good choice for this data.
+
+_______________________________________________________________________________________________________________
+
+Evaluating the grain clustering
+In the previous exercise, you observed from the inertia plot that 3 is a good number of clusters for the grain data. In fact, the grain samples come from a mix of 3 different grain varieties: "Kama", "Rosa" and "Canadian". In this exercise, cluster the grain samples into three clusters, and compare the clusters to the grain varieties using a cross-tabulation.
+
+You have the array samples of grain samples, and a list varieties giving the grain variety for each sample. Pandas (pd) and KMeans have already been imported for you.
+
+Instructions
+100 XP
+Create a KMeans model called model with 3 clusters.
+Use the .fit_predict() method of model to fit it to samples and derive the cluster labels. Using .fit_predict() is the same as using .fit() followed by .predict().
+Create a DataFrame df with two columns named 'labels' and 'varieties', using labels and varieties, respectively, for the column values. This has been done for you.
+Use the pd.crosstab() function on df['labels'] and df['varieties'] to count the number of times each grain variety coincides with each cluster label. Assign the result to ct.
+Hit 'Submit Answer' to see the cross-tabulation!
+
+
+# Create a KMeans model with 3 clusters: model
+model = KMeans(n_clusters = 3)
+
+# Use fit_predict to fit model and obtain cluster labels: labels
+labels = model.fit_predict(samples)
+
+# Create a DataFrame with labels and varieties as columns: df
+df = pd.DataFrame({'labels': labels, 'varieties': varieties})
+
+# Create crosstab: ct
+ct = pd.crosstab(df['labels'], df['varieties'])
+
+# Display ct
+print(ct)
+
+
+
+<script.py> output:
+    varieties  Canadian wheat  Kama wheat  Rosa wheat
+    labels                                           
+    0                      68           9           0
+    1                       0           1          60
+    2                       2          60          10
+
+
+
+Great work! The cross-tabulation shows that the 3 varieties of grain separate really well into 3 clusters. But depending on the type of data you are working with, the clustering may not always be this good. Is there anything you can do in such situations to improve your clustering? You'll find out in the next video!
 
 
 _______________________________________________________________________________________________________________
@@ -314,10 +474,125 @@ sklearn preprocessing steps
 ● StandardScaler is a "preprocessing" step
 ● MaxAbsScaler and Normalizer are other examples
 
+_______________________________________________________________________________________________________________
+
+Scaling fish data for clustering
+You are given an array samples giving measurements of fish. Each row represents an individual fish. The measurements, such as weight in grams, length in centimeters, and the percentage ratio of height to length, have very different scales. In order to cluster this data effectively, you'll need to standardize these features first. In this exercise, you'll build a pipeline to standardize and cluster the data.
+
+These fish measurement data were sourced from the Journal of Statistics Education.
+
+Instructions
+100 XP
+Import:
+make_pipeline from sklearn.pipeline.
+StandardScaler from sklearn.preprocessing.
+KMeans from sklearn.cluster.
+Create an instance of StandardScaler called scaler.
+Create an instance of KMeans with 4 clusters called kmeans.
+Create a pipeline called pipeline that chains scaler and kmeans. To do this, you just need to pass them in as arguments to make_pipeline().
+
+
+# Perform the necessary imports
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+
+# Create scaler: scaler
+scaler = StandardScaler()
+
+# Create KMeans instance: kmeans
+kmeans = KMeans(n_clusters=4)
+
+# Create pipeline: pipeline
+pipeline = make_pipeline(scaler, kmeans)
+
+_______________________________________________________________________________________________________________
+
+Clustering the fish data
+You'll now use your standardization and clustering pipeline from the previous exercise to cluster the fish by their measurements, and then create a cross-tabulation to compare the cluster labels with the fish species.
+
+As before, samples is the 2D array of fish measurements. Your pipeline is available as pipeline, and the species of every fish sample is given by the list species.
+
+Instructions
+100 XP
+Import pandas as pd.
+Fit the pipeline to the fish measurements samples.
+Obtain the cluster labels for samples by using the .predict() method of pipeline.
+Using pd.DataFrame(), create a DataFrame df with two columns named 'labels' and 'species', using labels and species, respectively, for the column values.
+Using pd.crosstab(), create a cross-tabulation ct of df['labels'] and df['species'].
+
+
+
+# Import pandas
+import pandas as pd
+
+# Fit the pipeline to samples
+pipeline.fit(samples)
+
+# Calculate the cluster labels: labels
+labels = pipeline.predict(samples)
+
+# Create a DataFrame with labels and species as columns: df
+df = pd.DataFrame({'labels':labels,'species':species})
+
+# Create crosstab: ct
+ct = pd.crosstab(df['labels'],df['species'])
+
+# Display ct
+print(ct)
+
+
+<script.py> output:
+    species  Bream  Pike  Roach  Smelt
+    labels                            
+    0            1     0     19      1
+    1           33     0      1      0
+    2            0     0      0     13
+    3            0    17      0      0
+
+_______________________________________________________________________________________________________________
+
+
+Clustering stocks using KMeans
+In this exercise, you'll cluster companies using their daily stock price movements (i.e. the dollar difference between the closing and opening prices for each trading day). You are given a NumPy array movements of daily price movements from 2010 to 2015 (obtained from Yahoo! Finance), where each row corresponds to a company, and each column corresponds to a trading day.
+
+Some stocks are more expensive than others. To account for this, include a Normalizer at the beginning of your pipeline. The Normalizer will separately transform each company's stock price to a relative scale before the clustering begins.
+
+Note that Normalizer() is different to StandardScaler(), which you used in the previous exercise. While StandardScaler() standardizes features (such as the features of the fish data from the previous exercise) by removing the mean and scaling to unit variance, Normalizer() rescales each sample - here, each company's stock price - independently of the other.
+
+KMeans and make_pipeline have already been imported for you.
+
+Instructions
+100 XP
+Import Normalizer from sklearn.preprocessing.
+Create an instance of Normalizer called normalizer.
+Create an instance of KMeans called kmeans with 10 clusters.
+Using make_pipeline(), create a pipeline called pipeline that chains normalizer and kmeans.
+Fit the pipeline to the movements array.
+
+
+# Import Normalizer
+from sklearn.preprocessing import Normalizer
+
+# Create a normalizer: normalizer
+normalizer = Normalizer()
+
+# Create a KMeans model with 10 clusters: kmeans
+kmeans = KMeans(n_clusters=10)
+
+# Make a pipeline chaining normalizer and kmeans: pipeline
+pipeline = make_pipeline(normalizer, kmeans)
+
+# Fit pipeline to the daily price movements
+pipeline.fit(movements)
+
+Great work - you're really getting the hang of this. Now that your pipeline has been set up, you can find out which stocks move together in the next exercise!
+
 
 
 _______________________________________________________________________________________________________________
 
+=====================================================================================================================================
 
 2
 Visualization with hierarchical clustering and t-SNE
@@ -325,6 +600,10 @@ Visualization with hierarchical clustering and t-SNE
 In this chapter, you'll learn about two unsupervised learning techniques for data visualization, hierarchical clustering and t-SNE. Hierarchical clustering merges the data samples into ever-coarser clusters, yielding a tree visualization of the resulting cluster hierarchy. t-SNE maps the data samples into 2d space so that the proximity of the samples to one another can be visualized.
 
 ___________________________________________________________________________________________________________________
+
+
+
+=====================================================================================================================================
 
 3
 Decorrelating your data and dimension reduction
@@ -334,8 +613,14 @@ Dimension reduction summarizes a dataset using its common occuring patterns. In 
 
 _________________________________________________________________________________________________________________________
 
+=====================================================================================================================================
+
 
 4
 Discovering interpretable features
 0%
 In this chapter, you'll learn about a dimension reduction technique called "Non-negative matrix factorization" ("NMF") that expresses samples as combinations of interpretable parts. For example, it expresses documents as combinations of topics, and images in terms of commonly occurring visual patterns. You'll also learn to use NMF to build recommender systems that can find you similar articles to read, or musical artists that match your listening history!
+
+
+
+=====================================================================================================================================

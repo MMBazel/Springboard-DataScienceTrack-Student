@@ -592,6 +592,98 @@ Great work - you're really getting the hang of this. Now that your pipeline has 
 
 _______________________________________________________________________________________________________________
 
+Which stocks move together?
+In the previous exercise, you clustered companies by their daily stock price movements. So which company have stock prices that tend to change in the same way? You'll now inspect the cluster labels from your clustering to find out.
+
+Your solution to the previous exercise has already been run. Recall that you constructed a Pipeline pipeline containing a KMeans model and fit it to the NumPy array movements of daily stock movements. In addition, a list companies of the company names is available.
+
+Instructions
+100 XP
+Import pandas as pd.
+Use the .predict() method of the pipeline to predict the labels for movements.
+Align the cluster labels with the list of company names companies by creating a DataFrame df with labels and companies as columns. This has been done for you.
+Use the .sort_values() method of df to sort the DataFrame by the 'labels' column, and print the result.
+Hit 'Submit Answer' and take a moment to see which companies are together in each cluster!
+
+
+# Import pandas
+import pandas as pd
+
+# Predict the cluster labels: labels
+labels = pipeline.predict(movements)
+
+# Create a DataFrame aligning labels and companies: df
+df = pd.DataFrame({'labels': labels, 'companies': companies})
+
+# Display df sorted by cluster label
+print(df.sort_values('labels'))
+
+<script.py> output:
+                                 companies  labels
+    56                            Wal-Mart       0
+    59                               Yahoo       1
+    51                   Texas instruments       1
+    47                            Symantec       1
+    32                                  3M       1
+    8                          Caterpillar       1
+    30                          MasterCard       1
+    24                               Intel       1
+    23                                 IBM       1
+    20                          Home Depot       1
+    13                   DuPont de Nemours       1
+    14                                Dell       1
+    50  Taiwan Semiconductor Manufacturing       2
+    43                                 SAP       2
+    33                           Microsoft       2
+    17                     Google/Alphabet       2
+    0                                Apple       2
+    2                               Amazon       2
+    18                       Goldman Sachs       3
+    1                                  AIG       3
+    55                         Wells Fargo       3
+    16                   General Electrics       3
+    26                      JPMorgan Chase       3
+    5                      Bank of America       3
+    3                     American express       3
+    53                       Valero Energy       4
+    57                               Exxon       4
+    12                             Chevron       4
+    39                              Pfizer       4
+    10                      ConocoPhillips       4
+    44                        Schlumberger       4
+    38                               Pepsi       5
+    9                    Colgate-Palmolive       5
+    40                      Procter Gamble       5
+    28                           Coca Cola       5
+    27                      Kimberly-Clark       5
+    25                   Johnson & Johnson       5
+    31                           McDonalds       5
+    41                       Philip Morris       5
+    54                            Walgreen       6
+    48                              Toyota       7
+    45                                Sony       7
+    15                                Ford       7
+    7                                Canon       7
+    35                            Navistar       7
+    21                               Honda       7
+    22                                  HP       7
+    34                          Mitsubishi       7
+    11                               Cisco       7
+    58                               Xerox       7
+    19                     GlaxoSmithKline       8
+    52                            Unilever       8
+    37                            Novartis       8
+    6             British American Tobacco       8
+    49                               Total       8
+    46                      Sanofi-Aventis       8
+    42                   Royal Dutch Shell       8
+    4                               Boeing       9
+    36                    Northrop Grumman       9
+    29                     Lookheed Martin       9
+    
+
+
+
 =====================================================================================================================================
 
 2
@@ -599,7 +691,431 @@ Visualization with hierarchical clustering and t-SNE
 0%
 In this chapter, you'll learn about two unsupervised learning techniques for data visualization, hierarchical clustering and t-SNE. Hierarchical clustering merges the data samples into ever-coarser clusters, yielding a tree visualization of the resulting cluster hierarchy. t-SNE maps the data samples into 2d space so that the proximity of the samples to one another can be visualized.
 
+
+
+Visualisations communicate insight
+● "t-SNE" : Creates a 2D map of a dataset (later)
+● "Hierarchical clustering" (this video)
+
+
+A hierarchy of groups
+● Groups of living things can form a hierarchy
+● Clusters are contained in one another
+
+Eurovision scoring dataset
+● Countries gave scores to songs performed at the Eurovision 2016
+● 2D array of scores
+● Rows are countries, columns are songs
+
+
+Hierarchical clustering of voting countries
+
+
+Hierarchical clustering
+● Every country begins in a separate cluster
+● At each step, the two closest clusters are merged
+● Continue until all countries in a single cluster
+● This is “agglomerative” hierarchical clustering
+
+
+The dendrogram of a hierarchical clustering
+● Read from the bo!om up
+● Vertical lines represent clusters 
+
+
+Hierarchical clustering with SciPy
+In [1]: import matplotlib.pyplot as plt
+In [2]: from scipy.cluster.hierarchy import linkage, dendrogram
+In [3]: mergings = linkage(samples, method='complete')
+In [4]: dendrogram(mergings,
+ ...: labels=country_names,
+ ...: leaf_rotation=90,
+ ...: leaf_font_size=6)
+In [5]: plt.show()
+● Given samples (the array of scores), and country_names
+
 ___________________________________________________________________________________________________________________
+
+
+Hierarchical clustering of the grain data
+In the video, you learned that the SciPy linkage() function performs hierarchical clustering on an array of samples. Use the linkage() function to obtain a hierarchical clustering of the grain samples, and use dendrogram() to visualize the result. A sample of the grain measurements is provided in the array samples, while the variety of each grain sample is given by the list varieties.
+
+Instructions
+100 XP
+Import:
+linkage and dendrogram from scipy.cluster.hierarchy.
+matplotlib.pyplot as plt.
+Perform hierarchical clustering on samples using the linkage() function with the method='complete' keyword argument. Assign the result to mergings.
+Plot a dendrogram using the dendrogram() function on mergings. Specify the keyword arguments labels=varieties, leaf_rotation=90, and leaf_font_size=6.
+
+# Perform the necessary imports
+from scipy.cluster.hierarchy import linkage, dendrogram
+import matplotlib.pyplot as plt
+
+# Calculate the linkage: mergings
+mergings = linkage(samples, method='complete')
+
+# Plot the dendrogram, using varieties as labels
+dendrogram(mergings,
+           labels=varieties,
+           leaf_rotation=90,
+           leaf_font_size=6,
+)
+plt.show()
+
+
+# Import normalize
+from sklearn.preprocessing import normalize
+
+# Normalize the movements: normalized_movements
+normalized_movements = normalize(movements)
+
+# Calculate the linkage: mergings
+mergings = linkage(normalized_movements, method = 'complete')
+
+# Plot the dendrogram
+dendrogram(mergings,
+labels = companies,
+leaf_rotation = 90,
+leaf_font_size=6)
+plt.show()
+
+Great work! You can produce great visualizations such as this with hierarchical clustering, but it can be used for more than just visualizations. You'll find out more about this in the next video!
+
+
+
+_____________________________________________________________________________________________________________________
+
+
+Hierarchies of stocks
+In chapter 1, you used k-means clustering to cluster companies according to their stock price movements. Now, you'll perform hierarchical clustering of the companies. You are given a NumPy array of price movements movements, where the rows correspond to companies, and a list of the company names companies. SciPy hierarchical clustering doesn't fit into a sklearn pipeline, so you'll need to use the normalize() function from sklearn.preprocessing instead of Normalizer.
+
+linkage and dendrogram have already been imported from sklearn.cluster.hierarchy, and PyPlot has been imported as plt.
+
+Instructions
+100 XP
+Import normalize from sklearn.preprocessing.
+Rescale the price movements for each stock by using the normalize() function on movements.
+Apply the linkage() function to normalized_movements, using 'complete' linkage, to calculate the hierarchical clustering. Assign the result to mergings.
+Plot a dendrogram of the hierarchical clustering, using the list companies of company names as the labels. In addition, specify the leaf_rotation=90, and leaf_font_size=6 keyword arguments as you did in the previous exercise.
+
+
+# Import normalize
+from sklearn.preprocessing import normalize
+
+# Normalize the movements: normalized_movements
+normalized_movements = normalize(movements)
+
+# Calculate the linkage: mergings
+mergings = linkage(normalized_movements, method = 'complete')
+
+# Plot the dendrogram
+dendrogram(mergings,
+labels = companies,
+leaf_rotation = 90,
+leaf_font_size=6)
+plt.show()
+
+
+___________________________________________________________________________________________________________________
+
+Extracting the cluster labels
+In the previous exercise, you saw that the intermediate clustering of the grain samples at height 6 has 3 clusters. Now, use the fcluster() function to extract the cluster labels for this intermediate clustering, and compare the labels with the grain varieties using a cross-tabulation.
+
+The hierarchical clustering has already been performed and mergings is the result of the linkage() function. The list varieties gives the variety of each grain sample.
+
+Instructions
+100 XP
+Import:
+pandas as pd.
+fcluster from scipy.cluster.hierarchy.
+Perform a flat hierarchical clustering by using the fcluster() function on mergings. Specify a maximum height of 6 and the keyword argument criterion='distance'.
+Create a DataFrame df with two columns named 'labels' and 'varieties', using labels and varieties, respectively, for the column values. This has been done for you.
+Create a cross-tabulation ct between df['labels'] and df['varieties'] to count the number of times each grain variety coincides with each cluster label.
+
+
+# Perform the necessary imports
+import pandas as pd
+from scipy.cluster.hierarchy import fcluster
+
+# Use fcluster to extract labels: labels
+labels = fcluster(mergings, 6, criterion='distance')
+
+# Create a DataFrame with labels and varieties as columns: df
+df = pd.DataFrame({'labels': labels, 'varieties': varieties})
+
+# Create crosstab: ct
+ct = pd.crosstab(df['labels'], df['varieties'])
+
+# Display ct
+print(ct)
+
+
+<script.py> output:
+    varieties  Canadian wheat  Kama wheat  Rosa wheat
+    labels                                           
+    1                      14           3           0
+    2                       0           0          14
+    3                       0          11           0
+
+
+Fantastic - you've now mastered the fundamentals of k-Means and agglomerative hierarchical clustering. Next, you'll learn about t-SNE, which is a powerful tool for visualizing high dimensional data.
+
+
+___________________________________________________________________________________________________________________
+
+
+Cluster labels in
+hierarchical clustering
+
+
+Cluster labels in hierarchical clustering
+● Not only a visualisation tool!
+● Cluster labels at any intermediate stage can be recovered
+● For use in e.g. cross-tabulations
+
+
+Intermediate clusterings & height on dendrogram
+● E.g. at height 15: Bulgaria, Cyprus, Greece are one cluster
+● Russia and Moldova are another
+● Armenia in a cluster on its own
+
+
+
+Dendrograms show cluster distances
+● Height on dendrogram = distance between merging clusters
+● E.g. clusters with only Cyprus and Greece had distance approx. 6
+● This new cluster distance approx. 12 from cluster with only Bulgaria 
+
+
+
+Intermediate clusterings & height on dendrogram
+● Height on dendrogram specifies max. distance between merging clusters
+● Don't merge clusters further apart than this (e.g. 15)
+
+
+Distance between clusters
+● Defined by a "linkage method"
+● Specified via method parameter, e.g. linkage(samples, method="complete")
+● In "complete" linkage: distance between clusters is max. distance between
+their samples
+● Different linkage method, different hierarchical clustering!
+
+
+Extracting cluster labels
+● Use the fcluster method
+● Returns a NumPy array of cluster labels
+
+
+Extracting cluster labels using fcluster
+In [1]: from scipy.cluster.hierarchy import linkage
+In [2]: mergings = linkage(samples, method='complete')
+In [3]: from scipy.cluster.hierarchy import fcluster
+In [4]: labels = fcluster(mergings, 15, criterion='distance')
+In [5]: print(labels)
+[ 9 8 11 20 2 1 17 14 ... ]
+
+
+
+Aligning cluster labels with country names
+● Given a list of strings country_names
+In [1]: import pandas as pd
+In [2]: pairs = pd.DataFrame({'labels': labels,
+ ...: 'countries': country_names})
+In [3]: print(pairs.sort_values('labels'))
+ countries labels
+5 Belarus 1
+40 Ukraine 1
+17 Georgia 1
+...
+36 Spain 5
+8 Bulgaria 6
+19 Greece 6
+10 Cyprus 6
+28 Moldova 7 
+
+
+___________________________________________________________________________________________________________________
+
+Which clusters are closest?
+In the video, you learned that the linkage method defines how the distance between clusters is measured. In complete linkage, the distance between clusters is the distance between the furthest points of the clusters. In single linkage, the distance between clusters is the distance between the closest points of the clusters.
+
+Consider the three clusters in the diagram. Which of the following statements are true?
+
+A. In single linkage, cluster 3 is the closest to cluster 2.
+
+B. In complete linkage, cluster 1 is the closest to cluster 2.
+
+
+
+________________________________________________________________________________________________________________
+
+Different linkage, different hierarchical clustering!
+In the video, you saw a hierarchical clustering of the voting countries at the Eurovision song contest using 'complete' linkage. Now, perform a hierarchical clustering of the voting countries with 'single' linkage, and compare the resulting dendrogram with the one in the video. Different linkage, different hierarchical clustering!
+
+You are given an array samples. Each row corresponds to a voting country, and each column corresponds to a performance that was voted for. The list country_names gives the name of each voting country. This dataset was obtained from Eurovision.
+
+Instructions
+100 XP
+Import:
+linkage and dendrogram from scipy.cluster.hierarchy.
+matplotlib.pyplot as plt.
+Perform hierarchical clustering on samples using the linkage() function with the method='single' keyword argument. Assign the result to mergings.
+Plot a dendrogram of the hierarchical clustering, using the list country_names as the labels. In addition, specify the leaf_rotation=90, and leaf_font_size=6 keyword arguments as you have done earlier.
+
+
+
+
+
+
+
+___________________________________________________________________________________________________________________
+
+t-SNE for
+2-dimensional
+maps
+
+
+t-SNE for 2-dimensional maps
+● t-SNE = “t-distributed stochastic neighbor embedding”
+● Maps samples to 2D space (or 3D)
+● Map approximately preserves nearness of samples
+● Great for inspecting datasets
+
+
+t-SNE on the iris dataset
+● Iris dataset has 4 measurements, so samples are 4-dimensional
+● t-SNE maps samples to 2D space
+● t-SNE didn't know that there were different species
+● ... yet kept the species mostly separate
+
+
+Interpreting t-SNE sca!er plots
+● “versicolor” and “virginica” harder to distinguish from one another
+● Consistent with k-means inertia plot: could argue for 2 clusters, or
+for 3
+
+
+t-SNE in sklearn
+In [1]: print(samples)
+[[ 5. 3.3 1.4 0.2]
+ [ 5. 3.5 1.3 0.3]
+ [ 4.9 2.4 3.3 1. ]
+ [ 6.3 2.8 5.1 1.5]
+ ...
+ [ 4.9 3.1 1.5 0.1]]
+In [2]: print(species)
+[0, 0, 1, 2, ..., 0]
+● 2D NumPy array samples
+● List species giving species of labels as number (0, 1, or 2)
+
+
+
+t-SNE in sklearn
+In [3]: import matplotlib.pyplot as plt
+In [4]: from sklearn.manifold import TSNE
+In [5]: model = TSNE(learning_rate=100)
+In [5]: transformed = model.fit_transform(samples)
+In [6]: xs = transformed[:,0]
+In [7]: ys = transformed[:,1]
+In [8]: plt.scatter(xs, ys, c=species)
+In [9]: plt.show()
+
+
+
+t-SNE has only fit_transform()
+● Has a fit_transform() method
+● Simultaneously fits the model and transforms the data
+● Has no separate fit() or transform() methods
+● Can’t extend the map to include new data samples
+● Must start over each time!
+
+
+
+t-SNE learning rate
+● Choose learning rate for the dataset
+● Wrong choice: points bunch together
+● Try values between 50 and 200
+
+
+
+Different every time
+● t-SNE features are different every time
+● Piedmont wines, 3 runs, 3 different sca!er plots!
+● … however: The wine varieties (=colors) have same position relative to
+one another
+_________________________________________________________________________________________________________________________
+
+t-SNE visualization of grain dataset
+In the video, you saw t-SNE applied to the iris dataset. In this exercise, you'll apply t-SNE to the grain samples data and inspect the resulting t-SNE features using a scatter plot. You are given an array samples of grain samples and a list variety_numbers giving the variety number of each grain sample.
+
+Instructions
+100 XP
+Import TSNE from sklearn.manifold.
+Create a TSNE instance called model with learning_rate=200.
+Apply the .fit_transform() method of model to samples. Assign the result to tsne_features.
+Select the column 0 of tsne_features. Assign the result to xs.
+Select the column 1 of tsne_features. Assign the result to ys.
+Make a scatter plot of the t-SNE features xs and ys. To color the points by the grain variety, specify the additional keyword argument c=variety_numbers
+
+
+# Import TSNE
+from sklearn.manifold import TSNE
+
+# Create a TSNE instance: model
+model = TSNE(learning_rate=200)
+
+# Apply fit_transform to samples: tsne_features
+tsne_features = model.fit_transform(samples)
+
+# Select the 0th feature: xs
+xs = tsne_features[:,0]
+
+# Select the 1st feature: ys
+ys = tsne_features[:,1]
+
+# Scatter plot, coloring by variety_numbers
+plt.scatter(xs, ys, c=variety_numbers)
+plt.show()
+
+
+_________________________________________________________________________________________________________________________
+A t-SNE map of the stock market
+t-SNE provides great visualizations when the individual samples can be labeled. In this exercise, you'll apply t-SNE to the company stock price data. A scatter plot of the resulting t-SNE features, labeled by the company names, gives you a map of the stock market! The stock price movements for each company are available as the array normalized_movements (these have already been normalized for you). The list companies gives the name of each company. PyPlot (plt) has been imported for you.
+
+Instructions
+100 XP
+Import TSNE from sklearn.manifold.
+Create a TSNE instance called model with learning_rate=50.
+Apply the .fit_transform() method of model to normalized_movements. Assign the result to tsne_features.
+Select column 0 and column 1 of tsne_features.
+Make a scatter plot of the t-SNE features xs and ys. Specify the additional keyword argument alpha=0.5.
+Code to label each point with its company name has been written for you using plt.annotate(), so just hit 'Submit Answer' to see the visualization!
+
+# Import TSNE 
+from sklearn.manifold import TSNE 
+
+# Create a TSNE instance: model
+model = TSNE(learning_rate=50)
+
+# Apply fit_transform to normalized_movements: tsne_features
+tsne_features = model.fit_transform(normalized_movements)
+
+# Select the 0th feature: xs
+xs = tsne_features[:,0]
+
+# Select the 1th feature: ys
+ys = tsne_features[:,1]
+
+# Scatter plot
+plt.scatter(xs, ys, alpha=0.5)
+
+# Annotate the points
+for x, y, company in zip(xs, ys, companies):
+    plt.annotate(company, (x, y), fontsize=5, alpha=0.75)
+plt.show()
+
+
 
 
 
@@ -613,6 +1129,599 @@ Dimension reduction summarizes a dataset using its common occuring patterns. In 
 
 _________________________________________________________________________________________________________________________
 
+Visualizing the
+PCA transformation
+
+
+Dimension reduction
+● More efficient storage and computation
+● Remove less-informative "noise" features
+● ... which cause problems for prediction tasks, e.g.
+classification, regression
+
+
+Principal Component Analysis
+● PCA = "Principal Component Analysis"
+● Fundamental dimension reduction technique
+● First step "decorrelation" (considered here)
+● Second step reduces dimension (considered later)
+
+
+
+PCA aligns data with axes
+● Rotates data samples to be aligned with axes
+● Shi"s data samples so they have mean 0
+● No information is lost
+
+
+PCA follows the fit/transform pa!ern
+● PCA a scikit-learn component like KMeans or
+StandardScaler
+● fit() learns the transformation from given data
+● transform() applies the learned transformation
+● transform() can also be applied to new data
+
+
+
+Using scikit-learn PCA
+In [1]: print(samples)
+[[ 2.8 3.92]
+ [ 2.65 3.4 ]
+ ...
+ [ 2.05 1.6 ]]
+In [2]: from sklearn.decomposition import PCA
+In [3]: model = PCA()
+In [4]: model.fit(samples)
+Out[4]: PCA(copy=True, ...)
+In [5]: transformed = model.transform(samples)
+● samples = array of two wine features (total_phenols & od280)
+
+
+
+PCA features
+In [6]: print(transformed)
+[[ 1.32771994e+00 4.51396070e-01]
+ [ 8.32496068e-01 2.33099664e-01]
+ ...
+ [ -9.33526935e-01 -4.60559297e-01]]
+● Rows of transformed correspond to samples
+● Columns of transformed are the "PCA features"
+● Row gives PCA feature values of corresponding sample
+
+
+PCA features are not correlated
+● Features of dataset are o"en correlated, e.g. total_phenols and od280
+● PCA aligns the data with axes
+● Resulting PCA features are not linearly correlated ("decorrelation")
+
+Pearson correlation
+● Measures linear correlation of features
+● Value between -1 and 1
+● Value of 0 means no linear correlation
+
+
+Principal components
+● "Principal components" = directions of variance
+● PCA aligns principal components with the axes
+● Available as components_ a#ribute of PCA object
+● Each row defines displacement from mean
+
+_________________________________________________________________________________________________________________________
+
+Correlated data in nature
+You are given an array grains giving the width and length of samples of grain. You suspect that width and length will be correlated. To confirm this, make a scatter plot of width vs length and measure their Pearson correlation.
+
+Instructions
+100 XP
+Import:
+matplotlib.pyplot as plt.
+pearsonr from scipy.stats.
+Assign column 0 of grains to width and column 1 of grains to length.
+Make a scatter plot with width on the x-axis and length on the y-axis.
+Use the pearsonr() function to calculate the Pearson correlation of width and length.
+
+
+# Perform the necessary imports
+import matplotlib.pyplot as plt
+from scipy.stats import pearsonr
+
+# Assign the 0th column of grains: width
+width = grains[:,0]
+
+# Assign the 1st column of grains: length
+length = grains[:,1]
+
+# Scatter plot width vs length
+plt.scatter(width, length)
+plt.axis('equal')
+plt.show()
+
+# Calculate the Pearson correlation
+correlation, pvalue = pearsonr(width, length)
+
+# Display the correlation
+print(correlation)
+
+_________________________________________________________________________________________________________________________
+
+Decorrelating the grain measurements with PCA
+You observed in the previous exercise that the width and length measurements of the grain are correlated. Now, you'll use PCA to decorrelate these measurements, then plot the decorrelated points and measure their Pearson correlation.
+
+Instructions
+100 XP
+Import PCA from sklearn.decomposition.
+Create an instance of PCA called model.
+Use the .fit_transform() method of model to apply the PCA transformation to grains. Assign the result to pca_features.
+The subsequent code to extract, plot, and compute the Pearson correlation of the first two columns pca_features has been written for you, so hit 'Submit Answer' to see the result!
+
+# Import PCA
+from sklearn.decomposition import PCA
+
+# Create PCA instance: model
+model = PCA()
+
+# Apply the fit_transform method of model to grains: pca_features
+pca_features = model.fit_transform(grains)
+
+# Assign 0th column of pca_features: xs
+xs = pca_features[:,0]
+
+# Assign 1st column of pca_features: ys
+ys = pca_features[:,1]
+
+# Scatter plot xs vs ys
+plt.scatter(xs, ys)
+plt.axis('equal')
+plt.show()
+
+# Calculate the Pearson correlation of xs and ys
+correlation, pvalue = pearsonr(xs, ys)
+
+# Display the correlation
+print(correlation)
+
+
+
+
+
+
+
+_________________________________________________________________________________________________________________________
+
+
+Intrinsic dimension
+
+
+Intrinsic dimension of a flight path
+● 2 features: longitude and latitude at points along a flight path
+● Dataset appears to be 2-dimensional
+● But can approximate using one feature: displacement along flight path
+● Is intrinsically 1-dimensional
+
+Intrinsic dimension
+● Intrinsic dimension = number of features needed to
+approximate the dataset
+● Essential idea behind dimension reduction
+● What is the most compact representation of the samples?
+● Can be detected with PCA
+
+
+Versicolor dataset
+● "versicolor", one of the iris species
+● Only 3 features: sepal length, sepal width, and petal width
+● Samples are points in 3D space
+
+
+Versicolor dataset has intrinsic dimension 2
+● Samples lie close to a flat 2-dimensional sheet
+● So can be approximated using 2 features
+
+
+PCA identifies intrinsic dimension
+● Sca#er plots work only if samples have 2 or 3 features
+● PCA identifies intrinsic dimension when samples have any
+number of features
+● Intrinsic dimension = number of PCA features with significant
+variance
+
+
+PCA of the versicolor samples
+
+
+PCA features are ordered by variance descending
+
+
+Variance and intrinsic dimension
+● Intrinsic dimension is number of PCA features with significant variance
+● In our example: the first two PCA features
+● So intrinsic dimension is 2
+
+
+
+Plo!ing the variances of PCA features
+In [1]: import matplotlib.pyplot as plt
+In [2]: from sklearn.decomposition import PCA
+In [3]: pca = PCA()
+In [4]: pca.fit(samples)
+Out[4]: PCA(copy=True, ... )
+In [5]: features = range(pca.n_components_)
+
+
+
+Plo!ing the variances of PCA features
+In [6]: plt.bar(features, pca.explained_variance_)
+In [7]: plt.xticks(features)
+In [8]: plt.ylabel('variance')
+In [9]: plt.xlabel('PCA feature')
+In [10]: plt.show()
+
+
+Intrinsic dimension can be ambiguous
+● Intrinsic dimension is an idealization
+● … there is not always one correct answer!
+● Piedmont wines: could argue for 2, or for 3, or more
+
+_________________________________________________________________________________________________________________________
+
+The first principal component
+The first principal component of the data is the direction in which the data varies the most. In this exercise, your job is to use PCA to find the first principal component of the length and width measurements of the grain samples, and represent it as an arrow on the scatter plot.
+
+The array grains gives the length and width of the grain samples. PyPlot (plt) and PCA have already been imported for you.
+
+Instructions
+100 XP
+Make a scatter plot of the grain measurements. This has been done for you.
+Create a PCA instance called model.
+Fit the model to the grains data.
+Extract the coordinates of the mean of the data using the .mean_ attribute of model.
+Get the first principal component of model using the .components_[0,:] attribute.
+Plot the first principal component as an arrow on the scatter plot, using the plt.arrow() function. You have to specify the first two arguments - mean[0] and mean[1].
+
+
+
+# Make a scatter plot of the untransformed points
+plt.scatter(grains[:,0], grains[:,1])
+
+# Create a PCA instance: model
+model = PCA()
+
+# Fit model to points
+model.fit(grains)
+
+# Get the mean of the grain samples: mean
+mean = model.mean_
+
+# Get the first principal component: first_pc
+first_pc = model.components_[0,:]
+
+# Plot first_pc as an arrow, starting at mean
+plt.arrow(mean[0], mean[1], first_pc[0], first_pc[1], color='red', width=0.01)
+
+# Keep axes on same scale
+plt.axis('equal')
+plt.show()
+
+_________________________________________________________________________________________________________________________
+
+Variance of the PCA features
+The fish dataset is 6-dimensional. But what is its intrinsic dimension? Make a plot of the variances of the PCA features to find out. As before, samples is a 2D array, where each row represents a fish. You'll need to standardize the features first.
+
+Instructions
+100 XP
+Create an instance of StandardScaler called scaler.
+Create a PCA instance called pca.
+Use the make_pipeline() function to create a pipeline chaining scaler and pca.
+Use the .fit() method of pipeline to fit it to the fish samples samples.
+Extract the number of components used using the .n_components_ attribute of pca. Place this inside a range() function and store the result as features.
+Use the plt.bar() function to plot the explained variances, with features on the x-axis and pca.explained_variance_ on the y-axis.
+
+# Perform the necessary imports
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+import matplotlib.pyplot as plt
+
+# Create scaler: scaler
+scaler = StandardScaler()
+
+# Create a PCA instance: pca
+pca = PCA()
+
+# Create pipeline: pipeline
+pipeline = make_pipeline(scaler, pca)
+
+# Fit the pipeline to 'samples'
+pipeline.fit(samples)
+
+# Plot the explained variances
+features = range(pca.n_components_)
+plt.bar(features, pca.explained_variance_)
+plt.xlabel('PCA feature')
+plt.ylabel('variance')
+plt.xticks(features)
+plt.show()
+
+_________________________________________________________________________________________________________________________
+
+Dimension reduction
+with PCA
+
+
+Dimension reduction
+● Represents same data, using less features
+● Important part of machine-learning pipelines
+● Can be performed using PCA
+
+
+Dimension reduction with PCA
+● PCA features are in decreasing order of variance
+● Assumes the low variance features are "noise"
+● … and high variance features are informative
+
+
+
+Dimension reduction with PCA
+● Specify how many features to keep
+● E.g. PCA(n_components=2)
+● Keeps the first 2 PCA features
+● Intrinsic dimension is a good choice
+
+
+Dimension reduction of iris dataset
+In [1]: from sklearn.decomposition import PCA
+In [2]: pca = PCA(n_components=2)
+In [3]: pca.fit(samples)
+Out[3]: PCA(copy=True, ... )
+In [4]: transformed = pca.transform(samples)
+In [5]: print(transformed.shape)
+(150, 2)
+
+● samples = array of iris measurements (4 features)
+● species = list of iris species numbers
+
+
+
+Iris dataset in 2 dimensions
+● PCA has reduced the dimension to 2
+● Retained the 2 PCA features with highest variance
+● Important information preserved: species remain distinct
+In [6]: import matplotlib.pyplot as plt
+In [7]: xs = transformed[:,0]
+ ...: ys = transformed[:,1]
+In [8]: plt.scatter(xs, ys, c=species)
+ ...: plt.show()
+ 
+ 
+ Dimension reduction with PCA
+● Discards low variance PCA features
+● Assumes the high variance features are informative
+● Assumption typically holds in practice (e.g. for iris)
+
+
+Word frequency arrays
+● Rows represent documents, columns represent words
+● Entries measure presence of each word in each document
+● ... measure using "tf-idf" (more later)
+
+
+Sparse arrays and csr_matrix
+● Array is "sparse": most entries are zero
+● Can use scipy.sparse.csr_matrix instead of NumPy array
+● csr_matrix remembers only the non-zero entries (saves space!)
+ 
+
+TruncatedSVD and csr_matrix
+In [1]: from sklearn.decomposition import TruncatedSVD
+In [2]: model = TruncatedSVD(n_components=3)
+In [3]: model.fit(documents) # documents is csr_matrix
+Out[3]: TruncatedSVD(algorithm='randomized', ... )
+In [4]: transformed = model.transform(documents)
+● scikit-learn PCA doesn't support csr_matrix
+● Use scikit-learn TruncatedSVD instead
+● Performs same transformation
+_______________________________________________________________________________________________________________________________
+
+Dimension reduction of the fish measurements
+In a previous exercise, you saw that 2 was a reasonable choice for the "intrinsic dimension" of the fish measurements. Now use PCA for dimensionality reduction of the fish measurements, retaining only the 2 most important components.
+
+The fish measurements have already been scaled for you, and are available as scaled_samples.
+
+Instructions
+100 XP
+Import PCA from sklearn.decomposition.
+Create a PCA instance called pca with n_components=2.
+Use the .fit() method of pca to fit it to the scaled fish measurements scaled_samples.
+Use the .transform() method of pca to transform the scaled_samples. Assign the result to pca_features.
+
+# Import PCA
+from sklearn.decomposition import PCA
+
+# Create a PCA model with 2 components: pca
+pca = PCA(n_components=2)
+
+# Fit the PCA instance to the scaled samples
+pca.fit(scaled_samples)
+
+# Transform the scaled samples: pca_features
+pca_features = pca.transform(scaled_samples)
+
+# Print the shape of pca_features
+print(pca_features.shape)
+
+
+_________________________________________________________________________________________________________
+
+
+A tf-idf word-frequency array
+In this exercise, you'll create a tf-idf word frequency array for a toy collection of documents. For this, use the TfidfVectorizer from sklearn. It transforms a list of documents into a word frequency array, which it outputs as a csr_matrix. It has fit() and transform() methods like other sklearn objects.
+
+You are given a list documents of toy documents about pets. Its contents have been printed in the IPython Shell.
+
+Instructions
+100 XP
+Import TfidfVectorizer from sklearn.feature_extraction.text.
+Create a TfidfVectorizer instance called tfidf.
+Apply .fit_transform() method of tfidf to documents and assign the result to csr_mat. This is a word-frequency array in csr_matrix format.
+Inspect csr_mat by calling its .toarray() method and printing the result. This has been done for you.
+The columns of the array correspond to words. Get the list of words by calling the .get_feature_names() method of tfidf, and assign the result to words.
+
+# Import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Create a TfidfVectorizer: tfidf
+tfidf = TfidfVectorizer()
+
+# Apply fit_transform to document: csr_mat
+csr_mat = tfidf.fit_transform(documents)
+
+# Print result of toarray() method
+print(csr_mat.toarray())
+
+# Get the words: words
+words = tfidf.get_feature_names()
+
+# Print words
+print(words)
+
+<script.py> output:
+    [[ 0.51785612  0.          0.          0.68091856  0.51785612  0.        ]
+     [ 0.          0.          0.51785612  0.          0.51785612  0.68091856]
+     [ 0.51785612  0.68091856  0.51785612  0.          0.          0.        ]]
+    ['cats', 'chase', 'dogs', 'meow', 'say', 'woof']
+
+_________________________________________________________________________________________________________
+
+Clustering Wikipedia part I
+You saw in the video that TruncatedSVD is able to perform PCA on sparse arrays in csr_matrix format, such as word-frequency arrays. Combine your knowledge of TruncatedSVD and k-means to cluster some popular pages from Wikipedia. In this exercise, build the pipeline. In the next exercise, you'll apply it to the word-frequency array of some Wikipedia articles.
+
+Create a Pipeline object consisting of a TruncatedSVD followed by KMeans. (This time, we've precomputed the word-frequency matrix for you, so there's no need for a TfidfVectorizer).
+
+The Wikipedia dataset you will be working with was obtained from here.
+
+Instructions
+100 XP
+Import:
+TruncatedSVD from sklearn.decomposition.
+KMeans from sklearn.cluster.
+make_pipeline from sklearn.pipeline.
+Create a TruncatedSVD instance called svd with n_components=50.
+Create a KMeans instance called kmeans with n_clusters=6.
+Create a pipeline called pipeline consisting of svd and kmeans.
+
+# Perform the necessary imports
+from sklearn.decomposition import TruncatedSVD
+from sklearn.cluster import KMeans
+from sklearn.pipeline import make_pipeline
+
+# Create a TruncatedSVD instance: svd
+svd = TruncatedSVD(n_components = 50)
+
+# Create a KMeans instance: kmeans
+kmeans = KMeans(n_clusters=6)
+
+# Create a pipeline: pipeline
+pipeline = make_pipeline(svd, kmeans)
+_________________________________________________________________________________________________________
+
+Clustering Wikipedia part II
+It is now time to put your pipeline from the previous exercise to work! You are given an array articles of tf-idf word-frequencies of some popular Wikipedia articles, and a list titles of their titles. Use your pipeline to cluster the Wikipedia articles.
+
+A solution to the previous exercise has been pre-loaded for you, so a Pipeline pipeline chaining TruncatedSVD with KMeans is available.
+
+Instructions
+100 XP
+Import pandas as pd.
+Fit the pipeline to the word-frequency array articles.
+Predict the cluster labels.
+Align the cluster labels with the list titles of article titles by creating a DataFrame df with labels and titles as columns. This has been done for you.
+Use the .sort_values() method of df to sort the DataFrame by the 'label' column, and print the result.
+Hit 'Submit Answer' and take a moment to investigate your amazing clustering of Wikipedia pages!
+
+
+# Import pandas
+import pandas as pd
+
+# Fit the pipeline to articles
+pipeline.fit(articles)
+
+# Calculate the cluster labels: labels
+labels = pipeline.predict(articles)
+
+# Create a DataFrame aligning labels and titles: df
+df = pd.DataFrame({'label': labels, 'article': titles})
+
+# Display df sorted by cluster label
+print(df.sort_values('label'))
+
+
+
+<script.py> output:
+                                              article  label
+    34                             Zlatan Ibrahimović      0
+    31                              Cristiano Ronaldo      0
+    35                Colombia national football team      0
+    36              2014 FIFA World Cup qualification      0
+    37                                       Football      0
+    38                                         Neymar      0
+    39                                  Franck Ribéry      0
+    33                                 Radamel Falcao      0
+    30                  France national football team      0
+    32                                   Arsenal F.C.      0
+    21                             Michael Fassbender      1
+    22                              Denzel Washington      1
+    23                           Catherine Zeta-Jones      1
+    24                                   Jessica Biel      1
+    25                                  Russell Crowe      1
+    26                                     Mila Kunis      1
+    20                                 Angelina Jolie      1
+    29                               Jennifer Aniston      1
+    27                                 Dakota Fanning      1
+    28                                  Anne Hathaway      1
+    50                                   Chad Kroeger      2
+    58                                         Sepsis      2
+    51                                     Nate Ruess      2
+    52                                     The Wanted      2
+    53                                   Stevie Nicks      2
+    54                                 Arctic Monkeys      2
+    55                                  Black Sabbath      2
+    56                                       Skrillex      2
+    57                          Red Hot Chili Peppers      2
+    59                                    Adam Levine      2
+    44                                           Gout      3
+    49                                       Lymphoma      3
+    48                                     Gabapentin      3
+    47                                          Fever      3
+    46                                     Prednisone      3
+    45                                    Hepatitis C      3
+    43                                       Leukemia      3
+    42                                    Doxycycline      3
+    41                                    Hepatitis B      3
+    40                                    Tonsillitis      3
+    19  2007 United Nations Climate Change Conference      4
+    18  2010 United Nations Climate Change Conference      4
+    10                                 Global warming      4
+    11       Nationally Appropriate Mitigation Action      4
+    12                                   Nigel Lawson      4
+    13                               Connie Hedegaard      4
+    14                                 Climate change      4
+    15                                 Kyoto Protocol      4
+    16                                        350.org      4
+    17  Greenhouse gas emissions by the United States      4
+    1                                  Alexa Internet      5
+    2                               Internet Explorer      5
+    3                                     HTTP cookie      5
+    4                                   Google Search      5
+    8                                         Firefox      5
+    6                     Hypertext Transfer Protocol      5
+    7                                   Social search      5
+    9                                        LinkedIn      5
+    5                                          Tumblr      5
+    0                                        HTTP 404      5
+
+
+
+
+
 =====================================================================================================================================
 
 
@@ -622,5 +1731,302 @@ Discovering interpretable features
 In this chapter, you'll learn about a dimension reduction technique called "Non-negative matrix factorization" ("NMF") that expresses samples as combinations of interpretable parts. For example, it expresses documents as combinations of topics, and images in terms of commonly occurring visual patterns. You'll also learn to use NMF to build recommender systems that can find you similar articles to read, or musical artists that match your listening history!
 
 
+_________________________________________________________________________________________________________
 
-=====================================================================================================================================
+Non-negative
+ matrix factorization (NMF)
+ 
+Non-negative matrix factorization
+● NMF = "non-negative matrix factorization"
+● Dimension reduction technique
+● NMF models are interpretable (unlike PCA)
+● Easy to interpret means easy to explain!
+● However, all sample features must be non-negative (>= 0)
+
+
+Interpretable parts
+● NMF expresses documents as combinations of topics (or
+"themes")
+python
+r
+program
+function
+method
+…
+data
+analysis
+cluster
+statistics
+mean
+…
+DataCamp
+DataCamp is the
+first and foremost
+leader in Data
+Science
+Education offering
+skill-based
+training,
+pioneering
+technical
+innovation
+…
+learn
+teaching
+lesson
+lessons
+cours
+
+
+
+Interpretable parts
+● NMF expresses images as combinations of pa!erns
+
+
+Using scikit-learn NMF
+● Follows fit() / transform() pa!ern
+● Must specify number of components e.g. NMF(n_components=2)
+● Works with NumPy arrays and with csr_matrix
+
+
+Example word-frequency array
+● Word frequency array, 4 words, many documents
+● Measure presence of words in each document using "tf-idf"
+● "tf" = frequency of word in document
+● "idf" reduces influence of frequent words
+
+
+Example usage of NMF
+In [1]: from sklearn.decomposition import NMF
+In [2]: model = NMF(n_components=2)
+In [3]: model.fit(samples)
+Out[3]: NMF(alpha=0.0, ... )
+In [4]: nmf_features = model.transform(samples)
+● samples is the word-frequency array
+
+ 
+ 
+NMF components
+● NMF has components
+● ... just like PCA has principal components
+● Dimension of components = dimension of samples
+● Entries are non-negative
+In [5]: print(model.components_)
+[[ 0.01 0. 2.13 0.54]
+ [ 0.99 1.47 0. 0.5 ]]
+ 
+ 
+ NMF features
+● NMF feature values are non-negative
+● Can be used to reconstruct the samples
+● ... combine feature values with components
+In [6]: print(nmf_features)
+[[ 0. 0.2 ]
+ [ 0.19 0. ]
+ ...
+ [ 0.15 0.12]]
+ 
+ 
+ Reconstruction of a sample
+ 0.15 *
++ 0.12 *
+[ 0.1203 0.1764 0.3195 0.141 ]
+In [7]: print(samples[i,:])
+[ 0.12 0.18 0.32 0.14]
+In [8]: print(nmf_features[i,:])
+[ 0.15 0.12]
+[[ 0.01 0. 2.13 0.54 ]
+ [ 0.99 1.47 0. 0.5 ]]
+model.components_
+reconstruction of sample
+
+
+Sample reconstruction
+● Multiply components by feature values, and add up
+● Can also be expressed as a product of matrices
+● This is the "Matrix Factorization" in "NMF"
+
+
+NMF fits to non-negative data, only
+● Word frequencies in each document
+● Images encoded as arrays
+● Audio spectrograms
+● Purchase histories on e-commerce sites
+● … and many more!
+
+_________________________________________________________________________________________________________
+
+
+
+
+
+_________________________________________________________________________________________________________
+
+
+NMF learns
+interpretable parts
+
+
+Example: NMF learns interpretable parts
+● Word-frequency array articles (tf-idf)
+● 20,000 scientific articles (rows)
+● 800 words (columns)
+
+
+Applying NMF to the articles
+In [1]: print(articles.shape)
+(20000, 800)
+In [2]: from sklearn.decomposition import NMF
+In [3]: nmf = NMF(n_components=10)
+In [4]: nmf.fit(articles)
+Out[4]: NMF(alpha=0.0, ... )
+In [5]: print(nmf.components_.shape)
+(10, 800)
+
+
+NMF components are topics aardvark arch . . .zebra
+nmf.components_
+ 0.1 0.0 . . . 0.1
+top words:
+species 2.95
+plant 1.05
+plants 0.78
+genetic 0.58
+evolution 0.53
+life 0
+
+
+
+NMF components
+● For documents:
+● NMF components represent topics
+● NMF features combine topics into documents
+● For images, NMF components are parts of images
+
+
+Grayscale images
+● "Grayscale" image = no colors, only shades of gray
+● Measure pixel brightness
+● Represent with value between 0 and 1 (0 is black)
+● Convert to 2D array
+
+
+Grayscale image example
+● An 8x8 grayscale image of the moon, written as an array
+
+
+Grayscale images as flat arrays
+● Enumerate the entries
+● Row-by-row
+● From le" to right
+
+Encoding a collection of images
+● Collection of images of the same size
+● Encode as 2D array
+● Each row corresponds to an image
+● Each column corresponds to a pixel
+● ... can apply NMF
+
+
+Visualizing samples
+In [1]: print(sample)
+[ 0. 1. 0.5 1. 0. 1. ]
+In [2]: bitmap = sample.reshape((2, 3))
+In [3]: print(bitmap)
+[[ 0. 1. 0.5]
+ [ 1. 0. 1. ]]
+In [4]: from matplotlib import pyplot as plt
+In [5]: plt.imshow(bitmap, cmap='gray', interpolation='nearest')
+In [6]: plt.show()
+
+
+_________________________________________________________________________________________________________
+
+
+Building recommender
+systems using NMF
+
+
+Finding similar articles
+● Engineer at a large online newspaper
+● Task: recommend articles similar to article being read by
+customer
+● Similar articles should have similar topics
+
+
+
+Strategy
+● Apply NMF to the word-frequency array
+● NMF feature values describe the topics
+● ... so similar documents have similar NMF feature values
+● Compare NMF feature values?
+
+
+Apply NMF to the word-frequency array
+In [1]: from sklearn.decomposition import NMF
+In [2]: nmf = NMF(n_components=6)
+In [3]: nmf_features = nmf.fit_transform(articles)
+● articles is a word frequency array
+
+
+Strategy
+● Apply NMF to the word-frequency array
+● NMF feature values describe the topics
+● ... so similar documents have similar NMF feature values
+● Compare NMF feature values?
+
+
+
+Versions of articles
+● Different versions of the same document have same topic proportions
+● ... exact feature values may be different!
+● E.g. because one version uses many meaningless words
+● But all versions lie on the same line through the origin
+
+
+Cosine similarity
+● Uses the angle between the lines
+● Higher values means more similar
+● Maximum value is 1, when angle is 0˚
+
+
+Calculating the cosine similarities
+In [4]: from sklearn.preprocessing import normalize
+In [5]: norm_features = normalize(nmf_features)
+In [6]: current_article = norm_features[23,:] # if has index 23
+In [7]: similarities = norm_features.dot(current_article)
+In [8]: print(similarities)
+[ 0.7150569 0.26349967 0.40210445 ..., 0.70462768 0.20323616
+ 0.05047817]
+ 
+ 
+ 
+ DataFrames and labels
+In [9]: import pandas as pd
+In [10]: norm_features = normalize(nmf_features)
+In [11]: df = pd.DataFrame(norm_features, index=titles)
+In [12]: current_article = df.loc['Dog bites man']
+In [13]: similarities = df.dot(current_article)
+● Label similarities with the article titles, using a DataFrame
+● Titles given as a list: titles
+
+
+
+DataFrames and labels
+In [14]: print(similarities.nlargest())
+Dog bites man 1.000000
+Hound mauls cat 0.979946
+Pets go wild! 0.979708
+Dachshunds are dangerous 0.949641
+Our streets are no longer safe 0.900474
+dtype: float64
+
+
+
+ 
+
+
+
+
+
+

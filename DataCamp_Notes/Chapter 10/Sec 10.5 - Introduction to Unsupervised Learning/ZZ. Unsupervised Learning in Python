@@ -1856,9 +1856,213 @@ NMF fits to non-negative data, only
 
 _________________________________________________________________________________________________________
 
+NMF applied to Wikipedia articles
+In the video, you saw NMF applied to transform a toy word-frequency array. Now it's your turn to apply NMF, this time using the tf-idf word-frequency array of Wikipedia articles, given as a csr matrix articles. Here, fit the model and transform the articles. In the next exercise, you'll explore the result.
+
+Instructions
+100 XP
+Import NMF from sklearn.decomposition.
+Create an NMF instance called model with 6 components.
+Fit the model to the word count data articles.
+Use the .transform() method of model to transform articles, and assign the result to nmf_features.
+Print nmf_features to get a first idea what it looks like.
+
+# Import NMF
+from sklearn.decomposition import NMF
+
+# Create an NMF instance: model
+model = NMF(n_components = 6)
+
+# Fit the model to articles
+model.fit(articles)
+
+# Transform the articles: nmf_features
+nmf_features = model.transform(articles)
+
+# Print the NMF features
+print(nmf_features)
 
 
+<script.py> output:
+    [[  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        0.00000000e+00   4.40537550e-01]
+     [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        0.00000000e+00   5.66697169e-01]
+     [  3.82028842e-03   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        0.00000000e+00   3.98711863e-01]
+     [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        0.00000000e+00   3.81802473e-01]
+     [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        0.00000000e+00   4.85595702e-01]
+     [  1.29282152e-02   1.37897342e-02   7.76329173e-03   3.34408940e-02
+        0.00000000e+00   3.34576667e-01]
+     [  0.00000000e+00   0.00000000e+00   2.06743313e-02   0.00000000e+00
+        6.04483999e-03   3.59120109e-01]
+     [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        0.00000000e+00   4.91056189e-01]
+     [  1.54263607e-02   1.42824958e-02   3.76634980e-03   2.37057194e-02
+        2.62620104e-02   4.80853190e-01]
+     [  1.11731168e-02   3.13694987e-02   3.09488233e-02   6.56848407e-02
+        1.96677357e-02   3.38344150e-01]
+     [  0.00000000e+00   0.00000000e+00   5.30724169e-01   0.00000000e+00
+        2.83680833e-02   0.00000000e+00]
+     [  0.00000000e+00   0.00000000e+00   3.56512510e-01   0.00000000e+00
+        0.00000000e+00   0.00000000e+00]
+     [  1.20119326e-02   6.50071131e-03   3.12248026e-01   6.09631371e-02
+        1.13861828e-02   1.92634590e-02]
+     [  3.93459652e-03   6.24467948e-03   3.42376317e-01   1.10743717e-02
+        0.00000000e+00   0.00000000e+00]
+     [  4.63790779e-03   0.00000000e+00   4.34918922e-01   0.00000000e+00
+        3.84276770e-02   3.08185068e-03]
+     [  0.00000000e+00   0.00000000e+00   4.83293440e-01   0.00000000e+00
+        0.00000000e+00   0.00000000e+00]
+     [  5.64979593e-03   1.83542969e-02   3.76536354e-01   3.25386514e-02
+        0.00000000e+00   1.13353377e-02]
+     [  0.00000000e+00   0.00000000e+00   4.80918082e-01   0.00000000e+00
+        0.00000000e+00   0.00000000e+00]
+     [  0.00000000e+00   9.01900981e-03   5.51012866e-01   0.00000000e+00
+        0.00000000e+00   0.00000000e+00]
+     [  0.00000000e+00   0.00000000e+00   4.65973809e-01   0.00000000e+00
+        0.00000000e+00   0.00000000e+00]
+     [  0.00000000e+00   1.14085492e-02   2.08657559e-02   5.17649098e-01
+        5.81410759e-02   1.37877426e-02]
+     [  0.00000000e+00   0.00000000e+00   0.00000000e+00   5.10358757e-01
+        0.00000000e+00   0.00000000e+00]
+     [  0.00000000e+00   5.60126890e-03   0.00000000e+00   4.22283440e-01
+        0.00000000e+00   0.00000000e+00]
+     [  0.00000000e+00   0.00000000e+00   0.00000000e+00   4.36651556e-01
+        0.00000000e+00   0.00000000e+00]
+     [  0.00000000e+00   0.00000000e+00   0.00000000e+00   4.97978339e-01
+        0.00000000e+00   0.00000000e+00]
+     [  9.88328587e-02   8.60078405e-02   3.91039486e-03   3.80930550e-01
+        4.39244169e-04   5.22242083e-03]
+     [  0.00000000e+00   0.00000000e+00   0.00000000e+00   5.72039255e-01
+        0.00000000e+00   7.13668262e-03]
+     [  1.31459990e-02   1.04857558e-02   0.00000000e+00   4.68799007e-01
+        0.00000000e+00   1.16329437e-02]
+     [  3.84523605e-03   0.00000000e+00   0.00000000e+00   5.75579129e-01
+        0.00000000e+00   0.00000000e+00]
+     [  2.25229694e-03   1.38742556e-03   0.00000000e+00   5.27825223e-01
+        1.20265122e-02   1.49509373e-02]
+     [  0.00000000e+00   4.07564238e-01   1.85716220e-03   0.00000000e+00
+        2.96611934e-03   4.52407969e-04]
+     [  1.53411152e-03   6.08197003e-01   5.22282514e-04   6.24710508e-03
+        1.18445178e-03   4.40137175e-04]
+     [  5.38783564e-03   2.65027493e-01   5.38515027e-04   1.86883266e-02
+        6.38653852e-03   2.90152485e-03]
+     [  0.00000000e+00   6.44941315e-01   0.00000000e+00   0.00000000e+00
+        0.00000000e+00   0.00000000e+00]
+     [  0.00000000e+00   6.08930968e-01   0.00000000e+00   0.00000000e+00
+        0.00000000e+00   0.00000000e+00]
+     [  0.00000000e+00   3.43698795e-01   0.00000000e+00   0.00000000e+00
+        3.97796654e-03   0.00000000e+00]
+     [  6.10468529e-03   3.15325246e-01   1.54881377e-02   0.00000000e+00
+        5.06246723e-03   4.74412331e-03]
+     [  6.47329526e-03   2.13336953e-01   9.49503916e-03   4.56876974e-02
+        1.71915205e-02   9.52221342e-03]
+     [  7.99094363e-03   4.67613593e-01   0.00000000e+00   2.43369814e-02
+        0.00000000e+00   0.00000000e+00]
+     [  0.00000000e+00   6.42845443e-01   0.00000000e+00   2.35801383e-03
+        0.00000000e+00   0.00000000e+00]
+     [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        4.77082016e-01   0.00000000e+00]
+     [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        4.94255148e-01   0.00000000e+00]
+     [  0.00000000e+00   2.99077586e-04   2.14488829e-03   0.00000000e+00
+        3.81777901e-01   5.83880177e-03]
+     [  0.00000000e+00   0.00000000e+00   0.00000000e+00   5.64564666e-03
+        5.42240389e-01   0.00000000e+00]
+     [  1.78047619e-03   7.84444104e-04   1.41629141e-02   4.59712971e-04
+        4.24301597e-01   0.00000000e+00]
+     [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        5.11390831e-01   0.00000000e+00]
+     [  0.00000000e+00   0.00000000e+00   3.28388532e-03   0.00000000e+00
+        3.72886108e-01   0.00000000e+00]
+     [  0.00000000e+00   2.62094706e-04   3.61107663e-02   2.32283827e-04
+        2.30510297e-01   0.00000000e+00]
+     [  1.12510199e-02   2.12335653e-03   1.60973854e-02   1.02461297e-02
+        3.25460941e-01   3.75942903e-02]
+     [  0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        4.18957425e-01   3.57767739e-04]
+     [  3.08353063e-01   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        0.00000000e+00   0.00000000e+00]
+     [  3.68157223e-01   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        0.00000000e+00   0.00000000e+00]
+     [  3.97926884e-01   2.81714228e-02   3.67015389e-03   1.70027867e-02
+        1.95967122e-03   2.11679187e-02]
+     [  3.75777630e-01   2.07529067e-03   0.00000000e+00   3.72069359e-02
+        0.00000000e+00   5.86024044e-03]
+     [  4.38008419e-01   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        0.00000000e+00   0.00000000e+00]
+     [  4.57860338e-01   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        0.00000000e+00   0.00000000e+00]
+     [  2.75464779e-01   4.46974310e-03   0.00000000e+00   5.29534527e-02
+        0.00000000e+00   1.91029166e-02]
+     [  4.45173818e-01   0.00000000e+00   0.00000000e+00   0.00000000e+00
+        5.48698118e-03   0.00000000e+00]
+     [  2.92727168e-01   1.33670098e-02   1.14264445e-02   1.05175992e-02
+        1.87696132e-01   9.24117180e-03]
+     [  3.78249406e-01   1.43975990e-02   0.00000000e+00   9.85014498e-02
+        1.35900234e-02   0.00000000e+00]]
 
+
+_________________________________________________________________________________________________________
+
+NMF features of the Wikipedia articles
+Now you will explore the NMF features you created in the previous exercise. A solution to the previous exercise has been pre-loaded, so the array nmf_features is available. Also available is a list titles giving the title of each Wikipedia article.
+
+When investigating the features, notice that for both actors, the NMF feature 3 has by far the highest value. This means that both articles are reconstructed using mainly the 3rd NMF component. In the next video, you'll see why: NMF components represent topics (for instance, acting!).
+
+Instructions
+100 XP
+Import pandas as pd.
+Create a DataFrame df from nmf_features using pd.DataFrame(). Set the index to titles using index=titles.
+Use the .loc[] accessor of df to select the row with title 'Anne Hathaway', and print the result. These are the NMF features for the article about the actress Anne Hathaway.
+Repeat the last step for 'Denzel Washington' (another actor).
+
+
+# Import pandas
+import pandas as pd
+
+# Create a pandas DataFrame: df
+df = pd.DataFrame(nmf_features, index=titles)
+
+# Print the row for 'Anne Hathaway'
+print(df.loc['Anne Hathaway'])
+
+# Print the row for 'Denzel Washington'
+print(df.loc['Denzel Washington'])
+
+<script.py> output:
+    0    0.003845
+    1    0.000000
+    2    0.000000
+    3    0.575711
+    4    0.000000
+    5    0.000000
+    Name: Anne Hathaway, dtype: float64
+    0    0.000000
+    1    0.005601
+    2    0.000000
+    3    0.422380
+    4    0.000000
+    5    0.000000
+    Name: Denzel Washington, dtype: float64
+
+
+Great work! Notice that for both actors, the NMF feature 3 has by far the highest value. This means that both articles are reconstructed using mainly the 3rd NMF component. In the next video, you'll see why: NMF components represent topics (for instance, acting!).
+
+_________________________________________________________________________________________________________
+
+NMF reconstructs samples
+In this exercise, you'll check your understanding of how NMF reconstructs samples from its components using the NMF feature values. On the right are the components of an NMF model. If the NMF feature values of a sample are [2, 1], then which of the following is most likely to represent the original sample? A pen and paper will help here! You have to apply the same technique Ben used in the video to reconstruct the sample [0.1203 0.1764 0.3195 0.141].
+
+[[ 1.   0.5  0. ]
+ [ 0.2  0.1  2.1]]
+ 
+Answer:  [2.2, 1.0, 2.0].
+ 
+ 
 
 _________________________________________________________________________________________________________
 
@@ -1938,6 +2142,191 @@ In [3]: print(bitmap)
 In [4]: from matplotlib import pyplot as plt
 In [5]: plt.imshow(bitmap, cmap='gray', interpolation='nearest')
 In [6]: plt.show()
+_________________________________________________________________________________________________________
+
+NMF learns topics of documents
+In the video, you learned when NMF is applied to documents, the components correspond to topics of documents, and the NMF features reconstruct the documents from the topics. Verify this for yourself for the NMF model that you built earlier using the Wikipedia articles. Previously, you saw that the 3rd NMF feature value was high for the articles about actors Anne Hathaway and Denzel Washington. In this exercise, identify the topic of the corresponding NMF component.
+
+The NMF model you built earlier is available as model, while words is a list of the words that label the columns of the word-frequency array.
+
+After you are done, take a moment to recognise the topic that the articles about Anne Hathaway and Denzel Washington have in common!
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import pandas as pd.
+Create a DataFrame components_df from model.components_, setting columns=words so that columns are labeled by the words.
+Print components_df.shape to check the dimensions of the DataFrame.
+Use the .iloc[] accessor on the DataFrame components_df to select row 3. Assign the result to component.
+Call the .nlargest() method of component, and print the result. This gives the five words with the highest values for that component.
+
+
+
+# Import pandas
+import pandas as pd
+
+# Create a DataFrame: components_df
+components_df = pd.DataFrame(model.components_, columns=words)
+
+# Print the shape of the DataFrame
+print(components_df.shape)
+
+# Select row 3: component
+component = components_df.iloc[3]
+
+# Print result of nlargest
+print(component.nlargest())
+
+
+<script.py> output:
+    (6, 13125)
+    film       0.627877
+    award      0.253131
+    starred    0.245284
+    role       0.211451
+    actress    0.186398
+    Name: 3, dtype: float64
+    
+    
+    
+_________________________________________________________________________________________________________
+
+Explore the LED digits dataset
+In the following exercises, you'll use NMF to decompose grayscale images into their commonly occurring patterns. Firstly, explore the image dataset and see how it is encoded as an array. You are given 100 images as a 2D array samples, where each row represents a single 13x8 image. The images in your dataset are pictures of a LED digital display.
+
+Instructions
+100 XP
+Import matplotlib.pyplot as plt.
+Select row 0 of samples and assign the result to digit. For example, to select column 2 of an array a, you could use a[:,2]. Remember that since samples is a NumPy array, you can't use the .loc[] or iloc[] accessors to select specific rows or columns.
+Print digit. This has been done for you. Notice that it is a 1D array of 0s and 1s.
+Use the .reshape() method of digit to get a 2D array with shape (13, 8). Assign the result to bitmap.
+Print bitmap, and notice that the 1s show the digit 7!
+Use the plt.imshow() function to display bitmap as an image.
+
+# Import pyplot
+from matplotlib import pyplot as plt
+
+# Select the 0th row: digit
+digit = samples[0,:]
+
+# Print digit
+print(digit)
+
+# Reshape digit to a 13x8 array: bitmap
+bitmap = digit.reshape(13,8)
+
+# Print bitmap
+print(bitmap)
+
+# Use plt.imshow to display bitmap
+plt.imshow(bitmap, cmap='gray', interpolation='nearest')
+plt.colorbar()
+plt.show()
+
+
+
+<script.py> output:
+    [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  0.  0.  0.  0.
+      0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  0.  0.  1.  0.  0.  0.  0.  0.
+      0.  0.  1.  0.  0.  0.  0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  0.  0.
+      0.  0.  0.  0.  0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  0.  0.  1.  0.
+      0.  0.  0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  0.  0.  1.  0.  0.  0.
+      0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
+    [[ 0.  0.  0.  0.  0.  0.  0.  0.]
+     [ 0.  0.  1.  1.  1.  1.  0.  0.]
+     [ 0.  0.  0.  0.  0.  0.  1.  0.]
+     [ 0.  0.  0.  0.  0.  0.  1.  0.]
+     [ 0.  0.  0.  0.  0.  0.  1.  0.]
+     [ 0.  0.  0.  0.  0.  0.  1.  0.]
+     [ 0.  0.  0.  0.  0.  0.  0.  0.]
+     [ 0.  0.  0.  0.  0.  0.  1.  0.]
+     [ 0.  0.  0.  0.  0.  0.  1.  0.]
+     [ 0.  0.  0.  0.  0.  0.  1.  0.]
+     [ 0.  0.  0.  0.  0.  0.  1.  0.]
+     [ 0.  0.  0.  0.  0.  0.  0.  0.]
+     [ 0.  0.  0.  0.  0.  0.  0.  0.]]
+
+_________________________________________________________________________________________________________
+
+
+NMF learns the parts of images
+Now use what you've learned about NMF to decompose the digits dataset. You are again given the digit images as a 2D array samples. This time, you are also provided with a function show_as_image() that displays the image encoded by any 1D array:
+
+def show_as_image(sample):
+    bitmap = sample.reshape((13, 8))
+    plt.figure()
+    plt.imshow(bitmap, cmap='gray', interpolation='nearest')
+    plt.colorbar()
+    plt.show()
+After you are done, take a moment to look through the plots and notice how NMF has expressed the digit as a sum of the components!
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import NMF from sklearn.decomposition.
+Create an NMF instance called model with 7 components. (7 is the number of cells in an LED display).
+Apply the .fit_transform() method of model to samples. Assign the result to features.
+To each component of the model (accessed via model.components_), apply the show_as_image() function to that component inside the loop.
+Assign the row 0 of features to digit_features.
+Print digit_features.
+
+# Import NMF
+from sklearn.decomposition import NMF
+
+# Create an NMF model: model
+model = NMF(n_components = 7)
+
+# Apply fit_transform to samples: features
+features = model.fit_transform(samples)
+
+# Call show_as_image on each component
+for component in model.components_:
+    show_as_image(component)
+
+# Assign the 0th row of features: digit_features
+digit_features = features[0,:]
+
+# Print digit_features
+print(digit_features)
+
+<script.py> output:
+    [  4.76823559e-01   0.00000000e+00   0.00000000e+00   5.90605054e-01
+       4.81559442e-01   0.00000000e+00   7.37557191e-16]
+       
+       
+
+_________________________________________________________________________________________________________
+
+
+PCA doesn't learn parts
+Unlike NMF, PCA doesn't learn the parts of things. Its components do not correspond to topics (in the case of documents) or to parts of images, when trained on images. Verify this for yourself by inspecting the components of a PCA model fit to the dataset of LED digit images from the previous exercise. The images are available as a 2D array samples. Also available is a modified version of the show_as_image() function which colors a pixel red if the value is negative.
+
+After submitting the answer, notice that the components of PCA do not represent meaningful parts of images of LED digits!
+
+Instructions
+100 XP
+Import PCA from sklearn.decomposition.
+Create a PCA instance called model with 7 components.
+Apply the .fit_transform() method of model to samples. Assign the result to features.
+To each component of the model (accessed via model.components_), apply the show_as_image() function to that component inside the loop.
+
+
+# Import PCA
+from sklearn.decomposition import PCA
+
+# Create a PCA instance: model
+model = PCA(n_components = 7)
+
+# Apply fit_transform to samples: features
+features = model.fit_transform(samples)
+
+# Call show_as_image on each component
+for component in model.components_:
+    show_as_image(component)
+    
+
 
 
 _________________________________________________________________________________________________________
@@ -2022,8 +2411,123 @@ Our streets are no longer safe 0.900474
 dtype: float64
 
 
+_________________________________________________________________________________________________________
 
- 
+Which articles are similar to 'Cristiano Ronaldo'?
+In the video, you learned how to use NMF features and the cosine similarity to find similar articles. Apply this to your NMF model for popular Wikipedia articles, by finding the articles most similar to the article about the footballer Cristiano Ronaldo. The NMF features you obtained earlier are available as nmf_features, while titles is a list of the article titles.
+
+Instructions
+100 XP
+Import normalize from sklearn.preprocessing.
+Apply the normalize() function to nmf_features. Store the result as norm_features.
+Create a DataFrame df from norm_features, using titles as an index.
+Use the .loc[] accessor of df to select the row of 'Cristiano Ronaldo'. Assign the result to article.
+Apply the .dot() method of df to article to calculate the cosine similarity of every row with article.
+Print the result of the .nlargest() method of similarities to display the most similiar articles. This has been done for you, so hit 'Submit Answer' to see the result!
+
+
+# Perform the necessary imports
+import pandas as pd
+from sklearn.preprocessing import normalize
+
+# Normalize the NMF features: norm_features
+norm_features = normalize(nmf_features)
+
+# Create a DataFrame: df
+df = pd.DataFrame(norm_features, index=titles)
+
+# Select the row corresponding to 'Cristiano Ronaldo': article
+article = df.loc['Cristiano Ronaldo']
+
+# Compute the dot products: similarities
+similarities = df.dot(article)
+
+# Display those with the largest cosine similarity
+print(similarities.nlargest())
+
+_________________________________________________________________________________________________________
+
+Recommend musical artists part I
+In this exercise and the next, you'll use what you've learned about NMF to recommend popular music artists! You are given a sparse array artists whose rows correspond to artists and whose column correspond to users. The entries give the number of times each artist was listened to by each user.
+
+In this exercise, build a pipeline and transform the array into normalized NMF features. The first step in the pipeline, MaxAbsScaler, transforms the data so that all users have the same influence on the model, regardless of how many different artists they've listened to. In the next exercise, you'll use the resulting normalized NMF features for recommendation!
+
+This data is part of a larger dataset available here.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import:
+NMF from sklearn.decomposition.
+Normalizer and MaxAbsScaler from sklearn.preprocessing.
+make_pipeline from sklearn.pipeline.
+Create an instance of MaxAbsScaler called scaler.
+Create an NMF instance with 20 components called nmf.
+Create an instance of Normalizer called normalizer.
+Create a pipeline called pipeline that chains together scaler, nmf, and normalizer.
+Apply the .fit_transform() method of pipeline to artists. Assign the result to norm_features.
+
+
+
+ # Perform the necessary imports
+from sklearn.decomposition import NMF
+from sklearn.preprocessing import Normalizer, MaxAbsScaler
+from sklearn.pipeline import make_pipeline
+
+# Create a MaxAbsScaler: scaler
+scaler = MaxAbsScaler()
+
+# Create an NMF model: nmf
+nmf = NMF(n_components=20)
+
+# Create a Normalizer: normalizer
+normalizer = Normalizer()
+
+# Create a pipeline: pipeline
+pipeline = make_pipeline(scaler, nmf, normalizer)
+
+# Apply fit_transform to artists: norm_features
+norm_features = pipeline.fit_transform(artists)
+
+
+_________________________________________________________________________________________________________
+
+Recommend musical artists part II
+Suppose you were a big fan of Bruce Springsteen - which other musicial artists might you like? Use your NMF features from the previous exercise and the cosine similarity to find similar musical artists. A solution to the previous exercise has been run, so norm_features is an array containing the normalized NMF features as rows. The names of the musical artists are available as the list artist_names.
+
+Instructions
+100 XP
+Import pandas as pd.
+Create a DataFrame df from norm_features, using artist_names as an index.
+Use the .loc[] accessor of df to select the row of 'Bruce Springsteen'. Assign the result to artist.
+Apply the .dot() method of df to artist to calculate the dot product of every row with artist. Save the result as similarities.
+Print the result of the .nlargest() method of similarities to display the artists most similar to 'Bruce Springsteen'.
+
+
+# Import pandas
+import pandas as pd
+
+# Create a DataFrame: df
+df = pd.DataFrame(norm_features,index=artist_names)
+
+# Select row of 'Bruce Springsteen': artist
+artist = df.loc['Bruce Springsteen']
+
+# Compute cosine similarities: similarities
+similarities = df.dot(artist)
+
+# Display those with highest cosine similarity
+print(similarities.nlargest())
+
+
+<script.py> output:
+    Bruce Springsteen    1.000000
+    Neil Young           0.957535
+    Van Morrison         0.876509
+    Leonard Cohen        0.866697
+    Bob Dylan            0.864827
+    dtype: float64
 
 
 

@@ -1,0 +1,293 @@
+Natural Language Processing Fundamentals in Python
+
+Course Description
+In this course, you'll learn Natural Language Processing (NLP) basics, such as how to identify and separate words, how to extract topics in a text, and how to build your own fake news classifier. You'll also learn how to use basic libraries such as NLTK, alongside libraries which utilize deep learning to solve common NLP problems. This course will give you the foundation to process and parse text as you move forward in your Python learning.
+
+===============================================================================================================================
+
+1
+Regular expressions & word tokenization
+FREE
+0%
+This chapter will introduce some basic NLP concepts, such as word tokenization and regular expressions to help parse text. You'll also learn how to handle non-English text and more difficult tokenization you might find as you explore the wide world of NLP.
+
+_____________________________________________________________________________________________________________________________
+
+Introduction to regular
+expressions
+
+What is Natural Language Processing?
+Field of study focused on making sense of language
+Using statistics and computers
+You will learn the basics of NLP
+Topic identification
+Text classification
+NLP applications include:
+Chatbots
+Translation
+Sentiment analysis
+... and many more!
+
+
+
+What exactly are regular expressions?
+Strings with a special syntax
+Allow us to match patterns in other strings
+Applications of regular expressions:
+Find all web links in a document
+Parse email addresses, remove/replace unwanted characters
+
+In [1]: import re
+In [2]: re.match('abc'
+,
+'abcdef')
+Out[2]: <_sre.SRE_Match object; span=(0, 3), match='abc'>
+In [3]: word_regex = '\w+'
+In [4]: re.match(word_regex,
+'hi there!')
+Out[4]: <_sre.SRE_Match object; span=(0, 2), match='hi'>
+
+
+Common regex patterns (7)
+pattern matches example
+\w+ word 'Magic'
+\d digit 9
+\s space ' '
+.* wildcard 'username74'
++ or * greedy match 'aaaaaa'
+\S not space 'no_spaces'
+[a-z] lowercase group 'abcdefg
+
+
+
+
+Python's re Module
+re module
+split: split a string on regex
+findall: find all patterns in a string
+search: search for a pattern
+match: match an entire string or substring based on a pattern
+Pattern first, and the string second
+May return an iterator, string, or match object
+In [5]: re.split('\s+'
+,
+'Split on spaces.')
+Out[5]: ['Split'
+,
+'on'
+,
+'spaces.']
+
+________________________________________________________________________________________________________________________
+
+
+Introduction to
+tokenization
+
+
+What is tokenization?
+Turning a string or document into tokens (smaller chunks)
+One step in preparing a text for NLP
+Many different theories and rules
+You can create your own rules using regular expressions
+Some examples:
+Breaking out words or sentences
+Separating punctuation
+Separating all hashtags in a tweet
+
+
+nltk library
+nltk: natural language toolkit
+In [1]: from nltk.tokenize import word_tokenize
+In [2]: word_tokenize("Hi there!")
+Out[2]: ['Hi'
+,
+'there'
+,
+'!']
+
+
+Why tokenize?
+Easier to map part of speech
+Matching common words
+Removing unwanted tokens
+"I don't like Sam's shoes."
+"I"
+,
+"do"
+,
+"n't"
+,
+"like"
+,
+"Sam"
+,
+"'s"
+,
+"shoes"
+,
+"."
+
+
+Other nltk tokenizers
+sent_tokenize: tokenize a document into sentences
+regexp_tokenize: tokenize a string or document based on a regular
+expression pattern
+TweetTokenizer: special class just for tweet tokenization, allowing you
+to separate hashtags, mentions and lots of exclamation points!!!
+
+
+
+More regex practice
+Difference between re.search() and re.match()
+In [1]: import re
+In [2]: re.match('abc'
+,
+'abcde')
+Out[2]: <_sre.SRE_Match object; span=(0, 3), match='abc'>
+In [3]: re.search('abc'
+,
+'abcde')
+Out[3]: <_sre.SRE_Match object; span=(0, 3), match='abc'>
+In [4]: re.match('cd'
+,
+'abcde')
+In [5]: re.search('cd'
+,
+'abcde')
+Out[5]: <_sre.SRE_Match object; span=(2, 4), match='cd'>
+________________________________________________________________________________________________________________________
+
+Advanced tokenization
+with regex
+
+Regex groups using or "|"
+OR is represented using |
+You can define a group using ()
+You can define explicit character ranges using []
+
+In [1]: import re
+In [2]: match_digits_and_words = ('(\d+|\w+)')
+In [3]: re.findall(match_digits_and_words,
+'He has 11 cats.')
+Out[3]: ['He'
+,
+'has'
+,
+'11'
+,
+'cats']
+
+
+
+Regex ranges and groups
+pattern matches example
+[A-Za-z]+ upper and lowercase English alphabet 'ABCDEFghijk'
+[0-9] numbers from 0 to 9 9
+[A-Za-z\-
+\.]+
+upper and lowercase English alphabet, -
+and .
+'MyWebsite.com'
+(a-z) a, - and z 'a-z'
+(\s+l,) spaces or a comma '
+,
+'
+
+
+
+Character range with re.match()
+In [1]: import re
+In [2]: my_str = 'match lowercase spaces nums like 12, but no commas'
+In [3]: re.match('[a-z0-9 ]+'
+, my_str)
+Out[3]: <_sre.SRE_Match object;
+span=(0, 42), match='match lowercase spaces nums like 12'>
+
+
+
+
+
+________________________________________________________________________________________________________________________
+
+Charting word length
+with nltk
+
+
+Getting started with matplotlib
+Charting library used by many open source Python projects
+Straightforward functionality with lots of options
+Histograms
+Bar charts
+Line charts
+Scatter plots
+... and also advanced functionality like 3D graphs and animations!
+
+
+Plotting a histogram with matplotlib
+In [1]: from matplotlib import pyplot as plt
+In [2]: plt.hist([1, 5, 5, 7, 7, 7, 9])
+Out[2]: (array([ 1., 0., 0., 0., 0., 2., 0., 3., 0., 1.]),
+array([ 1. , 1.8, 2.6, 3.4, 4.2, 5. , 5.8, 6.6,
+7.4, 8.2, 9. ]),
+<a list of 10 Patch objects>)
+In [3]: plt.show()
+
+
+Generated Histogram
+
+
+Combining NLP data extraction with plotting
+In [1]: from matplotlib import pyplot as plt
+In [2]: from nltk.tokenize import word_tokenize
+In [3]: words = word_tokenize("This is a pretty cool tool!")
+In [4]: word_lengths = [len(w) for w in words]
+In [5]: plt.hist(word_lengths)
+Out[5]: (array([ 2., 0., 1., 0., 0., 0., 3., 0., 0., 1.]),
+array([ 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5, 5. , 5.5,
+6. ]),
+<a list of 10 Patch objects>)
+In [6]: plt.show()
+
+
+
+
+
+
+
+
+
+________________________________________________________________________________________________________________________
+
+
+
+
+===============================================================================================================================
+
+2
+Simple topic identification
+0%
+This chapter will introduce you to topic identification, which you can apply to any text you encounter in the wild. Using basic NLP models, you will identify topics from texts based on term frequencies. You'll experiment and compare two simple methods - bag-of-words and Tf-idf using NLTK and a new library - Gensim.
+
+
+
+
+
+===============================================================================================================================
+3
+Named-entity recognition
+0%
+This chapter will introduce a slightly more advanced topic - Named-entity recognition. You'll learn how to identify the who, what and where of your texts using pre-trained models on English and non-English text. You'll also learn how to use some new libraries - polyglot and spaCy - to add to your NLP toolbox.
+
+
+
+
+
+
+===============================================================================================================================
+
+
+4
+Building a "fake news" classifier
+0%
+Here, you'll apply the basics of what you've learned along with some supervised machine learning to build a "fake news" detector. You'll begin by learning the basics of supervised machine learning, and then move forward by choosing a few important features and testing ideas to identify and classify "fake news" articles.

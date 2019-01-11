@@ -19,7 +19,7 @@ Regards,
 Mikiko
 
 ![alt text](
-       https://media.licdn.com/dms/image/C4D03AQEK3GxIfKJ_jQ/profile-displayphoto-shrink_200_200/0?e=1550102400&v=beta&t=3JpBTvUBaGkCJ4ND1CdL75RQra45oUveMAWVABkVS3s
+       https://github.com/MMBazel/springboard-program/blob/master/Additional%20Resources/profile_pic_jpeg.jpg?raw=true
       )
 
 

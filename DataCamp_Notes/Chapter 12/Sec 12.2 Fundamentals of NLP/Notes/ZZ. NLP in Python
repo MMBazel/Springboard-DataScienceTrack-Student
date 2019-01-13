@@ -321,6 +321,86 @@ In [3]: re.match('[a-z0-9 ]+'
 Out[3]: <_sre.SRE_Match object;
 span=(0, 42), match='match lowercase spaces nums like 12'>
 
+________________________________________________________________________________________________________________________
+
+Regex with NLTK tokenization
+Twitter is a frequently used source for NLP text and tasks. In this exercise, you'll build a more complex tokenizer for tweets with hashtags and mentions using nltk and regex. The nltk.tokenize.TweetTokenizer class gives you some extra methods and attributes for parsing tweets.
+
+Here, you're given some example tweets to parse using both TweetTokenizer and regexp_tokenize from the nltk.tokenize module. These example tweets have been pre-loaded into the variable tweets. Feel free to explore it in the IPython Shell!
+
+Instructions
+100 XP
+Instructions
+100 XP
+From nltk.tokenize, import regexp_tokenize and TweetTokenizer.
+A regex pattern to define hashtags called pattern1 has been defined for you. Call regexp_tokenize() with this hashtag pattern on the first tweet in tweets.
+Write a new pattern called pattern2 to match mentions and hashtags. A mention is something like @DataCamp. Then, call regexp_tokenize() with your new hashtag pattern on the last tweet in tweets. You can access the last element of a list using -1 as the index, for example, tweets[-1].
+Create an instance of TweetTokenizer called tknzr and use it inside a list comprehension to tokenize each tweet into a new list called all_tokens. To do this, use the .tokenize() method of tknzr, with t as your iterator variable.
+
+
+# Import the necessary modules
+from nltk.tokenize import regexp_tokenize
+from nltk.tokenize import TweetTokenizer
+
+# Define a regex pattern to find hashtags: pattern1
+pattern1 = r"#\w+"
+
+# Use the pattern on the first tweet in the tweets list
+regexp_tokenize(tweets[0], pattern1)
+
+# Write a pattern that matches both mentions and hashtags
+pattern2 = r"([@]\w+)"
+
+# Use the pattern on the last tweet in the tweets list
+regexp_tokenize(tweets[-1], pattern2)
+
+# Use the TweetTokenizer to tokenize all tweets into one list
+tknzr = TweetTokenizer()
+all_tokens = [tknzr.tokenize(t) for t in tweets]
+print(all_tokens)
+
+
+<script.py> output:
+    [['This', 'is', 'the', 'best', '#nlp', 'exercise', 'ive', 'found', 'online', '!', '#python'], ['#NLP', 'is', 'super', 'fun', '!', '<3', '#learning'], ['Thanks', '@datacamp', ':)', '#nlp', '#python']]
+    
+________________________________________________________________________________________________________________________
+
+
+Non-ascii tokenization
+In this exercise, you'll practice advanced tokenization by tokenizing some non-ascii based text. You'll be using German with emoji!
+
+Here, you have access to a string called german_text, which has been printed for you in the Shell. Notice the emoji and the German characters!
+
+The following modules have been pre-imported from nltk.tokenize: regexp_tokenize and word_tokenize.
+
+Unicode ranges for emoji are:
+
+('\U0001F300'-'\U0001F5FF'), ('\U0001F600-\U0001F64F'), ('\U0001F680-\U0001F6FF'), and ('\u2600'-\u26FF-\u2700-\u27BF').
+
+Instructions
+100 XP
+Tokenize all the words in german_text using word_tokenize(), and print the result.
+Tokenize only the capital words in german_text.
+First, write a pattern called capital_words to match only capital words. Make sure to check for the German Ü!
+Then, tokenize it using regexp_tokenize().
+Tokenize only the emoji in german_text. The pattern using the unicode ranges for emoji given in the assignment text has been written for you. Your job is to use regexp_tokenize() to tokenize the emoji.
+
+# Tokenize and print all words in german_text
+all_words = word_tokenize(german_text)
+print(all_words)
+
+# Tokenize and print only capital words
+capital_words = r"[A-ZÜ]\w+"
+print(regexp_tokenize(german_text, capital_words))
+
+# Tokenize and print only emoji
+emoji = "['\U0001F300-\U0001F5FF'|'\U0001F600-\U0001F64F'|'\U0001F680-\U0001F6FF'|'\u2600-\u26FF\u2700-\u27BF']"
+print(regexp_tokenize(german_text, emoji))
+
+<script.py> output:
+    ['Wann', 'gehen', 'wir', 'Pizza', 'essen', '?', '🍕', 'Und', 'fährst', 'du', 'mit', 'Über', '?', '🚕']
+    ['Wann', 'Pizza', 'Und', 'Über']
+    ['🍕', '🚕']
 
 
 
@@ -376,7 +456,49 @@ In [6]: plt.show()
 
 ________________________________________________________________________________________________________________________
 
+# Split the script into lines: lines
+lines = holy_grail.split('\n')
 
+# Replace all script lines for speaker
+pattern = "[A-Z]{2,}(\s)?(#\d)?([A-Z]{2,})?:"
+lines = [re.sub(pattern, '', l) for l in lines]
+
+# Tokenize each line: tokenized_lines
+tokenized_lines = [regexp_tokenize(s,"\w+") for s in lines]
+
+# Make a frequency list of lengths: line_num_words
+line_num_words = [len(t_line) for t_line in tokenized_lines]
+
+# Plot a histogram of the line lengths
+plt.hist(line_num_words)
+
+# Show the plot
+plt.show()
+
+
+Charting practice
+Try using your new skills to find and chart the number of words per line in the script using matplotlib. The Holy Grail script is loaded for you, and you need to use regex to find the words per line.
+
+Using list comprehensions here will speed up your computations. For example: my_lines = [tokenize(l) for l in lines] will call a function tokenize on each line in the list lines. The new transformed list will be saved in the my_lines variable.
+
+You have access to the entire script in the variable holy_grail. Go for it!
+
+Instructions
+70 XP
+Split the script into lines using the newline ('\n') character.
+Use re.sub() inside a list comprehension to replace the prompts such as ARTHUR: and SOLDIER #1. The pattern has been written for you.
+Use a list comprehension to tokenize lines with regexp_tokenize(), keeping only words. Recall that the pattern for words is "\w+".
+Use a list comprehension to create a list of line lengths called line_num_words.
+Use t_line as your iterator variable to iterate over tokenized_lines, and then len() function to compute line lengths.
+Plot a histogram of line_num_words using plt.hist(). Don't forgot to use plt.show() as well to display the plot.
+
+
+Hint
+Use the .split() method on holy_grail with the newline character ('\n') as the argument.
+Recall that re.sub() requires 3 arguments: The pattern, the replacement, and the string. The pattern is given for you; the replacement is '' and the string is l.
+Use regexp_tokenize() as the output expression of your list comprehension, with s and "\w+" as the arguments.
+To create line_num_words, use len(t_line) as the output expression of the list comprehension.
+Use plt.hist() with line_num_words as the argument to create the histogram, and then plt.show() to display it.
 
 
 ===============================================================================================================================
@@ -386,7 +508,235 @@ Simple topic identification
 0%
 This chapter will introduce you to topic identification, which you can apply to any text you encounter in the wild. Using basic NLP models, you will identify topics from texts based on term frequencies. You'll experiment and compare two simple methods - bag-of-words and Tf-idf using NLTK and a new library - Gensim.
 
+Word counts with bagof-words
+Bag-of-words
+Basic method for finding topics in a text
+Need to first create tokens using tokenization
+... and then count up all the tokens
+The more frequent a word, the more important it might be
+Can be a great way to determine the significant words in a text
 
+
+Bag-of-words example
+Text: "The cat is in the box. The cat likes the box. The box is over the
+cat."
+Bag of words (stripped punctuation):
+"The": 3,
+"box": 3
+"cat": 3,
+"the": 3
+"is": 2
+"in": 1,
+"likes": 1,
+"over": 1
+
+
+Bag-of-words in Python
+In [1]: from nltk.tokenize import word_tokenize
+In [2]: from collections import Counter
+In [3]: Counter(word_tokenize(
+"""The cat is in the box. The cat likes the box.
+The box is over the cat."""))
+Out[3]:
+Counter({'.': 3,
+'The': 3,
+'box': 3,
+'cat': 3,
+'in': 1,
+...
+'the': 3})
+In [4]: counter.most_common(2)
+Out[4]: [('The'
+, 3), ('box'
+, 3)]
+
+
+_______________________________________________________________________________________________________________
+
+Building a Counter with bag-of-words
+In this exercise, you'll build your first (in this course) bag-of-words counter using a Wikipedia article, which has been pre-loaded as article. Try doing the bag-of-words without looking at the full article text, and guessing what the topic is! If you'd like to peek at the title at the end, we've included it as article_title. Note that this article text has had very little preprocessing from the raw Wikipedia database entry.
+
+word_tokenize has been imported for you.
+
+Instructions
+100 XP
+Import Counter from collections.
+Use word_tokenize() to split the article into tokens.
+Use a list comprehension with t as the iterator variable to convert all the tokens into lowercase. The .lower() method converts text into lowercase.
+Create a bag-of-words counter called bow_simple by using Counter() with lower_tokens as the argument.
+Use the .most_common() method of bow_simple to print the 10 most common tokens.
+
+
+# Import Counter
+from collections import Counter
+
+# Tokenize the article: tokens
+tokens = word_tokenize(article)
+
+# Convert the tokens into lowercase: lower_tokens
+lower_tokens = [t.lower() for t in tokens]
+
+# Create a Counter with the lowercase tokens: bow_simple
+bow_simple = Counter(lower_tokens)
+
+# Print the 10 most common tokens
+print(bow_simple.most_common(10))
+
+
+<script.py> output:
+    [(',', 151), ('the', 150), ('.', 89), ('of', 81), ("''", 68), ('to', 63), ('a', 60), ('in', 44), ('and', 41), ('(', 40)]
+    
+     
+___________________________________________________________________________________________________________________________
+
+Simple text
+preprocessing
+
+
+Why preprocess?
+Helps make for better input data
+When performing machine learning or other statistical methods
+Examples:
+Tokenization to create a bag of words
+Lowercasing words
+Lemmatization/Stemming
+Shorten words to their root stems
+Removing stop words, punctuation, or unwanted tokens
+Good to experiment with different approaches
+
+
+Preprocessing example
+Input text: Cats, dogs and birds are common pets. So are fish.
+Output tokens: cat, dog, bird, common, pet, fish
+
+
+
+Text preprocessing with Python
+In [1]: from ntlk.corpus import stopwords
+In [2]: text = """The cat is in the box. The cat likes the box.
+The box is over the cat."""
+In [3]: tokens = [w for w in word_tokenize(text.lower())
+if w.isalpha()]
+In [4]: no_stops = [t for t in tokens
+if t not in stopwords.words('english')]
+In [5]: Counter(no_stops).most_common(2)
+Out[5]: [('cat'
+, 3), ('box'
+, 3)]
+
+_________________________________________________________________________________________________________________________
+
+
+Text preprocessing practice
+Now, it's your turn to apply the techniques you've learned to help clean up text for better NLP results. You'll need to remove stop words and non-alphabetic characters, lemmatize, and perform a new bag-of-words on your cleaned text.
+
+You start with the same tokens you created in the last exercise: lower_tokens. You also have the Counter class imported.
+
+Instructions
+100 XP
+Import the WordNetLemmatizer class from nltk.stem.
+Create a list called alpha_only that iterates through lower_tokens and retains only alphabetical characters. You can use the .isalpha() method to check for this.
+Create another list called no_stops in which you remove all stop words, which are held in a list called english_stops.
+Initialize a WordNetLemmatizer object called wordnet_lemmatizer and use its .lemmatize() method on the tokens in no_stops to create a new list called lemmatized.
+Finally, create a new Counter called bow with the lemmatized words and show the 10 most common tokens.
+
+
+__________________________________________________________________________________________________________
+
+Introduction to gensim
+What is gensim?
+Popular open-source NLP library
+Uses top academic models to perform complex tasks
+Building document or word vectors
+Performing topic identification and document comparison
+
+
+What is a word vector?
+
+
+
+Creating a gensim dictionary
+In [1]: from gensim.corpora.dictionary import Dictionary
+In [2]: from nltk.tokenize import word_tokenize
+In [3]: my_documents = ['The movie was about a spaceship and aliens.'
+,
+...: 'I really liked the movie!'
+,
+...: 'Awesome action scenes, but boring characters.'
+,
+...: 'The movie was awful! I hate alien films.'
+,
+...: 'Space is cool! I liked the movie.'
+,
+...: 'More space films, please!'
+,]
+In [4]: tokenized_docs = [word_tokenize(doc.lower())
+...: for doc in my_documents]
+In [5]: dictionary = Dictionary(tokenized_docs)
+In [6]: dictionary.token2id
+Out[6]:
+{'!': 11,
+'
+,
+': 17,
+'.': 7,
+'a': 2,
+'about': 4,
+...
+}
+
+
+
+Creating a gensim corpus
+In [7]: corpus = [dictionary.doc2bow(doc) for doc in tokenized_docs]
+In [8]: corpus
+Out[8]:
+[[(0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1)],
+[(0, 1), (1, 1), (9, 1), (10, 1), (11, 1), (12, 1)],
+...
+]
+
+gensim models can be easily saved, updated, and reused
+Our dictionary can also be updated
+This more advanced and feature rich bag-of-words can be used in
+future exercises
+
+________________________________________________________________________________________________
+
+Tf-idf with gensim
+What is tf-idf?
+Term frequency - inverse document frequency
+Allows you to determine the most important words in each document
+Each corpus may have shared words beyond just stopwords
+These words should be down-weighted in importance
+Example from astronomy: "Sky"
+Ensures most common words don't show up as key words
+Keeps document specific frequent words weighted high
+
+
+
+
+
+Tf-idf formula
+w = tf ∗ log( )
+w = tf-idf weight for token i in document j
+tf = number of occurences of token i in document j
+df = number of documents that contain token i
+N = total number of documents
+
+
+
+Tf-idf with gensim
+In [10]: from gensim.models.tfidfmodel import TfidfModel
+In [11]: tfidf = TfidfModel(corpus)
+In [12]: tfidf[corpus[1]]
+Out[12]:
+[(0, 0.1746298276735174),
+(1, 0.1746298276735174),
+(9, 0.29853166221463673),
+(10, 0.7716931521027908),
+...
+]
 
 
 

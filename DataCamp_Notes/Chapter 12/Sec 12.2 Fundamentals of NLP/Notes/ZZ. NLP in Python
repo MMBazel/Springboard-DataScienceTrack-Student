@@ -641,6 +641,30 @@ Initialize a WordNetLemmatizer object called wordnet_lemmatizer and use its .lem
 Finally, create a new Counter called bow with the lemmatized words and show the 10 most common tokens.
 
 
+# Import WordNetLemmatizer
+from nltk.stem import WordNetLemmatizer
+
+# Retain alphabetic words: alpha_only
+alpha_only = [t for t in lower_tokens if t.isalpha()]
+
+# Remove all stop words: no_stops
+no_stops = [t for t in alpha_only if t not in english_stops]
+
+# Instantiate the WordNetLemmatizer
+wordnet_lemmatizer = WordNetLemmatizer()
+
+# Lemmatize all tokens into a new list: lemmatized
+lemmatized = [wordnet_lemmatizer.lemmatize(t) for t in no_stops]
+
+# Create the bag-of-words: bow
+bow = Counter(lemmatized)
+
+# Print the 10 most common tokens
+print(bow.most_common(10))
+
+<script.py> output:
+    [('debugging', 40), ('system', 25), ('software', 16), ('bug', 16), ('problem', 15), ('tool', 15), ('computer', 14), ('process', 13), ('term', 13), ('used', 12)]
+
 __________________________________________________________________________________________________________
 
 Introduction to gensim
@@ -700,6 +724,86 @@ gensim models can be easily saved, updated, and reused
 Our dictionary can also be updated
 This more advanced and feature rich bag-of-words can be used in
 future exercises
+
+______________________________________________________________________________________________________________________________
+
+Creating and querying a corpus with gensim
+It's time to apply the methods you learned in the previous video to create your first gensim dictionary and corpus!
+
+You'll use these data structures to investigate word trends and potential interesting topics in your document set. To get started, we have imported a few additional messy articles from Wikipedia, which were preprocessed by lowercasing all words, tokenizing them, and removing stop words and punctuation. These were then stored in a list of document tokens called articles. You'll need to do some light preprocessing and then generate the gensim dictionary and corpus.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import Dictionary from gensim.corpora.dictionary.
+Initialize a gensim Dictionary with the tokens in articles.
+Obtain the id for "computer" from dictionary. To do this, use its .token2id method which returns ids from text, and then chain .get() which returns tokens from ids. Pass in "computer" as an argument to .get().
+Use a list comprehension in which you iterate over articles to create a gensim MmCorpus from dictionary.
+In the output expression, use the .doc2bow() method on dictionary with article as the argument.
+Print the first 10 word ids with their frequency counts from the fifth document. This has been done for you, so hit 'Submit Answer' to see the results!
+
+# Import Dictionary
+from gensim.corpora.dictionary import Dictionary
+
+# Create a Dictionary from the articles: dictionary
+dictionary = Dictionary(articles)
+
+# Select the id for "computer": computer_id
+computer_id = dictionary.token2id.get("computer")
+
+# Use computer_id with the dictionary to print the word
+print(dictionary.get(computer_id))
+
+# Create a MmCorpus: corpus
+corpus = [dictionary.doc2bow(article) for article in articles]
+
+# Print the first 10 word ids with their frequency counts from the fifth document
+print(corpus[4][:10])
+
+<script.py> output:
+    computer
+    [(0, 88), (23, 11), (24, 2), (39, 1), (41, 2), (55, 22), (56, 1), (57, 1), (58, 1), (59, 3)]
+________________________________________________________________________________________________
+Gensim bag-of-words
+Now, you'll use your new gensim corpus and dictionary to see the most common terms per document and across all documents. You can use your dictionary to look up the terms. Take a guess at what the topics are and feel free to explore more documents in the IPython Shell!
+
+You have access to the dictionary and corpus objects you created in the previous exercise, as well as the Python defaultdict and itertools to help with the creation of intermediate data structures for analysis.
+
+The fifth document from corpus is stored in the variable doc, which has been sorted in descending order.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Print the top five words of bow_doc using each word_id with the dictionary alongside word_count. The word_id can be accessed using the .get() method of dictionary.
+Create a defaultdict called total_word_count in which the keys are all the token ids (word_id) and the values are the sum of their occurrence across all documents (word_count). Remember to specify int when creating the defaultdict, and inside the for loop, increment each word_id of total_word_count by word_count.
+Create a sorted list from the defaultdict, using words across the entire corpus. To achieve this, use the .items() method on total_word_count inside sorted().
+Similar to how you printed the top five words of bow_doc earlier, print the top five words of sorted_word_count as well as the number of occurrences of each word across all the documents.
+
+# Save the fifth document: doc
+doc = corpus[4]
+
+# Sort the doc for frequency: bow_doc
+bow_doc = sorted(doc, key=lambda w: w[1], reverse=True)
+
+# Print the top 5 words of the document alongside the count
+for word_id, word_count in bow_doc[:5]:
+    print(dictionary.get(word_id), word_count)
+    
+# Create the defaultdict: total_word_count
+total_word_count = defaultdict(int)
+for word_id, word_count in itertools.chain.from_iterable(corpus):
+    total_word_count[word_id] += word_count
+
+# Create a sorted list from the defaultdict: sorted_word_count 
+sorted_word_count = sorted(total_word_count.items(), key=lambda w: w[1], reverse=True) 
+
+# Print the top 5 words across all documents alongside the count
+for word_id, word_count in sorted_word_count[:5]:
+    print(dictionary.get(word_id), word_count)
+
+
 
 ________________________________________________________________________________________________
 

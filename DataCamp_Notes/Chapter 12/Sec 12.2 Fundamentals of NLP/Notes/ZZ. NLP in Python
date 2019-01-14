@@ -1311,9 +1311,56 @@ Informal language corpora
 Easily find entities in Tweets and chat messages
 Quickly growing!
 
-
-
 ________________________________________________________________________________________________
+
+Comparing NLTK with spaCy NER
+Using the same text you used in the first exercise of this chapter, you'll now see the results using spaCy's NER annotator. How will they compare?
+
+The article has been pre-loaded as article. To minimize execution times, you'll be asked to specify the keyword arguments tagger=False, parser=False, matcher=False when loading the spaCy model, because you only care about the entity in this exercise.
+
+Instructions
+100 XP
+Import spacy.
+Load the 'en' model using spacy.load(). Specify the additional keyword arguments tagger=False, parser=False, matcher=False.
+Create a spacy document object by passing article into nlp().
+Using ent as your iterator variable, iterate over the entities of doc and print out the labels (ent.label_) and text (ent.text).
+
+
+# Import spacy
+import spacy
+
+# Instantiate the English model: nlp
+nlp = spacy.load('en',tagger=False, parser=False, matcher=False)
+
+# Create a new document: doc
+doc = nlp(article)
+
+# Print all of the found entities and their labels
+for ent in doc.ents:
+    print(ent.label_, ent.text)
+
+
+<script.py> output:
+    ORG Uber
+    ORG Uber
+    ORG Apple
+    ORG Uber
+    ORG Uber
+    PERSON Travis Kalanick
+    ORG Uber
+    PERSON Tim Cook
+    ORG Apple
+    CARDINAL Millions
+    ORG Uber
+    GPE drivers’
+    LOC Silicon Valley’s
+    ORG Yahoo
+    PERSON Marissa Mayer
+    MONEY $186m
+	
+________________________________________________________________________________________________
+
+
 
 Multilingual NER with
 polyglot
@@ -1354,22 +1401,110 @@ I-PER(['Manuela'
 'Carmena']),
 I-LOC(['Girona']),
 I-LOC(['Madrid'])]
-________________________________________________________________________________________________
-
-
-
-
 
 ________________________________________________________________________________________________
 
+French NER with polyglot I
+In this exercise and the next, you'll use the polyglot library to identify French entities. The library functions slightly differently than spacy, so you'll use a few of the new things you learned in the last video to display the named entity text and category.
+
+You have access to the full article string in article. Additionally, the Text class of polyglot has been imported from polyglot.text.
+
+Instructions
+100 XP
+Create a new Text object called txt.
+Iterate over txt.entities and print each entity, ent.
+Print the type() of ent.
+
+
+# Create a new text object using Polyglot's Text class: txt
+txt = Text(article)
+
+# Print each of the entities found
+for ent in txt.entities:
+    print(ent)
+    
+# Print the type of ent
+print(type(ent))
+
+
+<script.py> output:
+    ['Charles', 'Cuvelliez']
+    ['Charles', 'Cuvelliez']
+    ['Bruxelles']
+    ['l’IA']
+    ['Julien', 'Maldonato']
+    ['Deloitte']
+    ['Ethiquement']
+    ['l’IA']
+    ['.']
+    <class 'polyglot.text.Chunk'>
 
 ________________________________________________________________________________________________
 
+French NER with polyglot II
+Here, you'll complete the work you began in the previous exercise.
+
+Your task is to use a list comprehension to create a list of tuples, in which the first element is the entity tag, and the second element is the full string of the entity text.
+
+Instructions
+100 XP
+Use a list comprehension to create a list of tuples called entities.
+The output expression of your list comprehension should be a tuple. Remember to use () to create the tuple.
+The first element of each tuple is the entity tag, which you can access using its .tag attribute.
+The second element is the full string of the entity text, which you can access using ' '.join(ent).
+Your iterator variable should be ent, and you should iterate over all of the entities of the polyglot Text object, txt.
+Print entities to see what you've created.
+
+
+# Create the list of tuples: entities
+entities = [(ent.tag,' '.join(ent)) for ent in txt.entities]
+
+# Print entities
+print(entities)
+
+
+<script.py> output:
+    [('I-PER', 'Charles Cuvelliez'), ('I-PER', 'Charles Cuvelliez'), ('I-ORG', 'Bruxelles'), ('I-PER', 'l’IA'), ('I-PER', 'Julien Maldonato'), ('I-ORG', 'Deloitte'), ('I-PER', 'Ethiquement'), ('I-LOC', 'l’IA'), ('I-PER', '.')]
 
 ________________________________________________________________________________________________
 
+Spanish NER with polyglot
+You'll continue your exploration of polyglot now with some Spanish annotation. This article is not written by a newspaper, so it is your first example of a more blog-like text. How do you think that might compare when finding entities?
 
-________________________________________________________________________________________________
+The Text object has been created as txt, and each entity has been printed, as you can see in the IPython Shell.
+
+Your specific task is to determine how many of the entities contain the words "Márquez" or "Gabo" - these refer to the same person in different ways!
+
+Instructions
+100 XP
+Iterate over all of the entities of txt, using ent as your iterator variable.
+Check whether the entity contains "Márquez" or "Gabo". If it does, increment count.
+Hit 'Submit Answer' to see what percentage of entities refer to Gabriel García Márquez (aka Gabo).
+
+# Initialize the count variable: count
+count = 0
+
+# Iterate over all the entities
+for ent in txt.entities:
+    # Check whether the entity contains 'Márquez' or 'Gabo'
+    if "Márquez" in ent or "Gabo" in ent:
+        # Increment count
+        count += 1
+
+# Print count
+print(count)
+
+# Calculate the percentage of entities that refer to "Gabo": percentage
+percentage = count / len(txt.entities)
+print(percentage)
+
+
+<script.py> output:
+    29
+    0.29591836734693877
+
+
+
 ===============================================================================================================================
 
 
@@ -1377,3 +1512,129 @@ ________________________________________________________________________________
 Building a "fake news" classifier
 0%
 Here, you'll apply the basics of what you've learned along with some supervised machine learning to build a "fake news" detector. You'll begin by learning the basics of supervised machine learning, and then move forward by choosing a few important features and testing ideas to identify and classify "fake news" articles.
+
+
+________________________________________________________________________________________________
+
+What is supervised learning?
+Form of machine learning
+Problem has predefined training data
+This data has a label (or outcome) you want the model to learn
+Classification problem
+Goal: Make good hypotheses about the species based on
+
+
+
+Supervised learning with NLP
+Need to use language instead of geometric features
+scikit-learn: Powerful open-source library
+How to create supervised learning data from text?
+Use bag-of-words models or tf-idf as features
+
+
+IMDB Movie Dataset
+Plot Sci-Fi Action
+In a post-apocalyptic world in human decay, a ... 1 0
+Mohei is a wandering swordsman. He arrives in ... 0 1
+#137 is a SCI/FI thriller about a girl, Marla,... 1 0
+Goal: Predict movie genre based on plot summary
+Categorical features generated using preprocessing
+
+
+Supervised learning steps
+Collect and preprocess our data
+Determine a label (Example: Movie genre)
+Split data into training and test sets
+Extract features from the text to help predict the label
+Bag-of-words vector built into scikit-learn
+Evaluate trained model using the test set
+
+
+________________________________________________________________________________________________
+
+________________________________________________________________________________________________
+
+________________________________________________________________________________________________
+________________________________________________________________________________________________
+
+Building word count
+vectors with scikitlearn
+
+Predicting movie genre
+Dataset consisting of movie plots and corresponding genre
+Goal: Create bag-of-word vectors for the movie plots
+Can we predict genre based on the words used in the plot
+summary?
+
+
+Count Vectorizer with Python
+In [1]: import pandas as pd
+In [2]: from sklearn.model_selection import train_test_split
+In [3}: from sklearn.feature_extraction.text import CountVectorizer
+In [4]: df = ... # Load data into DataFrame
+In [5]: y = df['Sci-Fi']
+In [6]: X_train, X_test, y_train, y_test = train_test_split(
+df['plot'], y,
+test_size=0.33,
+random_state=53)
+In [7]: count_vectorizer = CountVectorizer(stop_words='english')
+In [8]: count_train = count_vectorizer.fit_transform(X_train.values)
+In [9]: count_test = count_vectorizer.transform(X_test.values)
+
+
+________________________________________________________________________________________________
+
+________________________________________________________________________________________________
+
+________________________________________________________________________________________________
+________________________________________________________________________________________________
+
+Training and testing a
+classification model
+with scikit-learn
+
+
+Naive Bayes classifier
+Naive Bayes Model
+Commonly used for testing NLP classification problems
+Basis in probability
+Given a particular piece of data, how likely is a particular outcome?
+Examples:
+If the plot has a spaceship, how likely is it to be sci-fi?
+Given a spaceship and an alien, how likely now is it sci-fi?
+Each word from CountVectorizer acts as a feature
+Naive Bayes: Simple and effective
+
+
+
+Naive Bayes with scikit-learn
+In [10]: from sklearn.naive_bayes import MultinomialNB
+In [11]: from sklearn import metrics
+In [12]: nb_classifier = MultinomialNB()
+In [13]: nb_classifier.fit(count_train, y_train)
+In [14]: pred = nb_classifier.predict(count_test)
+In [15]: metrics.accuracy_score(y_test, pred)
+Out [15]: 0.85841849389820424
+
+
+Confusion Matrix
+In [16]: metrics.confusion_matrix(y_test, pred, labels=[0,1])
+Out [16]:
+array([[6410, 563],
+[ 864, 2242]])
+
+________________________________________________________________________________________________
+
+________________________________________________________________________________________________
+
+________________________________________________________________________________________________
+________________________________________________________________________________________________
+
+
+Simple NLP, Complex
+Problems
+
+
+
+
+

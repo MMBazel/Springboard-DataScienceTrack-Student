@@ -842,7 +842,39 @@ Out[12]:
 ...
 ]
 
+________________________________________________________________________________________________
 
+Tf-idf with Wikipedia
+Now it's your turn to determine new significant terms for your corpus by applying gensim's tf-idf. You will again have access to the same corpus and dictionary objects you created in the previous exercises - dictionary, corpus, and doc. Will tf-idf make for more interesting results on the document level?
+
+Instructions
+0 XP
+Import TfidfModel from gensim.models.tfidfmodel.
+Initialize a new TfidfModel called tfidf using corpus.
+Use doc to calculate the weights. You can do this by passing [doc] to tfidf.
+Print the first five term ids with weights.
+Sort the term ids and weights in a new list from highest to lowest weight. This has been done for you.
+Print the top five weighted words (term_id) from sorted_tfidf_weights along with their weighted score (weight).
+
+
+# Import TfidfModel
+from gensim.models.tfidfmodel import TfidfModel
+
+# Create a new TfidfModel using the corpus: tfidf
+tfidf = TfidfModel(corpus)
+
+# Calculate the tfidf weights of doc: tfidf_weights
+tfidf_weights = tfidf[doc]
+
+# Print the first five weights
+print(tfidf_weights[:5])
+
+# Sort the weights from highest to lowest: sorted_tfidf_weights
+sorted_tfidf_weights = sorted(tfidf_weights, key=lambda w: w[1], reverse=True)
+
+# Print the top 5 weighted words
+for term_id, weight in sorted_tfidf_weights[:5]:
+    print(dictionary.get(term_id), weight)
 
 ===============================================================================================================================
 3
@@ -851,10 +883,493 @@ Named-entity recognition
 This chapter will introduce a slightly more advanced topic - Named-entity recognition. You'll learn how to identify the who, what and where of your texts using pre-trained models on English and non-English text. You'll also learn how to use some new libraries - polyglot and spaCy - to add to your NLP toolbox.
 
 
+What is Named Entity Recognition?
+NLP task to identify important named entities in the text
+People, places, organizations
+Dates, states, works of art
+... and other categories!
+Can be used alongside topic identification
+... or on its own!
+Who? What? When? Where?
+
+
+
+nltk and the Stanford CoreNLP Library
+The Stanford CoreNLP library:
+Integrated into Python via nltk
+Java based
+Support for NER as well as coreference and dependency trees
+
+Using nltk for Named Entity Recognition
+In [1]: import nltk
+In [2]: sentence = '''In New York, I like to ride the Metro to visit MOMA
+and some restaurants rated well by Ruth Reichl.'''
+In [3]: tokenized_sent = nltk.word_tokenize(sentence)
+In [4]: tagged_sent = nltk.pos_tag(tokenized_sent)
+In [5]: tagged_sent[:3]
+Out[5]: [('In'
+,
+'IN'), ('New'
+,
+'NNP'), ('York'
+,
+'NNP')
+
+
+
+nlt
+k
+&
+#
+3
+9
+;
+s
+n
+e
+_
+c
+h
+u
+n
+k
+(
+)
+I
+n
+[
+6
+]
+:
+p
+r
+i
+n
+t
+(
+n
+l
+t
+k
+.
+n
+e
+_
+c
+h
+u
+n
+k
+(
+t
+a
+g
+g
+e
+d
+_
+s
+e
+n
+t
+)
+)
+(
+S
+I
+n
+/
+I
+N
+(
+G
+P
+E
+N
+e
+w
+/
+N
+N
+P
+Y
+o
+r
+k
+/
+N
+N
+P
+)
+,
+/
+,
+I
+/
+P
+R
+P
+l
+i
+k
+e
+/
+V
+B
+P
+t
+o
+/
+T
+O
+r
+i
+d
+e
+/
+V
+B
+t
+h
+e
+/
+D
+T
+(
+O
+R
+G
+A
+N
+I
+Z
+A
+T
+I
+O
+N
+M
+e
+t
+r
+o
+/
+N
+N
+P
+)
+t
+o
+/
+T
+O
+v
+i
+s
+i
+t
+/
+V
+B
+(
+O
+R
+G
+A
+N
+I
+Z
+A
+T
+I
+O
+N
+M
+O
+M
+A
+/
+N
+N
+P
+)
+a
+n
+d
+/
+C
+C
+s
+o
+m
+e
+/
+D
+T
+r
+e
+s
+t
+a
+u
+r
+a
+n
+t
+s
+/
+N
+N
+S
+r
+a
+t
+e
+d
+/
+V
+B
+N
+w
+e
+l
+l
+/
+R
+B
+b
+y
+/
+I
+N
+(
+P
+E
+R
+S
+O
+N
+R
+u
+t
+h
+/
+N
+N
+P
+R
+e
+i
+c
+h
+l
+/
+N
+N
+P
+)
+.
+/
+.
+)
+________________________________________________________________________________________________
+NER with NLTK
+You're now going to have some fun with named-entity recognition! A scraped news article has been pre-loaded into your workspace. Your task is to use nltk to find the named entities in this article.
+
+What might the article be about, given the names you found?
+
+Along with nltk, sent_tokenize and word_tokenize from nltk.tokenize have been pre-imported.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Tokenize article into sentences.
+Tokenize each sentence in sentences into words using a list comprehension.
+Inside a list comprehension, tag each tokenized sentence into parts of speech using nltk.pos_tag().
+Chunk each tagged sentence into named-entity chunks using nltk.ne_chunk_sents(). Along with pos_sentences, specify the additional keyword argument binary=True.
+Loop over each sentence and each chunk, and test whether it is a named-entity chunk by testing if it has the attribute label, and if the chunk.label() is equal to "NE". If so, print that chunk.
+
+
+# Tokenize the article into sentences: sentences
+sentences = nltk.sent_tokenize(article)
+
+# Tokenize each sentence into words: token_sentences
+token_sentences = [nltk.word_tokenize(sent) for sent in sentences]
+
+# Tag each tokenized sentence into parts of speech: pos_sentences
+pos_sentences = [nltk.pos_tag(sent) for sent in token_sentences] 
+
+# Create the named entity chunks: chunked_sentences
+chunked_sentences = nltk.ne_chunk_sents(pos_sentences, binary=True)
+
+# Test for stems of the tree with 'NE' tags
+for sent in chunked_sentences:
+    for chunk in sent:
+        if hasattr(chunk, "label") and chunk.label() == "NE":
+            print(chunk)
+
+
+<script.py> output:
+    (NE Uber/NNP)
+    (NE Beyond/NN)
+    (NE Apple/NNP)
+    (NE Uber/NNP)
+    (NE Uber/NNP)
+    (NE Travis/NNP Kalanick/NNP)
+    (NE Tim/NNP Cook/NNP)
+    (NE Apple/NNP)
+    (NE Silicon/NNP Valley/NNP)
+    (NE CEO/NNP)
+    (NE Yahoo/NNP)
+    (NE Marissa/NNP Mayer/NNP)
+
+________________________________________________________________________________________________
+
+Charting practice
+In this exercise, you'll use some extracted named entities and their groupings from a series of newspaper articles to chart the diversity of named entity types in the articles.
+
+You'll use a defaultdict called ner_categories, with keys representing every named entity group type, and values to count the number of each different named entity type. You have a chunked sentence list called chunked_sentences similar to the last exercise, but this time with non-binary category names.
+
+You can use hasattr() to determine if each chunk has a 'label' and then simply use the chunk's .label() method as the dictionary key.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create a defaultdict called ner_categories, with the default type set to int.
+Fill up the dictionary with values for each of the keys. Remember, the keys will represent the label().
+In the outer for loop, iterate over chunked_sentences, using sent as your iterator variable.
+In the inner for loop, iterate over sent. If the condition is true, increment the value of each key by 1.
+For the pie chart labels, create a list called labels from the keys of ner_categories, which can be accessed using .keys().
+Use a list comprehension to create a list called values, using the .get() method on ner_categories to compute the values of each label l.
+Use plt.pie() to create a pie chart for each of the NER categories. Along with values and labels=labels, pass the extra keyword arguments autopct='%1.1f%%' and startangle=140 to add percentages to the chart and rotate the initial start angle.
+Display your pie chart. Was the distribution what you expected?
+
+
+# Create the defaultdict: ner_categories
+ner_categories = defaultdict(int)
+
+# Create the nested for loop
+for sent in chunked_sentences:
+    for chunk in sent:
+        if hasattr(chunk, 'label'):
+            ner_categories[chunk.label()] += 1
+            
+# Create a list from the dictionary keys for the chart labels: labels
+labels = list(ner_categories.keys())
+
+# Create a list of the values: values
+values = [ner_categories.get(l) for l in labels]
+
+# Create the pie chart
+plt.pie(values, labels=labels, autopct='%1.1f%%', startangle=140)
+
+# Display the chart
+plt.show()
+
+
+
+Hint
+Use defaultdict(int) to create ner_categories.
+If the condition inside the nested for loop is true, increment ner_categories[chunk.label()].
+Use the .keys() method on ner_categories to access its keys.
+Use the .get() method on ner_categories with l as the argument to compute the values.
+Use plt.pie() with the arguments specified in the instructions to create the pie chart. Then, use plt.show() to display it.
+________________________________________________________________________________________________
+Introduction to SpaCy
+
+
+What is SpaCy?
+NLP library similar to gensim, with different implementations
+Focus on creating NLP pipelines to generate models and corpora
+Open-source, with extra libraries and tools
+Displacy
+
+
+Displacy entity recognition visualizer
+(source: https://demos.explosion.ai/displacy-e
+
+
+SpaCy NER
+In [1]: import spacy
+In [2]: nlp = spacy.load('en')
+In [3]: nlp.entity
+Out[3]: <spacy.pipeline.EntityRecognizer at 0x7f76b75e68b8>
+In [4]: doc = nlp("""Berlin is the capital of Germany;
+and the residence of Chancellor Angela Merkel.""")
+In [5]: doc.ents
+Out[5]: (Berlin, Germany, Angela Merkel)
+In [6]: print(doc.ents[0], doc.ents[0].label_)
+Berlin GPE
+
+
+Why use SpaCy for NER?
+Easy pipeline creation
+Different entity types compared to nltk
+Informal language corpora
+Easily find entities in Tweets and chat messages
+Quickly growing!
+
+
+
+________________________________________________________________________________________________
+
+Multilingual NER with
+polyglot
+
+What is polyglot?
+NLP library which uses word
+vectors
+Why polyglot?
+Vectors for many different
+languages
+More than 130!
+
+Spanish NER with polyglot
+
+In [1]: from polyglot.text import Text
+In [2]: ẗext = """El presidente de la Generalitat de Cataluña,
+Carles Puigdemont, ha afirmado hoy a la alcaldesa
+de Madrid, Manuela Carmena, que en su etapa de
+alcalde de Girona (de julio de 2011 a enero de 2016)
+hizo una gran promoción de Madrid."""
+In [3]: ptext = Text(text)
+In [4]: ptext.entities
+Out[4]:
+[I-ORG(['Generalitat'
+,
+'de']),
+I-LOC(['Generalitat'
+,
+'de'
+,
+'Cataluña']),
+I-PER(['Carles'
+,
+'Puigdemont']),
+I-LOC(['Madrid']),
+I-PER(['Manuela'
+,
+'Carmena']),
+I-LOC(['Girona']),
+I-LOC(['Madrid'])]
+________________________________________________________________________________________________
 
 
 
 
+
+________________________________________________________________________________________________
+
+
+________________________________________________________________________________________________
+
+
+________________________________________________________________________________________________
+
+
+________________________________________________________________________________________________
 ===============================================================================================================================
 
 

@@ -1552,10 +1552,6 @@ Evaluate trained model using the test set
 
 ________________________________________________________________________________________________
 
-________________________________________________________________________________________________
-
-________________________________________________________________________________________________
-________________________________________________________________________________________________
 
 Building word count
 vectors with scikitlearn
@@ -1859,12 +1855,48 @@ Compute the predicted tags for the test data.
 Calculate and print the accuracy score of the classifier.
 Compute the confusion matrix. As in the previous exercise, specify the keyword argument labels=['FAKE', 'REAL'] so that the resulting confusion matrix is easier to read.
 
-________________________________________________________________________________________________
+# Create a Multinomial Naive Bayes classifier: nb_classifier
+nb_classifier = MultinomialNB()
+
+# Fit the classifier to the training data
+nb_classifier.fit(tfidf_train, y_train)
+
+# Create the predicted tags: pred
+pred = nb_classifier.predict(tfidf_test)
+
+# Calculate the accuracy score: score
+score = metrics.accuracy_score(y_test, pred)
+print(score)
+
+# Calculate the confusion matrix: cm
+cm = metrics.confusion_matrix(y_test, pred, labels=['FAKE','REAL'])
+print(cm)
+
+
+<script.py> output:
+    0.8565279770444764
+    [[ 739  269]
+     [  31 1052]]
 ________________________________________________________________________________________________
 
 
 Simple NLP, Complex
 Problems
+
+Improving your model
+Your job in this exercise is to test a few different alpha levels using the Tfidf vectors to determine if there is a better performing combination.
+
+The training and test sets have been created, and tfidf_vectorizer, tfidf_train, and tfidf_test have been computed.
+
+Instructions
+100 XP
+Create a list of alphas to try using np.arange(). Values should range from 0 to 1 with steps of 0.1.
+Create a function train_and_predict() that takes in one argument: alpha. The function should:
+Instantiate a MultinomialNB classifier with alpha=alpha.
+Fit it to the training data.
+Compute predictions on the test data.
+Compute and return the accuracy score.
+Using a for loop, print the alpha, score and a newline in between. Use your train_and_predict() function to compute the score. Does the score change along with the alpha? What is the best alpha?
 
 
 

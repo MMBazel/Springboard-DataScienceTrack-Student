@@ -1583,12 +1583,189 @@ In [9]: count_test = count_vectorizer.transform(X_test.values)
 
 
 ________________________________________________________________________________________________
+CountVectorizer for text classification
+It's time to begin building your text classifier! The data has been loaded into a DataFrame called df. Explore it in the IPython Shell to investigate what columns you can use. The .head() method is particularly informative.
+
+In this exercise, you'll use pandas alongside scikit-learn to create a sparse text vectorizer you can use to train and test a simple supervised model. To begin, you'll set up a CountVectorizer and investigate some of its features.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import CountVectorizer from sklearn.feature_extraction.text and train_test_split from sklearn.model_selection.
+Create a Series y to use for the labels by assigning the .label attribute of df to y.
+Using df["text"] (features) and y (labels), create training and test sets using train_test_split(). Use a test_size of 0.33 and a random_state of 53.
+Create a CountVectorizer object called count_vectorizer. Ensure you specify the keyword argument stop_words="english" so that stop words are removed.
+Fit and transform the training data X_train using the .fit_transform() method. Do the same with the test data X_test, except using the .transform() method.
+Print the first 10 features of the count_vectorizer using its .get_feature_names() method.
+
+# Import the necessary modules
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
+
+# Print the head of df
+print(df.head())
+
+# Create a series to store the labels: y
+y = df.label
+
+# Create training and test sets
+X_train, X_test, y_train, y_test = train_test_split(df["text"],y,test_size=0.33, random_state = 53)
+
+# Initialize a CountVectorizer object: count_vectorizer
+count_vectorizer = CountVectorizer(stop_words='english')
+
+# Transform the training data using only the 'text' column values: count_train 
+count_train = count_vectorizer.fit_transform(X_train.values)
+
+# Transform the test data using only the 'text' column values: count_test 
+count_test = count_vectorizer.transform(X_test.values)
+
+# Print the first 10 features of the count_vectorizer
+print(count_vectorizer.get_feature_names()[:10])
+
+<script.py> output:
+       Unnamed: 0                                              title  \
+    0        8476                       You Can Smell Hillary’s Fear   
+    1       10294  Watch The Exact Moment Paul Ryan Committed Pol...   
+    2        3608        Kerry to go to Paris in gesture of sympathy   
+    3       10142  Bernie supporters on Twitter erupt in anger ag...   
+    4         875   The Battle of New York: Why This Primary Matters   
+    
+                                                    text label  
+    0  Daniel Greenfield, a Shillman Journalism Fello...  FAKE  
+    1  Google Pinterest Digg Linkedin Reddit Stumbleu...  FAKE  
+    2  U.S. Secretary of State John F. Kerry said Mon...  REAL  
+    3  — Kaydee King (@KaydeeKing) November 9, 2016 T...  FAKE  
+    4  It's primary day in New York and front-runners...  REAL  
+    ['00', '000', '0000', '00000031', '000035', '00006', '0001', '0001pt', '000ft', '000km']
+
+________________________________________________________________________________________________
+TfidfVectorizer for text classification
+Similar to the sparse CountVectorizer created in the previous exercise, you'll work on creating tf-idf vectors for your documents. You'll set up a TfidfVectorizer and investigate some of its features.
+
+In this exercise, you'll use pandas and sklearn along with the same X_train, y_train and X_test, y_test DataFrames and Series you created in the last exercise.
+
+Instructions
+100 XP
+Import TfidfVectorizer from sklearn.feature_extraction.text.
+Create a TfidfVectorizer object called tfidf_vectorizer. When doing so, specify the keyword arguments stop_words="english" and max_df=0.7.
+Fit and transform the training data.
+Transform the test data.
+Print the first 10 features of tfidf_vectorizer.
+Print the first 5 vectors of the tfidf training data using slicing on the .A (or array) attribute of tfidf_train.
+
+# Import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Initialize a TfidfVectorizer object: tfidf_vectorizer
+tfidf_vectorizer = TfidfVectorizer(stop_words="english",max_df=0.7)
+
+# Transform the training data: tfidf_train 
+tfidf_train = tfidf_vectorizer.fit_transform(X_train.values)
+
+# Transform the test data: tfidf_test 
+tfidf_test = tfidf_vectorizer.transform(X_test.values)
+
+# Print the first 10 features
+print(tfidf_vectorizer.get_feature_names()[:10])
+
+# Print the first 5 vectors of the tfidf training data
+print(tfidf_train.A[:5])
+
+<script.py> output:
+    ['00', '000', '001', '00684', '008s', '00am', '01', '011', '013', '016']
+    [[0. 0. 0. ... 0. 0. 0.]
+     [0. 0. 0. ... 0. 0. 0.]
+     [0. 0. 0. ... 0. 0. 0.]
+     [0. 0. 0. ... 0. 0. 0.]
+     [0. 0. 0. ... 0. 0. 0.]]
 
 ________________________________________________________________________________________________
 
-________________________________________________________________________________________________
+Inspecting the vectors
+To get a better idea of how the vectors work, you'll investigate them by converting them into pandas DataFrames.
+
+Here, you'll use the same data structures you created in the previous two exercises (count_train, count_vectorizer, tfidf_train, tfidf_vectorizer) as well as pandas, which is imported as pd.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create the DataFrames count_df and tfidf_df by using pd.DataFrame() and specifying the values as the first argument and the columns (or features) as the second argument.
+The values can be accessed by using the .A attribute of, respectively, count_train and tfidf_train.
+The columns can be accessed using the .get_feature_names() methods of count_vectorizer and tfidf_vectorizer.
+Print the head of each DataFrame to investigate their structure.
+Test if the column names are the same for each DataFrame by creating a new object called difference to see the difference between the columns that count_df has from tfidf_df. Columns can be accessed using the .columns attribute of a DataFrame. Subtract the set of tfidf_df.columns from the set of count_df.columns.
+Test if the two DataFrames are equivalent by using the .equals() method on count_df with tfidf_df as the argument.
+
+
+
+# Create the CountVectorizer DataFrame: count_df
+count_df = pd.DataFrame(count_train.A, columns=count_vectorizer.get_feature_names())
+
+# Create the TfidfVectorizer DataFrame: tfidf_df
+tfidf_df = pd.DataFrame(tfidf_train.A,columns=tfidf_vectorizer.get_feature_names())
+
+# Print the head of count_df
+print(count_df.head())
+
+# Print the head of tfidf_df
+print(tfidf_df.head())
+
+# Calculate the difference in columns: difference
+difference = set(count_df.columns) - set(tfidf_df.columns)
+print(difference)
+
+# Check whether the DataFrames are equal
+print(count_df.equals(tfidf_df))
+
+
+
+<script.py> output:
+       000  01  02  02welcome  04  08  09  10  100  10th ...  œis  œour  œplease  \
+    0    0   0   1          1   2   0   0   0    0     0 ...    0     0        0   
+    1    4   0   0          0   0   0   0   1    0     0 ...    0     0        0   
+    2    0   0   0          0   0   0   0   0    0     0 ...    0     0        0   
+    3    3   1   0          0   0   0   0   0    0     1 ...    0     0        0   
+    4    0   0   0          0   0   0   0   0    0     0 ...    0     0        0   
+    
+       œpsychosis  œpsychoticâ  œreaching  œthe  œthere  œthey  śâ  
+    0           0            0          0     0       0      0   0  
+    1           0            0          0     0       0      0   0  
+    2           0            0          0     0       0      0   0  
+    3           0            0          0     0       0      0   0  
+    4           0            0          0     0       0      0   0  
+    
+    [5 rows x 4493 columns]
+            000        01        02  02welcome        04   08   09       10  100  \
+    0  0.000000  0.000000  0.103958   0.103958  0.207916  0.0  0.0  0.00000  0.0   
+    1  0.034156  0.000000  0.000000   0.000000  0.000000  0.0  0.0  0.00707  0.0   
+    2  0.000000  0.000000  0.000000   0.000000  0.000000  0.0  0.0  0.00000  0.0   
+    3  0.079927  0.036499  0.000000   0.000000  0.000000  0.0  0.0  0.00000  0.0   
+    4  0.000000  0.000000  0.000000   0.000000  0.000000  0.0  0.0  0.00000  0.0   
+    
+           10th ...   œis  œour  œplease  œpsychosis  œpsychoticâ  œreaching  \
+    0  0.000000 ...   0.0   0.0      0.0         0.0          0.0        0.0   
+    1  0.000000 ...   0.0   0.0      0.0         0.0          0.0        0.0   
+    2  0.000000 ...   0.0   0.0      0.0         0.0          0.0        0.0   
+    3  0.036499 ...   0.0   0.0      0.0         0.0          0.0        0.0   
+    4  0.000000 ...   0.0   0.0      0.0         0.0          0.0        0.0   
+    
+       œthe  œthere  œthey   śâ  
+    0   0.0     0.0    0.0  0.0  
+    1   0.0     0.0    0.0  0.0  
+    2   0.0     0.0    0.0  0.0  
+    3   0.0     0.0    0.0  0.0  
+    4   0.0     0.0    0.0  0.0  
+    
+    [5 rows x 4493 columns]
+    set()
+    False
+
 ________________________________________________________________________________________________
 
+  
 Training and testing a
 classification model
 with scikit-learn
@@ -1625,7 +1802,62 @@ array([[6410, 563],
 
 ________________________________________________________________________________________________
 
+Training and testing the "fake news" model with CountVectorizer
+Now it's your turn to train the "fake news" model using the features you identified and extracted. In this first exercise you'll train and test a Naive Bayes model using the CountVectorizer data.
+
+The training and test sets have been created, and count_vectorizer, count_train, and count_test have been computed.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import the metrics module from sklearn and MultinomialNB from sklearn.naive_bayes.
+Instantiate a MultinomialNB classifier called nb_classifier.
+Fit the classifier to the training data.
+Compute the predicted tags for the test data.
+Calculate and print the accuracy score of the classifier.
+Compute the confusion matrix. To make it easier to read, specify the keyword argument labels=['FAKE', 'REAL'].
+
+# Import the necessary modules
+from sklearn import metrics
+from sklearn.naive_bayes import MultinomialNB
+
+# Instantiate a Multinomial Naive Bayes classifier: nb_classifier
+nb_classifier = MultinomialNB()
+
+# Fit the classifier to the training data
+nb_classifier.fit(count_train, y_train)
+
+# Create the predicted tags: pred
+pred = nb_classifier.predict(count_test)
+
+# Calculate the accuracy score: score
+score = metrics.accuracy_score(y_test, pred)
+print(score)
+
+# Calculate the confusion matrix: cm
+cm = metrics.confusion_matrix(y_test, pred, labels=['FAKE','REAL'])
+print(cm)
+
+
+<script.py> output:
+    0.893352462936394
+    [[ 865  143]
+     [  80 1003]]
 ________________________________________________________________________________________________
+
+Training and testing the "fake news" model with TfidfVectorizer
+Now that you have evaluated the model using the CountVectorizer, you'll do the same using the TfidfVectorizer with a Naive Bayes model.
+
+The training and test sets have been created, and tfidf_vectorizer, tfidf_train, and tfidf_test have been computed. Additionally, MultinomialNB and metrics have been imported from, respectively, sklearn.naive_bayes and sklearn.
+
+Instructions
+100 XP
+Instantiate a MultinomialNB classifier called nb_classifier.
+Fit the classifier to the training data.
+Compute the predicted tags for the test data.
+Calculate and print the accuracy score of the classifier.
+Compute the confusion matrix. As in the previous exercise, specify the keyword argument labels=['FAKE', 'REAL'] so that the resulting confusion matrix is easier to read.
 
 ________________________________________________________________________________________________
 ________________________________________________________________________________________________

@@ -49,10 +49,57 @@ In [1]: import time In [2]: time.sleep(0
 )
 -----------------------------------------------------------------------------------------------------------------------
 
+EchoBot I
+Hello, World!
+
+You'll begin learning how to build chatbots in Python by writing two functions to build the simplest bot possible: EchoBot. EchoBot just responds by replying with the same message it receives.
+
+In this exercise, you'll define a function that responds to a user's message. In the next exercise, you'll complete EchoBot by writing a function to send a message to the bot.
+
+Instructions
+100 XP
+Write a function called respond() with a single parameter message which returns the bot's response. To do this, concatenate the strings "I can hear you! You said: " and message.
+Store the concatenated strings in bot_message, and return this result.
 
 
+bot_template = "BOT : {0}"
+user_template = "USER : {0}"
+
+# Define a function that responds to a user's message: respond
+def respond(message):
+    # Concatenate the user's message to the end of a standard bot respone
+    bot_message = "I can hear you! You said: " + message
+    # Return the result
+    return bot_message
+
+-----------------------------------------------------------------------------------------------------------------------
+
+EchoBot II
+Having written your respond() function, you'll now define a function called send_message() with a single parameter message which logs the message and the bot's response.
+
+Instructions
+100 XP
+Use the user_template string's .format() method to include the user's message into the user template, and print the result.
+Call the respond() function with the message passed in and save the result as response.
+Log the bot's response using the bot_template string's .format() method.
+Send the message "hello" to the bot.
+
+# Define a function that sends a message to the bot: send_message
+def send_message(message):
+    # Print user_template including the user_message
+    print(user_template.format(message))
+    # Get the bot's response to the message
+    response = respond(message)
+    # Print the bot template including the bot's response.
+    print(bot_template.format(response))
+
+# Send a message to the bot
+send_message("hello")
 
 
+<script.py> output:
+    USER : hello
+    BOT : I can hear you! You said: hello
 
 
 -----------------------------------------------------------------------------------------------------------------------
@@ -323,6 +370,101 @@ In [3]: def respond(message):
 : return random.choice(responses)
 In [4]: respond("I think you're really great")
 Out[4]: 'why do you think that?'
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Chitchat
+Now you're going to leave simple EchoBot behind and create a bot which can answer simple questions such as "What's your name?" and "What's today's weather?"
+
+You'll use a dictionary with these questions as keys, and the correct responses as values.
+
+This means the bot will only respond correctly if the message matches exactly, which is a big limitation. In later exercises you will create much more robust solutions.
+
+The send_message function has already been defined for you, as well as the bot_template and user_template variables.
+
+Instructions 1/2
+100 XP
+1
+2
+Define a respond() function which takes in a message argument, checks if the message has a pre-defined response, and returns the response in the responses dictionary if there is a match, or the "default" message otherwise.
+
+# Define variables
+name = "Greg"
+weather = "cloudy"
+
+# Define a dictionary with the predefined responses
+responses = {
+  "what's your name?": "my name is {0}".format(name),
+  "what's today's weather?": "the weather is {0}".format(weather),
+  "default": "default message"
+}
+
+# Return the matching response if there is one, default otherwise
+def respond(message):
+    # Check if the message is in the responses
+    if message in responses:
+        # Return the matching message
+        bot_message = responses[message]
+    else:
+        # Return the "default" message
+        bot_message = responses["default"]
+    return bot_message
+		
+		
+----------------------------------------------------------------------------------------------------------------------------
+Adding variety
+It can get a little boring hearing the same old answers over and over. In this exercise, you'll add some variation. If you ask your bot how it's feeling, it may equally well respond with "oh I'm great!" as with "I'm very sad today".
+
+Here, you'll use the random module - specifically random.choice(ls) - which randomly selects an element from a list ls.
+
+A dictionary called responses, which maps each message to a list of possible responses, has been defined for you.
+
+Instructions 1/2
+100 XP
+1
+2
+Import the random module.
+Use random.choice() in the respond() function to choose one of the matching responses.
+
+
+# Import the random module
+import random
+
+name = "Greg"
+weather = "cloudy"
+
+# Define a dictionary containing a list of responses for each message
+responses = {
+  "what's your name?": [
+      "my name is {0}".format(name),
+      "they call me {0}".format(name),
+      "I go by {0}".format(name)
+   ],
+  "what's today's weather?": [
+      "the weather is {0}".format(weather),
+      "it's {0} today".format(weather)
+    ],
+  "default": ["default message"]
+}
+
+# Use random.choice() to choose a matching response
+def respond(message):
+    # Check if the message is in the responses
+    if message in responses:
+        # Return a random matching response
+        bot_message = random.choice(responses[message])
+    else:
+        # Return a random "default" response
+        bot_message = random.choice(responses["default"])
+    return bot_message
+
+
+
+
+
+
+
+
 ----------------------------------------------------------------------------------------------------------------------------
 
 

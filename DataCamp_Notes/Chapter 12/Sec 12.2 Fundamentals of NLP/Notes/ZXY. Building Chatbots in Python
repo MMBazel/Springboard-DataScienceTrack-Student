@@ -779,9 +779,154 @@ Out[3]: ['Mary'
 'Google']
 
 ----------------------------------------------------------------------------------------------------------------------------
+Intent classification with regex I
+You'll begin by implementing a very simple way to recognise intents - just looking for the presence of keywords.
+
+A dictionary keywords has already been defined. It has the intents "greet", "goodbye", and "thankyou" as keys, and lists of keywords as the corresponding values. For example, keywords["greet"] is set to "["hello","hi","hey"].
+
+Also defined is a second dictionary, responses, indicating how the bot should respond to each of these intents. It also has a default response with the key "default".
+
+The function send_message(), along with the bot and user templates have also already been defined. Your job in this exercise is to create a dictionary with the intents as keys and regex objects as values.
+
+Instructions
+100 XP
+Iterate over the keywords dictionary, using intent and keys as your iterator variables.
+Use '|'.join(keys) to create regular expressions to match at least one of the keywords.
+Use re.compile() to compile the regular expressions into pattern objects. Store the result as the value of the patterns dictionary.
 
 
+# Define a dictionary of patterns
+patterns = {}
 
+# Iterate over the keywords dictionary
+for intent, keys in keywords.items():
+    # Create regular expressions and compile them into pattern objects
+    patterns[intent] = re.compile('|'.join(keys))
+    
+# Print the patterns
+print(patterns)
+
+
+<script.py> output:
+    {'greet': re.compile('hello|hi|hey'), 'thankyou': re.compile('thank|thx'), 'goodbye': re.compile('bye|farewell')}
+    
+    
+----------------------------------------------------------------------------------------------------------------------------
+Intent classification with regex II
+With your patterns dictionary created, it's now time to define a function to find the intent of a message.
+
+Instructions
+100 XP
+Iterate over the intents and patterns in the patterns dictionary using its .items() method.
+Use the .search() method of pattern to look for keywords in the message.
+If there is a match, return the corresponding intent.
+Call your match_intent() function inside respond() with message as the argument and then hit 'Submit Answer' to see how the bot responds to the provided messages.
+
+# Define a function to find the intent of a message
+def match_intent(message):
+    matched_intent = None
+    for intent, pattern in patterns.items():
+        # Check if the pattern occurs in the message 
+        if pattern.search(message):
+            matched_intent = intent
+    return matched_intent
+
+# Define a respond function
+def respond(message):
+    # Call the match_intent function
+    intent = match_intent(message)
+    # Fall back to the default response
+    key = "default"
+    if intent in responses:
+        key = intent
+    return responses[key]
+
+# Send messages
+send_message("hello!")
+send_message("bye byeee")
+send_message("thanks very much!")
+
+<script.py> output:
+    USER : hello!
+    BOT : Hello you! :)
+    USER : bye byeee
+    BOT : goodbye for now
+    USER : thanks very much!
+    BOT : you are very welcome
+
+    ----------------------------------------------------------------------------------------------------------------------------
+    
+    
+    Entity extraction with regex
+Now you'll use another simple method, this time for finding a person's name in a sentence such as "hello, my name is David Copperfield".
+
+You'll look for the keywords "name" or "call(ed)", and find capitalized words using regex and assume those are names. Your job in this exercise is to define a find_name() function to do this.
+
+Instructions
+100 XP
+Use re.compile() to create a pattern for checking if "name" or "call" keywords occur.
+Create a pattern for finding capitalized words.
+Use the .findall() method on name_pattern to retrieve all matching words in message.
+Call your find_name() function inside respond() and then hit 'Submit Answer' to see how the bot responds to the provided messages.
+    
+    
+    # Define find_name()
+def find_name(message):
+    name = None
+    # Create a pattern for checking if the keywords occur
+    name_keyword = re.compile('name|call')
+    # Create a pattern for finding capitalized words
+    name_pattern = re.compile('[A-Z]{1}[a-z]*')
+    if name_keyword.search(message):
+        # Get the matching words in the string
+        name_words = name_pattern.findall(message)
+        if len(name_words) > 0:
+            # Return the name if the keywords are present
+            name = ' '.join(name_words)
+    return name
+
+# Define respond()
+def respond(message):
+    # Find the name
+    name = find_name(message)
+    if name is None:
+        return "Hi there!"
+    else:
+        return "Hello, {0}!".format(name)
+
+# Send messages
+send_message("my name is David Copperfield")
+send_message("call me Ishmael")
+send_message("People call me Cassandra")
+
+# Define find_name()
+def find_name(message):
+    name = None
+    # Create a pattern for checking if the keywords occur
+    name_keyword = re.compile('name|call')
+    # Create a pattern for finding capitalized words
+    name_pattern = re.compile('[A-Z]{1}[a-z]*')
+    if name_keyword.search(message):
+        # Get the matching words in the string
+        name_words = name_pattern.findall(message)
+        if len(name_words) > 0:
+            # Return the name if the keywords are present
+            name = ' '.join(name_words)
+    return name
+
+# Define respond()
+def respond(message):
+    # Find the name
+    name = find_name(message)
+    if name is None:
+        return "Hi there!"
+    else:
+        return "Hello, {0}!".format(name)
+
+# Send messages
+send_message("my name is David Copperfield")
+send_message("call me Ishmael")
+send_message("People call me Cassandra")
 ----------------------------------------------------------------------------------------------------------------------------
 Word vectors
 
@@ -859,6 +1004,15 @@ In [4]: doc.similarity(nlp("can"))
 Out[4]: 0.30165292161215396
 In [5]: doc.similarity(nlp("dog"))
 Out[5]: 0.80168555173294953
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
 ----------------------------------------------------------------------------------------------------------------------------
 Intents and
 classification

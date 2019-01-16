@@ -459,10 +459,49 @@ def respond(message):
     return bot_message
 
 
+----------------------------------------------------------------------------------------------------------------------------
+ELIZA I: asking questions
+Asking questions is a great way to create an engaging conversation. Here, you'll create the very first hint of ELIZA's famous personality, by responding to statements with a question and responding to questions with answers.
+
+A dictionary of responses with "question" and "statement" as keys, and lists of appropriate responses as values has already been defined for you. Explore this in the Shell with responses.keys() and responses["question"].
+
+Instructions
+100 XP
+Define a respond() function which takes in message as an argument, and uses the string's .endswith() method to check if a message ends with a question mark.
+If the message does end with a question mark, choose a random "question" from the responses dictionary. Else, choose a random "statement" from the responses
+Send the bot multiple messages with and without a question mark - a few have been provided for you. If you want to experiment further in the Shell, be sure to first hit 'Run Code'.
+
+
+import random
+
+def respond(message):
+    # Check for a question mark
+    if message.endswith("?"):
+        # Return a random question
+        return random.choice(responses["question"])
+    # Return a random statement
+    return random.choice(responses["statement"])
+
+
+# Send messages ending in a question mark
+send_message("what's today's weather?")
+send_message("what's today's weather?")
+
+# Send messages which don't end with a question mark
+send_message("I love building chatbots")
+send_message("I love building chatbots")
 
 
 
-
+<script.py> output:
+    USER : what's today's weather?
+    BOT : you tell me!
+    USER : what's today's weather?
+    BOT : I don't know :(
+    USER : I love building chatbots
+    BOT : how long have you felt this way?
+    USER : I love building chatbots
+    BOT : I find that extremely interesting
 
 
 ----------------------------------------------------------------------------------------------------------------------------
@@ -543,6 +582,130 @@ In [9]: response.format(phrase)
 Out[9]: 'how could I forget when I ate strawberries in the garden'
 
 
+----------------------------------------------------------------------------------------------------------------------------
+ELIZA II: Extracting key phrases
+The really clever thing about ELIZA is the way the program appears to understand what you told it, by occasionally including phrases uttered by the user in its responses.
+
+In this exercise, you will match messages against some common patterns and extract phrases using re.search(). A dictionary called rules has already been defined, which matches the following patterns:
+
+"do you think (.*)"
+"do you remember (.*)"
+"I want (.*)"
+"if (.*)"
+Inspect this dictionary in the Shell before starting the exercise.
+
+Instructions
+100 XP
+Iterate over the rules dictionary using its .items() method, with pattern and responses as your iterator variables.
+Use re.search() with the pattern and message to create a match object.
+If there is a match, use random.choice() to pick a response.
+If '{0}' is in that response, use the match object's .group() method with index 1 to retrieve a phrase.
+
+# Define match_rule()
+def match_rule(rules, message):
+    response, phrase = "default", None
+    
+    # Iterate over the rules dictionary
+    for pattern, responses in rules.items():
+        # Create a match object
+        match = re.search(pattern, message)
+        if match is not None:
+            # Choose a random response
+            response = random.choice(responses)
+            if '{0}' in response:
+                phrase = match.group(1)
+    # Return the response and phrase
+    return response, phrase
+
+# Test match_rule
+print(match_rule(rules, "do you remember your last birthday"))
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+ELIZA III: Pronouns
+To make responses grammatically coherent, you'll want to transform the extracted phrases from first to second person and vice versa. In English, conjugating verbs is easy, and simply swapping "I" and 'you', "my" and "your" works in most cases.
+
+In this exercise, you'll define a function called replace_pronouns() which uses re.sub() to map "me" and "my" to "you" and "your" (and vice versa) in a string.
+
+Instructions
+100 XP
+If 'me' is in message, use re.sub() to replace it with 'you'.
+If 'my' is in message, replace it with 'your'.
+If 'your' is in message', replace it with 'my', and if 'you' is in message, replace it with 'me'.
+
+
+# Define replace_pronouns()
+def replace_pronouns(message):
+
+    message = message.lower()
+    if 'me' in message:
+        # Replace 'me' with 'you'
+        return re.sub('me','you',message)
+    if 'my' in message:
+        # Replace 'my' with 'your'
+        return re.sub('my','your',message)
+    if 'your' in message:
+        # Replace 'your' with 'my'
+        return re.sub('your','my',message)
+    if 'you' in message:
+        # Replace 'you' with 'me'
+        return re.sub('you','me',message)
+
+    return message
+
+print(replace_pronouns("my last birthday"))
+print(replace_pronouns("when you went to Florida"))
+print(replace_pronouns("I had my own castle"))
+
+<script.py> output:
+    your last birthday
+    when me went to florida
+    i had your own castle
+
+----------------------------------------------------------------------------------------------------------------------------
+
+ELIZA IV: Putting it all together
+Now you're going to put it all together and experience the magic! The match_rule(), send_message(), and replace_pronouns() functions have already been defined, and the rules dictionary is available in your workspace.
+
+Your job here is to write a function called respond() with a single argument message which creates an appropriate response to be handled by send_message.
+
+Instructions
+100 XP
+Get a response and phrase by calling match_rule() with the rules dictionary and message.
+Check if the response is a template by seeing if it includes the string '{0}'. If it does, use the replace_pronouns() function on phrase.
+Include the phrase by using .format() on response and overriding the value of response.
+Hit 'Submit Answer' to how the bot responds to the provided messages!
+
+
+# Define respond()
+def respond(message):
+    # Call match_rule
+    response, phrase = match_rule(rules, message)
+    if '{0}' in response:
+        # Replace the pronouns in the phrase
+        phrase = replace_pronouns(phrase)
+        # Include the phrase in the response
+        response = response.format(phrase)
+    return response
+
+# Send the messages
+send_message("do you remember your last birthday")
+send_message("do you think humans should be worried about AI")
+send_message("I want a robot friend")
+send_message("what if you could be anything you wanted")
+
+
+<script.py> output:
+    USER : do you remember your last birthday
+    BOT : Yes .. and?
+    USER : do you think humans should be worried about AI
+    BOT : No chance
+    USER : I want a robot friend
+    BOT : What would it mean if you got a robot friend
+    USER : what if you could be anything you wanted
+    BOT : Really--if me could be anything me wanted
+
 
 
 =====================================================================================================================================
@@ -553,6 +716,370 @@ Out[9]: 'how could I forget when I ate strawberries in the garden'
 Understanding natural language
 0%
 Here, you'll use machine learning to turn natural language into structured data using spaCy, scikit-learn, and rasa NLU. You'll start with a refresher on the theoretical foundations, and then move on to building models using the ATIS dataset, which contains thousands of sentences from real people interacting with a flight booking system.
+
+----------------------------------------------------------------------------------------------------------------------------
+Understanding intents
+and entities
+
+
+Intents
+A restaurant_search can be expressed many different ways:
+I'm hungry
+Show me good pizza spots
+I want to take my boyfriend out for sushi
+Can also be request_booking
+
+
+Entities
+NER = Named Entity Recognition
+
+
+
+Regular expressions to recognize intents and exercises
+Simpler than machine learning approaches
+Highly computationally efficient
+Drawback:
+Debugging regular expressions can become difficult
+
+
+Using regular expressions
+'|' is equivalent to OR
+\b matches the beginning or end of a word
+In [1]: re.search(r"(hello|hey|hi)"
+,
+"hey there!") is not None
+Out[1]: True
+In [2]: re.search(r"(hello|hey|hi)"
+,
+"which one?") is not None
+Out[2]: True
+In [3]: re.search(r"\b(hello|hey|hi)\b"
+,
+"hey there!") is not None
+Out[3]: True
+In [4]: re.search(r"\b(hello|hey|hi)\b"
+,
+"which one?") is not None
+Out[4]: False
+
+
+
+
+Using regex for entity recognition
+In [1]: pattern = re.compile('[A-Z]{1}[a-z]*')
+In [2]: message = """
+Mary is a friend of mine,
+she studied at Oxford and
+now works at Google"""
+In [3]: pattern.findall(message)
+Out[3]: ['Mary'
+,
+'Oxford'
+,
+'Google']
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+Word vectors
+
+Machine learning
+Programs which can get better at a task by being exposed to more
+data
+Identifying which intent a user message belongs to
+
+
+
+Vector representations
+"can you help me please?"
+Units examples vectors
+characters "c"
+,
+"a"
+,
+"n"
+, ... v_c, v_a, v_n, ...
+words "can"
+,
+"you"
+, ... v_{can}, v_{you}, ...
+sentences "can you help..." v_{can you help ...}
+
+
+Word vectors
+Context Candidates
+let's meet at the ___ tomorrow office, gym, park, beach, party
+I love going to the ___ to play with the dogs beach, park
+Word vectors try to represent meaning of words
+Words which appear in similar context have similar vectors
+
+
+Word vectors are computationally intensive
+Training word vectors requires a lot of data
+High quality word vectors are available for anyone to use
+GloVe algorithm
+Cousin of word2vec
+spaCy
+
+
+Word vectors in spaCy
+In [1]: import spacy
+In [2]: nlp = spacy.load('en')
+In [3]: nlp.vocab.vectors_length
+Out[3]: 300
+In [4]: doc = nlp('hello can you help me?')
+In [5]: for token in doc:
+...: print("{} : {}".format(token, token.vector[:3]))
+hello : [ 0.25233001 0.10176 -0.67484999]
+can : [-0.23857 0.35457 -0.30219001]
+you : [-0.11076 0.30785999 -0.51980001]
+help : [-0.29370001 0.32253 -0.44779 ]
+me : [-0.15396 0.31894001 -0.54887998]
+? : [-0.086864 0.19160999 0.10915 ]
+
+
+Similarity
+Direction of vectors matters
+"Distance" between words = angle between the vectors
+Cosine similarity
+1: If vectors point in the same direction
+0: If they are perpendicular
+-1: If they point in opposite directions
+
+
+.similarity()
+"can" and "cat" are spelled similarly but have low similarity
+but "cat" and "dog" have high similarity
+In [1]: import spacy
+In [2]: nlp = spacy.load('en')
+In [3]: doc = nlp("cat")
+In [4]: doc.similarity(nlp("can"))
+Out[4]: 0.30165292161215396
+In [5]: doc.similarity(nlp("dog"))
+Out[5]: 0.80168555173294953
+----------------------------------------------------------------------------------------------------------------------------
+Intents and
+classification
+
+
+
+Supervised learning
+A classifier predicts the intent label given a sentence
+'Fit' classifier by tuning it on training data
+Evaluate performance on test data
+Accuracy: the fraction of labels we predict correctly
+
+
+ATIS dataset
+Thousands of sentences with labeled intents and entities
+Collected from a real flight booking service
+Intents like
+atis_flight
+atis_airfare
+
+
+
+ATIS dataset II
+In [1]: sentences_train[:2]
+Out[1]: [
+"i want to fly from boston at 838 am
+and arrive in denver at 1110 in the morning"
+,
+"what flights are available from pittsburgh
+to baltimore on thursday morning"
+]
+In [2]: labels_train[:2]
+Out[2]: [
+"atis_flight"
+,
+"atis_flight"
+]
+In [3]: import numpy as np
+In [4]: X_train_shape = (len(sentences_train),nlp.vocab.vectors_length)
+In [5]: X_train = np.zeros(X_train_shape)
+In [6]: for sentence in sentences_train:
+...: X_train[i,:] = nlp(sentence).vector
+
+
+
+Nearest neighbor classification
+Need training data
+Sentences which we've already labeled with their intents
+Simplest solution:
+Look for the labeled example that's most similar
+Use its intent as a best guess
+Nearest neighbor classification
+
+
+Nearest neighbor classification in scikit-learn
+In [1]: from sklearn.metrics.pairwise import cosine_similarity
+In [2]: test_message = """
+i would like to find a flight from charlotte
+to las vegas that makes a stop in st. louis"""
+In [3]: test_x = nlp(test_message).vector
+In [4]: scores = [
+...: cosine_similarity(X[i,:], test_x)
+...: for i in range(len(sentences_train)
+...: ]
+In [5]: labels_train[np.argmax(scores)]
+Out[5]: 'atis_flight'
+
+
+Support vector machines
+Nearest neighbours is very simple - we can do better
+SVM / SVC: support vector machine / classifier
+In [1]: from sklearn.svm import SVC
+In [2]: clf = SVC()
+In [3]: clf.fit(X_train, y_train)
+In [4]: y_pred = clf.predict(X_test)
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Entity extraction
+
+Beyond keywords: Context
+Keywords don't work for entities you haven't seen before
+Use contextual clues:
+Spelling
+Capitalization
+Words occurring before & after
+Pattern recognition
+
+
+Pre-built Named Entity Recognition
+In [1]: import spacy
+In [2]: nlp = spacy.load('en')
+In [3]: doc = nlp("my friend Mary has worked at Google since 2009")
+In [4]: for ent in doc.ents:
+...: print(ent.text, ent.label_)
+...:
+Mary PERSON
+Google ORG
+2009 DATE
+
+
+
+
+Roles
+In [1]: pattern_1 = re.compile('.* from (.*) to (.*)')
+In [2]: pattern_2 = re.compile('.* to (.*) from (.*)')
+
+
+
+Dependency parsing
+In [1]: doc = nlp('a flight to Shanghai from Singapore')
+In [2]: shanghai, singapore = doc[3], doc[5]
+In [3]: list(shanghai.ancestors)
+Out[3]: [from, flight]
+In [4]: list(singapore.ancestors)
+Out[4]: [to, flight]
+
+
+
+Shopping example
+In [1]: doc = nlp("let's see that jacket in red and some blue jeans")
+In [2]: items = [doc[4], doc[10]] # [jacket, jeans]
+In [3]: colors = [doc[6], doc[9]] # [red, blue]
+In [4]: for color in colors:
+...: for tok in color.ancestors:
+...: if tok in items:
+...: print("color {} belongs to item {}".format(color, tok))
+...: break
+color red belongs to item jacket
+color blue belongs to item jeans
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Robust NLU with Rasa
+
+Rasa NLU
+Library for intent recognition & entity extraction
+Based on spaCy, scikit-learn, & other libraries
+Built in support for chatbot specific tasks
+
+
+
+Rasa data format
+In [1]: from rasa_nlu.converters import load_data
+In [2]: training_data = load_data("./training_data.json")
+In [3]: import json
+In [4]: print(json.dumps(data.training_examples[22], indent=2))
+Out[4]: {
+"text": "i'm looking for a place in the north of town"
+,
+"intent": "restaurant_search"
+,
+"entities": [
+{
+"start": 31,
+"end": 36,
+"value": "north"
+,
+"entity": "location"
+}
+]
+}
+
+
+
+Interpreters In [1]: message = "I want to book a flight to London" In [2]: interpreter.parse(message)) Out[2]: { "intent": { "name": "flight_search", "confidence": 0.9 },"entities": [ { "entity": "location", "value": "London", "start": 27, "end": 33 } ] }
+
+
+Rasa usage
+# Creating a model
+In [1]: from rasa_nlu.config import RasaNLUConfig
+In [2]: from rasa_nlu.model import Trainer
+In [3]: config = RasaNLUConfig(cmdline_args={"pipeline": "spacy_sklearn"})
+In [4]: trainer = Trainer(config)
+In [5]: interpreter = trainer.train(training_data)
+
+
+Rasa pipelines
+In [1]: spacy_sklearn_pipeline = [
+"nlp_spacy"
+,
+"ner_crf"
+,
+"ner_synonyms"
+,
+"intent_featurizer_spacy"
+,
+"intent_classifier_sklearn"
+]
+# These two statements are identical:
+In [2]: RasaNLUConfig(
+cmdline_args={"pipeline": spacy_sklearn_pipeline}
+)
+Out[2]: <rasa_nlu.config.RasaNLUConfig at 0x10f60aa90>
+In [3]: RasaNLUConfig(
+cmdline_args={"pipeline": "spacy_sklearn"}
+)
+Out[3]: <rasa_nlu.config.RasaNLUConfig at 0x10f60aa20>
+
+
+
+Conditional random fields
+Machine Learning model, popular for named entity recognition
+can perform well even with small training data
+
+
+
+Handling typos
+In [1]: pipeline = [
+...: "nlp_spacy"
+,
+...: "intent_featurizer_spacy"
+,
+...: "intent_featurizer_ngrams"
+,
+...: "intent_classifier_sklearn"
+...: ]
+
+
+
 
 
 

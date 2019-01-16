@@ -13,6 +13,395 @@ FREE
 In this chapter, you'll learn how to build your first chatbot! After gaining a bit of historical context, you'll set up a basic structure for receiving text and responding to users, and then learn how to add the basic elements of personality. You'll then build rule-based systems for parsing text.
 
 
+Course content
+Implementing smalltalk, ELIZA style
+How to use regex and ML to extract meaning from free-form text
+Build chatbots that can
+Query a database
+Plan a trip
+Help you order coffee
+Handling statefulness
+
+
+
+EchoBot I
+In [1]: USER: Hello!
+Out[1]: BOT: I can hear you, you said: 'Hello!'
+In [2]: USER: How are you?
+Out[2]: BOT: I can hear you, you said: 'How are you?'
+
+
+EchoBot II
+In [1]: def respond(message):
+: return "I can hear you! you said: {}".format(message)
+In [2]: def send_message(message):
+: # calls respond() to get response
+In [3]: send_message("hello!")
+Out[3]: USER: hello!
+...: BOT : I can hear you! you said: hello!
+
+
+
+EchoBot III
+In [1]: import time In [2]: time.sleep(0
+.
+5
+)
+-----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Creating a personality
+
+
+Why personality?
+Difference between a command line app and a chatbot
+Makes chatbots and voice assistants more accessible and fun to use
+Your users will expect it!
+
+
+S
+m
+allt
+alk
+I
+n
+[
+1
+]
+:
+r
+e
+s
+p
+o
+n
+s
+e
+s
+=
+{
+:
+"
+w
+h
+a
+t's
+y
+o
+u
+r
+n
+a
+m
+e
+?
+"
+:
+"
+m
+y
+n
+a
+m
+e
+i
+s
+E
+c
+h
+o
+B
+o
+t
+"
+,
+:
+"
+w
+h
+a
+t's
+t
+h
+e
+w
+e
+a
+t
+h
+e
+r
+t
+o
+d
+a
+y
+?
+"
+:
+"
+i
+t's
+s
+u
+n
+n
+y!"
+:
+}
+I
+n
+[
+2
+]
+:
+d
+e
+f
+r
+e
+s
+p
+o
+n
+d
+(
+m
+e
+s
+s
+a
+g
+e
+)
+:
+:
+i
+f
+m
+e
+s
+s
+a
+g
+e
+i
+n
+r
+e
+s
+p
+o
+n
+s
+e
+s
+:
+:
+r
+e
+t
+u
+r
+n
+r
+e
+s
+p
+o
+n
+s
+e
+s
+[
+m
+e
+s
+s
+a
+g
+e
+]
+I
+n
+[
+3
+]
+:
+r
+e
+s
+p
+o
+n
+d
+(
+"
+w
+h
+a
+t's
+y
+o
+u
+r
+n
+a
+m
+e
+?
+"
+)
+O
+u
+t
+[
+3
+]
+: 'm
+y
+n
+a
+m
+e
+i
+s
+E
+c
+h
+o
+B
+o
+t'
+
+Including variables
+In [1]: responses = {
+: "what's today's weather?": "it's {} today"
+: }
+In [2]: weather_today = "cloudy"
+In [3]: def respond(message):
+: if message in responses:
+: return responses[message].format(weather_today)
+:
+In [4]: respond("what's today's weather?")
+Out[4]: "it's cloudy today"
+
+
+
+Choosing responses
+In [1]: responses = {
+: "what's your name?": [
+: "my name is EchoBot"
+,
+: "they call me EchoBot"
+,
+: "the name's Bot, Echo Bot"
+: ]
+: }
+In [2]: import random
+In [3]: def respond(message):
+: if message in responses:
+: return random.choice(responses[message])
+In [4]: respond("what's your name?")
+Out[4]: "the name's Bot, Echo Bot"
+
+
+
+Asking questions
+In [1]: responses = [ "tell me more!"
+,
+"why do you think that?" ]
+In [2]: import random
+In [3]: def respond(message):
+: return random.choice(responses)
+In [4]: respond("I think you're really great")
+Out[4]: 'why do you think that?'
+----------------------------------------------------------------------------------------------------------------------------
+
+
+Text processing with
+regular expressions
+
+Regular expressions
+Match messages against known patterns
+Extract key phrases
+Transform sentences grammatically
+
+
+
+The regex behind ELIZA
+USER: "do you remember when you ate strawberries in the garden?"
+ELIZA: "How could I forget when I ate strawberries in the garden?"
+
+
+Pattern matching
+In [1]: import re
+In [2]: pattern = "do you remember .*"
+In [3]: message = "do you remember when you ate strawberries in the garden"
+In [4]: match = re.search(pattern, message)
+In [5]: if match:
+: print("string matches!")
+Out[5]: string matches!
+
+
+Extracting key phrases
+In [1]: import re
+In [2]: pattern = "if (.*)"
+In [3]: message = "what would happen if bots took over the world"
+In [4]: match = re.search(pattern, message)
+In [5]: match.group(0)
+Out[5]: 'what would happen if bots took over the world'
+In [6]: match.group(1)
+Out[6]: 'bots took over the world'
+
+
+
+Grammatical transformation
+In [1]: import re
+In [2]: def swap_pronouns(phrase):
+...: if 'I' in phrase:
+...: return re.sub('I'
+,
+'you'
+, phrase)
+...: if 'my' in phrase:
+...: return re.sub('my'
+,
+'your'
+, phrase)
+...:
+...: else:
+...: return phrase
+In [3]: swap_pronouns("I walk my dog")
+Out[3]: 'You walk your dog'
+
+
+
+
+Putting it all together
+In [1]: pattern = 'do you remember (.*)'
+In [2]: message = 'do you remember when you ate strawberries in the garden'
+In [3]: phrase = pattern.search(pattern, message).group(1)
+In [4]: phrase
+Out[4]: 'when you ate strawberries in the garden'
+In [5]: response = choose_response(pattern)
+In [6]: response
+Out[6]: 'how could I forget {}'
+In [7]: phrase = swap_pronouns(phrase)
+In [8]: phrase
+Out[8]: 'when I ate strawberries in the garden'
+In [9]: response.format(phrase)
+Out[9]: 'how could I forget when I ate strawberries in the garden'
+
+
+
 
 =====================================================================================================================================
 

@@ -1,0 +1,512 @@
+Spark and PySpark
+Spark, a computing framework developed at Berkeley’s AMPLab by Matei Zaharia, has become one of the most prominent frameworks for running large-scale data analyses on computing clusters. In this section, you’ll learn Spark and Python tools and libraries that will give you a running start.
+
+
+PySpark is the Python package that makes the magic happen when using Spark from Python. In this resource, you'll use this package to work with data about flights from Portland and Seattle. You'll learn to wrangle data and build a whole machine learning pipeline to predict whether flights will be late. Get ready to put some Spark in your Python code and dive into the world of high performance machine learning!
+
+=================================================================================================================================
+
+Course Description
+In this course you'll learn how to use Spark from Python! Spark is a tool for doing parallel computation with large datasets and it integrates well with Python. PySpark is the Python package that makes the magic happen. You'll use this package to work with data about flights from Portland and Seattle. You'll learn to wrangle this data and build a whole machine learning pipeline to predict whether or not flights will be late. Get ready to put some Spark in your Python code and dive into the world of high performance machine learning!
+
+
+
+=================================================================================================================================
+
+1
+Getting to know PySpark
+FREE
+0%
+In this chapter, you'll learn how Spark manages data and how can you read and write tables from Python.
+
+What is Spark, anyway?
+Spark is a platform for cluster computing. Spark lets you spread data and computations over clusters with multiple nodes (think of each node as a separate computer). Splitting up your data makes it easier to work with very large datasets because each node only works with a small amount of data.
+
+As each node works on its own subset of the total data, it also carries out a part of the total calculations required, so that both data processing and computation are performed in parallel over the nodes in the cluster. It is a fact that parallel computation can make certain types of programming tasks much faster.
+
+However, with greater computing power comes greater complexity.
+
+Deciding whether or not Spark is the best solution for your problem takes some experience, but you can consider questions like:
+
+Is my data too big to work with on a single machine?
+Can my calculations be easily parallelized?
+Are you excited to learn more about Spark?
+_____________________________________________________________________________________________________________
+
+Using Spark in Python
+The first step in using Spark is connecting to a cluster.
+
+In practice, the cluster will be hosted on a remote machine that's connected to all other nodes. There will be one computer, called the master that manages splitting up the data and the computations. The master is connected to the rest of the computers in the cluster, which are called slaves. The master sends the slaves data and calculations to run, and they send their results back to the master.
+
+When you're just getting started with Spark it's simpler to just run a cluster locally. Thus, for this course, instead of connecting to another computer, all computations will be run on DataCamp's servers in a simulated cluster.
+
+Creating the connection is as simple as creating an instance of the SparkContext class. The class constructor takes a few optional arguments that allow you to specify the attributes of the cluster you're connecting to.
+
+An object holding all these attributes can be created with the SparkConf() constructor. Take a look at the documentation for all the details!
+
+For the rest of this course you'll have a SparkContext called sc already available in your workspace.
+
+How do you connect to a Spark cluster from PySpark?
+
+_____________________________________________________________________________________________________________
+
+Examining The SparkContext
+In this exercise you'll get familiar with the SparkContext.
+
+You'll probably notice that code takes longer to run than you might expect. This is because Spark is some serious software. It takes more time to start up than you might be used to. You may also find that running simpler computations might take longer than expected. That's because all the optimizations that Spark has under its hood are designed for complicated operations with big data sets. That means that for simple or small problems Spark may actually perform worse than some other solutions!
+
+Instructions
+100 XP
+Get to know the SparkContext.
+
+Call print() on sc to verify there's a SparkContext in your environment.
+print() sc.version to see what version of Spark is running on your cluster.
+
+
+# Verify SparkContext
+print(sc)
+
+# Print Spark version
+print(sc.version)
+
+<script.py> output:
+    <pyspark.context.SparkContext object at 0x7f95d16f4c18>
+    2.1.0
+_____________________________________________________________________________________________________________
+
+Using DataFrames
+Spark's core data structure is the Resilient Distributed Dataset (RDD). This is a low level object that lets Spark work its magic by splitting data across multiple nodes in the cluster. However, RDDs are hard to work with directly, so in this course you'll be using the Spark DataFrame abstraction built on top of RDDs.
+
+The Spark DataFrame was designed to behave a lot like a SQL table (a table with variables in the columns and observations in the rows). Not only are they easier to understand, DataFrames are also more optimized for complicated operations than RDDs.
+
+When you start modifying and combining columns and rows of data, there are many ways to arrive at the same result, but some often take much longer than others. When using RDDs, it's up to the data scientist to figure out the right way to optimize the query, but the DataFrame implementation has much of this optimization built in!
+
+To start working with Spark DataFrames, you first have to create a SparkSession object from your SparkContext. You can think of the SparkContext as your connection to the cluster and the SparkSession as your interface with that connection.
+
+Remember, for the rest of this course you'll have a SparkSession called spark available in your workspace!
+
+
+_____________________________________________________________________________________________________________
+
+Creating a SparkSession
+We've already created a SparkSession for you called spark, but what if you're not sure there already is one? Creating multiple SparkSessions and SparkContexts can cause issues, so it's best practice to use the SparkSession.builder.getOrCreate() method. This returns an existing SparkSession if there's already one in the environment, or creates a new one if necessary!
+
+Instructions
+100 XP
+Import SparkSession from pyspark.sql.
+Make a new SparkSession called my_spark using SparkSession.builder.getOrCreate().
+Print my_spark to the console to verify it's a SparkSession.
+
+# Import SparkSession from pyspark.sql
+from pyspark.sql import SparkSession
+
+# Create my_spark
+my_spark = SparkSession.builder.getOrCreate()
+
+# Print my_spark
+print(my_spark)
+
+<script.py> output:
+    <pyspark.sql.session.SparkSession object at 0x7f95be9b5198>
+		
+		_____________________________________________________________________________________________________________
+		
+		Viewing tables
+Once you've created a SparkSession, you can start poking around to see what data is in your cluster!
+
+Your SparkSession has an attribute called catalog which lists all the data inside the cluster. This attribute has a few methods for extracting different pieces of information.
+
+One of the most useful is the .listTables() method, which returns the names of all the tables in your cluster as a list.
+
+Instructions
+100 XP
+See what tables are in your cluster by calling spark.catalog.listTables() and printing the result!
+
+# Print the tables in the catalog
+print(spark.catalog.listTables())
+
+<script.py> output:
+    [Table(name='flights', database=None, description=None, tableType='TEMPORARY', isTemporary=True)]
+		_____________________________________________________________________________________________________________
+		
+		Are you query-ious?
+One of the advantages of the DataFrame interface is that you can run SQL queries on the tables in your Spark cluster. If you don't have any experience with SQL, don't worry (you can take our Introduction to SQL course!), we'll provide you with queries!
+
+As you saw in the last exercise, one of the tables in your cluster is the flights table. This table contains a row for every flight that left Portland International Airport (PDX) or Seattle-Tacoma International Airport (SEA) in 2014 and 2015.
+
+Running a query on this table is as easy as using the .sql() method on your SparkSession. This method takes a string containing the query and returns a DataFrame with the results!
+
+If you look closely, you'll notice that the table flights is only mentioned in the query, not as an argument to any of the methods. This is because there isn't a local object in your environment that holds that data, so it wouldn't make sense to pass the table as an argument.
+
+Remember, we've already created a SparkSession called spark in your workspace.
+
+Instructions
+100 XP
+Use the .sql() method to get the first 10 rows of the flights table and save the result to flights10. The variable query contains the appropriate SQL query.
+Use the DataFrame method .show() to print flights10.
+
+# Don't change this query
+query = "FROM flights SELECT * LIMIT 10"
+
+# Get the first 10 rows of flights
+flights10 = spark.sql(query)
+
+# Show the results
+flights10.show()
+
+<script.py> output:
+    +----+-----+---+--------+---------+--------+---------+-------+-------+------+------+----+--------+--------+----+------+
+    |year|month|day|dep_time|dep_delay|arr_time|arr_delay|carrier|tailnum|flight|origin|dest|air_time|distance|hour|minute|
+    +----+-----+---+--------+---------+--------+---------+-------+-------+------+------+----+--------+--------+----+------+
+    |2014|   12|  8|     658|       -7|     935|       -5|     VX| N846VA|  1780|   SEA| LAX|     132|     954|   6|    58|
+    |2014|    1| 22|    1040|        5|    1505|        5|     AS| N559AS|   851|   SEA| HNL|     360|    2677|  10|    40|
+    |2014|    3|  9|    1443|       -2|    1652|        2|     VX| N847VA|   755|   SEA| SFO|     111|     679|  14|    43|
+    |2014|    4|  9|    1705|       45|    1839|       34|     WN| N360SW|   344|   PDX| SJC|      83|     569|  17|     5|
+    |2014|    3|  9|     754|       -1|    1015|        1|     AS| N612AS|   522|   SEA| BUR|     127|     937|   7|    54|
+    |2014|    1| 15|    1037|        7|    1352|        2|     WN| N646SW|    48|   PDX| DEN|     121|     991|  10|    37|
+    |2014|    7|  2|     847|       42|    1041|       51|     WN| N422WN|  1520|   PDX| OAK|      90|     543|   8|    47|
+    |2014|    5| 12|    1655|       -5|    1842|      -18|     VX| N361VA|   755|   SEA| SFO|      98|     679|  16|    55|
+    |2014|    4| 19|    1236|       -4|    1508|       -7|     AS| N309AS|   490|   SEA| SAN|     135|    1050|  12|    36|
+    |2014|   11| 19|    1812|       -3|    2352|       -4|     AS| N564AS|    26|   SEA| ORD|     198|    1721|  18|    12|
+    +----+-----+---+--------+---------+--------+---------+-------+-------+------+------+----+--------+--------+----+------+
+
+		
+		
+		_____________________________________________________________________________________________________________
+		
+		Pandafy a Spark DataFrame
+Suppose you've run a query on your huge dataset and aggregated it down to something a little more manageable.
+
+Sometimes it makes sense to then take that table and work with it locally using a tool like pandas. Spark DataFrames make that easy with the .toPandas() method. Calling this method on a Spark DataFrame returns the corresponding pandas DataFrame. It's as simple as that!
+
+This time the query counts the number of flights to each airport from SEA and PDX.
+
+Remember, there's already a SparkSession called spark in your workspace!
+
+Instructions
+100 XP
+Run the query using the .sql() method. Save the result in flight_counts.
+Use the .toPandas() method on flight_counts to create a pandas DataFrame called pd_counts.
+Print the .head() of pd_counts to the console.
+
+# Don't change this query
+query = "SELECT origin, dest, COUNT(*) as N FROM flights GROUP BY origin, dest"
+
+# Run the query
+flight_counts = spark.sql(query)
+
+# Convert the results to a pandas DataFrame
+pd_counts = flight_counts.toPandas()
+
+# Print the head of pd_counts
+print(pd_counts.head())
+
+<script.py> output:
+      origin dest    N
+    0    SEA  RNO    8
+    1    SEA  DTW   98
+    2    SEA  CLE    2
+    3    SEA  LAX  450
+    4    PDX  SEA  144
+
+		
+		
+		
+		_____________________________________________________________________________________________________________
+		
+		Put some Spark in your data
+In the last exercise, you saw how to move data from Spark to pandas. However, maybe you want to go the other direction, and put a pandas DataFrame into a Spark cluster! The SparkSession class has a method for this as well.
+
+The .createDataFrame() method takes a pandas DataFrame and returns a Spark DataFrame.
+
+The output of this method is stored locally, not in the SparkSession catalog. This means that you can use all the Spark DataFrame methods on it, but you can't access the data in other contexts.
+
+For example, a SQL query (using the .sql() method) that references your DataFrame will throw an error. To access the data in this way, you have to save it as a temporary table.
+
+You can do this using the .createTempView() Spark DataFrame method, which takes as its only argument the name of the temporary table you'd like to register. This method registers the DataFrame as a table in the catalog, but as this table is temporary, it can only be accessed from the specific SparkSession used to create the Spark DataFrame.
+
+There is also the method .createOrReplaceTempView(). This safely creates a new temporary table if nothing was there before, or updates an existing table if one was already defined. You'll use this method to avoid running into problems with duplicate tables.
+
+Check out the diagram to see all the different ways your Spark data structures interact with each other.
+
+
+
+There's already a SparkSession called spark in your workspace, numpy has been imported as np, and pandas as pd.
+
+Instructions
+100 XP
+Instructions
+100 XP
+The code to create a pandas DataFrame of random numbers has already been provided and saved under pd_temp.
+Create a Spark DataFrame called spark_temp by calling the .createDataFrame() method with pd_temp as the argument.
+Examine the list of tables in your Spark cluster and verify that the new DataFrame is not present. Remember you can use spark.catalog.listTables() to do so.
+Register spark_temp as a temporary table named "temp" using the .createOrReplaceTempView() method. Rememeber that the table name is set including it as the only argument!
+Examine the list of tables again!
+
+
+		# Create pd_temp
+pd_temp = pd.DataFrame(np.random.random(10))
+
+# Create spark_temp from pd_temp
+spark_temp = spark.createDataFrame(pd_temp)
+
+# Examine the tables in the catalog
+print(spark.catalog.listTables())
+
+# Add spark_temp to the catalog
+spark_temp.createOrReplaceTempView("temp")
+
+# Examine the tables in the catalog again
+print(spark.catalog.listTables())
+		
+		Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /__ / .__/\_,_/_/ /_/\_\   version 2.1.0
+      /_/
+
+Using Python version 3.5.2 (default, Nov 17 2016 17:05:23)
+SparkSession available as 'spark'.
+
+<script.py> output:
+    [Table(name='flights', database=None, description=None, tableType='TEMPORARY', isTemporary=True)]
+    [Table(name='flights', database=None, description=None, tableType='TEMPORARY', isTemporary=True), Table(name='temp', database=None, description=None, tableType='TEMPORARY', isTemporary=True)]
+
+In [1]: 
+		
+		_____________________________________________________________________________________________________________
+		
+		Dropping the middle man
+Now you know how to put data into Spark via pandas, but you're probably wondering why deal with pandas at all? Wouldn't it be easier to just read a text file straight into Spark? Of course it would!
+
+Luckily, your SparkSession has a .read attribute which has several methods for reading different data sources into Spark DataFrames. Using these you can create a DataFrame from a .csv file just like with regular pandas DataFrames!
+
+The variable file_path is a string with the path to the file airports.csv. This file contains information about different airports all over the world.
+
+A SparkSession named spark is available in your workspace.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Use the .read.csv() method to create a Spark DataFrame called airports
+The first argument is file_path
+Pass the argument header=True so that Spark knows to take the column names from the first line of the file.
+Print out this DataFrame by calling .show().
+
+
+		# Don't change this file path
+file_path = "/usr/local/share/datasets/airports.csv"
+
+# Read in the airports data
+airports = spark.read.csv(file_path, header=True)
+
+# Show the data
+airports.show()
+
+
+		Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /__ / .__/\_,_/_/ /_/\_\   version 2.1.0
+      /_/
+
+Using Python version 3.5.2 (default, Nov 17 2016 17:05:23)
+SparkSession available as 'spark'.
+
+<script.py> output:
+    +---+--------------------+----------------+-----------------+----+---+---+
+    |faa|                name|             lat|              lon| alt| tz|dst|
+    +---+--------------------+----------------+-----------------+----+---+---+
+    |04G|   Lansdowne Airport|      41.1304722|      -80.6195833|1044| -5|  A|
+    |06A|Moton Field Munic...|      32.4605722|      -85.6800278| 264| -5|  A|
+    |06C| Schaumburg Regional|      41.9893408|      -88.1012428| 801| -6|  A|
+    |06N|     Randall Airport|       41.431912|      -74.3915611| 523| -5|  A|
+    |09J|Jekyll Island Air...|      31.0744722|      -81.4277778|  11| -4|  A|
+    |0A9|Elizabethton Muni...|      36.3712222|      -82.1734167|1593| -4|  A|
+    |0G6|Williams County A...|      41.4673056|      -84.5067778| 730| -5|  A|
+    |0G7|Finger Lakes Regi...|      42.8835647|      -76.7812318| 492| -5|  A|
+    |0P2|Shoestring Aviati...|      39.7948244|      -76.6471914|1000| -5|  U|
+    |0S9|Jefferson County ...|      48.0538086|     -122.8106436| 108| -8|  A|
+    |0W3|Harford County Ai...|      39.5668378|      -76.2024028| 409| -5|  A|
+    |10C|  Galt Field Airport|      42.4028889|      -88.3751111| 875| -6|  U|
+    |17G|Port Bucyrus-Craw...|      40.7815556|      -82.9748056|1003| -5|  A|
+    |19A|Jackson County Ai...|      34.1758638|      -83.5615972| 951| -4|  U|
+    |1A3|Martin Campbell F...|      35.0158056|      -84.3468333|1789| -4|  A|
+    |1B9| Mansfield Municipal|      42.0001331|      -71.1967714| 122| -5|  A|
+    |1C9|Frazier Lake Airpark|54.0133333333333|-124.768333333333| 152| -8|  A|
+    |1CS|Clow Internationa...|      41.6959744|      -88.1292306| 670| -6|  U|
+    |1G3|  Kent State Airport|      41.1513889|      -81.4151111|1134| -4|  A|
+    |1OH|     Fortman Airport|      40.5553253|      -84.3866186| 885| -5|  U|
+    +---+--------------------+----------------+-----------------+----+---+---+
+    only showing top 20 rows
+		
+	
+		
+=================================================================================================================================
+
+2
+Manipulating data
+0%
+In this chapter, you'll learn about the pyspark.sql module, which provides optimized data queries to your Spark session.
+
+
+	_____________________________________________________________________________________________________________
+		
+		Creating columns
+In this chapter, you'll learn how to use the methods defined by Spark's DataFrame class to perform common data operations.
+
+Let's look at performing column-wise operations. In Spark you can do this using the .withColumn() method, which takes two arguments. First, a string with the name of your new column, and second the new column itself.
+
+The new column must be an object of class Column. Creating one of these is as easy as extracting a column from your DataFrame using df.colName.
+
+Updating a Spark DataFrame is somewhat different than working in pandas because the Spark DataFrame is immutable. This means that it can't be changed, and so columns can't be updated in place.
+
+Thus, all these methods return a new DataFrame. To overwrite the original DataFrame you must reassign the returned DataFrame using the method like so:
+
+df = df.withColumn("newCol", df.oldCol + 1)
+The above code creates a DataFrame with the same columns as df plus a new column, newCol, where every entry is equal to the corresponding entry from oldCol, plus one.
+
+To overwrite an existing column, just pass the name of the column as the first argument!
+
+Remember, a SparkSession called spark is already in your workspace.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Use the spark.table() method with the argument "flights" to create a DataFrame containing the values of the flights table in the .catalog. Save it as flights.
+Print the output of flights.show(). The column air_time contains the duration of the flight in minutes.
+Update flights to include a new column called duration_hrs, that contains the duration of each flight in hours.
+
+
+		# Create the DataFrame flights
+flights = spark.table("flights")
+
+# Show the head
+print(flights.show())
+
+# Add duration_hrs
+flights = flights.withColumn("duration_hrs", flights.air_time / 60)
+
+
+		Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /__ / .__/\_,_/_/ /_/\_\   version 2.1.0
+      /_/
+
+Using Python version 3.5.2 (default, Nov 17 2016 17:05:23)
+SparkSession available as 'spark'.
+
+<script.py> output:
+    +----+-----+---+--------+---------+--------+---------+-------+-------+------+------+----+--------+--------+----+------+
+    |year|month|day|dep_time|dep_delay|arr_time|arr_delay|carrier|tailnum|flight|origin|dest|air_time|distance|hour|minute|
+    +----+-----+---+--------+---------+--------+---------+-------+-------+------+------+----+--------+--------+----+------+
+    |2014|   12|  8|     658|       -7|     935|       -5|     VX| N846VA|  1780|   SEA| LAX|     132|     954|   6|    58|
+    |2014|    1| 22|    1040|        5|    1505|        5|     AS| N559AS|   851|   SEA| HNL|     360|    2677|  10|    40|
+    |2014|    3|  9|    1443|       -2|    1652|        2|     VX| N847VA|   755|   SEA| SFO|     111|     679|  14|    43|
+    |2014|    4|  9|    1705|       45|    1839|       34|     WN| N360SW|   344|   PDX| SJC|      83|     569|  17|     5|
+    |2014|    3|  9|     754|       -1|    1015|        1|     AS| N612AS|   522|   SEA| BUR|     127|     937|   7|    54|
+    |2014|    1| 15|    1037|        7|    1352|        2|     WN| N646SW|    48|   PDX| DEN|     121|     991|  10|    37|
+    |2014|    7|  2|     847|       42|    1041|       51|     WN| N422WN|  1520|   PDX| OAK|      90|     543|   8|    47|
+    |2014|    5| 12|    1655|       -5|    1842|      -18|     VX| N361VA|   755|   SEA| SFO|      98|     679|  16|    55|
+    |2014|    4| 19|    1236|       -4|    1508|       -7|     AS| N309AS|   490|   SEA| SAN|     135|    1050|  12|    36|
+    |2014|   11| 19|    1812|       -3|    2352|       -4|     AS| N564AS|    26|   SEA| ORD|     198|    1721|  18|    12|
+    |2014|   11|  8|    1653|       -2|    1924|       -1|     AS| N323AS|   448|   SEA| LAX|     130|     954|  16|    53|
+    |2014|    8|  3|    1120|        0|    1415|        2|     AS| N305AS|   656|   SEA| PHX|     154|    1107|  11|    20|
+    |2014|   10| 30|     811|       21|    1038|       29|     AS| N433AS|   608|   SEA| LAS|     127|     867|   8|    11|
+    |2014|   11| 12|    2346|       -4|     217|      -28|     AS| N765AS|   121|   SEA| ANC|     183|    1448|  23|    46|
+    |2014|   10| 31|    1314|       89|    1544|      111|     AS| N713AS|   306|   SEA| SFO|     129|     679|  13|    14|
+    |2014|    1| 29|    2009|        3|    2159|        9|     UA| N27205|  1458|   PDX| SFO|      90|     550|  20|     9|
+    |2014|   12| 17|    2015|       50|    2150|       41|     AS| N626AS|   368|   SEA| SMF|      76|     605|  20|    15|
+    |2014|    8| 11|    1017|       -3|    1613|       -7|     WN| N8634A|   827|   SEA| MDW|     216|    1733|  10|    17|
+    |2014|    1| 13|    2156|       -9|     607|      -15|     AS| N597AS|    24|   SEA| BOS|     290|    2496|  21|    56|
+    |2014|    6|  5|    1733|      -12|    1945|      -10|     OO| N215AG|  3488|   PDX| BUR|     111|     817|  17|    33|
+    +----+-----+---+--------+---------+--------+---------+-------+-------+------+------+----+--------+--------+----+------+
+    only showing top 20 rows
+    
+    None
+
+		_____________________________________________________________________________________________________________
+		
+		SQL in a nutshell
+As you move forward, it will help to have a basic understanding of SQL. A more in depth look can be found here.
+
+A SQL query returns a table derived from one or more tables contained in a database.
+
+Every SQL query is made up of commands that tell the database what you want to do with the data. The two commands that every query has to contain are SELECT and FROM.
+
+The SELECT command is followed by the columns you want in the resulting table.
+
+The FROM command is followed by the name of the table that contains those columns. The minimal SQL query is:
+
+SELECT * FROM my_table;
+The * selects all columns, so this returns the entire table named my_table.
+
+Similar to .withColumn(), you can do column-wise computations within a SELECT statement. For example,
+
+SELECT origin, dest, air_time / 60 FROM flights;
+returns a table with the origin, destination, and duration in hours for each flight.
+
+Another commonly used command is WHERE. This command filters the rows of the table based on some logical condition you specify. The resulting table contains the rows where your condition is true. For example, if you had a table of students and grades you could do:
+
+SELECT * FROM students
+WHERE grade = 'A';
+to select all the columns and the rows containing information about students who got As.
+
+
+		
+		
+		_____________________________________________________________________________________________________________
+		
+		
+		SQL in a nutshell (2)
+Another common database task is aggregation. That is, reducing your data by breaking it into chunks and summarizing each chunk.
+
+This is done in SQL using the GROUP BY command. This command breaks your data into groups and applies a function from your SELECT statement to each group.
+
+For example, if you wanted to count the number of flights from each of two origin destinations, you could use the query
+
+SELECT COUNT(*) FROM flights
+GROUP BY origin;
+GROUP BY origin tells SQL that you want the output to have a row for each unique value of the origin column. The SELECT statement selects the values you want to populate each of the columns. Here, we want to COUNT() every row in each of the groups.
+
+It's possible to GROUP BY more than one column. When you do this, the resulting table has a row for every combination of the unique values in each column. The following query counts the number of flights from SEA and PDX to every destination airport:
+
+SELECT origin, dest, COUNT(*) FROM flights
+GROUP BY origin, dest;
+The output will have a row for every combination of the values in origin and dest (i.e. a row listing each origin and destination that a flight flew to). There will also be a column with the COUNT() of all the rows in each group.
+
+Remember, a more in depth look at SQL can be found here.
+
+What information would this query get? Remember the flights table holds information about flights that departed PDX and SEA in 2014 and 2015. Note that AVG() function gets the average value of a column!
+
+SELECT AVG(air_time) / 60 FROM flights
+GROUP BY origin, carrier;
+		
+		_____________________________________________________________________________________________________________
+		
+		
+		
+		
+		_____________________________________________________________________________________________________________
+		
+		
+		
+=================================================================================================================================
+
+3
+Getting started with machine learning pipelines
+0%
+PySpark provides cutting edge machine learning routines built in, along with utilities for creating full machine learning pipelines. You'll learn about them in this chapter.
+
+=================================================================================================================================
+
+4
+Model tuning and selection
+0%
+In this last chapter, you'll apply what you've learned to create a model that predicts what flights will be delayed!

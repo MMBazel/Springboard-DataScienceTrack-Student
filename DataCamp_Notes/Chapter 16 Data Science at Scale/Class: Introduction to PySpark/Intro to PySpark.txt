@@ -510,13 +510,205 @@ First, pass a SQL string to .filter() that checks the distance is greater than 1
 Then pass a boolean column to .filter() that checks the same thing. Save this as long_flights2.
 Print the .show() of both DataFrames and make sure they're actually equal!
 
+# Filter flights with a SQL string
+long_flights1 = flights.filter("distance > 1000")
+
+# Filter flights with a boolean column
+long_flights2 = flights.filter(flights.distance > 1000)
+
+# Examine the data to check they're equal
+print(long_flights1.show())
+print(long_flights2.show())
+		
+		None
+    +----+-----+---+--------+---------+--------+---------+-------+-------+------+------+----+--------+--------+----+------+
+    |year|month|day|dep_time|dep_delay|arr_time|arr_delay|carrier|tailnum|flight|origin|dest|air_time|distance|hour|minute|
+    +----+-----+---+--------+---------+--------+---------+-------+-------+------+------+----+--------+--------+----+------+
+    |2014|    1| 22|    1040|        5|    1505|        5|     AS| N559AS|   851|   SEA| HNL|     360|    2677|  10|    40|
+    |2014|    4| 19|    1236|       -4|    1508|       -7|     AS| N309AS|   490|   SEA| SAN|     135|    1050|  12|    36|
+    |2014|   11| 19|    1812|       -3|    2352|       -4|     AS| N564AS|    26|   SEA| ORD|     198|    1721|  18|    12|
+    |2014|    8|  3|    1120|        0|    1415|        2|     AS| N305AS|   656|   SEA| PHX|     154|    1107|  11|    20|
+    |2014|   11| 12|    2346|       -4|     217|      -28|     AS| N765AS|   121|   SEA| ANC|     183|    1448|  23|    46|
+    |2014|    8| 11|    1017|       -3|    1613|       -7|     WN| N8634A|   827|   SEA| MDW|     216|    1733|  10|    17|
+    |2014|    1| 13|    2156|       -9|     607|      -15|     AS| N597AS|    24|   SEA| BOS|     290|    2496|  21|    56|
+    |2014|    9| 26|     610|       -5|    1523|       65|     US| N127UW|   616|   SEA| PHL|     293|    2378|   6|    10|
+    |2014|   12|  4|     954|       -6|    1348|      -17|     HA| N395HA|    29|   SEA| OGG|     333|    2640|   9|    54|
+    |2014|    6|  4|    1115|        0|    1346|       -3|     AS| N461AS|   488|   SEA| SAN|     133|    1050|  11|    15|
+    |2014|    6| 26|    2054|       -1|    2318|       -6|     B6| N590JB|   907|   SEA| ANC|     179|    1448|  20|    54|
+    |2014|    6|  7|    1823|       -7|    2112|      -28|     AS| N512AS|   815|   SEA| LIH|     335|    2701|  18|    23|
+    |2014|    4| 30|     801|        1|    1757|       90|     AS| N407AS|    18|   SEA| MCO|     342|    2554|   8|     1|
+    |2014|   11| 29|     905|      155|    1655|      170|     DL| N824DN|  1598|   SEA| ATL|     229|    2182|   9|     5|
+    |2014|    6|  2|    2222|        7|      55|       15|     AS| N402AS|    99|   SEA| ANC|     190|    1448|  22|    22|
+    |2014|   11| 15|    1034|       -6|    1414|      -26|     AS| N589AS|   794|   SEA| ABQ|     139|    1180|  10|    34|
+    |2014|   10| 20|    1328|       -1|    1949|        4|     UA| N68805|  1212|   SEA| IAH|     228|    1874|  13|    28|
+    |2014|   12| 16|    1500|        0|    1906|       19|     US| N662AW|   500|   SEA| PHX|     151|    1107|  15|     0|
+    |2014|   11| 19|    1319|       -6|    1821|      -14|     DL| N309US|  2164|   PDX| MSP|     169|    1426|  13|    19|
+    |2014|    5| 21|     515|        0|     757|        0|     US| N172US|   593|   SEA| PHX|     143|    1107|   5|    15|
+    +----+-----+---+--------+---------+--------+---------+-------+-------+------+------+----+--------+--------+----+------+
+    only showing top 20 rows
+    
+_____________________________________________________________________________________________________________
+		
+Selecting
+The Spark variant of SQL's SELECT is the .select() method. This method takes multiple arguments - one for each column you want to select. These arguments can either be the column name as a string (one for each column) or a column object (using the df.colName syntax). When you pass a column object, you can perform operations like addition or subtraction on the column to change the data contained in it, much like inside .withColumn().
+
+The difference between .select() and .withColumn() methods is that .select() returns only the columns you specify, while .withColumn() returns all the columns of the DataFrame in addition to the one you defined. It's often a good idea to drop columns you don't need at the beginning of an operation so that you're not dragging around extra data as you're wrangling. In this case, you would use .select() and not .withColumn().
+
+Remember, a SparkSession called spark is already in your workspace, along with the Spark DataFrame flights.
+
+Instructions
+100 XP
+Select the columns tailnum, origin, and dest from flights by passing the column names as strings. Save this as selected1.
+Select the columns origin, dest, and carrier using the df.colName syntax and then filter the result using both of the filters already defined for you (filterA and filterB) to only keep flights from SEA to PDX. Save this as selected2.
+
+# Select the first set of columns
+selected1 = flights.select("tailnum","origin","dest")
+
+# Select the second set of columns
+temp = flights.select(flights.origin, flights.dest, flights.carrier)
+
+# Define first filter
+filterA = flights.origin == "SEA"
+
+# Define second filter
+filterB = flights.dest == "PDX"
+
+# Filter the data, first by filterA then by filterB
+selected2 = temp.filter(filterA).filter(filterB)
 
 		
+_____________________________________________________________________________________________________________		
 		
-		_____________________________________________________________________________________________________________
-		
-		
-		
+Selecting II
+Similar to SQL, you can also use the .select() method to perform column-wise operations. When you're selecting a column using the df.colName notation, you can perform any column operation and the .select() method will return the transformed column. For example,
+
+flights.select(flights.air_time/60)
+returns a column of flight durations in hours instead of minutes. You can also use the .alias() method to rename a column you're selecting. So if you wanted to .select() the column duration_hrs (which isn't in your DataFrame) you could do
+
+flights.select((flights.air_time/60).alias("duration_hrs"))
+The equivalent Spark DataFrame method .selectExpr() takes SQL expressions as a string:
+
+flights.selectExpr("air_time/60 as duration_hrs")
+with the SQL as keyword being equivalent to the .alias() method. To select multiple columns, you can pass multiple strings.
+
+Remember, a SparkSession called spark is already in your workspace, along with the Spark DataFrame flights.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create a table of the average speed of each flight both ways.
+
+Calculate average speed by dividing the distance by the air_time (converted to hours). Use the .alias() method name this column "avg_speed". Save the output as the variable avg_speed.
+Select the columns "origin", "dest", "tailnum", and avg_speed (without quotes!). Save this as speed1.
+Create the same table using .selectExpr() and a string containing a SQL expression. Save this as speed2.
+Take Hint (-30 XP)		
+
+# Define avg_speed
+avg_speed = (flights.distance/(flights.air_time/60)).alias("avg_speed")
+
+# Select the correct columns
+speed1 = flights.select("origin", "dest", "tailnum", avg_speed)
+
+# Create the same table using a SQL expression
+speed2 = flights.selectExpr("origin", "dest", "tailnum", "distance/(air_time/60) as avg_speed")
+
+_____________________________________________________________________________________________________________
+
+Aggregating
+All of the common aggregation methods, like .min(), .max(), and .count() are GroupedData methods. These are created by calling the .groupBy() DataFrame method. You'll learn exactly what that means in a few exercises. For now, all you have to do to use these functions is call that method on your DataFrame. For example, to find the minimum value of a column, col, in a DataFrame, df, you could do
+
+df.groupBy().min("col").show()
+This creates a GroupedData object (so you can use the .min() method), then finds the minimum value in col, and returns it as a DataFrame.
+
+Now you're ready to do some aggregating of your own!
+
+A SparkSession called spark is already in your workspace, along with the Spark DataFrame flights.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Find the length of the shortest (in terms of distance) flight that left PDX by first .filter()ing and using the .min() method. Perform the filtering by refrencing the column directly, not passing a SQL string.
+Find the length of the longest (in terms of time) flight that left SEA by filter()ing and using the .max() method. Perform the filtering by refrencing the column directly, not passing a SQL string.
+
+# Find the shortest flight from PDX in terms of distance
+flights.filter(flights.origin == 'PDX').groupBy().min("distance").show()
+
+# Find the longest flight from SEA in terms of duration
+flights.filter(flights.origin == 'SEA').groupBy().max("air_time").show()
+
+
+<script.py> output:
+    +-------------+
+    |min(distance)|
+    +-------------+
+    |          106|
+    +-------------+
+    
+    +-------------+
+    |max(air_time)|
+    +-------------+
+    |          409|
+    +-------------+
+
+_____________________________________________________________________________________________________________
+
+Aggregating II
+To get you familiar with more of the built in aggregation methods, here's a few more exercises involving the flights table!
+
+Remember, a SparkSession called spark is already in your workspace, along with the Spark DataFrame flights.
+
+Instructions
+100 XP
+Use the .avg() method to get the average air time of Delta Airlines flights (where the carrier column has the value "DL") that left SEA. Th place of departure is stored in the column origin. show() the result.
+Use the .sum() method to get the total number of hours all planes in this dataset spent in the air by creating a column called duration_hrs from the column air_time. show() the result.
+
+# Average duration of Delta flights
+flights.filter(flights.carrier == "DL").filter(flights.origin == "SEA").groupBy().avg("air_time").show()
+
+# Total hours in the air
+flights.withColumn("duration_hrs", flights.air_time/60).groupBy().sum("duration_hrs").show()
+
+<script.py> output:
+    +------------------+
+    |     avg(air_time)|
+    +------------------+
+    |188.20689655172413|
+    +------------------+
+    
+    +------------------+
+    | sum(duration_hrs)|
+    +------------------+
+    |25289.600000000126|
+    +------------------+
+
+_____________________________________________________________________________________________________________
+
+Grouping and Aggregating I
+Part of what makes aggregating so powerful is the addition of groups. PySpark has a whole class devoted to grouped data frames: pyspark.sql.GroupedData, which you saw in the last two exercises.
+
+You've learned how to create a grouped DataFrame by calling the .groupBy() method on a DataFrame with no arguments.
+
+Now you'll see that when you pass the name of one or more columns in your DataFrame to the .groupBy() method, the aggregation methods behave like when you use a GROUP BY statement in a SQL query!
+
+Remember, a SparkSession called spark is already in your workspace, along with the Spark DataFrame flights.
+
+Instructions
+100 XP
+Create a DataFrame called by_plane that is grouped by the column tailnum.
+Use the .count() method with no arguments to count the number of flights each plane made.
+Create a DataFrame called by_origin that is grouped by the column origin.
+Find the .avg() of the air_time column to find average duration of flights from PDX and SEA.
+
+_____________________________________________________________________________________________________________
+
+
+
+_____________________________________________________________________________________________________________
+
+
+
 =================================================================================================================================
 
 3

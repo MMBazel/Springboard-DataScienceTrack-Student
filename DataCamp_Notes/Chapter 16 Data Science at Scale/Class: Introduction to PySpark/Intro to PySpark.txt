@@ -701,14 +701,248 @@ Use the .count() method with no arguments to count the number of flights each pl
 Create a DataFrame called by_origin that is grouped by the column origin.
 Find the .avg() of the air_time column to find average duration of flights from PDX and SEA.
 
+# Group by tailnum
+by_plane = flights.groupBy("tailnum")
+
+# Number of flights each plane made
+by_plane.count().show()
+
+# Group by origin
+by_origin = flights.groupBy("origin")
+
+# Average duration of flights from PDX and SEA
+by_origin.avg("air_time").show()
+
+<script.py> output:
+    +-------+-----+
+    |tailnum|count|
+    +-------+-----+
+    | N442AS|   38|
+    | N102UW|    2|
+    | N36472|    4|
+    | N38451|    4|
+    | N73283|    4|
+    | N513UA|    2|
+    | N954WN|    5|
+    | N388DA|    3|
+    | N567AA|    1|
+    | N516UA|    2|
+    | N927DN|    1|
+    | N8322X|    1|
+    | N466SW|    1|
+    |  N6700|    1|
+    | N607AS|   45|
+    | N622SW|    4|
+    | N584AS|   31|
+    | N914WN|    4|
+    | N654AW|    2|
+    | N336NW|    1|
+    +-------+-----+
+    only showing top 20 rows
+    
+    +------+------------------+
+    |origin|     avg(air_time)|
+    +------+------------------+
+    |   SEA| 160.4361496051259|
+    |   PDX|137.11543248288737|
+    +------+------------------+
 _____________________________________________________________________________________________________________
 
 
+Grouping and Aggregating II
+In addition to the GroupedData methods you've already seen, there is also the .agg() method. This method lets you pass an aggregate column expression that uses any of the aggregate functions from the pyspark.sql.functions submodule.
 
+This submodule contains many useful functions for computing things like standard deviations. All the aggregation functions in this submodule take the name of a column in a GroupedData table.
+
+Remember, a SparkSession called spark is already in your workspace, along with the Spark DataFrame flights. The grouped DataFrames you created in the last exercise are also in your workspace.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import the submodule pyspark.sql.functions as F.
+Create a GroupedData table called by_month_dest that's grouped by both the month and dest columns. Refer to the two columns by passing both strings as separate arguments.
+Use the .avg() method on the by_month_dest DataFrame to get the average dep_delay in each month for each destination.
+Find the corresponding standard deviation of each average by using the .agg() method with the function F.stddev().
+
+# Import pyspark.sql.functions as F
+import pyspark.sql.functions as F
+
+# Group by month and dest
+by_month_dest = flights.groupBy("month","dest")
+
+# Average departure delay by month and destination
+by_month_dest.avg("dep_delay").show()
+
+# Standard deviation
+by_month_dest.agg(F.stddev("dep_delay")).show()
+
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /__ / .__/\_,_/_/ /_/\_\   version 2.1.0
+      /_/
+
+Using Python version 3.5.2 (default, Nov 17 2016 17:05:23)
+SparkSession available as 'spark'.
+
+<script.py> output:
+    +-----+----+--------------------+
+    |month|dest|      avg(dep_delay)|
+    +-----+----+--------------------+
+    |   11| TUS| -2.3333333333333335|
+    |   11| ANC|   7.529411764705882|
+    |    1| BUR|               -1.45|
+    |    1| PDX| -5.6923076923076925|
+    |    6| SBA|                -2.5|
+    |    5| LAX|-0.15789473684210525|
+    |   10| DTW|                 2.6|
+    |    6| SIT|                -1.0|
+    |   10| DFW|  18.176470588235293|
+    |    3| FAI|                -2.2|
+    |   10| SEA|                -0.8|
+    |    2| TUS| -0.6666666666666666|
+    |   12| OGG|  25.181818181818183|
+    |    9| DFW|   4.066666666666666|
+    |    5| EWR|               14.25|
+    |    3| RDM|                -6.2|
+    |    8| DCA|                 2.6|
+    |    7| ATL|   4.675675675675675|
+    |    4| JFK| 0.07142857142857142|
+    |   10| SNA| -1.1333333333333333|
+    +-----+----+--------------------+
+    only showing top 20 rows
+    
+    +-----+----+----------------------+
+    |month|dest|stddev_samp(dep_delay)|
+    +-----+----+----------------------+
+    |   11| TUS|    3.0550504633038935|
+    |   11| ANC|    18.604716401245316|
+    |    1| BUR|     15.22627576540667|
+    |    1| PDX|     5.677214918493858|
+    |    6| SBA|     2.380476142847617|
+    |    5| LAX|     13.36268698685904|
+    |   10| DTW|     5.639148871948674|
+    |    6| SIT|                   NaN|
+    |   10| DFW|     45.53019017606675|
+    |    3| FAI|    3.1144823004794873|
+    |   10| SEA|     18.70523227029577|
+    |    2| TUS|    14.468356276140469|
+    |   12| OGG|     82.64480404939947|
+    |    9| DFW|    21.728629347782924|
+    |    5| EWR|     42.41595968929191|
+    |    3| RDM|      2.16794833886788|
+    |    8| DCA|     9.946523680831074|
+    |    7| ATL|    22.767001039582183|
+    |    4| JFK|     8.156774303176903|
+    |   10| SNA|    13.726234873756304|
+    +-----+----+----------------------+
+    only showing top 20 rows
+
+In [1]: 
 _____________________________________________________________________________________________________________
 
 
+Joining
+Another very common data operation is the join. Joins are a whole topic unto themselves, so in this course we'll just look at simple joins. If you'd like to learn more about joins, you can take a look here.
 
+A join will combine two different tables along a column that they share. This column is called the key. Examples of keys here include the tailnum and carrier columns from the flights table.
+
+For example, suppose that you want to know more information about the plane that flew a flight than just the tail number. This information isn't in the flights table because the same plane flies many different flights over the course of two years, so including this information in every row would result in a lot of duplication. To avoid this, you'd have a second table that has only one row for each plane and whose columns list all the information about the plane, including its tail number. You could call this table planes
+
+When you join the flights table to this table of airplane information, you're adding all the columns from the planes table to the flights table. To fill these columns with information, you'll look at the tail number from the flights table and find the matching one in the planes table, and then use that row to fill out all the new columns.
+
+Now you'll have a much bigger table than before, but now every row has all information about the plane that flew that flight!
+
+Which of the following is not true?
+_____________________________________________________________________________________________________________
+
+Joining II
+In PySpark, joins are performed using the DataFrame method .join(). This method takes three arguments. The first is the second DataFrame that you want to join with the first one. The second argument, on, is the name of the key column(s) as a string. The names of the key column(s) must be the same in each table. The third argument, how, specifies the kind of join to perform. In this course we'll always use the value how="leftouter".
+
+The flights dataset and a new dataset called airports are already in your workspace.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Examine the airports DataFrame by printing the .show(). Note which key column will let you join airports to the flights table.
+Rename the faa column in airports to dest by re-assigning the result of airports.withColumnRenamed("faa", "dest") to airports.
+Join the airports DataFrame to the flights DataFrame on the dest column by calling the .join() method on flights. Save the result as flights_with_airports.
+The first argument should be the other DataFrame, airports.
+The argument on should be the key column.
+The argument how should be "leftouter".
+Print the .show() of flights_with_airports. Note the new information that has been added.
+
+
+# Examine the data
+print(airports.show())
+
+# Rename the faa column
+airports = airports.withColumnRenamed("faa", "dest")
+
+# Join the DataFrames
+flights_with_airports = flights.join(airports, on="dest", how="leftouter")
+
+# Examine the data again
+print(flights_with_airports.show())
+
+<script.py> output:
+    +----+--------------------+----------------+-----------------+----+---+---+
+    |dest|                name|             lat|              lon| alt| tz|dst|
+    +----+--------------------+----------------+-----------------+----+---+---+
+    | 04G|   Lansdowne Airport|      41.1304722|      -80.6195833|1044| -5|  A|
+    | 06A|Moton Field Munic...|      32.4605722|      -85.6800278| 264| -5|  A|
+    | 06C| Schaumburg Regional|      41.9893408|      -88.1012428| 801| -6|  A|
+    | 06N|     Randall Airport|       41.431912|      -74.3915611| 523| -5|  A|
+    | 09J|Jekyll Island Air...|      31.0744722|      -81.4277778|  11| -4|  A|
+    | 0A9|Elizabethton Muni...|      36.3712222|      -82.1734167|1593| -4|  A|
+    | 0G6|Williams County A...|      41.4673056|      -84.5067778| 730| -5|  A|
+    | 0G7|Finger Lakes Regi...|      42.8835647|      -76.7812318| 492| -5|  A|
+    | 0P2|Shoestring Aviati...|      39.7948244|      -76.6471914|1000| -5|  U|
+    | 0S9|Jefferson County ...|      48.0538086|     -122.8106436| 108| -8|  A|
+    | 0W3|Harford County Ai...|      39.5668378|      -76.2024028| 409| -5|  A|
+    | 10C|  Galt Field Airport|      42.4028889|      -88.3751111| 875| -6|  U|
+    | 17G|Port Bucyrus-Craw...|      40.7815556|      -82.9748056|1003| -5|  A|
+    | 19A|Jackson County Ai...|      34.1758638|      -83.5615972| 951| -4|  U|
+    | 1A3|Martin Campbell F...|      35.0158056|      -84.3468333|1789| -4|  A|
+    | 1B9| Mansfield Municipal|      42.0001331|      -71.1967714| 122| -5|  A|
+    | 1C9|Frazier Lake Airpark|54.0133333333333|-124.768333333333| 152| -8|  A|
+    | 1CS|Clow Internationa...|      41.6959744|      -88.1292306| 670| -6|  U|
+    | 1G3|  Kent State Airport|      41.1513889|      -81.4151111|1134| -4|  A|
+    | 1OH|     Fortman Airport|      40.5553253|      -84.3866186| 885| -5|  U|
+    +----+--------------------+----------------+-----------------+----+---+---+
+    only showing top 20 rows
+    
+    None
+    +----+----+-----+---+--------+---------+--------+---------+-------+-------+------+------+--------+--------+----+------+--------------------+---------+-----------+----+---+---+
+    |dest|year|month|day|dep_time|dep_delay|arr_time|arr_delay|carrier|tailnum|flight|origin|air_time|distance|hour|minute|                name|      lat|        lon| alt| tz|dst|
+    +----+----+-----+---+--------+---------+--------+---------+-------+-------+------+------+--------+--------+----+------+--------------------+---------+-----------+----+---+---+
+    | LAX|2014|   12|  8|     658|       -7|     935|       -5|     VX| N846VA|  1780|   SEA|     132|     954|   6|    58|    Los Angeles Intl|33.942536|-118.408075| 126| -8|  A|
+    | HNL|2014|    1| 22|    1040|        5|    1505|        5|     AS| N559AS|   851|   SEA|     360|    2677|  10|    40|       Honolulu Intl|21.318681|-157.922428|  13|-10|  N|
+    | SFO|2014|    3|  9|    1443|       -2|    1652|        2|     VX| N847VA|   755|   SEA|     111|     679|  14|    43|  San Francisco Intl|37.618972|-122.374889|  13| -8|  A|
+    | SJC|2014|    4|  9|    1705|       45|    1839|       34|     WN| N360SW|   344|   PDX|      83|     569|  17|     5|Norman Y Mineta S...|  37.3626|-121.929022|  62| -8|  A|
+    | BUR|2014|    3|  9|     754|       -1|    1015|        1|     AS| N612AS|   522|   SEA|     127|     937|   7|    54|            Bob Hope|34.200667|-118.358667| 778| -8|  A|
+    | DEN|2014|    1| 15|    1037|        7|    1352|        2|     WN| N646SW|    48|   PDX|     121|     991|  10|    37|         Denver Intl|39.861656|-104.673178|5431| -7|  A|
+    | OAK|2014|    7|  2|     847|       42|    1041|       51|     WN| N422WN|  1520|   PDX|      90|     543|   8|    47|Metropolitan Oakl...|37.721278|-122.220722|   9| -8|  A|
+    | SFO|2014|    5| 12|    1655|       -5|    1842|      -18|     VX| N361VA|   755|   SEA|      98|     679|  16|    55|  San Francisco Intl|37.618972|-122.374889|  13| -8|  A|
+    | SAN|2014|    4| 19|    1236|       -4|    1508|       -7|     AS| N309AS|   490|   SEA|     135|    1050|  12|    36|      San Diego Intl|32.733556|-117.189667|  17| -8|  A|
+    | ORD|2014|   11| 19|    1812|       -3|    2352|       -4|     AS| N564AS|    26|   SEA|     198|    1721|  18|    12|  Chicago Ohare Intl|41.978603| -87.904842| 668| -6|  A|
+    | LAX|2014|   11|  8|    1653|       -2|    1924|       -1|     AS| N323AS|   448|   SEA|     130|     954|  16|    53|    Los Angeles Intl|33.942536|-118.408075| 126| -8|  A|
+    | PHX|2014|    8|  3|    1120|        0|    1415|        2|     AS| N305AS|   656|   SEA|     154|    1107|  11|    20|Phoenix Sky Harbo...|33.434278|-112.011583|1135| -7|  N|
+    | LAS|2014|   10| 30|     811|       21|    1038|       29|     AS| N433AS|   608|   SEA|     127|     867|   8|    11|      Mc Carran Intl|36.080056| -115.15225|2141| -8|  A|
+    | ANC|2014|   11| 12|    2346|       -4|     217|      -28|     AS| N765AS|   121|   SEA|     183|    1448|  23|    46|Ted Stevens Ancho...|61.174361|-149.996361| 152| -9|  A|
+    | SFO|2014|   10| 31|    1314|       89|    1544|      111|     AS| N713AS|   306|   SEA|     129|     679|  13|    14|  San Francisco Intl|37.618972|-122.374889|  13| -8|  A|
+    | SFO|2014|    1| 29|    2009|        3|    2159|        9|     UA| N27205|  1458|   PDX|      90|     550|  20|     9|  San Francisco Intl|37.618972|-122.374889|  13| -8|  A|
+    | SMF|2014|   12| 17|    2015|       50|    2150|       41|     AS| N626AS|   368|   SEA|      76|     605|  20|    15|     Sacramento Intl|38.695417|-121.590778|  27| -8|  A|
+    | MDW|2014|    8| 11|    1017|       -3|    1613|       -7|     WN| N8634A|   827|   SEA|     216|    1733|  10|    17| Chicago Midway Intl|41.785972| -87.752417| 620| -6|  A|
+    | BOS|2014|    1| 13|    2156|       -9|     607|      -15|     AS| N597AS|    24|   SEA|     290|    2496|  21|    56|General Edward La...|42.364347| -71.005181|  19| -5|  A|
+    | BUR|2014|    6|  5|    1733|      -12|    1945|      -10|     OO| N215AG|  3488|   PDX|     111|     817|  17|    33|            Bob Hope|34.200667|-118.358667| 778| -8|  A|
+    +----+----+-----+---+--------+---------+--------+---------+-------+-------+------+------+--------+--------+----+------+--------------------+---------+-----------+----+---+---+
+    only showing top 20 rows
+    
+    None
 =================================================================================================================================
 
 3
@@ -716,9 +950,388 @@ Getting started with machine learning pipelines
 0%
 PySpark provides cutting edge machine learning routines built in, along with utilities for creating full machine learning pipelines. You'll learn about them in this chapter.
 
+
+_____________________________________________________________________________________________________________
+
+Machine Learning Pipelines
+In the next two chapters you'll step through every stage of the machine learning pipeline, from data intake to model evaluation. Let's get to it!
+
+At the core of the pyspark.ml module are the Transformer and Estimator classes. Almost every other class in the module behaves similarly to these two basic classes.
+
+Transformer classes have a .transform() method that takes a DataFrame and returns a new DataFrame; usually the original one with a new column appended. For example, you might use the class Bucketizer to create discrete bins from a continuous feature or the class PCA to reduce the dimensionality of your dataset using principal component analysis.
+
+Estimator classes all implement a .fit() method. These methods also take a DataFrame, but instead of returning another DataFrame they return a model object. This can be something like a StringIndexerModel for including categorical data saved as strings in your models, or a RandomForestModel that uses the random forest algorithm for classification or regression.
+
+
+
+_____________________________________________________________________________________________________________
+
+Join the DataFrames
+In the next two chapters you'll be working to build a model that predicts whether or not a flight will be delayed based on the flights data we've been working with. This model will also include information about the plane that flew the route, so the first step is to join the two tables: flights and planes!
+
+Instructions
+100 XP
+First, rename the year column of planes to plane_year to avoid duplicate column names.
+Create a new DataFrame called model_data by joining the flights table with planes using the tailnum column as the key.
+
+# Rename year column
+planes = planes.withColumnRenamed("year","plane_year")
+
+# Join the DataFrames
+model_data = flights.join(planes, on="tailnum", how="leftouter")
+_____________________________________________________________________________________________________________
+
+Data types
+Good work! Before you get started modeling, it's important to know that Spark only handles numeric data. That means all of the columns in your DataFrame must be either integers or decimals (called 'doubles' in Spark).
+
+When we imported our data, we let Spark guess what kind of information each column held. Unfortunately, Spark doesn't always guess right and you can see that some of the columns in our DataFrame are strings containing numbers as opposed to actual numeric values.
+
+To remedy this, you can use the .cast() method in combination with the .withColumn() method. It's important to note that .cast() works on columns, while .withColumn() works on DataFrames.
+
+The only argument you need to pass to .cast() is the kind of value you want to create, in string form. For example, to create integers, you'll pass the argument "integer" and for decimal numbers you'll use "double".
+
+You can put this call to .cast() inside a call to .withColumn() to overwrite the already existing column, just like you did in the previous chapter!
+
+
+
+_____________________________________________________________________________________________________________
+String to integer
+Now you'll use the .cast() method you learned in the previous exercise to convert all the appropriate columns from your DataFrame model_data to integers!
+
+To convert the type of a column using the .cast() method, you can write code like this:
+
+dataframe = dataframe.withColumn("col", dataframe.col.cast("new_type")
+Instructions
+100 XP
+Use the method .withColumn() to .cast() the following columns to type "integer". Access the columns using the df.col notation.
+model_data.arr_delay
+model_data.air_time
+model_data.month
+model_data.plane_year
+
+# Cast the columns to integers
+model_data = model_data.withColumn("arr_delay", model_data.arr_delay.cast("integer"))
+model_data = model_data.withColumn("air_time", model_data.air_time.cast("integer"))
+model_data = model_data.withColumn("month", model_data.month.cast("integer"))
+model_data = model_data.withColumn("plane_year", model_data.plane_year.cast("integer"))
+
+
+_____________________________________________________________________________________________________________
+
+Create a new column
+In the last exercise, you converted the column plane_year to an integer. This column holds the year each plane was manufactured. However, your model will use the planes' age, which is slightly different from the year it was made!
+
+Instructions
+100 XP
+Create the column plane_age using the .withColumn() method and subtracting the year of manufacture (column plane_year) from the year (column year) of the flight.
+
+
+# Create the column plane_age
+model_data = model_data.withColumn("plane_age", model_data.year - model_data.plane_year)
+_____________________________________________________________________________________________________________
+
+Making a Boolean
+Consider that you're modeling a yes or no question: is the flight late? However, your data contains the arrival delay in minutes for each flight. Thus, you'll need to create a boolean column which indicates whether the flight was late or not!
+
+Instructions
+100 XP
+Use the .withColumn() method to create the column is_late. This column is equal to model_data.arr_delay > 0.
+Convert this column to an integer column so that you can use it in your model and name it label (this is the default name for the response variable in Spark's machine learning routines).
+Filter out missing values (this has been done for you).
+
+# Create is_late
+model_data = model_data.withColumn("is_late", model_data.arr_delay > 0)
+
+# Convert to an integer
+model_data = model_data.withColumn("label", model_data.is_late.cast("integer"))
+
+# Remove missing values
+model_data = model_data.filter("arr_delay is not NULL and dep_delay is not NULL and air_time is not NULL and plane_year is not NULL")
+_____________________________________________________________________________________________________________
+Strings and factors
+As you know, Spark requires numeric data for modeling. So far this hasn't been an issue; even boolean columns can easily be converted to integers without any trouble. But you'll also be using the airline and the plane's destination as features in your model. These are coded as strings and there isn't any obvious way to convert them to a numeric data type.
+
+Fortunately, PySpark has functions for handling this built into the pyspark.ml.features submodule. You can create what are called 'one-hot vectors' to represent the carrier and the destination of each flight. A one-hot vector is a way of representing a categorical feature where every observation has a vector in which all elements are zero except for at most one element, which has a value of one (1).
+
+Each element in the vector corresponds to a level of the feature, so it's possible to tell what the right level is by seeing which element of the vector is equal to one (1).
+
+The first step to encoding your categorical feature is to create a StringIndexer. Members of this class are Estimators that take a DataFrame with a column of strings and map each unique string to a number. Then, the Estimator returns a Transformer that takes a DataFrame, attaches the mapping to it as metadata, and returns a new DataFrame with a numeric column corresponding to the string column.
+
+The second step is to encode this numeric column as a one-hot vector using a OneHotEncoder. This works exactly the same way as the StringIndexer by creating an Estimator and then a Transformer. The end result is a column that encodes your categorical feature as a vector that's suitable for machine learning routines!
+
+This may seem complicated, but don't worry! All you have to remember is that you need to create a StringIndexer and a OneHotEncoder, and the Pipeline will take care of the rest.
+
+_____________________________________________________________________________________________________________
+
+Carrier
+In this exercise you'll create a StringIndexer and a OneHotEncoder to code the carrier column. To do this, you'll call the class constructors with the arguments inputCol and outputCol.
+
+The inputCol is the name of the column you want to index or encode, and the outputCol is the name of the new column that the Transformer should create.
+
+Instructions
+100 XP
+Create a StringIndexer called carr_indexer by calling StringIndexer() with inputCol="carrier" and outputCol="carrier_index".
+Create a OneHotEncoder called carr_encoder by calling OneHotEncoder() with inputCol="carrier_index" and outputCol="carrier_fact".
+
+# Create a StringIndexer
+carr_indexer = StringIndexer(inputCol="carrier",outputCol="carrier_index")
+
+# Create a OneHotEncoder
+carr_encoder = OneHotEncoder(inputCol="carrier_index",outputCol="carrier_fact")
+
+_____________________________________________________________________________________________________________
+
+Destination
+Now you'll encode the dest column just like you did in the previous exercise.
+
+Instructions
+100 XP
+Create a StringIndexer called dest_indexer by calling StringIndexer() with inputCol="dest" and outputCol="dest_index".
+Create a OneHotEncoder called dest_encoder by calling OneHotEncoder() with inputCol="dest_index" and outputCol="dest_fact".
+
+# Create a StringIndexer
+dest_indexer = StringIndexer(inputCol="dest",outputCol="dest_index")
+
+# Create a OneHotEncoder
+dest_encoder = OneHotEncoder(inputCol="dest_index",outputCol="dest_fact")
+
+
+_____________________________________________________________________________________________________________
+
+Assemble a vector
+Good work so far!
+
+The last step in the Pipeline is to combine all of the columns containing our features into a single column. This has to be done before modeling can take place because every Spark modeling routine expects the data to be in this form. You can do this by storing each of the values from a column as an entry in a vector. Then, from the model's point of view, every observation is a vector that contains all of the information about it and a label that tells the modeler what value that observation corresponds to.
+
+Because of this, the pyspark.ml.feature submodule contains a class called VectorAssembler. This Transformer takes all of the columns you specify and combines them into a new vector column.
+
+Instructions
+100 XP
+Create a VectorAssembler by calling VectorAssembler() with the inputCols names as a list and the outputCol name "features".
+The list of columns should be ["month", "air_time", "carrier_fact", "dest_fact", "plane_age"].
+
+# Make a VectorAssembler
+vec_assembler = VectorAssembler(inputCols=["month", "air_time", "carrier_fact", "dest_fact", "plane_age"], outputCol="features")
+
+_____________________________________________________________________________________________________________
+
+Create the pipeline
+You're finally ready to create a Pipeline!
+
+Pipeline is a class in the pyspark.ml module that combines all the Estimators and Transformers that you've already created. This lets you reuse the same modeling process over and over again by wrapping it up in one simple object. Neat, right?
+
+Instructions
+100 XP
+Import Pipeline from pyspark.ml.
+Call the Pipeline() constructor with the keyword argument stages to create a Pipeline called flights_pipe.
+stages should be a list holding all the stages you want your data to go through in the pipeline. Here this is just [dest_indexer, dest_encoder, carr_indexer, carr_encoder, vec_assembler]
+
+# Import Pipeline
+from pyspark.ml import Pipeline
+
+# Make the pipeline
+flights_pipe = Pipeline(stages=[dest_indexer, dest_encoder, carr_indexer, carr_encoder, vec_assembler])
+
+_____________________________________________________________________________________________________________
+
+Test vs Train
+After you've cleaned your data and gotten it ready for modeling, one of the most important steps is to split the data into a test set and a train set. After that, don't touch your test data until you think you have a good model! As you're building models and forming hypotheses, you can test them on your training data to get an idea of their performance.
+
+Once you've got your favorite model, you can see how well it predicts the new data in your test set. This never-before-seen data will give you a much more realistic idea of your model's performance in the real world when you're trying to predict or classify new data.
+
+In Spark it's important to make sure you split the data after all the transformations. This is because operations like StringIndexer don't always produce the same index even when given the same list of strings.
+
+
+_____________________________________________________________________________________________________________
+
+Transform the data
+Hooray, now you're finally ready to pass your data through the Pipeline you created!
+
+Instructions
+100 XP
+Create the DataFrame piped_data by calling the Pipeline methods .fit() and .transform() in a chain. Both of these methods take model_data as their only argument.
+
+# Fit and transform the data
+piped_data = flights_pipe.fit(model_data).transform(model_data)
+
+_____________________________________________________________________________________________________________
+
+Split the data
+Now that you've done all your manipulations, the last step before modeling is to split the data!
+
+Instructions
+100 XP
+Use the DataFrame method .randomSplit() to split model_data into two pieces, training with 60% of the data, and test with 40% of the data by passing the list [.6, .4] to the .randomSplit() method.
+
+# Split the data into training and test sets
+training, test = piped_data.randomSplit([.6, .4])
+
 =================================================================================================================================
 
 4
 Model tuning and selection
 0%
 In this last chapter, you'll apply what you've learned to create a model that predicts what flights will be delayed!
+
+
+_____________________________________________________________________________________________________________
+
+
+What is logistic regression?
+The model you'll be fitting in this chapter is called a logistic regression. This model is very similar to a linear regression, but instead of predicting a numeric variable, it predicts the probability (between 0 and 1) of an event.
+
+To use this as a classification algorithm, all you have to do is assign a cutoff point to these probabilities. If the predicted probability is above the cutoff point, you classify that observation as a 'yes' (in this case, the flight being late), if it's below, you classify it as a 'no'!
+
+You'll tune this model by testing different values for several hyperparameters. A hyperparameter is just a value in the model that's not estimated from the data, but rather is supplied by the user to maximize performance. For this course it's not necessary to understand the mathematics behind all of these values - what's important is that you'll try out a few different choices and pick the best one.
+
+
+# Import LogisticRegression
+from pyspark.ml.classification import LogisticRegression
+
+# Create a LogisticRegression Estimator
+lr = LogisticRegression()
+
+_____________________________________________________________________________________________________________
+
+
+Cross validation
+In the next few exercises you'll be tuning your logistic regression model using a procedure called k-fold cross validation. This is a method of estimating the model's performance on unseen data (like your test DataFrame).
+
+It works by splitting the training data into a few different partitions. The exact number is up to you, but in this course you'll be using PySpark's default value of three. Once the data is split up, one of the partitions is set aside, and the model is fit to the others. Then the error is measured against the held out partition. This is repeated for each of the partitions, so that every block of data is held out and used as a test set exactly once. Then the error on each of the partitions is averaged. This is called the cross validation error of the model, and is a good estimate of the actual error on the held out data.
+
+You'll be using cross validation to choose the hyperparameters by creating a grid of the possible pairs of values for the two hyperparameters, elasticNetParam and regParam, and using the cross validation error to compare all the different models so you can choose the best one!
+
+What does cross validation allow you to estimate?
+
+
+_____________________________________________________________________________________________________________
+Exercise
+Exercise
+Create the evaluator
+The first thing you need when doing cross validation for model selection is a way to compare different models. Luckily, the pyspark.ml.evaluation submodule has classes for evaluating different kinds of models. Your model is a binary classification model, so you'll be using the BinaryClassificationEvaluator from the pyspark.ml.evaluation module.
+
+This evaluator calculates the area under the ROC. This is a metric that combines the two kinds of errors a binary classifier can make (false positives and false negatives) into a simple number. You'll learn more about this towards the end of the chapter!
+
+Instructions
+100 XP
+Import the submodule pyspark.ml.evaluation as evals.
+Create evaluator by calling evals.BinaryClassificationEvaluator() with the argument metricName="areaUnderROC".
+
+# Import the evaluation submodule
+import pyspark.ml.evaluation as evals
+
+# Create a BinaryClassificationEvaluator
+evaluator = evals.BinaryClassificationEvaluator(metricName="areaUnderROC")
+_____________________________________________________________________________________________________________
+
+Make a grid
+Next, you need to create a grid of values to search over when looking for the optimal hyperparameters. The submodule pyspark.ml.tuning includes a class called ParamGridBuilder that does just that (maybe you're starting to notice a pattern here; PySpark has a submodule for just about everything!).
+
+You'll need to use the .addGrid() and .build() methods to create a grid that you can use for cross validation. The .addGrid() method takes a model parameter (an attribute of the model Estimator, lr, that you created a few exercises ago) and a list of values that you want to try. The .build() method takes no arguments, it just returns the grid that you'll use later.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import the submodule pyspark.ml.tuning under the alias tune.
+Call the class constructor ParamGridBuilder() with no arguments. Save this as grid.
+Call the .addGrid() method on grid with lr.regParam as the first argument and np.arange(0, .1, .01) as the second argument. This second call is a function from the numpy module (imported as np) that creates a list of numbers from 0 to .1, incrementing by .01. Overwrite grid with the result.
+Update grid again by calling the .addGrid() method a second time create a grid for lr.elasticNetParam that includes only the values [0, 1].
+Call the .build() method on grid and overwrite it with the output.
+
+# Import the tuning submodule
+import pyspark.ml.tuning as tune
+
+# Create the parameter grid
+grid = tune.ParamGridBuilder()
+
+# Add the hyperparameter
+grid = grid.addGrid(lr.regParam, np.arange(0, .1, .01))
+grid = grid.addGrid(lr.elasticNetParam, [0, 1])
+
+# Build the grid
+grid = grid.build()
+_____________________________________________________________________________________________________________
+
+Make the validator
+The submodule pyspark.ml.tuning also has a class called CrossValidator for performing cross validation. This Estimator takes the modeler you want to fit, the grid of hyperparameters you created, and the evaluator you want to use to compare your models.
+
+The submodule pyspark.ml.tune has already been imported as tune. You'll create the CrossValidator by passing it the logistic regression Estimator lr, the parameter grid, and the evaluator you created in the previous exercises.
+
+Instructions
+100 XP
+Create a CrossValidator by calling tune.CrossValidator() with the arguments:
+estimator=lr
+estimatorParamMaps=grid
+evaluator=evaluator
+Name this object cv.
+
+# Create the CrossValidator
+cv = tune.CrossValidator(estimator=lr,
+               estimatorParamMaps=grid,
+               evaluator=evaluator
+               )
+
+_____________________________________________________________________________________________________________
+
+
+Fit the model(s)
+You're finally ready to fit the models and select the best one!
+
+Unfortunately, cross validation is a very computationally intensive procedure. Fitting all the models would take too long on DataCamp.
+
+To do this locally you would use the code
+
+# Fit cross validation models
+models = cv.fit(training)
+
+# Extract the best model
+best_lr = models.bestModel
+Remember, the training data is called training and you're using lr to fit a logistic regression model. Cross validation selected the parameter values regParam=0 and elasticNetParam=0 as being the best. These are the default values, so you don't need to do anything else with lr before fitting the model.
+
+Instructions
+100 XP
+Create best_lr by calling lr.fit() on the training data.
+Print best_lr to verify that it's an object of the LogisticRegressionModel class.
+
+# Call lr.fit()
+best_lr = lr.fit(training)
+
+# Print best_lr
+print(best_lr)
+
+
+_____________________________________________________________________________________________________________
+
+
+Evaluating binary classifiers
+For this course we'll be using a common metric for binary classification algorithms call the AUC, or area under the curve. In this case, the curve is the ROC, or receiver operating curve. The details of what these things actually measure isn't important for this course. All you need to know is that for our purposes, the closer the AUC is to one (1), the better the model is!
+
+If you've created a perfect binary classification model, what would the AUC be?
+
+
+
+_____________________________________________________________________________________________________________
+
+Evaluate the model
+Remember the test data that you set aside waaaaaay back in chapter 3? It's finally time to test your model on it! You can use the same evaluator you made to fit the model.
+
+Instructions
+100 XP
+Use your model to generate predictions by applying best_lr.transform() to the test data. Save this as test_results.
+Call evaluator.evaluate() on test_results to compute the AUC. Print the output.
+
+# Use the model to predict the test set
+test_results = best_lr.transform(test)
+
+# Evaluate the predictions
+print(evaluator.evaluate(test_results))
+
+Conclusion
+Congrats on making it to the end of the course! You went from knowing nothing about Spark to doing advanced machine learning. Cool huh?
+
+The next steps are learning how to create large scale Spark clusters and manage and submit jobs so that you can use models in the real world.
+
+And remember, Spark is still being actively developed, so there's new features coming all the time!
+
+Did you have a great time taking this course?

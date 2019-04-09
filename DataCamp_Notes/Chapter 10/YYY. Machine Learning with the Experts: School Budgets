@@ -1,0 +1,334 @@
+Course Description
+
+
+Data science isn't just for predicting ad-clicks-it's also useful for social impact! This course is a case study from a machine learning competition on DrivenData. You'll explore a problem related to school district budgeting. By building a model to automatically classify items in a school's budget, it makes it easier and faster for schools to compare their spending with other schools. In this course, you'll begin by building a baseline model that is a simple, first-pass approach. In particular, you'll do some natural language processing to prepare the budgets for modeling. Next, you'll have the opportunity to try your own techniques and see how they compare to participants from the competition. Finally, you'll see how the winner was able to combine a number of expert techniques to build the most accurate model.
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+1
+Exploring the raw data
+FREE
+0%
+In this chapter, you'll be introduced to the problem you'll be solving in this course. How do you accurately classify line-items in a school budget based on what that money is being used for? You will explore the raw text and numeric values in the dataset, both quantitatively and visually. And you'll learn how to measure success when trying to predict class labels for each row of the dataset.
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Introducing the challenge
+● Learn from the expert who won DrivenData’s challenge
+● Natural language processing
+● Feature engineering
+● Efficiency boosting hashing tricks
+● Use data to have a social impact
+
+
+
+Introducing the challenge
+● Budgets for schools are huge, complex, and not standardized
+● Hundreds of hours each year are spent manually labelling
+● Goal: Build a machine learning algorithm that can automate
+the process
+● Budget data
+● Line-item: “Algebra books for 8th grade students”
+● Labels: “Textbooks”, “Math”, “Middle School”
+● This is a supervised learning problem
+
+
+
+Over 100 target variables!
+● Pre_K:
+● NO_LABEL
+● Non PreK
+● PreK
+● Reporting:
+● NO_LABEL
+● Non-School
+● School
+● Sharing:
+● Leadership &
+Management
+● NO_LABEL
+● School Reported
+● Student_Type:
+● Alternative
+● At Risk
+● … 
+
+
+
+How we can help
+● Predictions will be probabilities for each label
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+
+Exploring the data
+
+
+A column for each possible value
+
+
+Load and preview the data
+In [1]: import pandas as pd
+In [2]: sample_df = pd.read_csv('sample_data.csv')
+In [3]: sample_df.head()
+Out[3]:
+ label numeric text with_missing
+0 a -4.167578 bar -4.084883
+1 a -0.562668 2.043464
+2 a -21.361961 -33.315334
+3 b 16.402708 foo bar 30.884604
+4 a -17.934356 foo -27.488405
+
+
+
+
+Summarize the data
+In [4]: sample_df.info()
+<class 'pandas.core.frame.DataFrame'>
+Int64Index: 100 entries, 0 to 99
+Data columns (total 4 columns):
+label 100 non-null object
+numeric 100 non-null float64
+text 100 non-null object
+with_missing 95 non-null float64
+dtypes: float64(2), object(2)
+memory usage: 3.9+ KB 
+
+
+
+Summarize the data
+In [5]: sample_df.describe()
+Out[5]:
+ numeric with_missing
+count 100.000000 95.000000
+mean -1.037411 1.275189
+std 10.422602 17.386723
+min -26.594495 -42.210641
+25% -6.952244 -8.312870
+50% -0.653688 1.733997
+75% 5.398819 11.777888
+max 22.922080 41.967536 
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Loading the data
+Now it's time to check out the dataset! You'll use pandas (which has been pre-imported as pd) to load your data into a DataFrame and then do some Exploratory Data Analysis (EDA) of it.
+
+The training data is available as TrainingData.csv. Your first task is to load it into a DataFrame in the IPython Shell using pd.read_csv() along with the keyword argument index_col=0.
+
+Use methods such as .info(), .head(), and .tail() to explore the budget data and the properties of the features and labels.
+
+Some of the column names correspond to features - descriptions of the budget items - such as the Job_Title_Description column. The values in this column tell us if a budget item is for a teacher, custodian, or other employee.
+
+Some columns correspond to the budget item labels you will be trying to predict with your model. For example, the Object_Type column describes whether the budget item is related classroom supplies, salary, travel expenses, etc.
+
+Use df.info() in the IPython Shell to answer the following questions:
+
+How many rows are there in the training data?
+How many columns are there in the training data?
+How many non-null entries are in the Job_Title_Description column?
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+
+Summarizing the data
+You'll continue your EDA in this exercise by computing summary statistics for the numeric data in the dataset. The data has been pre-loaded into a DataFrame called df.
+
+You can use df.info() in the IPython Shell to determine which columns of the data are numeric, specifically type float64. You'll notice that there are two numeric columns, called FTE and Total.
+
+FTE: Stands for "full-time equivalent". If the budget item is associated to an employee, this number tells us the percentage of full-time that the employee works. A value of 1 means the associated employee works for the school full-time. A value close to 0 means the item is associated to a part-time or contracted employee.
+Total: Stands for the total cost of the expenditure. This number tells us how much the budget item cost.
+After printing summary statistics for the numeric data, your job is to plot a histogram of the non-null FTE column to see the distribution of part-time and full-time employees in the dataset.
+
+Instructions
+100 XP
+Print summary statistics of the numeric columns in the DataFrame df using the .describe() method.
+Import matplotlib.pyplot as plt.
+Create a histogram of the non-null 'FTE' column. You can do this by passing df['FTE'].dropna() to plt.hist().
+The title has been specified and axes have been labeled, so hit 'Submit Answer' to see how often school employees work full-time!
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+
+Looking
+at the
+datatypes
+
+
+
+Objects instead of categories
+In [1]: sample_df['label'].head()
+Out[1]:
+0 a
+1 a
+2 a
+3 b
+4 a
+Name: label, dtype: object 
+
+
+
+ ML algorithms work on numbers, not strings
+● Need a numeric representation of these strings
+● Strings can be slow compared to numbers
+● In pandas, ‘category’ dtype encodes categorical data
+numerically
+● Can speed up code
+
+
+
+Encode labels as categories (sample data)
+In [1]: sample_df.label.head(2)
+Out[1]:
+0 a
+1 b
+Name: label, dtype: object
+In [2]: sample_df.label = sample_df.label.astype('category')
+In [3]: sample_df.label.head(2)
+Out[3]:
+0 a
+1 b
+Name: label, dtype: category
+Categories (2, object): [a, b]
+
+
+
+Dummy variable encoding
+In [4]: dummies = pd.get_dummies(sample_df[['label']], prefix_sep='_')
+In [5]: dummies.head(2)
+Out[5]:
+ label_a label_b
+0 1 0
+1 0 1
+● Also called a ‘binary indicator’ representation 
+
+
+Lambda functions
+In [6]: square = lambda x: x*x
+In [6]: square(2)
+Out[6]: 4
+
+
+Encode labels as categories
+● In the sample dataframe, we only have one relevant column
+● In the budget data, there are multiple columns that need to be
+made categorical 
+
+
+Encode labels as categories
+In [7]: categorize_label = lambda x: x.astype('category')
+In [8]: sample_df.label = sample_df[['label']].apply(categorize_label,
+ ...: axis=0)
+In [9]: sample_df.info()
+<class 'pandas.core.frame.DataFrame'>
+Int64Index: 100 entries, 0 to 99
+Data columns (total 4 columns):
+label 100 non-null category
+numeric 100 non-null float64
+text 100 non-null object
+with_missing 95 non-null float64
+dtypes: category(1), float64(2), object(1)
+memory usage: 3.2+ KB
+-------------------------------------------------------------------------------------------------------------------------------------
+
+How do
+we
+measure
+success?
+
+● Accuracy can be misleading when classes are imbalanced
+● Legitimate email: 99%, Spam: 1%
+● Model that never predicts spam will be 99% accurate!
+● Metric used in this problem: log loss
+● It is a loss function
+● Measure of error
+● Want to minimize the error (unlike accuracy)
+
+
+
+Log loss binary classification
+● Log loss for binary classification
+● Actual value: y = {1=yes, 0=no}
+● Prediction (probability that the value is 1): p
+
+
+Log loss binary classification: example
+logloss(N=1) = y log(p) + (1 − y) log(1 − p)
+● True label = 0
+● Model confidently predicts 1 (with p = 0.90)
+● Log loss =
+● = log(1 - 0.9)
+● = log(0.1)
+● = 2.30
+
+Log loss binary classification: example
+logloss(N=1) = y log(p) + (1 − y) log(1 − p)
+True label = 1
+● Model predicts 0 (with p = 0.50)
+● Log loss = 0.69
+● Be"er to be less confident than confident and wrong
+
+
+Computing log loss with NumPy
+import numpy as np
+def compute_log_loss(predicted, actual, eps=1e-14):
+ """ Computes the logarithmic loss between predicted and
+ actual when these are 1D arrays.
+
+ :param predicted: The predicted probabilities as floats between 0-1
+ :param actual: The actual binary labels. Either 0 or 1.
+ :param eps (optional): log(0) is inf, so we need to offset our
+ predicted values slightly by eps from 0 or 1.
+ """
+ predicted = np.clip(predicted, eps, 1 - eps)
+ loss = -1 * np.mean(actual * np.log(predicted)
+ + (1 - actual)
+ * np.log(1 - predicted))
+
+ return loss
+
+
+Computing log loss with NumPy
+In [1]: compute_log_loss(predicted=0.9, actual=0)
+Out[1]: 2.3025850929940459
+In [2]: compute_log_loss(predicted=0.5, actual=1)
+Out[2]: 0.69314718055994529
+-------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+2
+Creating a simple first model
+0%
+In this chapter, you'll build a first-pass model. You'll use numeric data only to train the model. Spoiler alert - throwing out all of the text data is bad for performance! But you'll learn how to format your predictions. Then, you'll be introduced to natural language processing (NLP) in order to start working with the large amounts of text in the data.
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+3
+Improving your model
+0%
+Here, you'll improve on your benchmark model using pipelines. Because the budget consists of both text and numeric data, you'll learn to how build pipielines that process multiple types of data. You'll also explore how the flexibility of the pipeline workflow makes testing different approaches efficient, even in complicated problems like this one!
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+4
+Learning from the experts
+0%
+In this chapter, you will learn the tricks used by the competition winner, and implement them yourself using scikit-learn. Enjoy!

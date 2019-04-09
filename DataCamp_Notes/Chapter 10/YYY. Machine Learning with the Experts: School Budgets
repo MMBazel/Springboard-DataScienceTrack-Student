@@ -390,12 +390,49 @@ In [2]: compute_log_loss(predicted=0.5, actual=1)
 Out[2]: 0.69314718055994529
 -------------------------------------------------------------------------------------------------------------------------------------
 
+Computing log loss with NumPy
+To see how the log loss metric handles the trade-off between accuracy and confidence, we will use some sample data generated with NumPy and compute the log loss using the provided function compute_log_loss(), which Peter showed you in the video.
+
+5 one-dimensional numeric arrays simulating different types of predictions have been pre-loaded: actual_labels, correct_confident, correct_not_confident, wrong_not_confident, and wrong_confident.
+
+Your job is to compute the log loss for each sample set provided using the compute_log_loss(predicted_values, actual_values). It takes the predicted values as the first argument and the actual values as the second argument.
+
+Instructions
+100 XP
+Using the compute_log_loss() function, compute the log loss for the following predicted values (in each case, the actual values are contained in actual_labels):
+correct_confident.
+correct_not_confident.
+wrong_not_confident.
+wrong_confident.
+actual_labels.
 
 
+# Compute and print log loss for 1st case
+correct_confident = compute_log_loss(correct_confident, actual_labels)
+print("Log loss, correct and confident: {}".format(correct_confident)) 
 
+# Compute log loss for 2nd case
+correct_not_confident = compute_log_loss(correct_not_confident, actual_labels)
+print("Log loss, correct and not confident: {}".format(correct_not_confident)) 
 
--------------------------------------------------------------------------------------------------------------------------------------
+# Compute and print log loss for 3rd case
+wrong_not_confident = compute_log_loss(wrong_not_confident, actual_labels)
+print("Log loss, wrong and not confident: {}".format(wrong_not_confident)) 
 
+# Compute and print log loss for 4th case
+wrong_confident = compute_log_loss(wrong_confident,actual_labels)
+print("Log loss, wrong and confident: {}".format(wrong_confident)) 
+
+# Compute and print log loss for actual labels
+actual_labels = compute_log_loss(actual_labels, actual_labels)
+print("Log loss, actual labels: {}".format(actual_labels)) 
+
+<script.py> output:
+    Log loss, correct and confident: 0.05129329438755058
+    Log loss, correct and not confident: 0.4307829160924542
+    Log loss, wrong and not confident: 1.049822124498678
+    Log loss, wrong and confident: 2.9957322735539904
+    Log loss, actual labels: 9.99200722162646e-15
 
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -405,6 +442,325 @@ Out[2]: 0.69314718055994529
 Creating a simple first model
 0%
 In this chapter, you'll build a first-pass model. You'll use numeric data only to train the model. Spoiler alert - throwing out all of the text data is bad for performance! But you'll learn how to format your predictions. Then, you'll be introduced to natural language processing (NLP) in order to start working with the large amounts of text in the data.
+
+-------------------------------------------------------------------------------------------------------------------------------------
+It's time to build a model
+● Always a good approach to start with a very simple model
+● Gives a sense of how challenging the problem is
+● Many more things can go wrong in complex models
+● How much signal can we pull out using basic methods?
+
+
+
+
+It's time to build a model
+● Train basic model on numeric data only
+● Want to go from raw data to predictions quickly
+● Multi-class logistic regression
+● Train classifier on each label separately and
+use those to predict
+● Format predictions and save to csv
+● Compute log loss score
+
+
+
+
+Spli!ing the multi-class dataset
+● Recall: Train-test split
+● Will not work here
+● May end up with labels in test set that never
+appear in training set
+● Solution: StratifiedShuffleSplit
+● Only works with a single target variable
+● We have many target variables
+● multilabel_train_test_split()
+
+
+
+
+Spli!ing the data
+In [1]: data_to_train = df[NUMERIC_COLUMNS].fillna(-1000)
+In [2]: labels_to_use = pd.get_dummies(df[LABELS])
+In [3]: X_train, X_test, y_train, y_test = multilabel_train_test_split(
+ data_to_train, labels_to_use,
+ size=0.2, seed=123
+
+
+
+
+Training the model
+In [4]: from sklearn.linear_model import LogisticRegression
+In [5]: from sklearn.multiclass import OneVsRestClassifier
+In [6]: clf = OneVsRestClassifier(LogisticRegression())
+In [7]: clf.fit(X_train, y_train)
+
+● OneVsRestClassifier:
+● Treats each column of y independently
+● Fits a separate classifier for each of the columns
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Setting up a train-test split in scikit-learn
+Alright, you've been patient and awesome. It's finally time to start training models!
+
+The first step is to split the data into a training set and a test set. Some labels don't occur very often, but we want to make sure that they appear in both the training and the test sets. We provide a function that will make sure at least min_count examples of each label appear in each split: multilabel_train_test_split.
+
+Feel free to check out the full code for multilabel_train_test_split here.
+
+You'll start with a simple model that uses just the numeric columns of your DataFrame when calling multilabel_train_test_split. The data has been read into a DataFrame df and a list consisting of just the numeric columns is available as NUMERIC_COLUMNS.
+
+Instructions
+100 XP
+Create a new DataFrame named numeric_data_only by applying the .fillna(-1000) method to the numeric columns (available in the list NUMERIC_COLUMNS) of df.
+Convert the labels (available in the list LABELS) to dummy variables. Save the result as label_dummies.
+In the call to multilabel_train_test_split(), set the size of your test set to be 0.2. Use a seed of 123.
+Fill in the .info() method calls for X_train, X_test, y_train, and y_test.
+
+
+# Create the new DataFrame: numeric_data_only
+numeric_data_only = df[NUMERIC_COLUMNS].fillna(-1000)
+
+# Get labels and convert to dummy variables: label_dummies
+label_dummies = pd.get_dummies(df[LABELS])
+
+# Create training and test sets
+X_train, X_test, y_train, y_test = multilabel_train_test_split(numeric_data_only,
+                                                               label_dummies,
+                                                               size=0.2, 
+                                                               seed=123)
+
+# Print the info
+print("X_train info:")
+print(X_train.info())
+print("\nX_test info:")  
+print(X_test.info())
+print("\ny_train info:")  
+print(y_train.info())
+print("\ny_test info:")  
+print(y_test.info()) 
+
+
+<script.py> output:
+    X_train info:
+    <class 'pandas.core.frame.DataFrame'>
+    Int64Index: 1040 entries, 198 to 101861
+    Data columns (total 2 columns):
+    FTE      1040 non-null float64
+    Total    1040 non-null float64
+    dtypes: float64(2)
+    memory usage: 24.4 KB
+    None
+    
+    X_test info:
+    <class 'pandas.core.frame.DataFrame'>
+    Int64Index: 520 entries, 209 to 448628
+    Data columns (total 2 columns):
+    FTE      520 non-null float64
+    Total    520 non-null float64
+    dtypes: float64(2)
+    memory usage: 12.2 KB
+    None
+    
+    y_train info:
+    <class 'pandas.core.frame.DataFrame'>
+    Int64Index: 1040 entries, 198 to 101861
+    Columns: 104 entries, Function_Aides Compensation to Operating_Status_PreK-12 Operating
+    dtypes: float64(104)
+    memory usage: 853.1 KB
+    None
+    
+    y_test info:
+    <class 'pandas.core.frame.DataFrame'>
+    Int64Index: 520 entries, 209 to 448628
+    Columns: 104 entries, Function_Aides Compensation to Operating_Status_PreK-12 Operating
+    dtypes: float64(104)
+    memory usage: 426.6 KB
+    None
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Training a model
+With split data in hand, you're only a few lines away from training a model.
+
+In this exercise, you will import the logistic regression and one versus rest classifiers in order to fit a multi-class logistic regression model to the NUMERIC_COLUMNS of your feature data.
+
+Then you'll test and print the accuracy with the .score() method to see the results of training.
+
+Before you train! Remember, we're ultimately going to be using logloss to score our model, so don't worry too much about the accuracy here. Keep in mind that you're throwing away all of the text data in the dataset - that's by far most of the data! So don't get your hopes up for a killer performance just yet. We're just interested in getting things up and running at the moment.
+
+All data necessary to call multilabel_train_test_split() has been loaded into the workspace.
+
+Instructions
+100 XP
+Import LogisticRegression from sklearn.linear_model and OneVsRestClassifier from sklearn.multiclass.
+Instantiate the classifier clf by placing LogisticRegression() inside OneVsRestClassifier().
+Fit the classifier to the training data X_train and y_train.
+Compute and print the accuracy of the classifier using its .score() method, which accepts two arguments: X_test and y_test.
+
+# Import classifiers
+from sklearn.linear_model import LogisticRegression
+from sklearn.multiclass import OneVsRestClassifier
+
+# Create the DataFrame: numeric_data_only
+numeric_data_only = df[NUMERIC_COLUMNS].fillna(-1000)
+
+# Get labels and convert to dummy variables: label_dummies
+label_dummies = pd.get_dummies(df[LABELS])
+
+# Create training and test sets
+X_train, X_test, y_train, y_test = multilabel_train_test_split(numeric_data_only,
+                                                               label_dummies,
+                                                               size=0.2, 
+                                                               seed=123)
+
+# Instantiate the classifier: clf
+clf = OneVsRestClassifier(LogisticRegression())
+
+# Fit the classifier to the training data
+clf.fit(X_train, y_train)
+
+# Print the accuracy
+print("Accuracy: {}".format(clf.score(X_test, y_test)))
+
+<script.py> output:
+    Accuracy: 0.0
+    
+Ok! The good news is that your workflow didn't cause any errors. The bad news is that your model scored the lowest possible accuracy: 0.0! But hey, you just threw away ALL of the text data in the budget. Later, you won't. Before you add the text data, let's see how the model does when scored by log loss.    
+    
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Making
+predictions
+
+
+Predicting on holdout data
+In [1]: holdout = pd.read_csv('HoldoutData.csv', index_col=0)
+In [2]: holdout = holdout[NUMERIC_COLUMNS].fillna(-1000)
+In [3]: predictions = clf.predict_proba(holdout)
+
+● If .predict() was used instead:
+● Output would be 0 or 1
+● Log loss penalizes being confident and wrong
+● Worse performance compared
+to .predict_proba()
+
+
+
+Submi!ing your predictions as a csv
+● All forma"ing can be done with the pandas to_csv
+function
+
+
+Format and submit predictions
+In [4]: prediction_df = pd.DataFrame(columns=pd.get_dummies(df[LABELS],
+ ...: prefix_sep='__').columns,
+ ...: index=holdout.index,
+ ...: data=predictions)
+In [5]: prediction_df.to_csv('predictions.csv')
+In [6]: score = score_submission(pred_path='predictions.csv')
+
+
+DrivenData leaderboard
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+A
+very brief
+introduction
+to NLP
+
+
+A very brief introduction to NLP
+● Data for NLP:
+     ● Text, documents, speech, …
+● Tokenization
+      ● Spli"ing a string into segments
+      ● Store segments as list
+● Example: ‘Natural Language Processing’
+      ● —> [‘Natural’, ‘Language’, ‘Processing’]
+
+
+Tokens and token pa!erns
+● Tokenize on whitespace
+      PETRO-VEND FUEL AND FLUIDS
+      PETRO-VEND | FUEL | AND | FLUIDS
+● Tokenize on whitespace and punctuation
+      PETRO-VEND FUEL AND FLUIDS
+      PETRO | VEND | FUEL | AND | FLUID
+      
+      
+      
+      
+Bag of words representation
+  ● Count the number of times a particular token appears
+  ● “Bag of words”
+    ● Count the number of times a word was
+pulled out of the bag
+● This approach discards information about word order
+   ● “Red, not blue” is the same as “blue, not red”
+   
+   
+   
+-------------------------------------------------------------------------------------------------------------------------------------
+
+Representing
+text
+numerically
+
+Representing text numerically
+● Bag-of-words
+     ● Simple way to represent text in machine learning
+     ● Discards information about grammar and word order
+     ● Computes frequency of occurrence
+
+
+Scikit-learn tools for bag-of-words
+● CountVectorizer()
+    ● Tokenizes all the strings
+    ● Builds a ‘vocabulary’
+    ● Counts the occurrences of each token in
+    the vocabulary
+
+
+Using CountVectorizer() on column of main dataset
+   In [1]: from sklearn.feature_extraction.text import CountVectorizer
+   In [2]: TOKENS_BASIC = '\\S+(?=\\s+)'
+   In [3]: df.Program_Description.fillna('', inplace=True)
+   In [4]: vec_basic = CountVectorizer(token_pattern=TOKENS_BASIC)
+   
+   
+   
+   
+-------------------------------------------------------------------------------------------------------------------------------------
+Using CountVectorizer() on column of main dataset
+
+In [5]: vec_basic.fit(df.Program_Description)
+Out[5]:
+CountVectorizer(analyzer='word', binary=False, decode_error='strict',
+ dtype=<class 'numpy.int64'>, encoding='utf-8', input='content',
+ lowercase=True, max_df=1.0, max_features=None, min_df=1,
+ ngram_range=(1, 1), preprocessor=None, stop_words=None,
+ strip_accents=None, token_pattern='\\S+(?=\\s+)',
+ tokenizer=None, vocabulary=None)
+In [6]: msg = 'There are {} tokens in Program_Description if tokens are
+any non-whitespace'
+In [7]: print(msg.format(len(vec_basic.get_feature_names())))
+There are 157 tokens in Program_Description if tokens are any nonwhitespace
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
 
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

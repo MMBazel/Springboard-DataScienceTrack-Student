@@ -1,0 +1,112 @@
+Interactive Data
+Visualization with
+Bokeh
+
+What is Bokeh?
+● Interactive visualization, controls, and tools
+● Versatile and high-level graphics
+● High-level statistical charts
+● Streaming, dynamic, large data
+● For the browser, with or without a server
+● No JavaScript
+
+
+
+
+What you will learn
+● Basic plo!ing with bokeh.plotting
+● Layouts, interactions, and annotations
+● Statistical charting with bokeh.charts
+● Interactive data applications in the browser
+● Case Study: A Gapminder explorer
+
+
+
+
+<=================================================================================================================================>
+
+Plo!ing with
+ Glyphs
+ 
+ 
+ What are Glyphs
+● Visual shapes
+● circles, squares, triangles
+● rectangles, lines, wedges
+● With properties a!ached to data
+● coordinates (x,y)
+● size, color, transparency
+
+
+ 
+ Typical usage
+In [1]: from bokeh.io import output_file, show
+In [2]: from bokeh.plotting import figure
+In [3]: plot = figure(plot_width=400, tools='pan,box_zoom')
+In [4]: plot.circle([1,2,3,4,5], [8,6,5,2,3])
+In [5]: output_file('circle.html')
+In [6]: show(plot)
+
+
+
+ Glyph properties
+● Lists, arrays, sequences of values
+● Single fixed values
+In [1]: plot = figure()
+In [2]: plot.circle(x=10, y=[2,5,8,12], size=[10,20,30,40])
+
+
+
+
+ Markers ● asterisk() ● circle() ● circle_cross() ● circle_x() ● cross() ● diamond() ● diamond_cross() ● inverted_triangle() ● square() ● square_cross() ● square_x() ● triangle() ● x()
+ 
+ 
+ 
+ 
+<=================================================================================================================================>
+
+
+Additional Glyphs
+
+
+Lines
+In [1]: from bokeh.io import output_file, show
+In [2]: from bokeh.plotting import figure
+In [3]: x = [1,2,3,4,5]
+In [4]: y = [8,6,5,2,3]
+In [5]: plot = figure()
+In [6]: plot.line(x, y, line_width=3)
+In [7]: output_file('line.html')
+In [8]: show(plot)
+
+
+
+
+
+
+
+<=================================================================================================================================>
+
+<=================================================================================================================================>
+
+<=================================================================================================================================>
+
+<=================================================================================================================================>
+
+<=================================================================================================================================>
+
+<=================================================================================================================================>
+
+<=================================================================================================================================>
+
+<=================================================================================================================================>
+
+<=================================================================================================================================>
+
+<=================================================================================================================================>
+
+<=================================================================================================================================>
+
+ 
+ 
+ 

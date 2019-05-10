@@ -561,8 +561,125 @@ Description
 {'OP': '+'} Match 1 or more times
 {'OP': '*'} Match 0 or more times
 
+------------------------------------------------------------------------------------------------------------------------
+
+Using the Matcher
+Let's try spaCy's rule-based Matcher. You'll be using the example from the previous exercise and write a pattern that can match the phrase "iPhone X" in the text. The nlp object and a processed doc are already available.
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Import the Matcher from spacy.matcher.
+Initialize it with the nlp object's shared vocab.
+
+# Import the Matcher
+from spacy.matcher import Matcher
+
+# Initialize the Matcher with the shared vocabulary
+matcher = Matcher(nlp.vocab)
+
+Create a pattern that matches the 'TEXT' values of two tokens: "iPhone" and "X".
+Use the matcher.add method to add the pattern to the matcher.
+
+# Import the Matcher
+from spacy.matcher import Matcher
+
+# Initialize the Matcher with the shared vocabulary
+matcher = Matcher(nlp.vocab)
+
+# Create a pattern matching two tokens: "iPhone" and "X"
+pattern = [{'TEXT':'iPhone'},{'TEXT':'X'}]
+
+# Add the pattern to the matcher
+matcher.add('IPHONE_X_PATTERN', None, pattern)
+
+Call the matcher on the doc and store the result in the variable matches.
+Iterate over the matches and get the matched span from the start to the end index.
+
+# Import the Matcher and initialize it with the shared vocabulary
+from spacy.matcher import Matcher
+matcher = Matcher(nlp.vocab)
+
+# Create a pattern matching two tokens: "iPhone" and "X"
+pattern = [{'TEXT': 'iPhone'}, {'TEXT': 'X'}]
+
+# Add the pattern to the matcher
+matcher.add('IPHONE_X_PATTERN', None, pattern)
+
+# Use the matcher on the doc
+matches = matcher(doc)
+print('Matches:', [doc[start:end].text for match_id, start, end in matches])
+------------------------------------------------------------------------------------------------------------------------
 
 
+Writing match patterns
+In this exercise, you'll practice writing more complex match patterns using different token attributes and operators. A matcher is already initialized and available as the variable matcher.
+
+Instructions 1/3
+35 XP
+1
+Write one pattern that only matches mentions of the full iOS versions: "iOS 7", "iOS 11" and "iOS 10".
+Take Hint (-10 XP)
+2
+Write one pattern that only matches forms of "download" (tokens with the lemma "download"), followed by a token with the part-of-speech tag 'PROPN' (proper noun).
+3
+Write one pattern that matches adjectives ('ADJ') followed by one or two 'NOUN's (one noun and one optional noun).
+
+
+doc = nlp("After making the iOS update you won't notice a radical system-wide redesign: nothing like the aesthetic upheaval we got with iOS 7. Most of iOS 11's furniture remains the same as in iOS 10. But you will discover some tweaks once you delve a little deeper.")
+
+# Write a pattern for full iOS versions ("iOS 7", "iOS 11", "iOS 10")
+pattern = [{'TEXT': 'iOS'}, {'IS_DIGIT': True}]
+
+# Add the pattern to the matcher and apply the matcher to the doc
+matcher.add('IOS_VERSION_PATTERN', None, pattern)
+matches = matcher(doc)
+print('Total matches found:', len(matches))
+
+# Iterate over the matches and print the span text
+for match_id, start, end in matches:
+    print('Match found:', doc[start:end].text)
+    
+    
+ <script.py> output:
+    Total matches found: 3
+    Match found: iOS 7
+    Match found: iOS 11
+    Match found: iOS 10
+    
+    
+    doc = nlp("i downloaded Fortnite on my laptop and can't open the game at all. Help? so when I was downloading Minecraft, I got the Windows version where it is the '.zip' folder and I used the default program to unpack it... do I also need to download Winzip?")
+
+# Write a pattern that matches a form of "download" plus proper noun
+pattern = [{'LEMMA': 'download'}, {'POS': 'PROPN'}]
+
+# Add the pattern to the matcher and apply the matcher to the doc
+matcher.add('DOWNLOAD_THINGS_PATTERN', None, pattern)
+matches = matcher(doc)
+print('Total matches found:', len(matches))
+
+# Iterate over the matches and print the span text
+for match_id, start, end in matches:
+    print('Match found:', doc[start:end].text)
+    
+    
+    doc = nlp("Features of the app include a beautiful design, smart search, automatic labels and optional voice responses.")
+
+# Write a pattern for adjective plus one or two nouns
+pattern = [{'POS': 'ADJ'}, {'POS': 'NOUN'}, {'POS': 'NOUN', 'OP': '?'}]
+
+# Add the pattern to the matcher and apply the matcher to the doc
+matcher.add('ADJ_NOUN_PATTERN', None, pattern)
+matches = matcher(doc)
+print('Total matches found:', len(matches))
+
+# Iterate over the matches and print the span text
+for match_id, start, end in matches:
+    print('Match found:', doc[start:end].text)
+    
+    
 
 <===========================================================================================================================>
 

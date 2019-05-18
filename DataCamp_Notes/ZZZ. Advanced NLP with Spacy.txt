@@ -882,11 +882,93 @@ spaces = [False, True, True, False, False]
 doc = Doc(nlp.vocab, words=words, spaces=spaces)
 print(doc.text)
 
+_______________________________________________________________________________________________
+
+Docs, spans and entities from scratch
+In this exercise, you'll create the Doc and Span objects manually, and update the named entities – just like spaCy does behind the scenes. A shared nlp object has already been created.
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Import the Doc and Span classes from spacy.tokens.
+Use the Doc class directly to create a doc from the words and spaces.
+
+# Import the Doc and Span classes
+from spacy.tokens import Doc, Span
+
+words = ['I', 'like', 'David', 'Bowie']
+spaces = [True, True, True, False]
+
+# Create a doc from the words and spaces
+doc = Doc(nlp.vocab, words = words, spaces = spaces)
+print(doc.text)
+
+Instructions 2/3
+35 XP
+2
+3
+Create a Span for "David Bowie" from the doc and assign it the label "PERSON".
+
+# Import the Doc and Span classes
+from spacy.tokens import Doc, Span
+
+# Create a doc from the words and spaces
+doc = Doc(nlp.vocab, words=['I', 'like', 'David', 'Bowie'], spaces=[True, True, True, False])
+
+# Create a span for "David Bowie" from the doc and assign it the label "PERSON"
+span = Span(doc, 2, 4, label="PERSON")
+print(span.text, span.label_)
+
+Instructions 3/3
+30 XP
+3
+Overwrite the doc.ents with a list of one entity, the "David Bowie" span.
 
 
+# Import the Doc and Span classes
+from spacy.tokens import Doc, Span
+
+# Create a doc from the words and spaces
+doc = Doc(nlp.vocab, words=['I', 'like', 'David', 'Bowie'], spaces=[True, True, True, False])
+
+# Create a span for "David Bowie" from the doc and assign it the label "PERSON"
+span = Span(doc, 2, 4, label='PERSON')
+
+# Add the span to the doc's entities
+doc.ents = [span]
+
+# Print entities' text and labels
+print([(ent.text, ent.label_) for ent in doc.ents])
+_______________________________________________________________________________________________
+
+Data structures best practices
+The code in this example is trying to analyze a text and collect all proper nouns. If the token following the proper noun is a verb, it should also be extracted. A doc object has already been created.
+
+# Get all tokens and part-of-speech tags
+pos_tags = [token.pos_ for token in doc]
+
+for index, pos in enumerate(pos_tags):
+    # Check if the current token is a proper noun
+    if pos == 'PROPN':
+        # Check if the next token is a verb
+        if pos_tags[index + 1] == 'VERB':
+            print('Found a verb after a proper noun!')
+Instructions 2/2
+0 XP
+Rewrite the code to use the native token attributes instead of a list of pos_tags.
+Loop over each token in the doc and check the token.pos_ attribute.
+Use doc[token.i + 1] to check for the next token and its .pos_ attribute.
 
 
-
+# Iterate over the tokens
+for token in doc:
+    # Check if the current token is a proper noun
+    if token.pos_ == 'PROPN':
+        # Check if the next token is a verb
+        if doc[token.i + 1].pos_ == 'VERB':
+            print('Found a verb after a proper noun!')
 _______________________________________________________________________________________________--
 
 Word vectors and semantic
@@ -968,7 +1050,78 @@ doc1 = nlp("I like cats")
 doc2 = nlp("I hate cats")
 print(doc1.similarity(doc2))
 0.9501447503553421
+______________________________________________________________________________________________________
 
+
+Inspecting word vectors
+In this exercise, you'll use a larger English model, which includes around 20.000 word vectors. Because vectors take a little longer to load, we're using a slightly compressed version of it than the one you can download with spaCy. The model is already pre-installed, and spacy has already been imported for you.
+
+Instructions
+0 XP
+Load the medium 'en_core_web_md' model with word vectors.
+Print the vector for "bananas" using the token.vector attribute.
+Hint
+To load a statistical model, call spacy.load with its string name.
+To access a token in a doc, you can index into it. For example, doc[4].
+
+
+# Load the en_core_web_md model
+nlp = spacy.load('en_core_web_md')
+
+# Process a text
+doc = nlp("Two bananas in pyjamas")
+
+# Get the vector for the token "bananas"
+bananas_vector = doc[1].vector
+print(bananas_vector)
+
+______________________________________________________________________________________________________
+
+Comparing similarities
+In this exercise, you'll be using spaCy's similarity methods to compare Doc, Token and Span objects and get similarity scores. The medium English model is already available as the nlp object.
+
+Instructions 1/3
+35 XP
+1
+Use the doc.similarity method to compare doc1 to doc2 and print the result.
+Take Hint (-10 XP)
+
+doc1 = nlp("It's a warm summer day")
+doc2 = nlp("It's sunny outside")
+
+# Get the similarity of doc1 and doc2
+similarity = doc1.similarity(doc2)
+print(similarity)
+
+
+2
+Use the token.similarity method to compare token1 to token2 and print the result.
+
+doc = nlp("TV and books")
+token1, token2 = doc[0], doc[2]
+
+# Get the similarity of the tokens "TV" and "books" 
+similarity = token1.similarity(token2)
+print(similarity)
+
+
+
+3
+Create spans for "great restaurant"/"really nice bar".
+Use span.similarity to compare them and print the result.
+
+doc = nlp("This was a great restaurant. Afterwards, we went to a really nice bar.")
+
+# Create spans for "great restaurant" and "really nice bar"
+span1 = doc[3:5]
+print(span1)
+span2 = doc[12:15]
+print(span2)
+
+
+# Get the similarity of the spans
+similarity = span1.similarity(span2)
+print(similarity)
 
 ______________________________________________________________________________________________________--
 

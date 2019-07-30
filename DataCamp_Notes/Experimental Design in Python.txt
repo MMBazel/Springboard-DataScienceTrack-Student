@@ -1,0 +1,35 @@
+Course Description
+
+Data is all around us and can help us to understand many things. Making a pretty graph is great, but how can we tell the difference between a few outliers on a graph and a real, reliable effect? Is a trend that we see on a graph a reliable result or just random chance playing tricks? In this course, you will learn how to interrogate datasets in a rigorous way, giving clear answers to your questions. You will learn a range of statistical tests, how to apply them, how to understand their results, and how to deal with their shortcomings. Along the way, you will explore Olympic athlete data and the differences between populations of continents.
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+The Basics of Statistical Hypothesis Testing
+FREE
+0%
+In this chapter, you will learn how to explore your data and ask meaningful questions. Then, you will discover how to answer these question by using your first statistical hypothesis tests: the t-test, the Chi-Square test, the Fisher exact test, and the Pearson correlation test.
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+2
+Design Considerations in Experimental Design
+0%
+In this chapter, you will learn how to examine and multiple factors at once, controlling for the effect of confounding variables and examining interactions between variables. You will learn how to use randomization and blocking to build robust tests and how to use the powerful ANOVA method.
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+3
+Sample size, Power analysis, and Effect size
+
+In this chapter, you will focus on ways to avoid drawing false conclusions, whether false positives (type I errors) or false negatives (type II errors). Central to avoiding false negatives is understanding the interplay between sample size, power analysis, and effect size.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+4
+Testing Normality: Parametric and Non-parametric Tests
+0%
+In this final chapter, you will examine the assumptions underlying statistical tests and learn about how that influences your experimental design. This will include learning whether a variable follows a normal distribution and when you should use non-parametric statistical tests like the Wilcoxon rank-sum test and the Spearman correlation test.

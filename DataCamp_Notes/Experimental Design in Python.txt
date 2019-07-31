@@ -280,18 +280,196 @@ Instructions 1/2
 1
 Do a standard two-sample t-test, comparing 2018 and 2019 potato yield, save the result to ttestind and print it.
 
+------------------------------------------------------------------------------------------------------------------------------------
+One-way ANOVA
+Let's have another look at some data from our Olympic dataset. How does the Weight of athletes vary between teams from different countries? In this exercise, you're going to use a one-way ANOVA to check for the presence of significant variation in Weight of Olympic athletes. You have been provided with the athletes DataFrame, containing details about male athletes from the Team of the United States, France, and China. Here is a set of boxplots of Weight for the athletes from those three countries.
+
+Density plot of the body weights of Olympic athletes from three competing countries
+
+A one-way ANOVA will allow you to see whether any differences between these groups of values are significant. pandas, scipy.stats, and plotnine have been loaded into the workspace as pd, stats, and p9, respectively.
+
+Instructions
+100 XP
+Create three arrays, France_athletes, US_athletes, and China_athletes, for the athletes' Weights from each country.
+Using f_oneway(), perform a one-way ANOVA on the arrays, save the result as anova, and print it.
+
+# Create arrays
+France_athletes = athletes[athletes.Team == 'France'].Weight
+US_athletes = athletes[athletes.Team == 'United States'].Weight
+China_athletes = athletes[athletes.Team == 'China'].Weight
+
+# Perform one-way ANOVA
+anova = stats.f_oneway(France_athletes, US_athletes, China_athletes)
+print(anova)
+
+# Create arrays
+France_athletes = athletes[athletes.Team == 'France'].Weight
+US_athletes = athletes[athletes.Team == 'United States'].Weight
+China_athletes = athletes[athletes.Team == 'China'].Weight
+
+# Perform one-way ANOVA
+anova = stats.f_oneway(France_athletes, US_athletes, China_athletes)
+print(anova)
+------------------------------------------------------------------------------------------------------------------------------------
+Two-way ANOVA
+Let's have another look at some data from our Olympic dataset. How does the Weight of athletes vary between teams from different countries and of different sexes? In this exercise, you're going to use a two-way ANOVA to check for the presence of significant variation in the Weight of Olympic sprinters. You have been provided with the athletes DataFrame, containing details about athletes from the Team of the United States, and China, from both sexes.
+
+Density plot of athlete weight in relation to sex and country
+
+A two-way ANOVA will allow you to see which of these two factors, Sex and Team, have a significant effect on Weight. pandas, statsmodels, and plotnine have been loaded into the workspace as pd, sm, and p9, respectively.
+
+Instructions
+100 XP
+Create a model, using the provided formula for Weight as a function of Team and Sex.
+Perform a two-way ANOVA, testing for the effect of both Team and Sex on Weight, and print the ANOVA table.
 
 
+# Create model
+formula = 'Weight ~ Sex + Team'
+model = sm.api.formula.ols(formula, data=athletes).fit()
+
+# Perform ANOVA and print table
+aov_table = sm.api.stats.anova_lm(model, typ=2)
+print(aov_table)
+
+# Create model
+formula = 'Weight ~ Sex + Team'
+model = sm.api.formula.ols(formula, data=athletes).fit()
+
+# Perform ANOVA and print table
+aov_table = sm.api.stats.anova_lm(model, typ=2)
+print(aov_table)
+
+Good work! According to the results of your ANOVA, Sex has a significant effect, while Team has no significant effect. ANOVA is a very powerful method, as it allows us to separate out the effects of multiple factors.
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+wo-way ANOVA with interactive effects
+Once again, you're going to look at our dataset of Olympic athletes. As in previous exercises, you'll be looking at the variation in athlete Weight. You're going to look at athletes of either Sex competing in one of two Events: the 100 meter and 10,000 meter run. Have a look at these data in the boxplots below.
+
+Density plot of athlete weight in relation to sex and event
+
+This dataset is provided in your workspace as athletes. An ANOVA will allow you to work out which of these variables affect Weight and whether an interactive effect is present. pandas, statsmodels, and plotnine have been loaded into the workspace as pd, sm, and p9, respectively.
+
+Instructions
+100 XP
+Perform a two-way ANOVA to test whether Sex, Event, or the interaction between the two has a significant effect on Weight.
+Using anova_lm() on your model, extract and print the table of results produced by your ANOVA.
+
+
+# Run the ANOVA
+model = sm.api.formula.ols('Weight ~ Sex + Event + Sex:Event', data = athletes).fit()
+
+# Extract our table
+aov_table = sm.api.stats.anova_lm(model, typ=2)
+
+# Print the table
+print(aov_table)
+
+<script.py> output:
+                      sum_sq      df            F        PR(>F)
+    Sex        141607.485844     1.0  3191.693293  0.000000e+00
+    Event       83295.483535     1.0  1877.398179  0.000000e+00
+    Sex:Event    1551.609798     1.0    34.971757  3.680613e-09
+    Residual   148986.100430  3358.0          NaN           NaN
+    
+    
+Good work! Can you interpret the AOV table? Look at the p-values for the effects of Sex, Event, and Sex:Event. Using a standard alpha of 0.05, Sex, Event, and Sex:Event have a significant effect on Weight. This means that both factors influence Weight, and the effect of one factor is dependent on the other.
+------------------------------------------------------------------------------------------------------------------------------------
+
+Choosing an appropriate test
+Let's look at another problem from the Olympic dataset, focusing on the Height of the competitors. Here, you've been provided with athletes data on the Norwegian and Colombian Team for each Sex. With those two factors, you'll have four separate groups. First, look at the boxplots below, then choose an appropriate statistical test.
+
+Density plot of athlete height in relation to sex and country
+
+Finally, carry out the test. pandas, statsmodels, and plotnine have been loaded into the workspace as pd, sm, and p9, respectively.
+
+Create a formula and model, examining Height as a function of Sex, Team, and their interaction.
+Perform a two-way ANOVA, testing for the effect of Sex, Team, and an interactive effect on Weight, and print the ANOVA table.
+
+# Create model
+formula = 'Height ~ Sex + Team + Sex:Team'
+model = sm.api.formula.ols(formula, data=athletes).fit()
+
+# Perform ANOVA and print table
+aov_table = sm.api.stats.anova_lm(model, typ=2)
+print(aov_table)
+Nice. According to the results of your two-way ANOVA, both of the factors, Sex and Team, have a significant effect on Weight. However, no significant interactive effect is present.
+
+
+<script.py> output:
+                    sum_sq     df           F        PR(>F)
+    Sex       11975.530932    1.0  159.038723  7.512939e-33
+    Team      12274.160018    1.0  163.004609  1.506805e-33
+    Sex:Team    107.335230    1.0    1.425445  2.329344e-01
+    Residual  50149.444322  666.0         NaN           NaN
 ------------------------------------------------------------------------------------------------------------------------------------
 
 3
 Sample size, Power analysis, and Effect size
 
 In this chapter, you will focus on ways to avoid drawing false conclusions, whether false positives (type I errors) or false negatives (type II errors). Central to avoiding false negatives is understanding the interplay between sample size, power analysis, and effect size.
-
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+Bonferroni correction
+Improved nutrition and healthcare has lead to increased human heights in most societies over the past century. But is this trend also reflected amongst elite athletes? To examine this, we'll be looking at another slice from our Olympic dataset and performing multiple tests.
 
+You have been provided with the athletes dataset containing information about American male Olympic athletes from three years: 1924, 1952, and 2016. You will perform two-sample t-tests to compare the three timepoints, seen in boxplots. Between which times do significant differences exist? As you'll be performing multiple non-independent tests, you will need to perform Bonferroni correction on the results. statsmodels, scipy.stats, and pandas have been loaded for you as sm, stats, and pd.
+
+Boxplots of athlete heights from three chosen years
+
+Instructions
+100 XP
+Perform three two-sample t-tests, comparing each possible pair of years.
+Create an array containing the p-values from your three t-tests and print it.
+Perform a Bonferroni correction on the p-values and print the result.
+
+# Perform t-tests 
+t_result_1924v2016= stats.ttest_ind(athletes[athletes.Year == "1924"].Height,athletes[athletes.Year == "2016"].Height)
+t_result_1952v2016= stats.ttest_ind(athletes[athletes.Year == "1952"].Height,athletes[athletes.Year == "2016"].Height)
+t_result_1924v1952= stats.ttest_ind(athletes[athletes.Year == "1924"].Height,athletes[athletes.Year == "1952"].Height)
+
+# Create array of p-values
+pvals_array = [t_result_1924v2016[1],t_result_1952v2016[1],t_result_1924v1952[1]]
+print(pvals_array)
+
+# Perform Bonferroni correction
+adjustedvalues = sm.stats.multitest.multipletests(pvals_array, alpha=0.05, method='b')
+print(adjustedvalues)
+
+
+<script.py> output:
+    [2.0995273280295586e-16, 4.484419167217926e-05, 0.00013562429334889784]
+    (array([ True,  True,  True]), array([6.29858198e-16, 1.34532575e-04, 4.06872880e-04]), 0.016952427508441503, 0.016666666666666666)
+
+Nice. See how the Bonferroni correction affects your values? This correction method is quite conservative.
+----------------------------------------------------------------------------------------------------------------------------------------
+Šídák correction
+We're looking at how the Height of Olympic athletes from the athletes dataset has changed over time. In this exercise, we're considering three events, the 100 meter, the High Jump, and the Marathon. You'll be examining the correlation between Height and Year separately for each Event. As you did before, you'll need to correct for multiple hypothesis tests, but, since these tests are independent, you can use the less-strict Šídák correction.
+
+Scatter plots of athlete heights in relation to year for three Olympic events
+
+Instructions
+100 XP
+Perform three Pearson correlations, examining the correlation between Height and Year for each of the three Events.
+Create an array containing the p-values from your three tests and print it.
+
+Perform a Šídák correction on the p-values and print the result.
+
+# Perform Pearson correlations
+pearson100 = stats.pearsonr(athletes[athletes.Event == "100 meters"].Height, athletes[athletes.Event == "100 meters"].Year)
+pearsonHigh = stats.pearsonr(athletes[athletes.Event == "High Jump"].Height, athletes[athletes.Event == "High Jump"].Year)
+pearsonMara = stats.pearsonr(athletes[athletes.Event == "Marathon"].Height, athletes[athletes.Event == "Marathon"].Year)
+
+# Create array of p-values
+pvals_array = [pearson100[1],pearsonHigh[1],pearsonMara[1]]
+print(pvals_array)
+
+# Perform Šídák correction
+adjustedvalues=  sm.stats.multitest.multipletests(pvals_array, alpha=0.05, method='s')
+print(adjustedvalues)
+
+----------------------------------------------------------------------------------------------------------------------------------------
 4
 Testing Normality: Parametric and Non-parametric Tests
 0%

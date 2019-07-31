@@ -468,6 +468,79 @@ print(pvals_array)
 # Perform Šídák correction
 adjustedvalues=  sm.stats.multitest.multipletests(pvals_array, alpha=0.05, method='s')
 print(adjustedvalues)
+----------------------------------------------------------------------------------------------------------------------------------------
+Exploring sample size
+Now we'll explore the effect of sample size on the results of statistical tests. Here, we'll be comparing the Weight of American Athletics and Swimming competitors in the athletes dataset. The boxplots show the difference between these two groups.
+
+Boxplots of body weights of Olympic athletes from two sports
+
+Using a defined seed and varying sample sizes, you will perform t-tests comparing the Weight of samples from both Sports. random, scipy.stats, and pandas have been loaded for you as random, stats, and pd.
+
+Instructions 1/3
+35 XP
+Instructions 1/3
+35 XP
+1
+Create a subset using the provided seed for 1000 samples; perform and print a t-test to compare Weight between Sports.
+
+# Create sample with defined random seed and perform t-test
+subset = athletes.sample(n=1000, random_state= 1007)
+print(stats.ttest_ind(subset[subset.Sport == "Athletics"].Weight, subset[subset.Sport == "Swimming"].Weight))
+
+<script.py> output:
+    Ttest_indResult(statistic=-4.5957029380768635, pvalue=4.865150456250805e-06)
+    
+    
+Change the sample size to 200, repeat the t-test to compare Weight between Sports, and print the results.
+
+# Create sample with defined random seed and perform t-test
+subset = athletes.sample(n=200,random_state= 1007)
+print(stats.ttest_ind(subset[subset.Sport=="Athletics"].Weight, subset[subset.Sport=="Swimming"].Weight))
+
+<script.py> output:
+    Ttest_indResult(statistic=-2.015353197866729, pvalue=0.045219679216043834)
+    
+    
+    
+Create a subset using the same seed for 50 samples; perform and print a t-test to compare Weight between Sports.
+
+# Create sample with defined random seed and perform t-test
+subset = athletes.sample(n=50, random_state= 1007)
+print(stats.ttest_ind(subset[subset.Sport == "Athletics"].Weight, 
+                      subset[subset.Sport == "Swimming"].Weight))
+		      
+		      
+		      
+Great! Look how smaller samples affected your p-value. With sample sizes of 1000, 200 and 50, you got p-values of 0.0000045, 0.045 and 0.68, respectively. The smallest sample size didn't give a significant result. Now you see how much difference sample size can make.		      
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Sample size for a t-test
+Now that we've seen the importance of sample size, let's have another look at the same athletes dataset and see if we can determine the sample size we would need to get a significant result.
+
+Boxplots of body weights of Olympic athletes from two sports
+
+The boxplot shows the difference in body weight between sports, using all 2830 rows from the athletes dataset. The difference between the groups looks quite small. Determine the sample size we would need to have an 80% chance of detecting a small (0.4) difference between these two samples. statsmodels.stats.power and pandas have been loaded for you as pwr and pd.
+
+Instructions
+100 XP
+Set effect, power, and alpha to 0.4, 0.8 and 0.05, respectively.
+Calculate the ratio using the relative lengths of the series for swimming (swimmercount) compared to athletics (athletecount) competitors.
+Initialize the analysis, solve the equation for sample size, and print the output.
+
+# Set parameters
+effect = 0.4
+power = 0.8
+alpha = 0.05
+
+# Calculate ratio
+swimmercount = float(len(athletes[athletes.Sport == "Swimming"].index))
+athletecount = float(len(athletes[athletes.Sport == "Athletics"].index))
+ratio = swimmercount/athletecount
+
+# Initialize analysis and calculate sample size
+analysis = pwr.TTestIndPower()
+ssresult = analysis.solve_power(effect_size=effect, power=power, alpha=alpha, nobs1=None, ratio=ratio)
+print(ssresult)
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 4

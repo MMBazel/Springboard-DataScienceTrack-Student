@@ -10,13 +10,276 @@ FREE
 In this chapter, you will learn how to explore your data and ask meaningful questions. Then, you will discover how to answer these question by using your first statistical hypothesis tests: the t-test, the Chi-Square test, the Fisher exact test, and the Pearson correlation test.
 
 
+Your first t-test
+Now you will perform your first statistical test! We want to compare the mean heights in cm of the Sample_A group with a given value. We want to see whether the mean weight of the people in this sample is significantly different from the chosen cut-off point of 65 kg. You'll use a one-sample t-test, which allows you to compare the mean of a sample with a chosen value. You'll perform this test on the sample provided versus the crucial value of 65 kg, and test its significance by comparing the value of alpha to the p-value. scipy.stats has been loaded into the workspace as stats
 
+Perform a one-sample t-test comparing the mean of Sample_A to 65; assign the output to t_result and print it.
+Using a standard alpha value of 0.05, test the statistical significance of the result by comparing the p-value to alpha and print the appropriate message.
+
+# Perform t-test and print result
+t_result=stats.ttest_1samp(Sample_A, 65)
+print(t_result)
+
+# Test significance
+alpha= 0.05
+if (t_result[1] < alpha):
+    print("mean value of Sample A differs from given value")
+else:
+	print("No significant difference found")
+------------------------------------------------------------------------------------------------------------------------------------
+One-sample t-test
+In this exercise, you will perform a one-sample t-test using the ttest_1sample() function. Using eudata, a dataset of country-level statistics, you'll be looking at the sex ratios found in the population of European countries. You'll use a one sample t-test to determine if the mean sex ratio found among European countries differs significantly from 50-50. First, you'll make some plots, then you'll perform your test. pandas, scipy.stats, and plotnine have been loaded into the workspace as pd, stats, and p9.
+
+Instructions 1/2
+50 XP
+1
+2
+Run the provided code, specifying the correct DataFrame, to print a density plot of Sex_ratio.
+# Create the density plot
+print(p9.ggplot(eudata)+ p9.aes(x='Sex_ratio')+ p9.geom_density(alpha=0.5))
+
+
+
+Perform a one-sample t-test to see if the mean Sex_ratio of European countries is significantly different from 100. assigning the result to t_result and printing it.
+Print a message regarding the statistical significance of the result.
+
+# Create the density plot
+(p9.ggplot(eudata)+ p9.aes('Sex_ratio')+ p9.geom_density(alpha=0.5))
+
+# Perform the one-sample t-test
+t_result= stats.ttest_1samp(eudata['Sex_ratio'], 100)
+print(t_result)
+
+# Test significance
+alpha = 0.05
+if t_result[1] < alpha:
+    print("Sex ratios are significantly biased")
+else:
+    print("No significant bias found")
+  
+  ------------------------------------------------------------------------------------------------------------------------------------
+  
+  Two-sample t-test
+Now we'll compare two sets of samples. Again, we'll be looking at the Sex_ratio found in different countries, but we're going to compare the Sex_ratio of European countries with Asian countries. Does the mean sex ratio differ between the two continents? A two-sample t-test can tell us whether the means of two samples differ significantly. The dataset is provided as euasdata. pandas, scipy.stats, and plotnine have been loaded into the workspace as pd, stats, and p9. You'll do some exploratory data analysis, then compare the groups via a statistical test.
+
+Instructions 1/2
+50 XP
+1
+2
+Using ggplot() with geom_density(), create a density plot of Sex_ratio on the x-axis, with each Continent assigned a fill color.
+
+# Create the density plot
+print(p9.ggplot(euasdata)+ p9.aes('Sex_ratio', fill='Continent')+ p9.geom_density(alpha=0.5))
+
+Create two arrays, Europe_Sex_ratio and Asia_Sex_ratio, containing the Sex_ratio for each continent.
+Use ttest_ind() to compare Europe and Asia, assign the result to t_result, and print it.
+Print the message regarding the result.
+
+# Create the density plot
+print(p9.ggplot(euasdata)+ p9.aes('Sex_ratio', fill="Continent")+ p9.geom_density(alpha=0.5))
+
+# Create two arrays
+Europe_Sex_ratio = euasdata[euasdata.Continent == "Europe"].Sex_ratio
+Asia_Sex_ratio = euasdata[euasdata.Continent == "Asia"].Sex_ratio
+
+# Perform the two-sample t-test
+t_result= stats.ttest_ind(Europe_Sex_ratio, Asia_Sex_ratio)
+print(t_result)
+
+# Test significance
+alpha= 0.05
+if (t_result[1] < alpha):
+    print("Europe and Asia have different mean sex ratios")
+else: print("No significant difference found")
+  
+  ------------------------------------------------------------------------------------------------------------------------------------
+  
+  
+  Chi-square test
+In this exercise, you will be working with the Olympics dataset. Here, we're going to look at the sex ratio of the American Olympic squads. Is a bias present? That is to say, does the ratio of male to female athletes significantly depart from 50-50? To test this, you'll need to perform a Chi-square test on the Sex data. Data on American athletes is provided as athletes. pandas, and plotnine have been loaded into the workspace as pd and p9.
+
+Instructions
+100 XP
+Using value_counts(), extract the number of individuals of each Sex from athletes, saving the result as sexratio.
+Perform a chisquare() test on sexratio and print the result.
+Compare the p-value to the given alpha and print the message.
+
+# Extract sex ratio
+sexratio = athletes['Sex'].value_counts()
+
+# Perform Chi-square test
+chi= stats.chisquare(sexratio)
+print(chi)
+
+# Test significance
+alpha= 0.05
+if chi[1] < alpha:
+    print("Difference between sexes is statistically significant")
+else:
+    print("No significant difference between sexes found")
+  
+  <script.py> output:
+    Power_divergenceResult(statistic=568.4776119402985, pvalue=1.2035877899749622e-125)
+    Difference between sexes is statistically significant
+    
+    
+    ------------------------------------------------------------------------------------------------------------------------------------
+    Fisher's exact test
+Now, you'll work with the Olympics dataset to look at the relative success of the American swimming and athletics teams. Whether each athlete received a medal is coded as True or False in the MedalTF column of athletes. Do a larger proportion of swimming or athletics participants come home with medals? A Fisher exact test is a useful way to compare proportions of samples falling into discrete categories. To test this, you'll need to perform a Fisher exact test on MedalTF in relation to Sport. pandas and plotnine have already been imported as pd and p9.
+
+Instructions
+100 XP
+Using crosstab(), produce a cross-tabulation of MedalTF and Sport, saving the result as table and printing it.
+Perform a fisher_exact() test on table and print the result.
+Compare the p-value to the given alpha and print the message.
+
+# Create a table of cross-tabulations
+table = pd.crosstab(athletes.MedalTF, athletes.Sport)
+print(table)
+
+# Perform the Fisher exact test
+fisher = stats.fisher_exact(table, alternative='two-sided')
+print(fisher)
+
+# Is the result significant?
+alpha = 0.05
+if fisher[1] < alpha:
+    print("Proportions of medal winners differ significantly")
+else:
+    print("No significant difference in proportions of medal winners found")
+    
+    
+    <script.py> output:
+    Sport    Athletics  Swimming
+    MedalTF                     
+    False         2131       556
+    True          1071      1066
+    (3.8148405645231716, 2.4220956742371155e-101)
+    Proportions of medal winners differ significantly
+    
+------------------------------------------------------------------------------------------------------------------------------------
+Pearson correlation
+In this exercise, you will be using the Olympic athletes dataset and focusing on just one event, the men's 100 meter running race. The dataset is provided in your workspace as athletes. You're going to be looking at how the weights of competitors have changed over time. A Pearson correlation test allows us to determine whether a linear relationship exists between two variables. pandas, scipy.stats, and plotnine have been loaded into the workspace as pd, stats, and p9, respectively. First, you'll make some plots, then you'll see how the sprinters' weights have changed over time.
+
+Instructions 1/2
+50 XP
+1
+2
+Using geom_point(), create and print a scatter plot of Weight (y-axis) in relation to Year (x-axis), with a different color according to Event, using the athletes DataFrame.
+
+# Create the scatter plot
+print(p9.ggplot(athletes)+ p9.aes(x='Year', y='Weight', color='Event')+  p9.geom_point())
+
+
+Instructions 2/2
+50 XP
+2
+Perform a pearsonr() correlation test between athletes.Weight and athletes.Year and print the result.
+Compare the p-value to the given alpha and print the message.
+
+
+# Create the scatterplot
+print(p9.ggplot(athletes)+ p9.aes('Year', 'Weight', color='Event')+  p9.geom_point())
+
+# Run the correlation test
+pearson = stats.pearsonr(athletes.Weight, athletes.Year)
+print(pearson)
+
+# Test if p-value is bigger or smaller than alpha
+alpha = 0.05
+if pearson[1] < alpha:
+    print("Weights and year are significantly correlated")
+else:
+    print("No significant correlation found")
 ------------------------------------------------------------------------------------------------------------------------------------
 
 2
 Design Considerations in Experimental Design
 0%
 In this chapter, you will learn how to examine and multiple factors at once, controlling for the effect of confounding variables and examining interactions between variables. You will learn how to use randomization and blocking to build robust tests and how to use the powerful ANOVA method.
+
+------------------------------------------------------------------------------------------------------------------------------------
+Random sampling
+In this exercise, we're going to look at random sampling. You have been provided with a large dataset (athletes) containing the details of a large number of American athletes. For the purposes of this exercise, we are interested in differences between the body Weight of competitors in swimming and athletics. In order to test this, you'll be using a two-sample t-test. However, you will be performing this test on a random sample of the data. By playing with the random subset chosen, you'll see how randomness affects our results. You will need to extract a random subset of athletes from both events in order to run your test. pandas, scipy.stats, plotnine, and random have been loaded into the workspace as pd, stats, p9, and ran, respectively.
+
+Instructions 1/2
+0 XP
+1
+2
+Set seed to 0000.
+Create two subset DataFrames (subsetathl and subsetswim) from athletes, with 30 random samples in each.
+Perform a two-sample t-test on the Weight column of each subset DataFrame, save it to t_result, then print it.
+
+
+# Define random seed
+seed = 0000
+
+# Create subsets
+subsetathl = athletes[athletes.Sport == "Athletics"].sample(n=30, random_state= seed)
+subsetswim = athletes[athletes.Sport == "Swimming"].sample(n=30, random_state= seed)
+
+# Perform the two-sample t-test
+t_result = stats.ttest_ind(subsetathl.Weight, subsetswim.Weight) 
+print(t_result)
+
+Change the seed value to 2397 and re-run the code.
+
+# Define random seed
+seed = 2397
+
+# Create subsets
+subsetathl = athletes[athletes.Sport == "Athletics"].sample(n=30, random_state= seed)
+subsetswim = athletes[athletes.Sport == "Swimming"].sample(n=30, random_state= seed)
+
+# Perform the two-sample t-test
+t_result = stats.ttest_ind(subsetathl.Weight, subsetswim.Weight) 
+print(t_result)
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Blocking
+We're going to have another look at the same data but, this time, we'll use blocking to improve our approach. Like last time, you'll be using a two-sample t-test on athlete Weight within your DataFrame, athletes. This time, however, you will control for Sex as a blocking factor, sampling equally from male and female participants. You will need to extract a random subset of athletes from both events to run your test. pandas, scipy.stats, plotnine, and random have been loaded into the workspace as pd, stats, p9, and ran, respectively.
+
+Instructions
+100 XP
+Create four subset DataFrames from athletes, with 15 randomly chosen samples in each, corresponding to the four possible combinations of Sex and Sport.
+Concatenate the two Athletics blocks and the two Swimming blocks to create two DataFrames to compare, each containing 30 samples.
+Perform a two-sample t-test on the Weight columns and print the output.
+
+seed = 9000
+
+# Create subset blocks
+subsetathlm = athletes[(athletes.Sport == "Athletics") & (athletes.Sex == "M")].sample(n=15, random_state= seed)
+subsetathlf = athletes[(athletes.Sport == "Athletics") & (athletes.Sex == "F")].sample(n=15, random_state= seed)
+subsetswimm = athletes[(athletes.Sport == "Swimming") & (athletes.Sex == "M")].sample(n=15, random_state= seed)
+subsetswimf = athletes[(athletes.Sport == "Swimming") & (athletes.Sex == "F")].sample(n=15, random_state= seed)
+
+# Combine blocks
+subsetathl = pd.concat([subsetathlm, subsetathlf])
+subsetswim = pd.concat([subsetswimm, subsetswimf])
+
+# Perform the two-sample t-test
+print(stats.ttest_ind(subsetathl.Weight, subsetswim.Weight) )
+
+  <script.py> output:
+    Ttest_indResult(statistic=-2.9477612234116326, pvalue=0.004605461953501264)
+    
+    
+Very good. Your t-test is significant, with a p-value under 0.05. This blocked design has resolved the issue you had in the last exercise. You can see how this type of blocking approach can be a useful way to improve your experimental design when a confounding variable is present.    
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Paired t-test
+Think back to the potato field example that we dealt with previously. Here, you've been provided with a small DataFrame (podataframe) containing information on 10 Fields. We are interested in potato yield in tons/hectare. For each Field, we have a value for its Yield2018, before the application of a new fertilizer, and its Yield2019, after the application of the new fertilizer. You'll need to perform two t-tests, a standard two-sample test, and a paired t-test. A paired t-test will control for the variation between fields. Do the two tests give the same result? scipy.stats is loaded as stats.
+
+Instructions 1/2
+50 XP
+1
+Do a standard two-sample t-test, comparing 2018 and 2019 potato yield, save the result to ttestind and print it.
+
 
 
 ------------------------------------------------------------------------------------------------------------------------------------

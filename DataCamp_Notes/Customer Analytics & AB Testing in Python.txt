@@ -1,0 +1,240 @@
+Course Description
+The most successful companies today are the ones that know their customers so well that they can anticipate their needs. Customer analytics and in particular A/B Testing are crucial parts of leveraging quantitative know-how to help make business decisions that generate value. This course covers the ins and outs of how to use Python to analyze customer behavior and business trends as well as how to create, run, and analyze A/B tests to make proactive, data-driven business decisions.
+
+_____________________________________________________________________________________________________________________________________
+1
+Key Performance Indicators: Measuring Business Success
+FREE
+0%
+This chapter provides a brief introduction to the content that will be covered throughout the course before transitioning into a discussion of Key Performance Indicators or KPIs. You'll learn how to identify and define meaningful KPIs through a combination of critical thinking and leveraging Python tools. These techniques are all presented in a highly practical and generalizable way. Ultimately these topics serve as the core foundation for the A/B testing discussion that follows.
+
+
+_____________________________________________________________________________________________________________________________________
+
+Practicing aggregations
+It's time to begin exploring the in-app purchase data in more detail. Here, you will practice aggregating the dataset in various ways using the .agg() method and then examine the results to get an understanding of the overall data, as well as a feel for how to aggregate data using pandas.
+
+Loaded for you is a DataFrame named purchase_data which is the dataset of in-app purchase data merged with the user demographics data from earlier.
+
+Before getting started, it's good practice to explore this purchase_data DataFrame in the IPython Shell. In particular, notice the price column: you'll examine it further in this exercise.
+
+Instructions 1/3
+30 XP
+1
+Find the 'mean' purchase price paid across our dataset. Then examine the output before moving on.
+
+# Calculate the mean purchase price 
+purchase_price_mean = purchase_data.price.agg('mean')
+
+# Examine the output 
+print(purchase_price_mean)
+
+
+Now, use the .agg() method to find the 'mean' and 'median' prices together.
+
+# Calculate the mean and median purchase price 
+purchase_price_summary = purchase_data.price.agg(['mean', 'median'])
+
+# Examine the output 
+print(purchase_price_summary)
+
+
+Now, find the 'mean' and 'median' for both the 'price' paid and the 'age' of purchaser.
+
+# Calculate the mean and median of price and age
+purchase_summary = purchase_data.agg({'price': ['mean', 'median'], 'age': ['mean', 'median']})
+
+# Examine the output 
+print(purchase_summary)
+
+_____________________________________________________________________________________________________________________________________
+
+rouping & aggregating
+You'll be using .groupby() and .agg() a lot in this course, so it's important to become comfortable with them. In this exercise, your job is to calculate a set of summary statistics about the purchase data broken out by 'device' (Android or iOS) and 'gender' (Male or Female).
+
+Following this, you'll compare the values across these subsets, which will give you a baseline for these values as potential KPIs to optimize going forward.
+
+The purchase_data DataFrame from the previous exercise has been pre-loaded for you. As a reminder, it contains purchases merged with user demographics.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Group the purchase_data DataFrame by 'device' and 'gender' in that order.
+Aggregate grouped_purchase_data, finding the 'mean', 'median', and the standard deviation ('std') of the purchase price, in that order, across these groups.
+Examine the results. Does the mean differ drastically from the median? How much variability is in each group?
+
+# Group the data 
+grouped_purchase_data = purchase_data.groupby(by = ['device', 'gender'])
+
+# Aggregate the data
+purchase_summary = grouped_purchase_data.agg({'price': ['mean', 'median', 'std']})
+
+# Examine the results
+print(purchase_summary)
+
+
+<script.py> output:
+                        price                   
+                         mean median         std
+    device gender                               
+    and    F       400.747504    299  179.984378
+           M       416.237308    499  195.001520
+    iOS    F       404.435330    299  181.524952
+           M       405.272401    299  196.843197
+
+
+_____________________________________________________________________________________________________________________________________
+
+Average purchase price by cohort
+Building on the previous exercise, let's look at the same KPI, average purchase price, and a similar one, median purchase price, within the first 28 days. Additionally, let's look at these metrics not limited to 28 days to compare.
+
+We can calculate these metrics across a set of cohorts and see what differences emerge. This is a useful task as it can help us understand how behaviors vary across cohorts.
+
+Note that in our data the price variable is given in cents.
+
+Instructions 1/3
+0 XP
+1
+2
+3
+Instructions 1/3
+0 XP
+1
+2
+3
+Use np.where to create an array month1 containing:
+
+the price of the purchase purchase, if
+
+the user registration .reg_date occurred at most 28 days ago (i.e. before max_reg_date), and
+
+the date of purchase .date occurred within 28 days of registration date .reg_date;
+
+NaN, otherwise.
+
+Hint
+the two date conditions are:
+
+purchase_data.reg_date is less than max_reg_date
+
+purchase_data.date is less than purchase_data.reg_date plus 28 days.
+
+You can type np.where? in console to find out more about the function and how to use it.
+
+
+# Set the max registration date to be one month before today
+max_reg_date = current_date - timedelta(days=28)
+
+# Find the month 1 values
+month1 = np.where((purchase_data.reg_date < max_reg_date) &
+                 (purchase_data.date < purchase_data.reg_date + timedelta(days=28)),
+                  purchase_data.price, 
+                  np.NaN)
+                 
+# Update the value in the DataFrame
+purchase_data['month1'] = month1
+
+
+Now, group purchase_data by gender and then device using the .groupby() method.
+
+
+# Set the max registration date to be one month before today
+max_reg_date = current_date - timedelta(days=28)
+
+# Find the month 1 values
+month1 = np.where((purchase_data.reg_date < max_reg_date) &
+                 (purchase_data.date < purchase_data.reg_date + timedelta(days=28)),
+                  purchase_data.price, 
+                  np.NaN)
+                 
+# Update the value in the DataFrame
+purchase_data['month1'] = month1
+
+# Group the data by gender and device 
+purchase_data_upd = purchase_data.groupby(by=['gender', 'device'], as_index=False)
+
+
+Aggregate the "mean" and "median" of both 'month1' and'price' using the .agg() method in the listed order of aggregations and fields.
+
+# Set the max registration date to be one month before today
+max_reg_date = current_date - timedelta(days=28)
+
+# Find the month 1 values
+month1 = np.where((purchase_data.reg_date < max_reg_date) &
+                 (purchase_data.date < purchase_data.reg_date + timedelta(days=28)),
+                  purchase_data.price, 
+                  np.NaN)
+                 
+# Update the value in the DataFrame
+purchase_data['month1'] = month1
+
+# Group the data by gender and device 
+purchase_data_upd = purchase_data.groupby(by=['gender', 'device'], as_index=False) 
+
+# Aggregate the month1 and price data 
+purchase_summary = purchase_data_upd.agg(
+                        {'month1': ['mean', 'median'],
+                        'price': ['mean', 'median']})
+
+# Examine the results 
+print(purchase_summary)
+
+<script.py> output:
+      gender device      month1              price       
+                           mean median        mean median
+    0      F    and  388.204545  299.0  400.747504    299
+    1      F    iOS  432.587786  499.0  404.435330    299
+    2      M    and  413.705882  399.0  416.237308    499
+    3      M    iOS  433.313725  499.0  405.272401    299
+		
+		
+Great! This value seems relatively stable over the past 28 days. Congratulations on completing Chapter 1! In the next chapter, you'll explore and visualize customer behavior in more detail.
+
+
+_____________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+_____________________________________________________________________________________________________________________________________
+
+
+
+
+_____________________________________________________________________________________________________________________________________
+
+
+_____________________________________________________________________________________________________________________________________
+
+2
+Exploring and Visualizing Customer Behavior
+0%
+This chapter teaches you how to visualize, manipulate, and explore KPIs as they change over time. Through a variety of examples, you'll learn how to work with datetime objects to calculate metrics per unit time. Then we move to the techniques for how to graph different segments of data, and apply various smoothing functions to reveal hidden trends. Finally we walk through a complete example of how to pinpoint issues through exploratory data analysis of customer data. Throughout this chapter various functions are introduced and explained in a highly generalizable way.
+
+
+
+
+
+
+_____________________________________________________________________________________________________________________________________
+
+3
+The Design and Application of A/B Testing
+0%
+In this chapter you will dive fully into A/B testing. You will learn the mathematics and knowledge needed to design and successfully plan an A/B test from determining an experimental unit to finding how large a sample size is needed. Accompanying this will be an introduction to the functions and code needed to calculate the various quantities associated with a statistical test of this type.
+
+
+
+
+
+_____________________________________________________________________________________________________________________________________
+
+4
+Analyzing A/B Testing Results
+0%
+After running an A/B test, you must analyze the data and then effectively communicate the results. This chapter begins by interleaving the theory of statistical significance and confidence intervals with the tools you need to calculate them yourself from the data. Next we discuss how to effectively visualize and communicate these results. This chapter is the culmination of all the knowledge built over the entire course.
+

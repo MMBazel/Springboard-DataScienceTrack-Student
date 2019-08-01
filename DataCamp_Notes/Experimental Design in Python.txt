@@ -633,6 +633,83 @@ Print the p-value to the console.
 Print the odds ratio to the console.
 
 
+# Create a table of cross-tabulations
+table = pd.crosstab(athletes.MedalTF,athletes.Sport)
+print(table)
+
+# Perform the Fisher exact test
+chi = stats.fisher_exact(table, alternative='two-sided')
+
+# Print p-value
+print("p-value of test: " + str(round(chi[1], 5))  )
+
+# Print odds ratio  
+print("Odds ratio between groups: " + str(round(chi[0], 1))  )
+
+
+<script.py> output:
+    Sport    Athletics  Swimming
+    MedalTF                     
+    False         2131       556
+    True          1071      1066
+    p-value of test: 0.0
+    Odds ratio between groups: 3.8
+
+Great work! This p-value is well below a standard value for alpha, making it significant. Furthermore, the effect size is large.
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Effect sizes for Pearson correlation
+Now we're going to look at effect sizes for Pearson correlations. In a previous exercise, we used Pearson correlation to examine the link between Weight and Height for athletes from our Olympic dataset. Now, we're going to focus a single event, the 10,000 meter run, and compare the results we obtain for Pearson tests of correlation for competitors from two Teams, Kenya (ken DataFrame) and Ethiopia (eth DataFrame). Which has a higher effect strength? These data are graphed below as scatterplots. scipy and pandas have been loaded as sp and pd.
+
+Scatter plot of height versus weight for Kenyan 10k runners
+
+Scatter plot of height versus weight for Ethiopian 10k runners
+1) Perform a Pearson correlation between the Weight and Height of Kenyan athletes and print the result.
+
+# Perform Pearson correlation
+pearsonken = stats.pearsonr(ken.Weight, ken.Height)
+print(pearsonken)
+
+<script.py> output:
+    (0.7453064505495948, 6.497110521502846e-07)
+    
+2) Perform a Pearson correlation between the Weight and Height of Ethiopian athletes and print the result.
+
+# Perform Pearson correlation
+pearsoneth = stats.pearsonr(eth.Weight, eth.Height)
+print(pearsoneth)
+
+
+<script.py> output:
+    (0.3728450639500469, 0.03885112030532914)
+
+Nice. Look at the Pearson correlation coefficient you have obtained in each case. The Kenyan dataset gives a higher value than that obtained for the Ethiopian samples. This makes sense, as the scatterplot for the former looks much less noisy.
+----------------------------------------------------------------------------------------------------------------------------------------
+Power analysis for a t-test
+Now we're going to have another look at the same example, drawn from our Olympic dataset (Weight difference between Sports). A random subset of 100 samples from each group in this data yields these boxplots.
+
+Boxplots of body weights of Olympic athletes from different sports (100 sampled for each)
+
+Knowing the effect size of the difference between these two groups (see the relevant exercise for a refresher), you need to work out what the odds are that your t-test will pick up this difference. Your data is contained in athletesample. pandas and statsmodels.stats.power are loaded into your workspace as pd and pwr.
+
+Instructions
+100 XP
+Set the parameters as follows: an effect size of 0.42145, 100 samples from each group and a standard alpha value of 0.05.
+Run and print the power analysis.
+
+# Set parameters
+effect_size = 0.42145
+alpha = 0.05
+samp_size = 100
+ratio = 1
+
+# Initialize analysis & calculate power
+analysis = pwr.TTestIndPower()
+pwresult = analysis.solve_power(effect_size=effect_size, power=None, alpha=alpha, nobs1=samp_size, ratio=ratio)
+print(pwresult)
+
 
 
 
@@ -642,3 +719,267 @@ Print the odds ratio to the console.
 Testing Normality: Parametric and Non-parametric Tests
 0%
 In this final chapter, you will examine the assumptions underlying statistical tests and learn about how that influences your experimental design. This will include learning whether a variable follows a normal distribution and when you should use non-parametric statistical tests like the Wilcoxon rank-sum test and the Spearman correlation test.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+Exploring distributions with summary stats
+Let's return to our UN demographic data, countrydata, to examine distributions using summary statistics. For each Country, you have information about the GDP per capita in USD (GDP_per_cap) and the unemployment rate (Unemployment). How close to normality is each?
+
+For a perfect normal distribution, the mean, median, and mode will be identical, and the density plot will show a classic, symmetrical bell curve. pandas, scipy.stats, and plotnine have been loaded into the workspace as pd, stats, and p9.
+
+Create and print a density plot of Unemployment and print its mean(), median(), and mode().
+
+# Print density plot, mean, median, and mode of Unemployment
+print(p9.ggplot(countrydata)+ p9.aes(x="Unemployment")+ p9.geom_density())
+print(countrydata.Unemployment.mean())
+print(countrydata.Unemployment.median())
+print(countrydata.Unemployment.mode())
+
+
+<script.py> output:
+    <ggplot: (-9223363299595837247)>
+    8.72910052910053
+    6.7
+    0    6.6
+    dtype: float64
+
+
+
+Create and print a density plot of GDP per capita and print its mean(), median(), and mode().
+
+# Print density plot, mean, median, and mode of GDP per capita
+print(p9.ggplot(countrydata)+ p9.aes(x="GDP_per_cap")+ p9.geom_density())
+print(countrydata.GDP_per_cap.mean())
+print(countrydata.GDP_per_cap.median())
+print(countrydata.GDP_per_cap.mode())
+
+
+Nice work. Neither of these variables are normally distributed. Note that the mean, median, and mode are different each time and that a couple of modes are present. GDP per capita departs farther from normality than Unemployment.
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Q-Q plot
+Another way to examine the normality of a distribution is with a Q-Q (quantile-quantile) plot. For this exercise, you will create a Q-Q plot for the country-level Unemployment data you saw in the last exercise (available in your workspace as countrydata). The Q-Q plot compares the theoretical quantiles expected under a normal distribution to the actual observed values (ordered). When a distribution is normally distributed, you will see a straight line. The more crooked the line is, the farther the distribution departs from normality. pandas and scipy.stats have been loaded into the workspace as pd and stats.
+
+Instructions
+100 XP
+Calculate the theoretical quantiles for a normal distribution.
+Create a DataFrame including your theoretical quantiles and the ordered values for Unemployment.
+Create and print a Q-Q plot using your DataFrame.
+
+# Calculate theoretical quantiles
+tq = stats.probplot(countrydata.Unemployment, dist="norm")
+
+# Create Dataframe
+df = pd.DataFrame(data= {'Theoretical Quantiles': tq[0][0], 
+                         "Ordered Values": countrydata.Unemployment.sort_values() })
+
+# Create Q-Q plot
+print(p9.ggplot(df)+ p9.aes('Theoretical Quantiles', "Ordered Values") +p9.geom_point())
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Shapiro-Wilk test
+Previously, you looked at country-level Unemployment and GDP per capita (GDP_per_cap) data (available in your workspace as countrydata). Now, you will use a Shapiro-Wilk test to examine whether the distribution of values seen in these samples, as seen in the Q-Q plots below, departs significantly from the normal distribution. This test tells us how closely a given sample fits the patterns expected from a normal distribution.
+
+Density plot of life expectancy per country and GDP per country
+
+pandas and scipy.stats have been loaded into the workspace as pd and stats.
+
+# Perform Shapiro-Wilk test on Unemployment and print result
+shapiroUnem = stats.shapiro(countrydata.Unemployment)
+print(shapiroUnem)
+
+Perform a Shapiro-Wilk test on the GDP_per_cap figures and print the output.
+# Perform Shapiro-Wilk test on Unemployment and print result
+shapiroGDP = stats.shapiro(countrydata.GDP_per_cap)
+print(shapiroGDP)
+
+<script.py> output:
+    (0.8698258399963379, 1.0958185747700355e-11)
+
+<script.py> output:
+    (0.7056940793991089, 5.4421862725185734e-18)
+    
+    
+Nice work. Both distributions are non-normal. Compare the test statistic at index[0] for the two tests. The GDP per capita value is lower, which makes sense if you think about how much more skewed those figures were.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+Choosing tests and normality
+In which of the following situations is it acceptable to use a parametric test to compare group means, like a t-test or ANOVA?
+
+
+When comparing normally distributed samples or non-normally distributed samples with large sample sizes.
+
+Correct! While the t-test and ANOVA are designed with normal distributions in mind, they can be used for somewhat non-normal distributions where sample sizes are large enough.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+Wilcoxon rank-sum test
+In a previous exercise, you compared the sex ratio of European countries (Europe_Sex_ratio) with the sex ratio of Asian countries (Asia_Sex_ratio). These data are shown below.
+
+Density plot of sex ratio per country for European vs Asian countries
+
+You used a t-test to compare these two samples and found a significant difference (t_result). However, given that these samples are not normally distributed, a Wilcoxon rank-sum test would be more appropriate. Does the sex ratio differ between continents?
+
+Instructions
+100 XP
+Print the result of the t-test comparing Asian and European sex ratios, which is saved as t_result.
+Perform a Wilcoxon rank-sum test to compare Asian and European sex ratios and print the result.
+
+# Print t-test result
+print(t_result)
+
+# Perform Wilcoxon rank-sum test
+wilc = stats.ranksums(Europe_Sex_ratio, Asia_Sex_ratio)
+print(wilc)
+
+
+<script.py> output:
+    Ttest_indResult(statistic=-2.5733616618110706, pvalue=0.011918352437410103)
+    RanksumsResult(statistic=-3.581345008436675, pvalue=0.0003418299016685048)
+
+Great! Look at the p-values from the Wilcoxon test. Note that they are actually lower (more significant) than those for the t-test. This is because the rank-sum test is less sensitive to outliers.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Wilcoxon signed-rank test
+Here, you've been provided with a small DataFrame (podataframe) containing information on 15 Fields. We are interested in potato yield in tons/hectare, as seen in previous lessons. For each Field, we have a value for Yield2018, before the application of a new fertilizer, and Yield2019, after the application of the new fertilizer. However, the variation between fields is very large and the difference between the years seems small, as seen below.
+
+Boxxplots of potato production from two different years
+
+A paired t-test has been performed and its result is stored as ttestpair. A Shapiro-Wilks test has been performed on each Year's yield, shap2018 and shap2019. Does the yield differ significantly between years? scipy.stats is loaded into the workspace as stats.
+
+Instructions
+100 XP
+Print the paired t-test result.
+Print the result of the two Shapiro-Wilk tests.
+Perform a Wilcoxon signed-rank test to compare Yield2018 and Yield2019.
+
+# Print t-test result
+print(ttestpair)
+
+# Print Shapiro-Wilk test results
+print(shap2018)
+print(shap2019)
+
+# Perform Wilcoxon Signed-Rank test
+wilcsr = stats.wilcoxon(podataframe.Yield2018,podataframe.Yield2019)
+print(wilcsr)
+
+<script.py> output:
+    Ttest_relResult(statistic=-5.321922343517074, pvalue=0.00010779689593392289)
+    (0.8356321454048157, 0.010941825807094574)
+    (0.8435457348823547, 0.014089250937104225)
+    WilcoxonResult(statistic=1.0, pvalue=0.000801353534356698)
+    
+    Nice work. Note that both of your Shapiro-Wilks tests gave significant results, indicating non-normal distributions. The Wilcoxon test gives a higher p-value for the same data, due to its lower sensitivity. However, due to the low sample sizes and non-normal distributions, the Wilcoxon test is a better choice of test for this dataset.
+    
+    
+    ----------------------------------------------------------------------------------------------------------------------------------------
+    Parametric vs non-parametric tests
+Once again we'll be using the Olympic dataset. Here we're going to compare the Height of athletes from both the Norwegian and Chinese 1996 Teams. The data are provided in your workspace as athletes. Do they differ?
+
+Density plot of height of Norwegian and Chinese 1996 Olympians
+
+Do these two distributions look normal or not? First, we'll test whether these sets of samples follow a normal distribution, via a couple of Shapiro-Wilks tests. Then we'll choose what statistical test to use. Finally, we'll test the difference between the Norwegian and Chinese samples.
+
+pandas, scipy.stats, and plotnine have been loaded into the workspace as pd, stats, and p9, respectively.
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Create two series, named NorwayHeights and ChinaHeights, each of which contains all the values of Height for the members of their respective Team.
+Perform a Shapiro-Wilks test of NorwayHeights and ChinaHeights and print the p-values.
+
+
+# Separate the heights by country
+NorwayHeights = athletes[athletes['Team'] == "Norway"].Height
+ChinaHeights = athletes[athletes['Team'] == "China"].Height
+
+# Shapiro-wilks test on the heights
+print(stats.shapiro(NorwayHeights)[1])
+print(stats.shapiro(ChinaHeights)[1])
+
+
+Using a Wilcoxon rank-sum test, compare the heights of Chinese and Norwegian athletes and print the output of the test to the console.
+
+# Separate the heights by country
+NorwayHeights = athletes[athletes['Team'] == "Norway"].Height
+ChinaHeights = athletes[athletes['Team'] == "China"].Height
+
+# Shapiro-wilks test on the heights
+print(stats.shapiro(NorwayHeights)[1])
+print(stats.shapiro(ChinaHeights)[1])
+
+# Perform the Wilcoxon rank-sum test
+wilc = stats.ranksums(NorwayHeights, ChinaHeights)
+print(wilc)
+
+Great work! With a p-value less than 0.05, this difference is statistically significant. Now you understand how to compare the distributions of non-normally distributed groups.
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Spearman correlation
+We're going to return to our Olympic dataset, where, as in previous exercises, we'll be looking at the correlation between Height and Weight amongst athletics competitors since 2000. This relationship is seen below for both men (athletesM DataFrame) and women (athletesF DataFrame).
+
+Scatter plot of height vs weight of Olympians
+
+Note that the trend seen in each panel, represented by the line, isn't perfectly linear, particularly for the female samples. How will this affect correlation test results? scipy.stats is loaded as stats.
+
+Instructions 1/2
+50 XP
+1
+Perform and print both a Pearson and Spearman correlation test of Height and Weight for females.
+
+# Perform Pearson and Spearman correlations
+pearcorr = stats.pearsonr(athletesF.Height,athletesF.Weight)
+print(pearcorr)
+spearcorr = stats.spearmanr(athletesF.Height,athletesF.Weight)
+print(spearcorr)
+
+<script.py> output:
+    (0.5930310490498099, 2.707039411572877e-33)
+    SpearmanrResult(correlation=0.7058111482287492, pvalue=6.064659243649471e-52)
+
+
+
+Perform and print both a Pearson and Spearman correlation test of Height and Weight for males.
+    
+# Perform Pearson and Spearman correlations
+pearcorr = stats.pearsonr(athletesM.Height,athletesM.Weight)
+print(pearcorr)
+spearcorr = stats.spearmanr(athletesM.Height,athletesM.Weight)
+print(spearcorr)    
+
+
+<script.py> output:
+    (0.5752961832067202, 7.608365617782777e-33)
+    SpearmanrResult(correlation=0.6643675704250841, pvalue=8.225675205162906e-47)
+    
+    
+    Good work! In both cases, a strong correlation is found, as evidenced by the high correlation coefficients at index[0] of each output. Notice how the Spearman correlation outperforms the Pearson correlation (by finding stronger correlation) in both cases, particularly among the female samples, which show a non-linear trend. Non-parametric Spearman correlation works well for non-linear relationships.
+    
+    
+    ----------------------------------------------------------------------------------------------------------------------------------------
+    
+    Choosing the correct correlation test
+Think back to our potato growing examples. Here, you've been provided with a DataFrame (podataframe) containing information data on potato Production and Fertilizer used. We are interested in a possible correlation between these two values. The relationship between these two variables is seen below. scipy.stats is loaded into the workspace as stats.
+
+Scatter plot of potato production as a function of fertilizer level
+
+Instructions 1/2
+50 XP
+1
+2
+Question
+What type of correlation test is best suited to examining the possible link between Fertilizer and Production?
+
+# Perform Spearman correlation
+spearcorr = stats.spearmanr(podataframe.Production, podataframe.Fertilizer)
+print(spearcorr)
+
+<script.py> output:
+    SpearmanrResult(correlation=0.9950541817171439, pvalue=7.112594135852277e-60)
+Good work! These two variables are strongly correlated, as seen by the very high correlation coefficient, over 0.99. Spearman correlation is a useful way to capture these non-linear relationships.
+    

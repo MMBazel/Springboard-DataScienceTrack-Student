@@ -543,6 +543,101 @@ ssresult = analysis.solve_power(effect_size=effect, power=power, alpha=alpha, no
 print(ssresult)
 
 ----------------------------------------------------------------------------------------------------------------------------------------
+Effect size for a t-test
+Now, we're going to have a look at effect sizes. We are examining the same slice from the atheletes dataset, comparing the body weights of competitors from swimming and athletics events. The boxplots are included.
+
+Boxplots of body weights of Olympic athletes from two sports
+
+You're going to calculate the effect sizes we are able to detect for a couple of different sampling strategies. First, you'll determine the smallest effect size detectable using the complete dataset. Then, you'll determine the size effect we could detect using 300 samples from each Sport. statsmodels.stats.power and pandas have been loaded for you as pwr and pd.
+
+Instructions 1/2
+50 XP
+Instructions 1/2
+50 XP
+1
+Set parameters for sampling the entire dataset.
+Initialize analysis, solve for effect size, and print the result.
+
+# Set parameters
+alpha = 0.05
+power = 0.8
+ratio = float(len(athletes[athletes.Sport == "Swimming"]) )/ len(athletes[athletes.Sport == "Athletics"])
+samp_size = len(athletes[athletes.Sport == "Athletics"])
+
+# Initialize analysis & calculate sample size
+analysis = pwr.TTestIndPower()
+esresult = analysis.solve_power(effect_size=None, power=power, nobs1=samp_size, ratio=ratio, alpha=alpha)
+print(esresult)
+
+
+Change parameters for a sample of 300 competitors from each group.
+Repeat effect size analysis and print result.
+
+
+# Set parameters
+alpha = 0.05
+power = 0.8
+ratio = 1
+samp_size = 300
+
+# Initialize analysis & calculate sample size
+analysis = pwr.TTestIndPower()
+esresult = analysis.solve_power(effect_size=None, power=power, nobs1=samp_size, ratio=ratio, alpha=alpha)
+print(esresult)
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Computing Cohen's d
+Now, using the same comparison of Weight difference between Sports, let's calculate the actual effect size for this comparison. As a reminder, these data are summarized in the boxplot below.
+
+Boxplots of body weights of Olympic athletes from two sports
+
+Using the formula seen in the previous video, calculate Cohen's d for the difference in Weight between each Sport. Your data is contained in athletes. pandas and math are loaded into your workspace as pd and ma.
+
+Instructions
+100 XP
+Create two series, one for the samples from each Sport.
+Calculate diff, the difference between the mean of each sample, and pooledstdev, the pooled standard deviation.
+Calculate Cohen's d and print it.
+
+
+# Create series
+athl = athletes[athletes.Sport=="Athletics"].Weight
+swim = athletes[athletes.Sport=="Swimming"].Weight
+
+# Calculate difference between means and pooled standard deviation
+diff = swim.mean() - athl.mean()
+pooledstdev = ma.sqrt((athl.std()**2 + swim.std()**2)/2 )
+
+# Calculate Cohen's d
+cohend = diff / pooledstdev
+print(cohend)
+
+<script.py> output:
+    0.42144949362633766
+    
+    Great! This is a moderate sized effect size. As the effect size is bigger than the minimum effect size calculated in the last exercise, you would expect that the parameters from the last exercise would allow you to detect a difference like this.
+    
+    
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Effect size for a Fisher exact test
+In this exercise, you'll use the athletes dataset to examine whether American athletes are more successful in athletics or in swimming events. pandas, scipy.stats, and plotnine have been loaded into the workspace as pd, stats, and p9, respectively. For the purposes of this exercise, an extra column has been added to the dataset, MedalTF, which gives a True or False value for whether each athlete won any type of medal. First, you'll cross-tabulate MedalTF with Sport. Then you'll perform a Fisher exact test. Finally, you'll examine the significance and effect size of this result.
+
+Instructions
+100 XP
+Use pd.crosstab() to create a table of cross-tabulations between MedalTF and Sport and print the table.
+Using the fisher_exact() function, perform a two-sided Fisher exact test to test whether the proportion of medal winners differs significantly between Sports.
+Print the p-value to the console.
+Print the odds ratio to the console.
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
 4
 Testing Normality: Parametric and Non-parametric Tests
 0%

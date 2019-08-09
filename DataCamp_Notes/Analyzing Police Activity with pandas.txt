@@ -512,7 +512,336 @@ Visual exploratory data analysis
 0%
 Are you more likely to get arrested at a certain time of day? Are drug-related stops on the rise? In this chapter, you will answer these and other questions by analyzing the dataset visually, since plots can help you to understand trends in a way that examining the raw data cannot.
 
+_____________________________________________________________________________________________________________________________________
 
+Calculating the hourly arrest rate
+When a police officer stops a driver, a small percentage of those stops ends in an arrest. This is known as the arrest rate. In this exercise, you'll find out whether the arrest rate varies by time of day.
+
+First, you'll calculate the arrest rate across all stops. Then, you'll calculate the hourly arrest rate by using the hour attribute of the index. The hour ranges from 0 to 23, in which:
+
+0 = midnight
+12 = noon
+23 = 11 PM
+Instructions
+100 XP
+Take the mean of the is_arrested column to calculate the overall arrest rate.
+Group by the hour attribute of the DataFrame index to calculate the hourly arrest rate.
+Save the hourly arrest rate Series as a new object, hourly_arrest_rate.
+
+
+# Calculate the overall arrest rate
+print(ri.is_arrested.mean())
+
+# Calculate the hourly arrest rate
+print(ri.groupby(ri.index.hour).is_arrested.mean())
+
+# Save the hourly arrest rate
+hourly_arrest_rate = ri.groupby(ri.index.hour).is_arrested.mean()
+
+
+
+<script.py> output:
+    0.0355690117407784
+    stop_datetime
+    0     0.051431
+    1     0.064932
+    2     0.060798
+    3     0.060549
+    4     0.048000
+    5     0.042781
+    6     0.013813
+    7     0.013032
+    8     0.021854
+    9     0.025206
+    10    0.028213
+    11    0.028897
+    12    0.037399
+    13    0.030776
+    14    0.030605
+    15    0.030679
+    16    0.035281
+    17    0.040619
+    18    0.038204
+    19    0.032245
+    20    0.038107
+    21    0.064541
+    22    0.048666
+    23    0.047592
+    Name: is_arrested, dtype: float64
+    
+    _____________________________________________________________________________________________________________________________________
+    
+    Plotting the hourly arrest rate
+In this exercise, you'll create a line plot from the hourly_arrest_rate object. A line plot is appropriate in this case because you're showing how a quantity changes over time.
+
+This plot should help you to spot some trends that may not have been obvious when examining the raw numbers!
+
+Instructions
+100 XP
+Import matplotlib.pyplot using the alias plt.
+Create a line plot of hourly_arrest_rate using the .plot() method.
+Label the x-axis as 'Hour', label the y-axis as 'Arrest Rate', and title the plot 'Arrest Rate by Time of Day'.
+Display the plot using the .show() function.
+
+# Import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+
+# Create a line plot of 'hourly_arrest_rate'
+hourly_arrest_rate.plot()
+
+# Add the xlabel, ylabel, and title
+plt.xlabel('Hour')
+plt.ylabel('Arrest Rate')
+plt.title('Arrest Rate by Time of Day')
+
+# Display the plot
+plt.show()
+
+
+_____________________________________________________________________________________________________________________________________
+
+Plotting drug-related stops
+In a small portion of traffic stops, drugs are found in the vehicle during a search. In this exercise, you'll assess whether these drug-related stops are becoming more common over time.
+
+The Boolean column drugs_related_stop indicates whether drugs were found during a given stop. You'll calculate the annual drug rate by resampling this column, and then you'll use a line plot to visualize how the rate has changed over time.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Calculate the annual rate of drug-related stops by resampling the drugs_related_stop column (on the 'A' frequency) and taking the mean.
+Save the annual drug rate Series as a new object, annual_drug_rate.
+Create a line plot of annual_drug_rate using the .plot() method.
+Display the plot using the .show() function.
+Take Hint (-30 XP)
+
+
+# Calculate the annual rate of drug-related stops
+print(ri.drugs_related_stop.resample('A').mean())
+
+# Save the annual rate of drug-related stops
+annual_drug_rate = ri.drugs_related_stop.resample('A').mean()
+
+# Create a line plot of 'annual_drug_rate'
+annual_drug_rate.plot()
+
+# Display the plot
+plt.show()
+
+<script.py> output:
+    stop_datetime
+    2005-12-31    0.006501
+    2006-12-31    0.007258
+    2007-12-31    0.007970
+    2008-12-31    0.007505
+    2009-12-31    0.009889
+    2010-12-31    0.010081
+    2011-12-31    0.009731
+    2012-12-31    0.009921
+    2013-12-31    0.013094
+    2014-12-31    0.013826
+    2015-12-31    0.012266
+    Freq: A-DEC, Name: drugs_related_stop, dtype: float64
+    
+    
+  _____________________________________________________________________________________________________________________________________
+  
+  Comparing drug and search rates
+As you saw in the last exercise, the rate of drug-related stops increased significantly between 2005 and 2015. You might hypothesize that the rate of vehicle searches was also increasing, which would have led to an increase in drug-related stops even if more drivers were not carrying drugs.
+
+You can test this hypothesis by calculating the annual search rate, and then plotting it against the annual drug rate. If the hypothesis is true, then you'll see both rates increasing over time.
+
+Instructions
+100 XP
+Calculate the annual search rate by resampling the search_conducted column, and save the result as annual_search_rate.
+Concatenate annual_drug_rate and annual_search_rate along the columns axis, and save the result as annual.
+Create subplots of the drug and search rates from the annual DataFrame.
+Display the subplots.
+Take Hint (-30 XP)
+
+    # Calculate and save the annual search rate
+annual_search_rate = ri.search_conducted.resample('A').mean()
+
+# Concatenate 'annual_drug_rate' and 'annual_search_rate'
+annual = pd.concat([annual_drug_rate,annual_search_rate], axis='columns')
+
+# Create subplots from 'annual'
+annual.plot(subplots=True)
+
+# Display the subplots
+plt.show()
+
+_____________________________________________________________________________________________________________________________________
+
+Tallying violations by district
+The state of Rhode Island is broken into six police districts, also known as zones. How do the zones compare in terms of what violations are caught by police?
+
+In this exercise, you'll create a frequency table to determine how many violations of each type took place in each of the six zones. Then, you'll filter the table to focus on the "K" zones, which you'll examine further in the next exercise.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create a frequency table from the district and violation columns using the pd.crosstab() function.
+Save the frequency table as a new object, all_zones.
+Select rows 'Zone K1' through 'Zone K3' from all_zones using the .loc[] accessor.
+Save the smaller table as a new object, k_zones.
+
+
+# Create a frequency table of districts and violations
+print(pd.crosstab(ri.district, ri.violation))
+
+# Save the frequency table as 'all_zones'
+all_zones = pd.crosstab(ri.district, ri.violation)
+
+# Select rows 'Zone K1' through 'Zone K3'
+print(all_zones.loc['Zone K1':'Zone K3'])
+
+# Save the smaller table as 'k_zones'
+k_zones = all_zones.loc['Zone K1':'Zone K3']
+
+
+<script.py> output:
+    violation  Equipment  Moving violation  Other  Registration/plates  Seat belt  \
+    district                                                                        
+    Zone K1          672              1254    290                  120          0   
+    Zone K2         2061              2962    942                  768        481   
+    Zone K3         2302              2898    705                  695        638   
+    Zone X1          296               671    143                   38         74   
+    Zone X3         2049              3086    769                  671        820   
+    Zone X4         3541              5353   1560                 1411        843   
+    
+    violation  Speeding  
+    district             
+    Zone K1        5960  
+    Zone K2       10448  
+    Zone K3       12322  
+    Zone X1        1119  
+    Zone X3        8779  
+    Zone X4        9795  
+    violation  Equipment  Moving violation  Other  Registration/plates  Seat belt  \
+    district                                                                        
+    Zone K1          672              1254    290                  120          0   
+    Zone K2         2061              2962    942                  768        481   
+    Zone K3         2302              2898    705                  695        638   
+    
+    violation  Speeding  
+    district             
+    Zone K1        5960  
+    Zone K2       10448  
+    Zone K3       12322
+
+_____________________________________________________________________________________________________________________________________
+
+Plotting violations by district
+Now that you've created a frequency table focused on the "K" zones, you'll visualize the data to help you compare what violations are being caught in each zone.
+
+First you'll create a bar plot, which is an appropriate plot type since you're comparing categorical data. Then you'll create a stacked bar plot in order to get a slightly different look at the data. Which plot do you find to be more insightful?
+
+Instructions 1/2
+50 XP
+1
+2
+Create a bar plot of k_zones.
+Display the plot and examine it. What do you notice about each of the zones?
+
+# Create a bar plot of 'k_zones'
+k_zones.plot(kind='bar')
+
+# Display the plot
+plt.show()
+
+Create a stacked bar plot of k_zones.
+Display the plot and examine it. Do you notice anything different about the data than you did previously?
+
+# Create a stacked bar plot of 'k_zones'
+k_zones.plot(kind='bar',stacked=True)
+
+# Display the plot
+plt.show()
+_____________________________________________________________________________________________________________________________________
+
+Converting stop durations to numbers
+In the traffic stops dataset, the stop_duration column tells you approximately how long the driver was detained by the officer. Unfortunately, the durations are stored as strings, such as '0-15 Min'. How can you make this data easier to analyze?
+
+In this exercise, you'll convert the stop durations to integers. Because the precise durations are not available, you'll have to estimate the numbers using reasonable values:
+
+Convert '0-15 Min' to 8
+Convert '16-30 Min' to 23
+Convert '30+ Min' to 45
+Instructions
+100 XP
+Instructions
+100 XP
+Print the unique values in the stop_duration column. (This has been done for you.)
+Create a dictionary called mapping that maps the stop_duration strings to the integers specified above.
+Convert the stop_duration strings to integers using the mapping, and store the results in a new column called stop_minutes.
+Print the unique values in the stop_minutes column, to verify that the durations were properly converted to integers.
+
+
+# Print the unique values in 'stop_duration'
+print(ri.stop_duration.unique())
+
+# Create a dictionary that maps strings to integers
+mapping = {'0-15 Min':8,'16-30 Min':23,'30+ Min':45}
+
+# Convert the 'stop_duration' strings to integers using the 'mapping'
+ri['stop_minutes'] = ri.stop_duration.map(mapping)
+
+# Print the unique values in 'stop_minutes'
+print(ri.stop_minutes.unique())
+
+<script.py> output:
+    ['0-15 Min' '16-30 Min' '30+ Min']
+    [ 8 23 45]
+    
+ _____________________________________________________________________________________________________________________________________
+ 
+ Plotting stop length
+If you were stopped for a particular violation, how long might you expect to be detained?
+
+In this exercise, you'll visualize the average length of time drivers are stopped for each type of violation. Rather than using the violation column in this exercise, you'll use violation_raw since it contains more detailed descriptions of the violations.
+
+Instructions
+100 XP
+For each value in the violation_raw column, calculate the mean number of stop_minutes that a driver is detained.
+Save the resulting Series as a new object, stop_length.
+Sort stop_length by its values, and then visualize it using a horizontal bar plot.
+Display the plot.
+
+
+ # Calculate the mean 'stop_minutes' for each value in 'violation_raw'
+print(ri.groupby('violation_raw').stop_minutes.mean())
+
+# Save the resulting Series as 'stop_length'
+stop_length = ri.groupby('violation_raw').stop_minutes.mean()
+
+# Sort 'stop_length' by its values and create a horizontal bar plot
+stop_length.sort_values().plot(kind='barh')
+
+# Display the plot
+plt.show()
+   
+<script.py> output:
+    violation_raw
+    APB                                 17.967033
+    Call for Service                    22.124371
+    Equipment/Inspection Violation      11.445655
+    Motorist Assist/Courtesy            17.741463
+    Other Traffic Violation             13.844490
+    Registration Violation              13.736970
+    Seatbelt Violation                   9.662815
+    Special Detail/Directed Patrol      15.123632
+    Speeding                            10.581562
+    Suspicious Person                   14.910714
+    Violation of City/Town Ordinance    13.254144
+    Warrant                             24.055556
+    Name: stop_minutes, dtype: float64
+    
+ 
+ 
+ 
+    
 
 =======================================================================================================================================
 
@@ -521,4 +850,85 @@ Analyzing the effect of weather on policing
 0%
 In this chapter, you will use a second dataset to explore the impact of weather conditions on police behavior during traffic stops. You will practice merging and reshaping datasets, assessing whether a data source is trustworthy, working with categorical data, and other advanced skills.
 
+_____________________________________________________________________________________________________________________________________
 
+Plotting the temperature
+In this exercise, you'll examine the temperature columns from the weather dataset to assess whether the data seems trustworthy. First you'll print the summary statistics, and then you'll visualize the data using a box plot.
+
+When deciding whether the values seem reasonable, keep in mind that the temperature is measured in degrees Fahrenheit, not Celsius!
+
+Instructions
+100 XP
+Instructions
+100 XP
+Read weather.csv into a DataFrame named weather.
+Select the temperature columns (TMIN, TAVG, TMAX) and print their summary statistics using the .describe() method.
+Create a box plot to visualize the temperature columns.
+Display the plot.
+
+
+# Read 'weather.csv' into a DataFrame named 'weather'
+weather = pd.read_csv('weather.csv')
+
+# Describe the temperature columns
+print(weather[['TMIN','TAVG','TMAX']].describe())
+
+# Create a box plot of the temperature columns
+weather[['TMIN','TAVG','TMAX']].plot(kind='box')
+
+# Display the plot
+plt.show()
+
+
+<script.py> output:
+                  TMIN         TAVG         TMAX
+    count  4017.000000  1217.000000  4017.000000
+    mean     43.484441    52.493016    61.268608
+    std      17.020298    17.830714    18.199517
+    min      -5.000000     6.000000    15.000000
+    25%      30.000000    39.000000    47.000000
+    50%      44.000000    54.000000    62.000000
+    75%      58.000000    68.000000    77.000000
+    max      77.000000    86.000000   102.000000
+    
+    
+ _____________________________________________________________________________________________________________________________________
+ 
+ 
+Plotting the temperature difference
+In this exercise, you'll continue to assess whether the dataset seems trustworthy by plotting the difference between the maximum and minimum temperatures.
+
+What do you notice about the resulting histogram? Does it match your expectations, or do you see anything unusual?
+
+Instructions
+100 XP
+Create a new column in the weather DataFrame named TDIFF that represents the difference between the maximum and minimum temperatures.
+Print the summary statistics for TDIFF using the .describe() method.
+Create a histogram with 20 bins to visualize TDIFF.
+Display the plot.
+
+
+# Create a 'TDIFF' column that represents temperature difference
+weather['TDIFF'] = weather.TMAX - weather.TMIN
+
+
+# Describe the 'TDIFF' column
+print(weather['TDIFF'].describe())
+
+# Create a histogram with 20 bins to visualize 'TDIFF'
+weather.TDIFF.plot(kind='hist',bins=20)
+
+# Display the plot
+plt.show()
+
+
+<script.py> output:
+    count    4017.000000
+    mean       17.784167
+    std         6.350720
+    min         2.000000
+    25%        14.000000
+    50%        18.000000
+    75%        22.000000
+    max        43.000000
+    Name: TDIFF, dtype: float64

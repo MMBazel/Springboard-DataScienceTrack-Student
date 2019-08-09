@@ -14,7 +14,179 @@ Before beginning your analysis, it is critical that you first examine and clean 
 
 _____________________________________________________________________________________________________________________________________
 
+Dropping rows
+When you know that a specific column will be critical to your analysis, and only a small fraction of rows are missing a value in that column, it often makes sense to remove those rows from the dataset.
 
+During this course, the driver_gender column will be critical to many of your analyses. Because only a small fraction of rows are missing driver_gender, we'll drop those rows from the dataset.
+
+Instructions
+100 XP
+Count the number of missing values in each column.
+Drop all rows that are missing driver_gender by passing the column name to the subset parameter of .dropna().
+Count the number of missing values in each column again, to verify that none of the remaining rows are missing driver_gender.
+Examine the DataFrame's .shape to see how many rows and columns remain.
+
+# Count the number of missing values in each column
+print(ri.isnull().sum())
+
+# Drop all rows that are missing 'driver_gender'
+ri.dropna(subset=['driver_gender'], inplace=True)
+
+# Count the number of missing values in each column (again)
+print(ri.isnull().sum())
+
+# Examine the shape of the DataFrame
+print(ri.shape)
+
+<script.py> output:
+    stop_date                 0
+    stop_time                 0
+    driver_gender          5205
+    driver_race            5202
+    violation_raw          5202
+    violation              5202
+    search_conducted          0
+    search_type           88434
+    stop_outcome           5202
+    is_arrested            5202
+    stop_duration          5202
+    drugs_related_stop        0
+    district                  0
+    dtype: int64
+    stop_date                 0
+    stop_time                 0
+    driver_gender             0
+    driver_race               0
+    violation_raw             0
+    violation                 0
+    search_conducted          0
+    search_type           83229
+    stop_outcome              0
+    is_arrested               0
+    stop_duration             0
+    drugs_related_stop        0
+    district                  0
+    dtype: int64
+    (86536, 13)
+    
+    
+    _____________________________________________________________________________________________________________________________________
+    
+ Fixing a data type
+We saw in the previous exercise that the is_arrested column currently has the object data type. In this exercise, we'll change the data type to bool, which is the most suitable type for a column containing True and False values.
+
+Fixing the data type will enable us to use mathematical operations on the is_arrested column that would not be possible otherwise.
+
+Instructions
+100 XP
+Examine the head of the is_arrested column to verify that it contains True and False values.
+Check the current data type of is_arrested.
+Use the .astype() method to convert is_arrested to a bool column.
+Check the new data type of is_arrested, to confirm that it is now a bool column.
+
+
+# Examine the head of the 'is_arrested' column
+print(ri.is_arrested.head())
+
+# Check the data type of 'is_arrested'
+print(ri.is_arrested.dtype)
+
+# Change the data type of 'is_arrested' to 'bool'
+ri['is_arrested'] = ri.is_arrested.astype(bool)
+
+# Check the data type of 'is_arrested' (again)
+print(ri.is_arrested.dtype)
+
+
+<script.py> output:
+    0    False
+    1    False
+    2    False
+    3     True
+    4    False
+    Name: is_arrested, dtype: object
+    object
+    bool
+_____________________________________________________________________________________________________________________________________
+
+Combining object columns
+Currently, the date and time of each traffic stop are stored in separate object columns: stop_date and stop_time.
+
+In this exercise, you'll combine these two columns into a single column, and then convert it to datetime format. This will enable convenient date-based attributes that we'll use later in the course.
+
+Instructions
+100 XP
+Use a string method to concatenate stop_date and stop_time (separated by a space), and store the result in combined.
+Convert combined to datetime format, and store the result in a new column named stop_datetime.
+Examine the DataFrame .dtypes to confirm that stop_datetime is a datetime column.
+
+
+# Concatenate 'stop_date' and 'stop_time' (separated by a space)
+combined = ri.stop_date.str.cat(ri.stop_time,sep=' ')
+
+# Convert 'combined' to datetime format
+ri['stop_datetime'] = pd.to_datetime(combined)
+
+# Examine the data types of the DataFrame
+print(ri.dtypes)
+    
+<script.py> output:
+    stop_date                     object
+    stop_time                     object
+    driver_gender                 object
+    driver_race                   object
+    violation_raw                 object
+    violation                     object
+    search_conducted                bool
+    search_type                   object
+    stop_outcome                  object
+    is_arrested                     bool
+    stop_duration                 object
+    drugs_related_stop              bool
+    district                      object
+    stop_datetime         datetime64[ns]
+    dtype: object
+
+
+_____________________________________________________________________________________________________________________________________
+
+Setting the index
+The last step that you'll take in this chapter is to set the stop_datetime column as the DataFrame's index. By replacing the default index with a DatetimeIndex, you'll make it easier to analyze the dataset by date and time, which will come in handy later in the course!
+
+Instructions
+100 XP
+Set stop_datetime as the DataFrame index.
+Examine the index to verify that it is a DatetimeIndex.
+Examine the DataFrame columns to confirm that stop_datetime is no longer one of the columns.
+
+# Set 'stop_datetime' as the index
+ri.set_index('stop_datetime', inplace=True)
+
+# Examine the index
+print(ri.index)
+
+# Examine the columns
+print(ri.columns)
+
+<script.py> output:
+    DatetimeIndex(['2005-01-04 12:55:00', '2005-01-23 23:15:00',
+                   '2005-02-17 04:15:00', '2005-02-20 17:15:00',
+                   '2005-02-24 01:20:00', '2005-03-14 10:00:00',
+                   '2005-03-29 21:55:00', '2005-04-04 21:25:00',
+                   '2005-07-14 11:20:00', '2005-07-14 19:55:00',
+                   ...
+                   '2015-12-31 13:23:00', '2015-12-31 18:59:00',
+                   '2015-12-31 19:13:00', '2015-12-31 20:20:00',
+                   '2015-12-31 20:50:00', '2015-12-31 21:21:00',
+                   '2015-12-31 21:59:00', '2015-12-31 22:04:00',
+                   '2015-12-31 22:09:00', '2015-12-31 22:47:00'],
+                  dtype='datetime64[ns]', name='stop_datetime', length=86536, freq=None)
+    Index(['stop_date', 'stop_time', 'driver_gender', 'driver_race',
+           'violation_raw', 'violation', 'search_conducted', 'search_type',
+           'stop_outcome', 'is_arrested', 'stop_duration', 'drugs_related_stop',
+           'district'],
+          dtype='object')
+         
 
 =======================================================================================================================================
 
@@ -23,6 +195,315 @@ ________________________________________________________________________________
 Exploring the relationship between gender and policing
 0%
 Does the gender of a driver have an impact on police behavior during a traffic stop? In this chapter, you will explore that question while practicing filtering, grouping, method chaining, Boolean math, string methods, and more!
+
+_____________________________________________________________________________________________________________________________________
+
+Examining traffic violations
+Before comparing the violations being committed by each gender, you should examine the violations committed by all drivers to get a baseline understanding of the data.
+
+In this exercise, you'll count the unique values in the violation column, and then separately express those counts as proportions.
+
+Instructions
+100 XP
+Count the unique values in the violation column of the ri DataFrame, to see what violations are being committed by all drivers.
+Express the violation counts as proportions of the total.
+
+# Count the unique values in 'violation'
+print(ri.violation.value_counts())
+
+# Express the counts as proportions
+print(ri.violation.value_counts(normalize=True))
+
+<script.py> output:
+    Speeding               48423
+    Moving violation       16224
+    Equipment              10921
+    Other                   4409
+    Registration/plates     3703
+    Seat belt               2856
+    Name: violation, dtype: int64
+    Speeding               0.559571
+    Moving violation       0.187483
+    Equipment              0.126202
+    Other                  0.050950
+    Registration/plates    0.042791
+    Seat belt              0.033004
+    Name: violation, dtype: float64
+
+
+_____________________________________________________________________________________________________________________________________
+
+Comparing violations by gender
+The question we're trying to answer is whether male and female drivers tend to commit different types of traffic violations.
+
+In this exercise, you'll first create a DataFrame for each gender, and then analyze the violations in each DataFrame separately.
+
+Instructions
+100 XP
+Create a DataFrame, female, that only contains rows in which driver_gender is 'F'.
+Create a DataFrame, male, that only contains rows in which driver_gender is 'M'.
+Count the violations committed by female drivers and express them as proportions.
+Count the violations committed by male drivers and express them as proportions.
+
+
+# Create a DataFrame of female drivers
+female = ri[ri.driver_gender=='F']
+
+# Create a DataFrame of male drivers
+male = ri[ri.driver_gender=='M']
+
+# Compute the violations by female drivers (as proportions)
+print(female.violation.value_counts(normalize=True))
+
+# Compute the violations by male drivers (as proportions)
+print(male.violation.value_counts(normalize=True))
+
+
+<script.py> output:
+    Speeding               0.658114
+    Moving violation       0.138218
+    Equipment              0.105199
+    Registration/plates    0.044418
+    Other                  0.029738
+    Seat belt              0.024312
+    Name: violation, dtype: float64
+    Speeding               0.522243
+    Moving violation       0.206144
+    Equipment              0.134158
+    Other                  0.058985
+    Registration/plates    0.042175
+    Seat belt              0.036296
+    Name: violation, dtype: float64
+    
+    
+_____________________________________________________________________________________________________________________________________
+
+Comparing speeding outcomes by gender
+When a driver is pulled over for speeding, many people believe that gender has an impact on whether the driver will receive a ticket or a warning. Can you find evidence of this in the dataset?
+
+First, you'll create two DataFrames of drivers who were stopped for speeding: one containing females and the other containing males.
+
+Then, for each gender, you'll use the stop_outcome column to calculate what percentage of stops resulted in a "Citation" (meaning a ticket) versus a "Warning".
+
+Instructions
+100 XP
+Create a DataFrame, female_and_speeding, that only includes female drivers who were stopped for speeding.
+Create a DataFrame, male_and_speeding, that only includes male drivers who were stopped for speeding.
+Count the stop outcomes for the female drivers and express them as proportions.
+Count the stop outcomes for the male drivers and express them as proportions.
+
+
+# Create a DataFrame of female drivers stopped for speeding
+female_and_speeding = ri[(ri.driver_gender =='F')&(ri.violation=='Speeding')]
+
+# Create a DataFrame of male drivers stopped for speeding
+male_and_speeding = ri[(ri.driver_gender=='M')&(ri.violation=='Speeding')]
+
+# Compute the stop outcomes for female drivers (as proportions)
+print(female_and_speeding.stop_outcome.value_counts(normalize=True))
+
+# Compute the stop outcomes for male drivers (as proportions)
+print(male_and_speeding.stop_outcome.value_counts(normalize=True))
+
+
+<script.py> output:
+    Citation            0.952192
+    Warning             0.040074
+    Arrest Driver       0.005752
+    N/D                 0.000959
+    Arrest Passenger    0.000639
+    No Action           0.000383
+    Name: stop_outcome, dtype: float64
+    Citation            0.944595
+    Warning             0.036184
+    Arrest Driver       0.015895
+    Arrest Passenger    0.001281
+    No Action           0.001068
+    N/D                 0.000976
+    Name: stop_outcome, dtype: float64
+
+_____________________________________________________________________________________________________________________________________
+
+Calculating the search rate
+During a traffic stop, the police officer sometimes conducts a search of the vehicle. In this exercise, you'll calculate the percentage of all stops that result in a vehicle search, also known as the search rate.
+
+Instructions
+100 XP
+Check the data type of search_conducted to confirm that it's a Boolean Series.
+Calculate the search rate by counting the Series values and expressing them as proportions.
+Calculate the search rate by taking the mean of the Series. (It should match the proportion of True values calculated above.)
+
+# Check the data type of 'search_conducted'
+print(ri.search_conducted.dtype)
+
+# Calculate the search rate by counting the values
+print(ri.search_conducted.value_counts(normalize=True))
+
+# Calculate the search rate by taking the mean
+print(ri.search_conducted.mean())
+
+
+<script.py> output:
+    bool
+    False    0.961785
+    True     0.038215
+    Name: search_conducted, dtype: float64
+    0.0382153092354627
+    
+_____________________________________________________________________________________________________________________________________
+
+Comparing search rates by gender
+In this exercise, you'll compare the rates at which female and male drivers are searched during a traffic stop. Remember that the vehicle search rate across all stops is about 3.8%.
+
+First, you'll filter the DataFrame by gender and calculate the search rate for each group separately. Then, you'll perform the same calculation for both genders at once using a .groupby().
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Filter the DataFrame to only include female drivers, and then calculate the search rate by taking the mean of search_conducted.
+
+# Calculate the search rate for female drivers
+print(ri[ri.driver_gender=='F'].search_conducted.mean())
+
+Filter the DataFrame to only include male drivers, and then repeat the search rate calculation.
+
+# Calculate the search rate for male drivers
+print(ri[ri.driver_gender=='M'].search_conducted.mean())
+
+Group by driver gender to calculate the search rate for both groups simultaneously. (It should match the previous results.)
+
+# Calculate the search rate for both groups simultaneously
+print(ri.groupby('driver_gender').search_conducted.mean())
+
+
+<script.py> output:
+    0.019180617481282074
+
+<script.py> output:
+    0.04542557598546892
+
+<script.py> output:
+    0.04542557598546892
+
+<script.py> output:
+    driver_gender
+    F    0.019181
+    M    0.045426
+    Name: search_conducted, dtype: float64
+    
+    _____________________________________________________________________________________________________________________________________
+    
+Adding a second factor to the analysis
+Even though the search rate for males is much higher than for females, it's possible that the difference is mostly due to a second factor.
+
+For example, you might hypothesize that the search rate varies by violation type, and the difference in search rate between males and females is because they tend to commit different violations.
+
+You can test this hypothesis by examining the search rate for each combination of gender and violation. If the hypothesis was true, you would find that males and females are searched at about the same rate for each violation. Find out below if that's the case!
+
+Instructions 1/2
+50 XP
+1
+2
+Use a .groupby() to calculate the search rate for each combination of gender and violation. Are males and females searched at about the same rate for each violation?
+
+# Calculate the search rate for each combination of gender and violation
+print(ri.groupby(['driver_gender','violation']).search_conducted.mean())
+
+
+Reverse the ordering to group by violation before gender. The results may be easier to compare when presented this way.
+
+# Reverse the ordering to group by violation before gender
+print(ri.groupby(['violation','driver_gender']).search_conducted.mean())
+_____________________________________________________________________________________________________________________________________
+
+Counting protective frisks
+During a vehicle search, the police officer may pat down the driver to check if they have a weapon. This is known as a "protective frisk."
+
+In this exercise, you'll first check to see how many times "Protective Frisk" was the only search type. Then, you'll use a string method to locate all instances in which the driver was frisked.
+
+Instructions
+100 XP
+Count the search_type values to see how many times "Protective Frisk" was the only search type.
+Create a new column, frisk, that is True if search_type contains the string "Protective Frisk" and False otherwise.
+Check the data type of frisk to confirm that it's a Boolean Series.
+Take the sum of frisk to count the total number of frisks.
+
+
+# Count the 'search_type' values
+print(ri.search_type.value_counts())
+
+# Check if 'search_type' contains the string 'Protective Frisk'
+ri['frisk'] = ri.search_type.str.contains('Protective Frisk', na=False)
+
+# Check the data type of 'frisk'
+print(ri.frisk.dtype)
+
+# Take the sum of 'frisk'
+print(ri.frisk.sum())
+
+<script.py> output:
+    Incident to Arrest                                          1290
+    Probable Cause                                               924
+    Inventory                                                    219
+    Reasonable Suspicion                                         214
+    Protective Frisk                                             164
+    Incident to Arrest,Inventory                                 123
+    Incident to Arrest,Probable Cause                            100
+    Probable Cause,Reasonable Suspicion                           54
+    Probable Cause,Protective Frisk                               35
+    Incident to Arrest,Inventory,Probable Cause                   35
+    Incident to Arrest,Protective Frisk                           33
+    Inventory,Probable Cause                                      25
+    Protective Frisk,Reasonable Suspicion                         19
+    Incident to Arrest,Inventory,Protective Frisk                 18
+    Incident to Arrest,Probable Cause,Protective Frisk            13
+    Inventory,Protective Frisk                                    12
+    Incident to Arrest,Reasonable Suspicion                        8
+    Incident to Arrest,Probable Cause,Reasonable Suspicion         5
+    Probable Cause,Protective Frisk,Reasonable Suspicion           5
+    Incident to Arrest,Inventory,Reasonable Suspicion              4
+    Inventory,Reasonable Suspicion                                 2
+    Incident to Arrest,Protective Frisk,Reasonable Suspicion       2
+    Inventory,Probable Cause,Protective Frisk                      1
+    Inventory,Protective Frisk,Reasonable Suspicion                1
+    Inventory,Probable Cause,Reasonable Suspicion                  1
+    Name: search_type, dtype: int64
+    bool
+    303
+    
+_____________________________________________________________________________________________________________________________________
+
+Comparing frisk rates by gender
+In this exercise, you'll compare the rates at which female and male drivers are frisked during a search. Are males frisked more often than females, perhaps because police officers consider them to be higher risk?
+
+Before doing any calculations, it's important to filter the DataFrame to only include the relevant subset of data, namely stops in which a search was conducted.
+
+Instructions
+100 XP
+Create a DataFrame, searched, that only contains rows in which search_conducted is True.
+Take the mean of the frisk column to find out what percentage of searches included a frisk.
+Calculate the frisk rate for each gender using a .groupby().
+
+# Create a DataFrame of stops in which a search was conducted
+searched = ri[ri.search_conducted == True]
+
+# Calculate the overall frisk rate by taking the mean of 'frisk'
+print(searched.frisk.mean())
+
+# Calculate the frisk rate for each gender
+print(searched.groupby('driver_gender').frisk.mean())
+
+<script.py> output:
+    0.09162382824312065
+    driver_gender
+    F    0.074561
+    M    0.094353
+    Name: frisk, dtype: float64
+    
+    
+    
 
 =======================================================================================================================================
 

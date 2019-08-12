@@ -144,8 +144,295 @@ print(my_data_shell)
 
 _______________________________________________________________________________________________________________________________________
 
+The Init Method
+Now it's time to explore the special __init__ method!
+
+__init__ is an initialization method used to construct class instances in custom ways. In this exercise we will simply introduce the utilization of the method, and in subsequent ones we will do fancier things.
+
+Instructions
+100 XP
+Create a class called DataShell.
+Include the __init__() method, and pass it the self argument.
+In the body of the __init__() method, include the pass statement.
+Instantiate the DataShell class and assign the newly created object to the my_data_shell variable. Then print my_data_shell and explore its contents.
 
 
+# Create class: DataShell
+class DataShell:
+  
+	# Initialize class with self argument
+    def __init__(self):
+      
+        # Pass statement
+        pass
+
+# Instantiate DataShell: my_data_shell
+my_data_shell = DataShell()
+
+# Print my_data_shell
+print(my_data_shell)
+
+
+_______________________________________________________________________________________________________________________________________
+
+Instance Variables
+Class instances are useful in that we can store values in them at the time of instantiation. We store these values in instance variables. This means that we can have many instances of the same class whose instance variables hold different values!
+
+Instructions
+100 XP
+Create a class called DataShell.
+In the class definition, include the __init__() method, and pass it the self and integerInput arguments. In the body of the __init__() method, set the data as the instance variable.
+Create an instance of DataShell called my_data_shell. Pass x as an argument to the constructor function.
+Print the my_data_shell.data and explore its contents.
+
+
+# Create class: DataShell
+class DataShell:
+  
+	# Initialize class with self and integerInput arguments
+    def __init__(self, integerInput):
+      
+		# Set data as instance variable, and assign the value of integerInput
+        self.data = integerInput
+
+# Declare variable x with value of 10
+x = 10      
+
+# Instantiate DataShell passing x as argument: my_data_shell
+my_data_shell = DataShell(x)
+
+# Print my_data_shell
+print(my_data_shell.data)
+
+Great job declaring instance variables! Notice that instance variables live in the body of the initialization method, as they are initialized when the object is instantiated. Also important to notice that they are preceded by self., as this is referring to the instance itself.
+
+_______________________________________________________________________________________________________________________________________
+
+Multiple Instance Variables
+We are not limited to declaring only one instance variable; in fact, we can declare many!
+
+In this exercise we will declare two instance variables: identifier and data. Their values will be specified by the values passed to the initialization method, as before.
+
+Instructions
+100 XP
+Create a class called DataShell.
+Initialize the class with the self, identifier, and data arguments. Set identifier and data to be instance variables.
+Create an instance of DataShell called my_data_shell passing x and y to the constructor function.
+Print the my_data_shell.identifier and my_data_shell.data and explore their contents.
+
+# Create class: DataShell
+class DataShell:
+  
+	# Initialize class with self, identifier and data arguments
+    def __init__(self, identifier, data):
+      
+		# Set identifier and data as instance variables, assigning value of input arguments
+        self.identifier = identifier
+        self.data = data
+
+# Declare variable x with value of 100, and y with list of integers from 1 to 5
+x = 100
+y = [1, 2, 3, 4, 5]
+
+# Instantiate DataShell passing x and y as arguments: my_data_shell
+my_data_shell = DataShell(x, y)
+
+# Print my_data_shell.identifier
+print(my_data_shell.identifier)
+
+# Print my_data_shell.data
+print(my_data_shell.data)
+
+_______________________________________________________________________________________________________________________________________
+Class Variables
+We saw that we can specify different instance variables.
+
+But, what if we want any instance of a class to hold the same value for a specific variable? Enter class variables.
+
+Class variables must not be specified at the time of instantiation and instead, are declared/specified at the class definition phase.
+
+Instructions
+100 XP
+Create a class called DataShell.
+Declare a class variable called family and assign it the value of "DataShell".
+Create an instance of DataShell called my_data_shell, passing x to the initializer method.
+Print the my_data_shell.family to explore its contents.
+
+# Create class: DataShell
+class DataShell:
+  
+    # Declare a class variable family, and assign value of "DataShell"
+    family = 'DataShell'
+    
+    # Initialize class with self, identifier arguments
+    def __init__(self, identifier):
+      
+        # Set identifier as instance variable of input argument
+        self.identifier = identifier
+
+# Declare variable x with value of 100
+x = 100
+
+# Instantiate DataShell passing x as argument: my_data_shell
+my_data_shell = DataShell(x)
+
+# Print my_data_shell class variable family
+print(my_data_shell.family)
+
+Awesome! Class variables are different from instance variables (which we saw earlier). Even though class variables may be overridden, they are generally set even before object instanciation; therefore, class variable values across instances of the same class tend to be the same.
+_______________________________________________________________________________________________________________________________________
+Overriding Class Variables
+Sometimes our object instances have class variables whose values are not correct, and hence, not useful. For this reason it makes sense to modify our object's class variables.
+
+In this exercise, we will do just that: override class variables with values of our own!
+
+Instructions
+100 XP
+Create a class called DataShell.
+Declare a class variable called family and assign it the value of "DataShell".
+Create an instance of DataShell called my_data_shell passing x to the initializer method, then print the my_data_shell.family to explore its contents.
+Override the class variable my_data_shell.family by assigning it the value "NotDataShell" to explore its contents.
+
+# Create class: DataShell
+class DataShell:
+  
+    # Declare a class variable family, and assign value of "DataShell"
+    family = 'DataShell'
+    
+    # Initialize class with self, identifier arguments
+    def __init__(self, identifier):
+      
+        # Set identifier as instance variables, assigning value of input arguments
+        self.identifier = identifier
+
+# Declare variable x with value of 100
+x = 100
+
+# Instantiate DataShell passing x and y as arguments: my_data_shell
+my_data_shell = DataShell(x)
+
+# Print my_data_shell class variable family
+print(my_data_shell.family)
+
+# Override the my_data_shell.family value with "NotDataShell"
+my_data_shell.family = 'NotDataShell'
+
+# Print my_data_shell class variable family once again
+print(my_data_shell.family)
+_______________________________________________________________________________________________________________________________________
+
+
+Methods I
+Not only are we able to declare both instance variables and class variables in our objects, we can also cook functions right into our objects as well. These object-contained functions are called methods.
+
+Instructions
+100 XP
+Create a class called DataShell with its initialization method.
+Define a method called print_static that only takes the argument self. Inside of this method's body print the string "You just executed a class method!".
+Create an instance of DataShell called my_data_shell passing no arguments to the constructor.
+Call the print_static method and explore its output!
+Take Hint (-30 XP)
+
+# Create class: DataShell
+class DataShell:
+  
+	# Initialize class with self argument
+    def __init__(self):
+        pass
+      
+	# Define class method which takes self argument: print_static
+    def print_static(self):
+        # Print string
+        print("You just executed a class method!")
+        
+# Instantiate DataShell taking no arguments: my_data_shell
+my_data_shell = DataShell()
+
+# Call the print_static method of your newly created object
+my_data_shell.print_static()
+
+_______________________________________________________________________________________________________________________________________
+
+Methods II
+In the previous exercise our print_static() method was kind of boring.
+
+We can do more interesting things with our objects' methods. For example, we can interact with our objects' data. In this exercise we will declare a method that prints the value of one of our instance variables.
+
+Instructions
+100 XP
+Create a class called DataShell with its initialization method, taking self and dataList as arguments. Declare data as an instance variable and assign it the value of dataList.
+Define show() as a class method, taking self as an argument. Inside of the method print the instance variable data.
+Declare a list called integer_list with integers 1 to 10. Then create an instance of DataShell called my_data_shell with integer_list as an argument to the constructor.
+Call your object's show() method and explore its output.
+
+# Create class: DataShell
+class DataShell:
+  
+	# Initialize class with self and dataList as arguments
+    def __init__(self, dataList):
+      	# Set data as instance variable, and assign it the value of dataList
+        self.data = dataList
+        
+	# Define class method which takes self argument: show
+    def show(self):
+        # Print the instance variable data
+        print(self.data)
+
+# Declare variable with list of integers from 1 to 10: integer_list   
+integer_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        
+# Instantiate DataShell taking integer_list as argument: my_data_shell
+my_data_shell = DataShell(integer_list)
+
+# Call the show method of your newly created object
+my_data_shell.show()
+
+Outstanding! You accessed an instance variable from within your method, and were able to wrangle its data to output useful information! What other magic can be done with class and object internals?
+_______________________________________________________________________________________________________________________________________
+
+Methods III
+In the last exercise our method simply printed out the value of instance variables.
+
+In this one, we'll do something more interesting. We will add another method, avg(), which takes a list of integers, calculates the average value, and prints it out. To make things even more interesting, the list of integers for which avg() does this operations, is one of our object's instance variables.
+
+This means that our object can not only store data, but also can store procedures it can execute on its own data. Awesome.
+
+Note that the variable integer_list has already been loaded for you.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create a class called DataShell with its initialization method, taking self and dataList as arguments. Declare data as an instance variable and assign it the value of the input argument dataList.
+Define show() as a class method, taking self as an argument. Inside of the method's body, print the instance variable data.
+Define avg() as a class method, taking self as an argument. Inside of the method's body, declare the variable avg and assign it the value of the average of the instance variable data. Then print it out.
+Instantiate DataShell as my_data_shell passing integer_list as an argument to the constructor. Then call your object's show() and avg() methods and explore their output.
+
+# Create class: DataShell
+class DataShell:
+  
+	# Initialize class with self and dataList as arguments
+    def __init__(self, dataList):
+      	# Set data as instance variable, and assign it the value of dataList
+        self.data = dataList
+        
+	# Define method that prints data: show
+    def show(self):
+        print(self.data)
+        
+    # Define method that prints average of data: avg 
+    def avg(self):
+        # Declare avg and assign it the average of data
+        avg = sum(self.data)/float(len(self.data))
+        # Print avg
+        print(avg)
+        
+# Instantiate DataShell taking integer_list as argument: my_data_shell
+my_data_shell = DataShell(integer_list)
+
+# Call the show and avg methods of your newly created object
+my_data_shell.show()
+my_data_shell.avg()
 
 ======================================================================================================================================
 
@@ -154,9 +441,738 @@ Fancy classes, fancy objects
 0%
 We create fancier classes with sophisticated methods such as importing datasets, getting descriptive statistics, and renaming columns. Also, we cover best practices for creating and documenting classes according to PEP-8.
 
+_______________________________________________________________________________________________________________________________________
+Return Statement I
+Let's now drill into the return statement.
+
+class DataShell:
+    def __init__(self, x):
+        return x
+In the code chunk above, you may have expected to see the print() function instead of the return statement. The difference between the two is that print() outputs a string to the console, while the the return statement exits the current function (or method) and hands the returned value back to its caller. In this case, the caller could have another function, among other things. If this sounds confusing have not fear, we will further practice this!
+
+In the console, enter this code in order to answer the question below:
+
+x = my_data_shell.get_data()
+print(x)
+What value does the my_data_shell.get_data() method return?
+
+_______________________________________________________________________________________________________________________________________
+
+Return Statement II: The Return of the DataShell
+Let's now go back to the class DataShell that we were working with earlier, and refactor it such that it uses the return statement instead of the print() function.
+
+Notice that since we are now using the return statement, we need to include our calls to object methods within the print() function.
+
+Instructions
+100 XP
+Create a class called DataShell with its initialization method, taking self and dataList as arguments. Declare data as an instance variable and assign it the value of the input argument dataList.
+Define show() as a class method, taking self as an argument. Inside of the method's body, return the instance variable data.
+Define avg() as a class method, taking self as an argument. Inside of the method's body, declare the variable avg and assign it the value of the average of the instance variable data. Then return avg.
+Instantiate DataShell as my_data_shell passing integer_list as an argument to the constructor. Then print the output of your object's show() and avg() methods.
+
+# Create class: DataShell
+class DataShell:
+  
+	# Initialize class with self and dataList as arguments
+    def __init__(self, dataList):
+      	# Set data as instance variable, and assign it the value of dataList
+        self.data = dataList
+        
+	# Define method that returns data: show
+    def show(self):
+        return self.data
+        
+    # Define method that prints average of data: avg 
+    def avg(self):
+        # Declare avg and assign it the average of data
+        avg = sum(self.data)/float(len(self.data))
+        # Return avg
+        return avg
+        
+# Instantiate DataShell taking integer_list as argument: my_data_shell
+my_data_shell = DataShell(integer_list)
+
+# Print output of your object's show method
+print(my_data_shell.show())
+
+# Print output of your object's avg method
+print(my_data_shell.avg())
+
+
+Awesome! We saw the return statement earlier in our functions exercise and similarly, the return statement is very useful when writing methods for our classes and methods. Think of it as a way to enable objects to talk to other objects, as they are able to return useful information when called.
+_______________________________________________________________________________________________________________________________________
+
+Return Statement III: A More Powerful DataShell
+In this exercise our DataShell class will evolve from simply consuming lists to consuming CSV files so that we can do more sophisticated things.
+
+For this, we will employ the return statement once again. Additionally, we will leverage some neat functionality from both the numpy and pandas packages.
+
+Instructions
+100 XP
+Import the numpy and pandas packages as np and pd, respectively.
+Create a class called DataShell with its initialization method, taking self and inputFile as arguments. Declare file as an instance variable and assign to it the value of the input argument inputFile.
+Define a method called generate_csv(), taking self as argument. In the body of this method, declare an instance variable called data_as_csv and assign it to the value of pd.read_csv(self.file). Finally, have generate_csv() return the value of data_as_csv.
+Instantiate DataShell as data_shell passing us_life_expectancy as an argument to the constructor. Declare a variable called df and assign to it the value of data_shell.generate_csv(). Finally, print the value of df.
+
+# Load numpy as np and pandas as pd
+import numpy as np
+import pandas as pd
+
+# Create class: DataShell
+class DataShell:
+  
+    # Initialize class with self and inputFile
+    def __init__(self, inputFile):
+        self.file = inputFile
+        
+    # Define generate_csv method, with self argument
+    def generate_csv(self):
+        self.data_as_csv = pd.read_csv(self.file)
+        return self.data_as_csv
+
+# Instantiate DataShell with us_life_expectancy as input argument
+data_shell = DataShell(us_life_expectancy)
+
+# Call data_shell's generate_csv method, assign it to df
+df = data_shell.generate_csv()
+
+# Print df
+print(df)
+
+<script.py> output:
+               country code  year  life_expectancy
+    0    United States  USA  1880        39.410000
+    1    United States  USA  1890        45.209999
+    2    United States  USA  1901        49.299999
+    3    United States  USA  1902        50.500000
+    4    United States  USA  1903        50.599998
+    5    United States  USA  1904        49.599998
+    6    United States  USA  1905        50.299999
+    7    United States  USA  1906        50.099998
+    8    United States  USA  1907        50.200001
+    9    United States  USA  1908        51.900002
+    10   United States  USA  1909        52.799999
+    11   United States  USA  1910        51.799999
+    12   United States  USA  1911        53.400002
+    13   United States  USA  1912        54.099998
+    14   United States  USA  1913        53.500000
+    15   United States  USA  1914        54.599998
+    16   United States  USA  1915        55.099998
+    17   United States  USA  1916        54.200001
+    18   United States  USA  1917        54.000000
+    19   United States  USA  1918        47.200001
+    20   United States  USA  1919        55.299999
+    21   United States  USA  1920        55.400002
+    22   United States  USA  1921        58.200001
+    23   United States  USA  1922        58.099998
+    24   United States  USA  1923        57.500000
+    25   United States  USA  1924        58.500000
+    26   United States  USA  1925        58.500000
+    27   United States  USA  1926        57.900002
+    28   United States  USA  1927        59.400002
+    29   United States  USA  1928        58.299999
+    ..             ...  ...   ...              ...
+    87   United States  USA  1986        74.772003
+    88   United States  USA  1987        74.876999
+    89   United States  USA  1988        74.988998
+    90   United States  USA  1989        75.112999
+    91   United States  USA  1990        75.251999
+    92   United States  USA  1991        75.405998
+    93   United States  USA  1992        75.568001
+    94   United States  USA  1993        75.734001
+    95   United States  USA  1994        75.903000
+    96   United States  USA  1995        76.070000
+    97   United States  USA  1996        76.230003
+    98   United States  USA  1997        76.384003
+    99   United States  USA  1998        76.531998
+    100  United States  USA  1999        76.674004
+    101  United States  USA  2000        76.815002
+    102  United States  USA  2001        76.962997
+    103  United States  USA  2002        77.121002
+    104  United States  USA  2003        77.292000
+    105  United States  USA  2004        77.474998
+    106  United States  USA  2005        77.667000
+    107  United States  USA  2006        77.859001
+    108  United States  USA  2007        78.045998
+    109  United States  USA  2008        78.223000
+    110  United States  USA  2009        78.387001
+    111  United States  USA  2010        78.539001
+    112  United States  USA  2011        78.681999
+    113  United States  USA  2012        78.820999
+    114  United States  USA  2013        78.959999
+    115  United States  USA  2014        79.099998
+    116  United States  USA  2015        79.244003
+    
+    [117 rows x 4 columns]
+
+
+_______________________________________________________________________________________________________________________________________
+Data as Attributes
+In the previous coding exercise you wrote a method within your DataShell class that returns a Pandas Dataframe.
+
+In this one, we will cook the data into our class, as an instance variable. This is so that we can do fancy things later, such as renaming columns, as well as getting descriptive statistics.
+
+The object us_life_expectancy is loaded and available in your workspace.
+
+Instructions
+100 XP
+Import the numpy and pandas packages as np and pd.
+Create a DataShell class with its initialization method, taking self and filepath as arguments.
+Set filepath as an instance variable, and assign it the value of the filepath parameter. Also set data_as_csv as an instance variable, assign it the value of pd.read_csv(filepath).
+Instantiate DataShell as us_data_shell, passing the us_life_expectancy as input argument for the filepath parameter. Then print your objects' data_as_csv output.
+
+
+# Import numpy as np, pandas as pd
+import numpy as np
+import pandas as pd
+
+# Create class: DataShell
+class DataShell:
+  
+    # Define initialization method
+    def __init__(self, filepath):
+        # Set filepath as instance variable  
+        self.filepath = filepath
+        # Set data_as_csv as instance variable
+        self.data_as_csv = pd.read_csv(filepath)
+
+# Instantiate DataShell as us_data_shell
+us_data_shell = DataShell(us_life_expectancy)
+
+# Print your object's data_as_csv attribute
+print(us_data_shell.data_as_csv)
+
+<script.py> output:
+               country code  year  life_expectancy
+    0    United States  USA  1880        39.410000
+    1    United States  USA  1890        45.209999
+    2    United States  USA  1901        49.299999
+    3    United States  USA  1902        50.500000
+    4    United States  USA  1903        50.599998
+    5    United States  USA  1904        49.599998
+    6    United States  USA  1905        50.299999
+    7    United States  USA  1906        50.099998
+    8    United States  USA  1907        50.200001
+    9    United States  USA  1908        51.900002
+    10   United States  USA  1909        52.799999
+    11   United States  USA  1910        51.799999
+    12   United States  USA  1911        53.400002
+    13   United States  USA  1912        54.099998
+    14   United States  USA  1913        53.500000
+    15   United States  USA  1914        54.599998
+    16   United States  USA  1915        55.099998
+    17   United States  USA  1916        54.200001
+    18   United States  USA  1917        54.000000
+    19   United States  USA  1918        47.200001
+    20   United States  USA  1919        55.299999
+    21   United States  USA  1920        55.400002
+    22   United States  USA  1921        58.200001
+    23   United States  USA  1922        58.099998
+    24   United States  USA  1923        57.500000
+    25   United States  USA  1924        58.500000
+    26   United States  USA  1925        58.500000
+    27   United States  USA  1926        57.900002
+    28   United States  USA  1927        59.400002
+    29   United States  USA  1928        58.299999
+    ..             ...  ...   ...              ...
+    87   United States  USA  1986        74.772003
+    88   United States  USA  1987        74.876999
+    89   United States  USA  1988        74.988998
+    90   United States  USA  1989        75.112999
+    91   United States  USA  1990        75.251999
+    92   United States  USA  1991        75.405998
+    93   United States  USA  1992        75.568001
+    94   United States  USA  1993        75.734001
+    95   United States  USA  1994        75.903000
+    96   United States  USA  1995        76.070000
+    97   United States  USA  1996        76.230003
+    98   United States  USA  1997        76.384003
+    99   United States  USA  1998        76.531998
+    100  United States  USA  1999        76.674004
+    101  United States  USA  2000        76.815002
+    102  United States  USA  2001        76.962997
+    103  United States  USA  2002        77.121002
+    104  United States  USA  2003        77.292000
+    105  United States  USA  2004        77.474998
+    106  United States  USA  2005        77.667000
+    107  United States  USA  2006        77.859001
+    108  United States  USA  2007        78.045998
+    109  United States  USA  2008        78.223000
+    110  United States  USA  2009        78.387001
+    111  United States  USA  2010        78.539001
+    112  United States  USA  2011        78.681999
+    113  United States  USA  2012        78.820999
+    114  United States  USA  2013        78.959999
+    115  United States  USA  2014        79.099998
+    116  United States  USA  2015        79.244003
+    
+    [117 rows x 4 columns]
+
+
+_______________________________________________________________________________________________________________________________________
+
+Renaming Columns
+Methods can be especially useful to manipulate their object's data. In this exercise, we will create a method inside of our DataShell class, so that we can rename our data columns.
+
+numpy and pandas are already imported in your workspace as np and pd, respectively.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create class DataShell, with initialization method, taking self and filepath as arguments. Set filepath and data_as_csv as instance variables.
+Define method rename_column, with arguments self, column_name, and new_column_name. Replace the column name of column_name with that of new_column_name, this is already done for you.
+Instantiate DataShell as us_data_shell, taking us_life_expectancy as input to the constructor. Print your print the data type of your object's dataascsv attribute. You can do this by passing us_data_shell.data_as_csv.dtypes into the print() function.
+Using your new method, rename your object's column 'code' to 'country_code'. Once again, print the data type of your object's data_as_csv attribute.
+
+# Create class DataShell
+class DataShell:
+  
+    # Define initialization method
+    def __init__(self, filepath):
+        self.filepath = filepath
+        self.data_as_csv = pd.read_csv(filepath)
+    
+    # Define method rename_column, with arguments self, column_name, and new_column_name
+    def rename_column(self, column_name, new_column_name):
+        self.data_as_csv.columns = self.data_as_csv.columns.str.replace(column_name, new_column_name)
+
+# Instantiate DataShell as us_data_shell with argument us_life_expectancy
+us_data_shell = DataShell(us_life_expectancy)
+
+# Print the datatype of your object's data_as_csv attribute
+print(us_data_shell.data_as_csv.dtypes)
+
+# Rename your objects column 'code' to 'country_code'
+us_data_shell.rename_column('code', 'country_code')
+
+# Again, print the datatype of your object's data_as_csv attribute
+print(us_data_shell.data_as_csv.dtypes)
+
+
+<script.py> output:
+    country             object
+    code                object
+    year                 int64
+    life_expectancy    float64
+    dtype: object
+    country             object
+    country_code        object
+    year                 int64
+    life_expectancy    float64
+    dtype: object
+    
+_______________________________________________________________________________________________________________________________________
+
+Self-Describing DataShells
+In this exercise you will add functionality to your DataShell class such that it returns information about itself.
+
+numpy and pandas are already imported in your workspace as np and pd, respectively.
+
+Instructions
+100 XP
+Create class DataShell, with initialization method, taking self and filepath as arguments. Set filepath and data_as_csv as instance variables.
+Create a method rename_column (this is already done for you). Create a second method, get_stats, which takes self as argument, and returns self.data_as_csv.describe().
+Instantiate DataShell as us_data_shell, taking us_life_expectancy as input to the constructor.
+Print the output of your object's get_stats() method.
+
+# Create class DataShell
+class DataShell:
+
+    # Define initialization method
+    def __init__(self, filepath):
+        self.filepath = filepath
+        self.data_as_csv = pd.read_csv(filepath)
+
+    # Define method rename_column, with arguments self, column_name, and new_column_name
+    def rename_column(self, column_name, new_column_name):
+        self.data_as_csv.columns = self.data_as_csv.columns.str.replace(column_name, new_column_name)
+        
+    # Define get_stats method, with argument self
+    def get_stats(self):
+        # Return a description data_as_csv
+        return self.data_as_csv.describe()
+    
+# Instantiate DataShell as us_data_shell
+us_data_shell = DataShell(us_life_expectancy)
+
+# Print the output of your objects get_stats method
+print(us_data_shell.get_stats())
+
+
+<script.py> output:
+                  year  life_expectancy
+    count   117.000000       117.000000
+    mean   1956.752137        66.556684
+    std      34.398252         9.551079
+    min    1880.000000        39.410000
+    25%    1928.000000        58.500000
+    50%    1957.000000        69.599998
+    75%    1986.000000        74.772003
+    max    2015.000000        79.244003
+
+
+
 ======================================================================================================================================
 
 4
 Inheritance, polymorphism and composition
 0%
 In this chapter we cover inheritance, which is when we create a class that employs (or 'inherits') all class variables and methods from a 'parent' class. We also cover polymorphism, which is when multiple classes inherit from a single class. Finally, we cover composition, which is when classes employ specific class functionality from other classes without necessarily inheriting from them.
+
+
+_______________________________________________________________________________________________________________________________________
+Animal Inheritance
+In this exercise we will code a simple example of an abstract class, and two other classes that inherit from it.
+
+To focus on the concept of inheritance, we will introduce another set of classes: Animal, Mammal, and Reptile.
+
+More specifically, Animal will be our abstract class, and both Mammal and Reptile will inherit from it.
+
+Instructions
+100 XP
+Create a class called Animal with its initialization method, taking self and name as arguments. Declare name as an instance variable and assign it the value of the input argument name.
+Create two classes Mammal and Reptile, which inherit from Animal. For both Mammal and Reptile, include the initialization method, taking self, name, and animal_type as arguments; then, animal_type as an instance variable and assign it the value of the input argument animal_type.
+Instantiate Mammal as daisy, passing 'Daisy' as the first argument 'dog' and as the second argument. Then instantiate Reptile as stella, passing 'Stella' as the first argument 'alligator' and as the second argument.
+Print both daisy and stella to explore their contents.
+
+
+# Create a class Animal
+class Animal:
+	def __init__(self, name):
+		self.name = name
+
+# Create a class Mammal, which inherits from Animal
+class Mammal(Animal):
+	def __init__(self, name, animal_type):
+		self.animal_type = animal_type
+
+# Create a class Reptile, which also inherits from Animal
+class Reptile(Animal):
+	def __init__(self, name, animal_type):
+		self.animal_type = animal_type
+
+# Instantiate a mammal with name 'Daisy' and animal_type 'dog': daisy
+daisy = Mammal('Daisy', 'dog')
+
+# Instantiate a reptile with name 'Stella' and animal_type 'alligator': stella
+stella = Reptile('Stella', 'alligator')
+
+# Print both objects
+print(daisy)
+print(stella)
+
+
+Wow. You have now written an abstract class, and successfully employed inheritance, a powerful feature of object-oriented programming that helps you simplify code through re-usability!
+_______________________________________________________________________________________________________________________________________
+
+Vertebrate Inheritance
+In the previous exercise, it seemed almost unnecessary to have an abstract class, as it did not do anything particularly interesting (other than begin to learn inheritance).
+
+In this exercise, we will refine our abstract class and include some class variables in our abstract class so that they can be passed down to our other classes.
+
+Additionally from inheritance, in this exercise we are seeing another powerful object-oriented programming concept: polymorphism. As you explore your code while writing the Mammal and Reptile classes, notice their differences. Because they both inherit from the Vertebrate class, and because they are different, we say that they are polymorphic. How cool!
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create a class called Vertebrate with its initialization method, taking self and name as arguments. Declare spinal_cord as a class variable, and set it to True. Declare name as an instance variable and assign it the value of the input argument name.
+Create two classes Mammal and Reptile, which inherit from Vertebrate. For both Mammal and Reptile, include the initialization method, taking self, name, and animal_type as arguments; then, animal_type as an instance variable and assign it the value of the input argument animal_type. Additionally, include the instance variable temperature_regulation, set it to True for class Mammal, and set it to False for class Reptile.
+Instantiate Mammal as daisy, passing 'Daisy' as the first argument 'dog' and as the second argument. Then instantiate Reptile as stella, passing 'Stella' as the first argument 'alligator' and as the second argument.
+Print both daisy and stella to explore their contents. Specifically, print their spinal_cord and temperature_regulation attributes.
+
+
+# Create a class Vertebrate
+class Vertebrate:
+    spinal_cord = True
+    def __init__(self, name):
+        self.name = name
+
+# Create a class Mammal, which inherits from Vertebrate
+class Mammal(Vertebrate):
+    def __init__(self, name, animal_type):
+        self.animal_type = animal_type
+        self.temperature_regulation = True
+
+# Create a class Reptile, which also inherits from Vertebrate
+class Reptile(Vertebrate):
+    def __init__(self, name, animal_type):
+        self.animal_type = animal_type
+        self.temperature_regulation = False
+
+# Instantiate a mammal with name 'Daisy' and animal_type 'dog': daisy
+daisy = Mammal('Daisy', 'dog')
+
+# Instantiate a reptile with name 'Stella' and animal_type 'alligator': stella
+stella = Reptile('Stella', 'alligator')
+
+# Print stella's attributes spinal_cord and temperature_regulation
+print("Stella Spinal cord: " + str(stella.spinal_cord))
+print("Stella temperature regulation: " + str(stella.temperature_regulation))
+
+# Print daisy's attributes spinal_cord and temperature_regulation
+print("Daisy Spinal cord: " + str(daisy.spinal_cord))
+print("Daisy temperature regulation: " + str(daisy.temperature_regulation))
+
+
+<script.py> output:
+    Stella Spinal cord: True
+    Stella temperature regulation: False
+    Daisy Spinal cord: True
+    Daisy temperature regulation: True
+
+Awesome. Not only are you learning inheritance, but also polymorphism! Try extending the polymorphism of your (inheriting) classes by adding different class and instance variables.
+
+_______________________________________________________________________________________________________________________________________
+Abstract Class DataShell I
+We will now switch back to working on our DataShell class. Specifically, we will create an abstract class, such that we can create other classes that then inherit from it!
+
+For this reason, our abstract DataShell class will not do much, resembling some of the earlier exercises in this course.
+
+Instructions
+100 XP
+Import numpy as np and pandas as np.
+Create class DataShell with initialization method and input arguments self and inputFile. In the method body, define the instance variable file, and set it to the value of inputFile.
+Instantiate DataShell as my_data_shell, passing us_life_expectancy as input to the constructor.
+Print my_data_shell to explore its contents.
+
+# Load numpy as np and pandas as pd
+import numpy as np
+import pandas as pd
+
+# Create class: DataShell
+class DataShell:
+    def __init__(self, inputFile):
+        self.file = inputFile
+
+# Instantiate DataShell as my_data_shell
+my_data_shell = DataShell(us_life_expectancy)
+
+# Print my_data_shell
+print(my_data_shell)
+
+Great job! This exercise should feel a bit easier from the previous few. Get ready as we will build upon this abstract class to add inheritance, and begin to explore a new concept!
+_______________________________________________________________________________________________________________________________________
+
+Abstract Class DataShell II
+Now that we have our abstract class DataShell, we can now create a second class that inherits from it.
+
+Specifically, we will define a class called CsvDataShell. This class will have the ability to import a CSV file. In the following exercises we will add a bit more functionality to make our classes more sophisticated!
+
+Instructions
+100 XP
+Import numpy as np and pandas as np.
+Create class DataShell with initialization method and input arguments self and inputFile. In the method body, define the instance variable file, and set it to the value of inputFile. All this is already done for you.
+Create a second class, CsvDataShell, which inherits from DataShell. Add an initialization method, which takes as input arguments both self and inputFile. Declare an instance variable data and set it to the value of pd.read_csv(inputFile).
+Instantiate CsvDataShell as us_data_shell, passing us_life_expectancy as input to the constructor, and print us_data_shell.data to explore its contents.
+
+
+# Load numpy as np and pandas as pd
+import numpy as np
+import pandas as pd
+
+# Create class: DataShell
+class DataShell:
+    def __init__(self, inputFile):
+        self.file = inputFile
+
+# Create class CsvDataShell, which inherits from DataShell
+class CsvDataShell(DataShell):
+    # Initialization method with arguments self, inputFile
+    def __init__(self, inputFile):
+        # Instance variable data
+        self.data = pd.read_csv(inputFile)
+
+# Instantiate CsvDataShell as us_data_shell, passing us_life_expectancy as argument
+us_data_shell = CsvDataShell(us_life_expectancy)
+
+# Print us_data_shell.data
+print(us_data_shell.data)
+
+Awesome. We are now seeing inheritance in action in the context of our DataShell class. What other classes might you create, that inherit from DataShell? Maybe ones that import TSV files? Maybe JSON?
+
+
+<script.py> output:
+               country code  year  life_expectancy
+    0    United States  USA  1880        39.410000
+    1    United States  USA  1890        45.209999
+    2    United States  USA  1901        49.299999
+    3    United States  USA  1902        50.500000
+    4    United States  USA  1903        50.599998
+    5    United States  USA  1904        49.599998
+    6    United States  USA  1905        50.299999
+    7    United States  USA  1906        50.099998
+    8    United States  USA  1907        50.200001
+    9    United States  USA  1908        51.900002
+    10   United States  USA  1909        52.799999
+    11   United States  USA  1910        51.799999
+    12   United States  USA  1911        53.400002
+    13   United States  USA  1912        54.099998
+    14   United States  USA  1913        53.500000
+    15   United States  USA  1914        54.599998
+    16   United States  USA  1915        55.099998
+    17   United States  USA  1916        54.200001
+    18   United States  USA  1917        54.000000
+    19   United States  USA  1918        47.200001
+    20   United States  USA  1919        55.299999
+    21   United States  USA  1920        55.400002
+    22   United States  USA  1921        58.200001
+    23   United States  USA  1922        58.099998
+    24   United States  USA  1923        57.500000
+    25   United States  USA  1924        58.500000
+    26   United States  USA  1925        58.500000
+    27   United States  USA  1926        57.900002
+    28   United States  USA  1927        59.400002
+    29   United States  USA  1928        58.299999
+    ..             ...  ...   ...              ...
+    87   United States  USA  1986        74.772003
+    88   United States  USA  1987        74.876999
+    89   United States  USA  1988        74.988998
+    90   United States  USA  1989        75.112999
+    91   United States  USA  1990        75.251999
+    92   United States  USA  1991        75.405998
+    93   United States  USA  1992        75.568001
+    94   United States  USA  1993        75.734001
+    95   United States  USA  1994        75.903000
+    96   United States  USA  1995        76.070000
+    97   United States  USA  1996        76.230003
+    98   United States  USA  1997        76.384003
+    99   United States  USA  1998        76.531998
+    100  United States  USA  1999        76.674004
+    101  United States  USA  2000        76.815002
+    102  United States  USA  2001        76.962997
+    103  United States  USA  2002        77.121002
+    104  United States  USA  2003        77.292000
+    105  United States  USA  2004        77.474998
+    106  United States  USA  2005        77.667000
+    107  United States  USA  2006        77.859001
+    108  United States  USA  2007        78.045998
+    109  United States  USA  2008        78.223000
+    110  United States  USA  2009        78.387001
+    111  United States  USA  2010        78.539001
+    112  United States  USA  2011        78.681999
+    113  United States  USA  2012        78.820999
+    114  United States  USA  2013        78.959999
+    115  United States  USA  2014        79.099998
+    116  United States  USA  2015        79.244003
+    
+    [117 rows x 4 columns]
+_______________________________________________________________________________________________________________________________________
+
+
+Composition and Inheritance I
+As you may have noticed, we have already been using composition in our classes, we just have not been explicit about it. More specifically, we have been relying on functionality from the pandas package.
+
+In this exercise, we will combine inheritance and composition as we define a class that 1) inherits from another class, and 2) uses functionality from other classes.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create abstract class DataShell, with class variable family set to 'DataShell', and with initialization method and instance variables; all this is already done for you.
+Create a second class, CsvDataShell, which inherits from DataShell.
+Define initialization method, with self, name, and filepath as input arguments. In the method body, declare data as instance variable and set it to pd.read_csv(filepath). Declare a second instance variable stats and set it to self.data.describe().
+Instantiate CsvDataShell as us_data_shell, passing "US" and us_life_expectancy as inputs. Finally, print us_data_shell.stats to explore its contents.
+
+# Define abstract class DataShell
+class DataShell:
+    # Class variable family
+    family = 'DataShell'
+    # Initialization method with arguments, and instance variables
+    def __init__(self, name, filepath): 
+        self.name = name
+        self.filepath = filepath
+
+# Define class CsvDataShell      
+class CsvDataShell(DataShell):
+    # Initialization method with arguments self, name, filepath
+    def __init__(self, name, filepath):
+        # Instance variable data
+        self.data = pd.read_csv(filepath)
+        # Instance variable stats
+        self.stats = self.data.describe()
+
+# Instantiate CsvDataShell as us_data_shell
+us_data_shell = CsvDataShell("US", us_life_expectancy)
+
+# Print us_data_shell.stats
+print(us_data_shell.stats)
+
+<script.py> output:
+                  year  life_expectancy
+    count   117.000000       117.000000
+    mean   1956.752137        66.556684
+    std      34.398252         9.551079
+    min    1880.000000        39.410000
+    25%    1928.000000        58.500000
+    50%    1957.000000        69.599998
+    75%    1986.000000        74.772003
+    max    2015.000000        79.244003
+
+Amazing! Now you now how to recycle code from other classes through both inheritance and composition! What other classes might you want to inherit from? What other code might you want to use composition with?
+_______________________________________________________________________________________________________________________________________
+
+Composition and Inheritance II
+In this exercise, we will create another class TsvDataShell that inherits from our abstract class DataShell, which also uses composition in recycling functionality from pandas objects.
+
+Specifically, our new class will be able to read in TSV files, and also give us a description of the data it stores.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create abstract class DataShell, with class variable family set to 'DataShell', and with initialization method and instance variables. Create a second class, CsvDataShell, which inherits from DataShell, also with initialization method and instance variables. All this is already done for you.
+Create a third class, TsvDataShell, which inherits from DataShell. Define its initialization method, with self, name, and filepath as input arguments. In the method body, declare data as instance variable and set it to pd.read_table(filepath). Declare a second instance variable stats and set it to self.data.describe().
+Instantiate CsvDataShell as us_data_shell, passing"US" and us_life_expectancy as input. Finally, print us_data_shell.stats to explore its contents. This is already done for you.
+Finally, instantiate TsvDataShell as france_data_shell, passing "France" and france_life_expectancy as inputs. Finally, print france_data_shell.stats to explore its contents.
+
+
+# Define abstract class DataShell
+class DataShell:
+    family = 'DataShell'
+    def __init__(self, name, filepath): 
+        self.name = name
+        self.filepath = filepath
+
+# Define class CsvDataShell
+class CsvDataShell(DataShell):
+    def __init__(self, name, filepath):
+        self.data = pd.read_csv(filepath)
+        self.stats = self.data.describe()
+
+# Define class TsvDataShell
+class TsvDataShell(DataShell):
+    # Initialization method with arguments self, name, filepath
+    def __init__(self, name, filepath):
+        # Instance variable data
+        self.data = pd.read_table(filepath)
+        # Instance variable stats
+        self.stats = self.data.describe()
+
+# Instantiate CsvDataShell as us_data_shell, print us_data_shell.stats
+us_data_shell = CsvDataShell("US", us_life_expectancy)
+print(us_data_shell.stats)
+
+# Instantiate TsvDataShell as france_data_shell, print france_data_shell.stats
+france_data_shell = TsvDataShell('France', france_life_expectancy)
+print(france_data_shell.stats)
+
+<script.py> output:
+                  year  life_expectancy
+    count   117.000000       117.000000
+    mean   1956.752137        66.556684
+    std      34.398252         9.551079
+    min    1880.000000        39.410000
+    25%    1928.000000        58.500000
+    50%    1957.000000        69.599998
+    75%    1986.000000        74.772003
+    max    2015.000000        79.244003
+           country,code,year,life_expectancy
+    count                                200
+    unique                               200
+    top            France,FRA,1961,70.311996
+    freq                                   1
+
+
+

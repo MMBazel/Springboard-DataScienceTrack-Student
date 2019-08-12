@@ -956,5 +956,233 @@ Replace any missing values in bad_conditions with a 0. (This has been done for y
 Create a histogram to visualize bad_conditions, and then display the plot.
 
 
+# Copy 'WT01' through 'WT22' to a new DataFrame
+WT = weather.loc[:,'WT01':'WT22']
+
+# Calculate the sum of each row in 'WT'
+weather['bad_conditions'] = WT.sum(axis='columns')
+
+# Replace missing values in 'bad_conditions' with '0'
+weather['bad_conditions'] = weather.bad_conditions.fillna(0).astype('int')
+
+# Create a histogram to visualize 'bad_conditions'
+weather.bad_conditions.plot(kind='hist',bins=20)
+
+# Display the plot
+plt.show()
+
+_____________________________________________________________________________________________________________________________________
+
+Rating the weather conditions
+In the previous exercise, you counted the number of bad weather conditions each day. In this exercise, you'll use the counts to create a rating system for the weather.
+
+The counts range from 0 to 9, and should be converted to ratings as follows:
+
+Convert 0 to 'good'
+Convert 1 through 4 to 'bad'
+Convert 5 through 9 to 'worse'
+Instructions
+100 XP
+Count the unique values in the bad_conditions column and sort the index. (This has been done for you.)
+Create a dictionary called mapping that maps the bad_conditions integers to strings as specified above.
+Convert the bad_conditions integers to strings using the mapping and store the results in a new column called rating.
+Count the unique values in rating to verify that the integers were properly converted to strings.
+
+# Count the unique values in 'bad_conditions' and sort the index
+print(weather.bad_conditions.value_counts().sort_index())
+
+# Create a dictionary that maps integers to strings
+mapping = {0:'good', 1:'bad', 2:'bad', 3:'bad', 4:'bad',5:'worse',6:'worse',7:'worse',8:'worse',9:'worse'}
+
+# Convert the 'bad_conditions' integers to strings using the 'mapping'
+weather['rating'] = weather.bad_conditions.map(mapping)
+
+# Count the unique values in 'rating'
+print(weather.rating.value_counts())
+
+<script.py> output:
+    0    1749
+    1     613
+    2     367
+    3     380
+    4     476
+    5     282
+    6     101
+    7      41
+    8       4
+    9       4
+    Name: bad_conditions, dtype: int64
+    bad      1836
+    good     1749
+    worse     432
+    Name: rating, dtype: int64
+    
+  
+  
+    _____________________________________________________________________________________________________________________________________
+    
+    Changing the data type to category
+Since the rating column only has a few possible values, you'll change its data type to category in order to store the data more efficiently. You'll also specify a logical order for the categories, which will be useful for future exercises.
+
+Instructions
+100 XP
+Create a list object called cats that lists the weather ratings in a logical order: 'good', 'bad', 'worse'.
+Change the data type of the rating column from object to category. Make sure to use the cats list to define the category ordering.
+Examine the head of the rating column to confirm that the categories are logically ordered.
+
+
+# Create a list of weather ratings in logical order
+cats = ['good','bad','worse']
+
+# Change the data type of 'rating' to category
+weather['rating'] = weather.rating.astype('category',ordered=True,categories=cats)
+
+# Examine the head of 'rating'
+print(weather.rating.head())
+
+<script.py> output:
+    0    bad
+    1    bad
+    2    bad
+    3    bad
+    4    bad
+    Name: rating, dtype: category
+    Categories (3, object): [good < bad < worse]
+    
+    
+    
+_____________________________________________________________________________________________________________________________________
+
+Preparing the DataFrames
+In this exercise, you'll prepare the traffic stop and weather rating DataFrames so that they're ready to be merged:
+
+With the ri DataFrame, you'll move the stop_datetime index to a column since the index will be lost during the merge.
+With the weather DataFrame, you'll select the DATE and rating columns and put them in a new DataFrame.
+Instructions
+100 XP
+Reset the index of the ri DataFrame.
+Examine the head of ri to verify that stop_datetime is now a DataFrame column, and the index is now the default integer index.
+Create a new DataFrame named weather_rating that contains only the DATE and rating columns from the weather DataFrame.
+Examine the head of weather_rating to verify that it contains the proper columns.
+
+# Reset the index of 'ri'
+ri.reset_index(inplace=True)
+
+# Examine the head of 'ri'
+print(ri.head())
+
+# Create a DataFrame from the 'DATE' and 'rating' columns
+weather_rating = weather[['DATE','rating']]
+
+# Examine the head of 'weather_rating'
+print(weather_rating.head())
+
+
+<script.py> output:
+            stop_datetime   stop_date stop_time driver_gender driver_race  \
+    0 2005-01-04 12:55:00  2005-01-04     12:55             M       White   
+    1 2005-01-23 23:15:00  2005-01-23     23:15             M       White   
+    2 2005-02-17 04:15:00  2005-02-17     04:15             M       White   
+    3 2005-02-20 17:15:00  2005-02-20     17:15             M       White   
+    4 2005-02-24 01:20:00  2005-02-24     01:20             F       White   
+    
+                        violation_raw  violation  search_conducted search_type  \
+    0  Equipment/Inspection Violation  Equipment             False         NaN   
+    1                        Speeding   Speeding             False         NaN   
+    2                        Speeding   Speeding             False         NaN   
+    3                Call for Service      Other             False         NaN   
+    4                        Speeding   Speeding             False         NaN   
+    
+        stop_outcome  is_arrested stop_duration  drugs_related_stop district  \
+    0       Citation        False      0-15 Min               False  Zone X4   
+    1       Citation        False      0-15 Min               False  Zone K3   
+    2       Citation        False      0-15 Min               False  Zone X4   
+    3  Arrest Driver         True     16-30 Min               False  Zone X1   
+    4       Citation        False      0-15 Min               False  Zone X3   
+    
+       frisk  stop_minutes  
+    0  False             8  
+    1  False             8  
+    2  False             8  
+    3  False            23  
+    4  False             8  
+             DATE rating
+    0  2005-01-01    bad
+    1  2005-01-02    bad
+    2  2005-01-03    bad
+    3  2005-01-04    bad
+    4  2005-01-05    bad
+
+<script.py> output:
+            stop_datetime   stop_date stop_time driver_gender driver_race  \
+    0 2005-01-04 12:55:00  2005-01-04     12:55             M       White   
+    1 2005-01-23 23:15:00  2005-01-23     23:15             M       White   
+    2 2005-02-17 04:15:00  2005-02-17     04:15             M       White   
+    3 2005-02-20 17:15:00  2005-02-20     17:15             M       White   
+    4 2005-02-24 01:20:00  2005-02-24     01:20             F       White   
+    
+                        violation_raw  violation  search_conducted search_type  \
+    0  Equipment/Inspection Violation  Equipment             False         NaN   
+    1                        Speeding   Speeding             False         NaN   
+    2                        Speeding   Speeding             False         NaN   
+    3                Call for Service      Other             False         NaN   
+    4                        Speeding   Speeding             False         NaN   
+    
+        stop_outcome  is_arrested stop_duration  drugs_related_stop district  \
+    0       Citation        False      0-15 Min               False  Zone X4   
+    1       Citation        False      0-15 Min               False  Zone K3   
+    2       Citation        False      0-15 Min               False  Zone X4   
+    3  Arrest Driver         True     16-30 Min               False  Zone X1   
+    4       Citation        False      0-15 Min               False  Zone X3   
+    
+       frisk  stop_minutes  
+    0  False             8  
+    1  False             8  
+    2  False             8  
+    3  False            23  
+    4  False             8  
+             DATE rating
+    0  2005-01-01    bad
+    1  2005-01-02    bad
+    2  2005-01-03    bad
+    3  2005-01-04    bad
+    4  2005-01-05    bad
+    
+    
+    _____________________________________________________________________________________________________________________________________
+    
+    Merging the DataFrames
+In this exercise, you'll merge the ri and weather_rating DataFrames into a new DataFrame, ri_weather.
+
+The DataFrames will be joined using the stop_date column from ri and the DATE column from weather_rating. Thankfully the date formatting matches exactly, which is not always the case!
+
+Once the merge is complete, you'll set stop_datetime as the index, which is the column you saved in the previous exercise.
+
+Instructions
+100 XP
+Examine the shape of the ri DataFrame.
+Merge the ri and weather_rating DataFrames using a left join.
+Examine the shape of ri_weather to confirm that it has two more columns but the same number of rows as ri.
+Replace the index of ri_weather with the stop_datetime column.
+
+
+
+# Examine the shape of 'ri'
+print(ri.shape)
+
+# Merge 'ri' and 'weather_rating' using a left join
+ri_weather = pd.merge(left=ri, right=weather_rating, left_on='stop_date', right_on='DATE', how='left')
+
+# Examine the shape of 'ri_weather'
+print(ri_weather.shape)
+
+# Set 'stop_datetime' as the index of 'ri_weather'
+ri_weather.set_index('stop_datetime', inplace=True)
+
+<script.py> output:
+    (86536, 16)
+    (86536, 18)
+    
+    _____________________________________________________________________________________________________________________________________
     
     

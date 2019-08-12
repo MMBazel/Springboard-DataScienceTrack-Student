@@ -1355,3 +1355,6 @@ print(ri_weather.pivot_table(index='violation', columns='rating', values='is_arr
     Registration/plates  0.081574  0.098160  0.115625
     Seat belt            0.028587  0.022493  0.000000
     Speeding             0.013405  0.013314  0.016886
+
+_____________________________________________________________________________________________________________________________________
+https://campus.datacamp.com/courses/analyzing-police-activity-with-pandas/analyzing-the-effect-of-weather-on-policing?ex=15

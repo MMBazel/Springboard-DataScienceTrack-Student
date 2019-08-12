@@ -1185,4 +1185,173 @@ ri_weather.set_index('stop_datetime', inplace=True)
     
     _____________________________________________________________________________________________________________________________________
     
+  Comparing arrest rates by weather rating
+Do police officers arrest drivers more often when the weather is bad? Find out below!
+
+First, you'll calculate the overall arrest rate.
+Then, you'll calculate the arrest rate for each of the weather ratings you previously assigned.
+Finally, you'll add violation type as a second factor in the analysis, to see if that accounts for any differences in the arrest rate.
+Since you previously defined a logical order for the weather categories, good < bad < worse, they will be sorted that way in the results.
+
+Instructions 1/3
+35 XP
+1
+Calculate the overall arrest rate by taking the mean of the is_arrested Series.
+
+
+
+
+# Calculate the overall arrest rate
+print(ri_weather.is_arrested.mean())
+
+
+# Calculate the arrest rate for each 'rating'
+print(ri_weather.groupby('rating').is_arrested.mean())
+
+
+# Calculate the arrest rate for each 'violation' and 'rating'
+print(ri_weather.groupby(['violation','rating']).is_arrested.mean())
+
+
+<script.py> output:
+    0.0355690117407784
     
+ <script.py> output:
+    rating
+    good     0.033715
+    bad      0.036261
+    worse    0.041667
+    Name: is_arrested, dtype: float64
+
+<script.py> output:
+    violation            rating
+    Equipment            good      0.059007
+                         bad       0.066311
+                         worse     0.097357
+    Moving violation     good      0.056227
+                         bad       0.058050
+                         worse     0.065860
+    Other                good      0.076966
+                         bad       0.087443
+                         worse     0.062893
+    Registration/plates  good      0.081574
+                         bad       0.098160
+                         worse     0.115625
+    Seat belt            good      0.028587
+                         bad       0.022493
+                         worse     0.000000
+    Speeding             good      0.013405
+                         bad       0.013314
+                         worse     0.016886
+    Name: is_arrested, dtype: float64
+    
+    
+    _____________________________________________________________________________________________________________________________________
+    
+    
+   Selecting from a multi-indexed Series
+The output of a single .groupby() operation on multiple columns is a Series with a MultiIndex. Working with this type of object is similar to working with a DataFrame:
+
+The outer index level is like the DataFrame rows.
+The inner index level is like the DataFrame columns.
+In this exercise, you'll practice accessing data from a multi-indexed Series using the .loc[] accessor.
+
+Instructions
+100 XP
+Save the output of the .groupby() operation from the last exercise as a new object, arrest_rate. (This has been done for you.)
+Print the arrest_rate Series and examine it.
+Print the arrest rate for moving violations in bad weather.
+Print the arrest rates for speeding violations in all three weather conditions.
+
+
+# Save the output of the groupby operation from the last exercise
+arrest_rate = ri_weather.groupby(['violation', 'rating']).is_arrested.mean()
+
+# Print the 'arrest_rate' Series
+print(arrest_rate)
+
+# Print the arrest rate for moving violations in bad weather
+print(arrest_rate.loc['Moving violation','bad'])
+
+# Print the arrest rates for speeding violations in all three weather conditions
+print(arrest_rate.loc['Speeding'])
+
+
+<script.py> output:
+    violation            rating
+    Equipment            good      0.059007
+                         bad       0.066311
+                         worse     0.097357
+    Moving violation     good      0.056227
+                         bad       0.058050
+                         worse     0.065860
+    Other                good      0.076966
+                         bad       0.087443
+                         worse     0.062893
+    Registration/plates  good      0.081574
+                         bad       0.098160
+                         worse     0.115625
+    Seat belt            good      0.028587
+                         bad       0.022493
+                         worse     0.000000
+    Speeding             good      0.013405
+                         bad       0.013314
+                         worse     0.016886
+    Name: is_arrested, dtype: float64
+    0.05804964058049641
+    rating
+    good     0.013405
+    bad      0.013314
+    worse    0.016886
+    Name: is_arrested, dtype: float64
+    
+    
+   _____________________________________________________________________________________________________________________________________
+   
+   
+Reshaping the arrest rate data
+In this exercise, you'll start by reshaping the arrest_rate Series into a DataFrame. This is a useful step when working with any multi-indexed Series, since it enables you to access the full range of DataFrame methods.
+
+Then, you'll create the exact same DataFrame using a pivot table. This is a great example of how pandas often gives you more than one way to reach the same result!
+
+Instructions
+100 XP
+Unstack the arrest_rate Series to reshape it into a DataFrame.
+Create the exact same DataFrame using a pivot table! Each of the three .pivot_table() parameters should be specified as one of the ri_weather columns.
+
+# Unstack the 'arrest_rate' Series into a DataFrame
+print(arrest_rate.unstack())
+
+# Create the same DataFrame using a pivot table
+print(ri_weather.pivot_table(index='violation', columns='rating', values='is_arrested'))
+
+
+<script.py> output:
+    rating                   good       bad     worse
+    violation                                        
+    Equipment            0.059007  0.066311  0.097357
+    Moving violation     0.056227  0.058050  0.065860
+    Other                0.076966  0.087443  0.062893
+    Registration/plates  0.081574  0.098160  0.115625
+    Seat belt            0.028587  0.022493  0.000000
+    Speeding             0.013405  0.013314  0.016886
+    
+    
+    
+    <script.py> output:
+    rating                   good       bad     worse
+    violation                                        
+    Equipment            0.059007  0.066311  0.097357
+    Moving violation     0.056227  0.058050  0.065860
+    Other                0.076966  0.087443  0.062893
+    Registration/plates  0.081574  0.098160  0.115625
+    Seat belt            0.028587  0.022493  0.000000
+    Speeding             0.013405  0.013314  0.016886
+    rating                   good       bad     worse
+    violation                                        
+    Equipment            0.059007  0.066311  0.097357
+    Moving violation     0.056227  0.058050  0.065860
+    Other                0.076966  0.087443  0.062893
+    Registration/plates  0.081574  0.098160  0.115625
+    Seat belt            0.028587  0.022493  0.000000
+    Speeding             0.013405  0.013314  0.016886

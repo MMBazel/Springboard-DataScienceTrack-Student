@@ -1,0 +1,162 @@
+Course Description
+Object-oriented programming (OOP) is a powerful programming paradigm that reduces the complexity of systems as is employs heavy re-usability of code. OOP leverages the concept of objects and classes. Objects may contain data (known as attributes, stored as instance or class variables) as well as procedures (defined as methods). Objects are generated from blueprints known as classes, which specify the attributes and methods to be generated at the time of object instantiation. This course introduces the internals of classes and the utilization of objects, as well as important object-oriented programming fundamentals such as inheritance, polymorphism, and composition.
+
+======================================================================================================================================
+0%
+In this chapter we quickly review functions and data structures, as they are building blocks of object-oriented programming. Then we transition into the conceptual definition of objects and classes.
+
+_______________________________________________________________________________________________________________________________________
+
+Creating functions
+In this exercise, we will review functions, as they are key building blocks of object-oriented programs.
+
+For this, we will create a simple function average_numbers() which averages a list of numbers. Remember that lists are a basic data type in Python that we can build using the [] bracket notation.
+
+Here is an example of a function that returns the square of an integer:
+
+def square_function(x):
+    x_squared =  x**2
+    return x_squared
+Instructions
+100 XP
+Instructions
+100 XP
+Create a function average_numbers(), which takes a list num_list as input and then returns avg as output.
+Inside the function, create a variable, avg, that takes the average of all the numbers in the list.
+Call the average_numbers function on the list [1, 2, 3, 4, 5, 6] and assign the output to the variable my_avg.
+Print out my_avg.
+
+
+# Create function that returns the average of an integer list
+def average_numbers(num_list): 
+    avg = sum(num_list)/float(len(num_list)) # divide by length of list
+    return avg
+
+# Take the average of a list: my_avg
+my_avg = average_numbers([1,2,3,4,5,6])
+
+# Print out my_avg
+print(my_avg)
+_______________________________________________________________________________________________________________________________________
+
+Creating a complex data type
+In this exercise, we'll take a closer look at the flexibility of the list data type, by creating a list of lists.
+
+In Python, lists usually look like our list example below, and can be made up of either simple strings, integers, or a combination of both.
+
+list = [1,2]
+In creating a list of lists, we're building up to the concept of a NumPy array.
+
+Instructions
+100 XP
+Create a variable called matrix, and assign it the value of a list.
+Within the matrix list, include two additional lists: [1,2,3,4] and [5,6,7,8].
+Print the matrix list.
+
+# Create a list that contains two lists: matrix
+matrix = [[1,2,3,4], [5,6,7,8]]
+
+# Print the matrix list
+print(matrix)
+_______________________________________________________________________________________________________________________________________
+
+Create a function that returns a NumPy array
+In this exercise, we'll continue working with the numpy package and our previous structures.
+
+We'll create a NumPy array of the float (numerical) data type so that we can work with a multi-dimensional data objects, much like columns and rows in a spreadsheet.
+
+Instructions
+100 XP
+Import numpy as np.
+Declare variable my_matrix and set it to [[1,2,3,4], [5,6,7,8]].
+Declare a function called return_array(), which takes a list matrix as input, and returns an array object as output. In the body, declare a variable array set it to np.array(matrix, dtype = float).
+Call return_array() on the my_matrix list, and print out the output.
+
+# Import numpy as np
+import numpy as np
+
+# List input: my_matrix
+my_matrix = [[1,2,3,4], [5,6,7,8]] 
+
+# Function that converts lists to arrays: return_array
+def return_array(matrix):
+    array = np.array(matrix, dtype = float)
+    return array
+    
+# Call return_array on my_matrix, and print the output
+print(return_array(my_matrix))
+
+_______________________________________________________________________________________________________________________________________
+
+Creating a class
+We're going to be working on building a class, which is a way to organize functions and variables in Python. To start with, let's look at the simplest possible way to create a class.
+
+Instructions
+100 XP
+Declare a class called DataShell.
+Our class will not do much: simply include the pass statement in the body of the DataShell class.
+
+
+# Create a class: DataShell
+class DataShell: 
+    pass
+		
+	
+======================================================================================================================================
+
+
+2
+Deep dive into classes and objects
+0%
+Here, we dive deep into the internals of classes, instantiation of objects, the initialization method, instance variables, class variables, overriding class variables, and methods.
+
+_______________________________________________________________________________________________________________________________________
+
+Object: Instance of a Class
+As we learned earlier, a class is like a blueprint: we can make many copies of our class.
+
+When we do this, we say that we are instantiating our class. These instances are called objects.
+
+Here is an example of class instantiation:
+
+object_name = ClassName()
+Instructions
+100 XP
+Create an empty class called DataShell. Only include the pass statement inside of the class definition.
+Instantiate the DataShell class and assign the newly created object to the my_data_shell variable.
+Print my_data_shell and explore its contents.
+
+# Create empty class: DataShell
+class DataShell:
+  
+    # Pass statement
+    pass
+
+# Instantiate DataShell: my_data_shell
+my_data_shell = DataShell()
+
+# Print my_data_shell
+print(my_data_shell)
+
+
+<script.py> output:
+    <__main__.DataShell object at 0x7efbd4d58a58>
+
+_______________________________________________________________________________________________________________________________________
+
+
+
+
+======================================================================================================================================
+
+3
+Fancy classes, fancy objects
+0%
+We create fancier classes with sophisticated methods such as importing datasets, getting descriptive statistics, and renaming columns. Also, we cover best practices for creating and documenting classes according to PEP-8.
+
+======================================================================================================================================
+
+4
+Inheritance, polymorphism and composition
+0%
+In this chapter we cover inheritance, which is when we create a class that employs (or 'inherits') all class variables and methods from a 'parent' class. We also cover polymorphism, which is when multiple classes inherit from a single class. Finally, we cover composition, which is when classes employ specific class functionality from other classes without necessarily inheriting from them.

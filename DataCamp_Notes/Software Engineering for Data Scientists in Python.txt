@@ -1,0 +1,383 @@
+Software Engineering for Data Scientists in Python
+
+Course Description
+Data scientists can experience huge benefits by learning concepts from the field of software engineering, allowing them to more easily reutilize their code and share it with collaborators. In this course, you'll learn all about the important ideas of modularity, documentation, & automated testing, and you'll see how they can help you solve Data Science problems quicker and in a way that will make future you happy. You'll even get to use your acquired software engineering chops to write your very own Python package for performing text analytics.
+
+====================================================================================================================================
+
+1
+Software Engineering & Data Science
+FREE
+0%
+Why should you as a Data Scientist care about Software Engineering concepts? Here we'll cover specific Software Engineering concepts and how these important ideas can revolutionize your Data Science workflow!
+
+
+
+_____________________________________________________________________________________________________________________________
+
+Software engineering concepts:
+
+Modularity
+Documentation
+Testing
+Version Control & Git
+
+
+Benets of automated testing:
+
+Save time over manualtesting
+Find & x more bugs
+Run tests anytime/anywhere
+
+_____________________________________________________________________________________________________________________________
+
+
+Python modularity in the wild
+In the slides, we covered 3 ways that you can write modular code with Python: packages, classes, and methods. For reference, you can see the example code we reviewed below.
+
+# Import the pandas PACKAGE
+import pandas as pd
+
+# Create some example data
+data = {'x': [1, 2, 3, 4], 
+        'y': [20.1, 62.5, 34.8, 42.7]}
+
+# Create a dataframe CLASS object
+df = pd.DataFrame(data)
+
+# Use the plot METHOD
+df.plot('x', 'y')
+In this exercise, you'll utilize a class & a method from the popular package numpy.
+
+Instructions
+100 XP
+Complete the import statement to load the numpy package.
+Use numpy's array class to define arr.
+Use arr's sort method to sort the numpy array.
+
+
+# import the numpy package
+import numpy as np
+
+# create an array class object
+arr = np.array([8, 6, 7, 5, 3, 0, 9])
+
+# use the sort method
+arr.sort()
+
+# print the sorted array
+print(arr)
+
+_____________________________________________________________________________________________________________________________
+
+
+Leveraging documentation
+When writing code for Data Science, it's inevitable that you'll need to install and use someone else's code. You'll quickly learn that using someone else's code is much more pleasant when they use good software engineering practices. In particular, good documentation makes the right way to call a function obvious. In this exercise you'll use python's help() method to view a function's documentation so you can determine how to correctly call a new method.
+
+The list words has been loaded in your session.
+
+Instructions 1/2
+50 XP
+1
+2
+View the documentation of the Counter.most_common method using the help function. Note, you need to run the import statement before completing this step.
+
+# load the Counter function into our environment
+from collections import Counter
+
+# View the documentation for Counter.most_common
+help(Counter.most_common)
+
+
+
+<script.py> output:
+    Help on function most_common in module collections:
+    
+    most_common(self, n=None)
+        List the n most common elements and their counts from the most
+        common to the least.  If n is None, then list all element counts.
+        
+        >>> Counter('abcdeabcdabcaba').most_common(3)
+        [('a', 5), ('b', 4), ('c', 3)]
+				
+				
+
+Instructions 2/2
+50 XP
+2
+Correctly call Counter.most_common() by reading its documentation.
+Print the results stored in top_5_words.
+
+
+
+# load the Counter function into our environment
+from collections import Counter
+
+# View the documentation for Counter.most_common
+help(Counter.most_common)
+
+# use Counter to find the top 5 most common words
+top_5_words = Counter(words).most_common(5)
+
+# display the top 5 most common words
+print(top_5_words)
+
+
+<script.py> output:
+    Help on function most_common in module collections:
+    
+    most_common(self, n=None)
+        List the n most common elements and their counts from the most
+        common to the least.  If n is None, then list all element counts.
+        
+        >>> Counter('abcdeabcdabcaba').most_common(3)
+        [('a', 5), ('b', 4), ('c', 3)]
+    
+    [('@DataCamp', 299), ('to', 263), ('the', 251), ('in', 164), ('RT', 158)]
+_____________________________________________________________________________________________________________________________
+
+Using pycodestyle
+We saw earlier that pycodestyle can be run from the command line to check a file for PEP 8 compliance. Sometimes it's useful to run this kind of check from a Python script.
+
+In this exercise, you'll use pycodestyle's StyleGuide class to check multiple files for PEP 8 compliance. Both files accomplish the same task, but they differ greatly in formatting and readability. You can view the contents of the files by following their links below.
+
+Instructions
+100 XP
+Import the pycodestyle package
+Create an instance of StyleGuide named style_checker.
+There are two files that we'll be checking; they're named nay_pep8.py and yay_pep8.py. Pass a list containing these file names to our style_checker's check_files method.
+print the results of our style check to the console. Make sure to read the output!
+
+# Import needed package
+import pycodestyle
+
+# Create a StyleGuide instance
+style_checker = pycodestyle.StyleGuide()
+
+# Run PEP 8 check on multiple files
+result = style_checker.check_files(['nay_pep8.py', 'yay_pep8.py'])
+
+# Print result of PEP 8 style check
+print(result.messages)
+
+<script.py> output:
+    nay_pep8.py:1:1: E265 block comment should start with '# '
+    nay_pep8.py:2:6: E225 missing whitespace around operator
+    nay_pep8.py:4:2: E131 continuation line unaligned for hanging indent
+    nay_pep8.py:5:6: E131 continuation line unaligned for hanging indent
+    nay_pep8.py:6:1: E122 continuation line missing indentation or outdented
+    nay_pep8.py:7:1: E265 block comment should start with '# '
+    nay_pep8.py:8:1: E402 module level import not at top of file
+    nay_pep8.py:9:1: E265 block comment should start with '# '
+    nay_pep8.py:10:1: E302 expected 2 blank lines, found 0
+    nay_pep8.py:10:18: E231 missing whitespace after ','
+    nay_pep8.py:11:2: E111 indentation is not a multiple of four
+    nay_pep8.py:12:2: E111 indentation is not a multiple of four
+    nay_pep8.py:14:1: E265 block comment should start with '# '
+    nay_pep8.py:15:1: E305 expected 2 blank lines after class or function definition, found 1
+    nay_pep8.py:16:11: E111 indentation is not a multiple of four
+    nay_pep8.py:16:17: E225 missing whitespace around operator
+    nay_pep8.py:16:32: E222 multiple spaces after operator
+    nay_pep8.py:16:32: E251 unexpected spaces around keyword / parameter equals
+    nay_pep8.py:16:38: E231 missing whitespace after ','
+    nay_pep8.py:16:44: E221 multiple spaces before operator
+    nay_pep8.py:16:44: E251 unexpected spaces around keyword / parameter equals
+    nay_pep8.py:16:47: E251 unexpected spaces around keyword / parameter equals
+    nay_pep8.py:17:11: E111 indentation is not a multiple of four
+    nay_pep8.py:17:17: E201 whitespace after '('
+    nay_pep8.py:17:25: E202 whitespace before ')'
+    nay_pep8.py:17:27: W292 no newline at end of file
+    {'E225': 'missing whitespace around operator', 'E122': 'continuation line missing indentation or outdented', 'E231': "missing whitespace after ','", 'E402': 'module level import not at top of file', 'E222': 'multiple spaces after operator', 'E251': 'unexpected spaces around keyword / parameter equals', 'E202': "whitespace before ')'", 'E111': 'indentation is not a multiple of four', 'E221': 'multiple spaces before operator', 'E201': "whitespace after '('", 'E131': 'continuation line unaligned for hanging indent', 'E265': "block comment should start with '# '", 'E305': 'expected 2 blank lines after class or function definition, found 1', 'E302': 'expected 2 blank lines, found 0', 'W292': 'no newline at end of file'}
+		
+		_____________________________________________________________________________________________________________________________
+		
+		Conforming to PEP 8
+As we've covered, there are tools available to check if your code conforms to the PEP 8 guidelines. One possible way to stay compliant is to use an IDE that warns you when you accidentally stray from the style guide. Another way to check code is to use the pycodestyle package.
+
+The results below show the output of running pycodestyle check against the code shown in your editor. The leading number in each line shows how many occurrences there were of that particular violation.
+
+my_script.py:2:2:  E225 missing whitespace around operator
+my_script.py:2:7:  E231 missing whitespace after ','
+my_script.py:2:9:  E231 missing whitespace after ','
+my_script.py:5:7:  E201 whitespace after '('
+my_script.py:5:11: E202 whitespace before ')'
+Instructions
+100 XP
+Leverage the output of pycodestyle to edit the code to be compliant with PEP 8
+
+# Assign data to x
+x = [8, 3, 4]
+
+# Print the data
+print(x)
+
+		
+_____________________________________________________________________________________________________________________________
+
+PEP 8 in documentation
+So far we've focused on how PEP 8 affects functional pieces of code. There are also rules to help make comments and documentation more readable. In this exercise, you'll be fixing various types of comments to be PEP 8 compliant.
+
+The result of a pycodestyle style check on the code can be seen below.
+
+my_script.py:2:15: E261 at least two spaces before inline comment
+my_script.py:5:16: E262 inline comment should start with '# '
+my_script.py:11:1: E265 block comment should start with '# '
+my_script.py:13:2: E114 indentation is not a multiple of four (comment)
+my_script.py:13:2: E116 unexpected indentation (comment)
+Instructions
+100 XP
+Leverage the output of pycodestyle to edit the code's comments to be compliant with PEP 8
+
+def print_phrase(phrase, polite=True, shout=False):
+    if polite: 
+        # It's generally polite to say please
+        phrase = 'Please ' + phrase
+
+    if shout:  
+        # All caps looks like a written shout
+        phrase = phrase.upper() + '!!'
+
+    print(phrase)
+
+# Politely ask for help
+print_phrase('help me', polite=True)
+
+# Shout about a discovery
+print_phrase('eureka', shout=True)
+
+
+====================================================================================================================================
+
+2
+Writing a Python Module
+0%
+Become a fully fledged Python package developer by writing your first package! You'll learn how to structure and write Python code that you can be installed, used, and distributed just like famous packages such as NumPy and Pandas.
+
+
+_____________________________________________________________________________________________________________________________
+Minimal package requirements
+What are the minimal requirements to make an import-able python package?
+
+A directory with a blank file named __init__.py.
+
+_____________________________________________________________________________________________________________________________
+Naming packages
+We covered the PEP 8 guidelines for naming packages. In this exercise, you'll use that knowledge to identify a package following the requirements.
+
+For additional reference, you can view the PEP 8 section on package naming here
+
+Instructions
+100 XP
+The possible package names to import are the following: text_analyzer, textAnalyzer, TextAnalyzer, & __text_analyzer__
+import the package from the list above that follows the PEP 8 naming conventions.
+
+# Import the package with a name that follows PEP 8
+import text_analyzer
+
+_____________________________________________________________________________________________________________________________
+
+
+Recognizing packages
+The structure of your directory tree is printed below. You'll be working in the file my_script.py that you can see in the tree.
+
+recognizing_packages
+├── MY_PACKAGE
+│   └── _init_.py
+├── package
+│   └── __init__.py
+├── package_py
+│   └── __init__
+│       └── __init__.py
+├── py_package
+│   └── __init__.py
+├── pyackage
+│   └── init.py
+└── my_script.py
+Instructions
+100 XP
+Use the information from the context to identify the packages in the directory that follow the minimal structure.
+import the two packages that follow the minimal package requirements.
+Use help to print information about each imported package.
+
+
+# Import local packages
+import package
+import py_package
+
+# View the help for each package
+help(package)
+help(py_package)
+
+
+In [1]: # Import local packages
+        import package
+        import py_package
+        
+        # View the help for each package
+        help(package)
+        help(py_package)
+Help on package package:
+
+NAME
+    package
+
+PACKAGE CONTENTS
+
+
+FILE
+    /tmp/tmphgagh5a6/package/__init__.py
+
+
+Help on package py_package:
+
+NAME
+    py_package
+
+PACKAGE CONTENTS
+
+
+FILE
+    /tmp/tmphgagh5a6/py_package/__init__.py
+
+<script.py> output:
+    Help on package package:
+    
+    NAME
+        package
+    
+    PACKAGE CONTENTS
+    
+    
+    FILE
+        /tmp/tmprzpo4evi/package/__init__.py
+    
+    
+    Help on package py_package:
+    
+    NAME
+        py_package
+    
+    PACKAGE CONTENTS
+    
+    
+    FILE
+        /tmp/tmprzpo4evi/py_package/__init__.py
+				
+	_____________________________________________________________________________________________________________________________
+	
+	
+				
+				
+====================================================================================================================================
+
+3
+Utilizing Classes
+0%
+Object Oriented Programming is a staple of Python development. By leveraging classes and inheritance your Python package will become a much more powerful tool for your users.
+
+====================================================================================================================================
+
+4
+Maintainability
+0%
+You've now written a fully functional Python package for text analysis! To make maintaining your project as easy as possible we'll leverage best practices around concepts such as documentation and unit testing.

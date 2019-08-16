@@ -1264,5 +1264,3 @@ After this exercise you will be nearly done with the course! If you enjoyed it, 
 Code Climate, Sphinx, & Travis CI
 
 Great job! Code Climate can help point out if your code isn't modular, Sphinx can help create documentation for your project using your docstrings, and Travis CI can automatically run your tests every time you add code.
-
-

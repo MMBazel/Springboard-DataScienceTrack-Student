@@ -572,9 +572,697 @@ Utilizing Classes
 0%
 Object Oriented Programming is a staple of Python development. By leveraging classes and inheritance your Python package will become a much more powerful tool for your users.
 
+_____________________________________________________________________________________________________________________________
+Writing a class for your package
+We've covered how classes can be written in Python. In this exercise, you'll be creating the beginnings of a Document class that will be a foundation for text analysis in your package. Once the class is written you will modify your package's __init__.py file to make it easily accessible by your users.
+
+Below is the structure of where you'll be working.
+
+working_dir
+├── text_analyzer
+│    ├── __init__.py
+│    ├── counter_utils.py
+│    ├── document.py
+└── my_script.py
+Instructions 1/2
+50 XP
+1
+2
+Instructions 1/2
+50 XP
+1
+2
+You are working in document.py
+Finish the def statement that will create a new Document instance when a user calls Document().
+Use your knowledge of PEP 8 conventions to complete the definition of the newly named class method.
+Take Hint (-15 XP)
+
+# Define Document class
+class Document:
+    """A class for text analysis
+    
+    :param text: string of text to be analyzed
+    :ivar text: string of text to be analyzed; set by `text` parameter
+    """
+    # Method to create a new instance of MyClass
+    def __init__(self, text):
+        # Store text parameter to the text attribute
+        self.text = text
+
+
+
+_____________________________________________________________________________________________________________________________
+
+Using your package's class
+You just wrote the beginnings of a Document class that you'll build upon to perform text analysis. In this exercise, you'll test out its current functionality of storing text.
+
+Below is the document tree that you've built up so far when developing your package. You'll be working in my_script.py.
+
+working_dir
+├── text_analyzer
+│    ├── __init__.py
+│    ├── counter_utils.py
+│    ├── document.py
+└── my_script.py
+Instructions
+100 XP
+import your text_analyzer package.
+Create an instance of Document with the datacamp_tweet variable that's been loaded into your session.
+Print the contents of the text attribute of your newly created Document instance.
+
+
+# Import custom text_analyzer package
+import text_analyzer
+
+# Create an instance of Document with datacamp_tweet
+my_document = text_analyzer.Document(text=datacamp_tweet)
+
+# Print the text attribute of the Document instance
+print(my_document.text)
+
+
+_____________________________________________________________________________________________________________________________
+
+Writing a non-public method
+In the lesson, we covered how to add functionality to classes using non-public methods. By defining methods as non-public you're signifying to the user that the method is only to be used inside the package.
+
+In this exercise, you will define a non-public method that will be leveraged by your class to count words.
+
+Instructions
+100 XP
+Counter from collections has been loaded into your environment, as well as the function tokenize.
+Add a method named count_words as a non-public method
+Give your non-public method the functionality to count the contents tokens attribute using Counter
+Utilize your new function in the __init__ method
+
+class Document:
+  def __init__(self, text):
+    self.text = text
+    # Tokenize the document with non-public tokenize method
+    self.tokens = self._tokenize()
+    # Perform word count with non-public count_words method
+    self.word_counts = self._count_words()
+
+  def _tokenize(self):
+    return tokenize(self.text)
+	
+  # non-public method to tally document's word counts with Counter
+  def _count_words(self):
+    return Counter(self.tokens)
+
+_____________________________________________________________________________________________________________________________
+
+Using your class's functionality
+You've now added additional functionality to your Document class's __init__ method that automatically processes text for your users. In this exercise, you'll act as one of those users to see the benefits of your hard work.
+
+The Document class (copied below) has been loaded into your environment (complete with your new updates).
+
+class Document:
+  def __init__(self, text):
+    self.text = text
+    # pre tokenize the document with non-public tokenize method
+    self.tokens = self._tokenize()
+    # pre tokenize the document with non-public count_words
+    self.word_counts = self._count_words()
+
+  def _tokenize(self):
+    return tokenize(self.text)
+
+  # non-public method to tally document's word counts with Counter
+  def _count_words(self):
+    return Counter(self.tokens)
+Instructions
+100 XP
+Instructions
+100 XP
+Create a new Document instance from the datacamp_tweets data set loaded into your environment. The datacamp_tweets object is a single string containing hundreds of tweets written by DataCamp & DataCamp users.
+Print the first 5 tokens from datacamp_doc.
+Print the top 5 most common words that were calculated by the non-public _count_words() method automatically in the Document.__init__ method.
+Take Hint (-30 XP)
+
+# create a new document instance from datacamp_tweets
+datacamp_doc = Document(datacamp_tweets)
+
+# print the first 5 tokens from datacamp_doc
+print(datacamp_doc.tokens[:5])
+
+# print the top 5 most used words in datacamp_doc
+print(datacamp_doc._count_words().most_common(5))
+
+
+<script.py> output:
+    ['[DataCamp]', 'Introduction', 'to', 'H', 'O']
+    [('DataCamp', 322), ('to', 263), ('the', 251), ('in', 163), ('RT', 158)]
+
+Superb! Thanks to the functionality you added to the __init__ method, your users get the benefits of tokenization and word counts without any extra effort.
+
+
+_____________________________________________________________________________________________________________________________
+
+Using inheritance to create a class
+You've previously written a Document class for text analysis, but your NLP project will now have a focus on Social Media data. Your general Document class might be useful later so it's best not destroy it while your focus shifts to tweets.
+
+Instead of copy-pasting the already written functionality, you will use the principles of 'DRY' and inheritance to quickly create your new SocialMedia class.
+
+Instructions
+100 XP
+Document has been preloaded in the session.
+Complete the class statement to create a SocialMedia class that inherits from Document.
+Define SocialMedia's __init__() method that initializes a Document.
+
+
+# Define a SocialMedia class that is a child of the `Document class`
+class SocialMedia(Document):
+    def __init__(self, text):
+        Document.__init__(self, text)
+
+Fantastic! Thanks to inheritance your SocialMedia class already has all the functionality of the Document class, and you were able to accomplish this by staying DRY.
+
+_____________________________________________________________________________________________________________________________
+
+Adding functionality to a child class
+You've just written a SocialMedia class that inherits functionality from Document. As of now, the SocialMedia class doesn't have any functionality different from Document. In this exercise, you will build feature's into SocialMedia to specialize it for use with Social Media data.
+
+For reference, the definition of Document can be seen below.
+
+class Document:
+    # Initialize a new Document instance
+    def __init__(self, text):
+        self.text = text
+        # Pre tokenize the document with non-public tokenize method
+        self.tokens = self._tokenize()
+        # Pre tokenize the document with non-public count_words
+        self.word_counts = self._count_words()
+
+    def _tokenize(self):
+        return tokenize(self.text)
+
+    # Non-public method to tally document's word counts
+    def _count_words(self):
+        # Use collections.Counter to count the document's tokens
+        return Counter(self.tokens)
+Instructions 1/2
+50 XP
+1
+2
+Instructions 1/2
+50 XP
+1
+2
+The function filter_word_counts has been loaded in your session. Use help to see its proper usage.
+Finish the _count_hashtags method using filter_word_counts so that only words_counts starting with # remain.
+
+
+# Define a SocialMedia class that is a child of the `Document class`
+class SocialMedia(Document):
+    def __init__(self, text):
+        Document.__init__(self, text)
+        self.hashtag_counts = self._count_hashtags()
+        
+    def _count_hashtags(self):
+        # Filter attribute so only words starting with '#' remain
+        return filter_word_counts(self.word_counts,'#')
+
+
+
+Fill in the first line ofSocialMedia's __init__ method using the parent class to properly utilize inheritance.
+Properly call the _count_mentions method in __init__ to add a new feature to SocialMedia.
+
+
+# Define a SocialMedia class that is a child of the `Document class`
+class SocialMedia(Document):
+    def __init__(self, text):
+        Document.__init__(self, text)
+        self.hashtag_counts = self._count_hashtags()
+        self.mention_counts = self._count_mentions()
+        
+    def _count_hashtags(self):
+        # Filter attribute so only words starting with '#' remain
+        return filter_word_counts(self.word_counts, first_char='#')
+    
+    def _count_mentions(self):
+        # Filter attribute so only words starting with '@' remain
+        return filter_word_counts(self.word_counts, first_char='@')
+_____________________________________________________________________________________________________________________________
+
+Using your child class
+Thanks to the power of inheritance you were able to create a feature-rich, SocialMedia class based on its parent, Document. Let's see some of these features in action.
+
+Below is the full definition of SocialMedia for reference. Additionally, SocialMedia has been added to __init__.py for ease of use.
+
+class SocialMedia(Document):
+    def __init__(self, text):
+        Document.__init__(self, text)
+        self.hashtag_counts = self._count_hashtags()
+        self.mention_counts = self._count_mentions()
+
+    def _count_hashtags(self):
+        # Filter attribute so only words starting with '#' remain
+        return filter_word_counts(self.word_counts, first_char='#')      
+
+    def _count_mentions(self):
+        # Filter attribute so only words starting with '@' remain
+        return filter_word_counts(self.word_counts, first_char='@')
+Instructions
+100 XP
+import your text_analyzer custom package.
+Define dc_tweets as an instance of SocialMedia with the preloaded datacamp_tweets object as the text.
+print the 5 most_common mentioned users in the data using the appropriate dc_tweets attribute.
+Use text_analyzer's plot_counter method to plot the most used hashtags in the data using the appropriate dc_tweets attribute.
+
+
+# Import custom text_analyzer package
+import text_analyzer
+
+# Create a SocialMedia instance with datacamp_tweets
+dc_tweets = text_analyzer.SocialMedia(text=datacamp_tweets)
+
+# Print the top five most most mentioned users
+print(dc_tweets.mention_counts.most_common(5))
+
+# Plot the most used hashtags
+text_analyzer.plot_counter(dc_tweets.hashtag_counts)
+
+_____________________________________________________________________________________________________________________________
+
+
+
+# Import custom text_analyzer package
+import text_analyzer
+
+# Create a SocialMedia instance with datacamp_tweets
+dc_tweets = text_analyzer.SocialMedia(text=datacamp_tweets)
+
+# Print the top five most most mentioned users
+print(dc_tweets.mention_counts.most_common(5))
+
+# Plot the most used hashtags
+text_analyzer.plot_counter(dc_tweets.hashtag_counts)
+
+# Import needed package
+import text_analyzer
+
+# Create instance of document
+my_doc = text_analyzer.Document(datacamp_tweets)
+
+
+# Import needed package
+import text_analyzer
+
+# Create instance of document
+my_doc = text_analyzer.Document(datacamp_tweets)
+
+# Run help on my_doc's plot method
+help(my_doc.plot_counts())
+
+# Plot the word_counts of my_doc
+my_doc.plot_counts()
+
+
+_____________________________________________________________________________________________________________________________
+
+Creating a grandchild class
+In this exercise you will be using inheritance to create a Tweet class from your SocialMedia class. This new grandchild class of Document will be able to tackle Twitter specific details such as retweets.
+
+Instructions
+100 XP
+Complete the class statement so that Tweets inherits from SocialMedia. SocialMedia has already been loaded in your environment.
+Use super() to call the __init__ method of the parent class.
+Define retweet_text. Use help to complete the call to filter_lines with the correct parameter name. filter_lines has already been loaded in your environment.
+return retweet_text from _process_retweets as an instance of SocialMedia.
+
+# Define a Tweet class that inherits from SocialMedia
+class Tweets(SocialMedia):
+    def __init__(self, text):
+        # Call parent's __init__ with super()
+        super().__init__(text)
+        # Define retweets attribute with non-public method
+        self.retweets = self._process_retweets()
+
+    def _process_retweets(self):
+        # Filter tweet text to only include retweets
+        retweet_text = filter_lines(self.text, first_chars='RT')
+        # Return retweet_text as a SocialMedia object
+        return SocialMedia(retweet_text)
+
+
+
+_____________________________________________________________________________________________________________________________
+
+sing inherited methods
+You've now defined a Tweets class that's inherited methods from both Document and SocialMedia. In this exercise, you'll use inherited methods to visualize text from both tweets and retweets.
+
+Instructions 1/3
+35 XP
+1
+2
+3
+import your text_analyzer package.
+Define my_tweets as an instance of Tweets using the datacamp_tweets data that has been pre-loaded into your environment.
+
+# Import needed package
+import text_analyzer
+
+# Create instance of Tweets
+my_tweets = text_analyzer.Tweets(datacamp_tweets)
+
+
+Use the plot_counts method to plot the top 'hashtag_counts'.
+Make sure to check the documentation for my_tweets.plot_counts.
+
+# Import needed package
+import text_analyzer
+
+# Create instance of Tweets
+my_tweets = text_analyzer.Tweets(datacamp_tweets)
+
+# Plot the most used hashtags in the tweets
+my_tweets.plot_counts('hashtag_counts')
+
+Use the plot_counts method of the retweets attribute to plot the most used hashtags in the retweets subset of the data.
+
+# Import needed package
+import text_analyzer
+
+# Create instance of Tweets
+my_tweets = text_analyzer.Tweets(datacamp_tweets)
+
+# Plot the most used hashtags in the retweets
+my_tweets.retweets.plot_counts()
+
+
+Use the plot_counts method of the retweets attribute to plot the most used hashtags in the retweets subset of the data.
+
+
+# Import needed package
+import text_analyzer
+
+# Create instance of Tweets
+my_tweets = text_analyzer.Tweets(datacamp_tweets)
+
+# Plot the most used hashtags in the retweets
+my_tweets.retweets.plot_counts('hashtag_counts')
+
+
+
+
 ====================================================================================================================================
 
 4
 Maintainability
 0%
 You've now written a fully functional Python package for text analysis! To make maintaining your project as easy as possible we'll leverage best practices around concepts such as documentation and unit testing.
+
+
+_____________________________________________________________________________________________________________________________
+
+
+Identifying good comments
+We learned about what characteristics make a 'good' comment. In this exercise, you'll apply this knowledge to identify a function that utilizes comment best practices.
+
+Instructions
+100 XP
+print the text variable that has been pre-loaded into your environment.
+print the result of calling the function with more useful commenting on text.
+
+
+import re
+
+def extract_0(text):
+    # match and extract dollar amounts from the text
+    return re.findall(r'\$\d+\.\d\d', text)
+
+def extract_1(text):
+    # return all matches to regex pattern
+    return re.findall(r'\$\d+\.\d\d', text)
+
+# Print the text
+print(text)
+
+# Print the results of the function with better commenting
+print(extract_0(text))
+
+<script.py> output:
+    Our competitor pricing is $10.50 an inch. Our price is $125.00 a foot.
+    ['$10.50', '$125.00']
+    
+ _____________________________________________________________________________________________________________________________
+ 
+ Identifying proper docstrings
+We covered how to write fully-fledged docstrings. Before writing one of your own, this exercise will help you practice by having you identify a properly formatted docstring.
+
+In this exercise, you'll be using the functions goldilocks, rapunzel, mary, and sleeping_beauty which have been loaded in your environment.
+
+Instructions 1/2
+50 XP
+1
+2
+Run help on each of the 4 functions to view their docstrings.
+
+
+Define result using the function that has the most complete docstring; only 1 of the 4 contains all the sections we covered. Call the function without any parameters.
+print the result of the most well documented function.
+
+
+# Run the help on all 4 functions
+help(goldilocks)
+help(rapunzel)
+help(mary)
+help(sleeping_beauty)
+
+# Execute the function with most complete docstring
+result = rapunzel()
+
+# Print the result
+print(result)
+
+_____________________________________________________________________________________________________________________________
+
+Writing docstrings
+We just learned some about the benefits of docstrings. In this exercise, you will practice writing docstrings that can be utilized by a documentation generator like Sphinx.
+
+Note that your docstring submission must match the solution exactly. If you find yourself getting it wrong several times, it may be a good idea to refresh the sample code and start over.
+
+Instructions
+100 XP
+Complete the portions of the docstring that document the parameters
+Complete the portion of the docstring describing the return value
+Complete the example function usage in the docstring
+
+# Complete the function's docstring
+def tokenize(text, regex=r'[a-zA-z]+'):
+  """Split text into tokens using a regular expression
+
+  :param text: text to be tokenized
+  :param regex: regular expression used to match tokens using re.findall 
+  :return: a list of resulting tokens
+
+  >>> tokenize('the rain in spain')
+  ['the', 'rain', 'in', 'spain']
+  """
+  return re.findall(regex, text, flags=re.IGNORECASE)
+
+# Print the docstring
+help(tokenize)
+
+_____________________________________________________________________________________________________________________________
+
+Using good function names
+A good function name can go a long way for both user and maintainer understanding. A good function name is descriptive and describes what a function does. In this exercise, you'll choose a name for a function that will help aid in its readability when used.
+
+Instructions
+100 XP
+The math module has been pre-loaded into your environment to be able to use its sqrt function.
+Give function the best possible name from the following options: do_stuff, hypotenuse_length, square_root_of_leg_a_squared_plus_leg_b_squared, pythagorean_theorem.
+Complete the docstring's example with the function's name.
+print the result of using the newly named function to find the length of the hypotenuse for a right triangle with legs of length 6 & 8.
+
+
+def hypotenuse_length(leg_a, leg_b):
+    """Find the length of a right triangle's hypotenuse
+
+    :param leg_a: length of one leg of triangle
+    :param leg_b: length of other leg of triangle
+    :return: length of hypotenuse
+    
+    >>> hypotenuse_length(3, 4)
+    5
+    """
+    return math.sqrt(leg_a**2 + leg_b**2)
+
+
+# Print the length of the hypotenuse with legs 6 & 8
+print(hypotenuse_length(6,8))
+
+_____________________________________________________________________________________________________________________________
+
+Using good variable names
+Just like functions, descriptive variable names can make your code much more readable. In this exercise, you'll write some code using good variable naming practices.
+
+There's not always a clear best name for a variable. The exercise has been written to try and make a clear best choice from the provided options.
+
+Instructions
+100 XP
+Choose the best variable name to hold the sample of pupil diameter measurements in millimeters from the following choices: d, diameter, pupil_diameter, or pupil_diameter_in_millimeters.
+Take the mean of the measurements and assign it to a variable. Choose the best variable name to hold this mean from the following options: m, mean, mean_diameter, or mean_pupil_diameter_in_millimeters.
+Print the resulting average pupil diameter.
+
+
+from statistics import mean
+
+# Sample measurements of pupil diameter in mm
+pupil_diameter = [3.3, 6.8, 7.0, 5.4, 2.7]
+
+# Average pupil diameter from sample
+mean_diameter = mean(pupil_diameter)
+
+print(mean_diameter)
+
+_____________________________________________________________________________________________________________________________
+
+Refactoring for readability
+Refactoring longer functions into smaller units can help with both readability and modularity. In this exercise, you will refactor a function into smaller units. The function you will be refactoring is shown below. Note, in the exercise, you won't be using docstrings for the sake of space; in a real application, you should include documentation!
+
+def polygon_area(n_sides, side_len):
+    """Find the area of a regular polygon
+
+    :param n_sides: number of sides
+    :param side_len: length of polygon sides
+    :return: area of polygon
+
+    >>> round(polygon_area(4, 5))
+    25
+    """
+    perimeter = n_sides * side_len
+
+    apothem_denominator = 2 * math.tan(math.pi / n_sides)
+    apothem = side_len / apothem_denominator
+
+    return perimeter * apothem / 2
+Instructions
+100 XP
+Move the logic for calculating the perimeter into the polygon_perimeter function.
+Complete the definition of the polygon_apothem function, by moving the logic seen in the context. The math module has already been imported for you.
+Utilize the new unit functions to complete the definition of polygon_area.
+Use the more unitized polygon_area to calculate the area of a regular hexagon with legs of size 10.
+
+
+def polygon_perimeter(n_sides, side_len):
+    return n_sides * side_len
+
+def polygon_apothem(n_sides, side_len):
+    denominator = 2 * math.tan(math.pi / n_sides)
+    return side_len / denominator
+
+def polygon_area(n_sides, side_len):
+    perimeter = polygon_perimeter(n_sides, side_len)
+    apothem = polygon_apothem(n_sides, side_len)
+
+    return perimeter * apothem / 2
+
+# Print the area of a hexagon with legs of size 10
+print(polygon_area(n_sides=6, side_len=10))
+
+
+_____________________________________________________________________________________________________________________________
+Using doctest
+We just learned about doctest, which, if you're writing full docstrings with examples, is a simple way to minimally test your functions. In this exercise, you'll get some hands-on practice testing and debugging with doctest.
+
+The following have all be pre-loaded in your environment: doctest, Counter, and text_analyzer.
+
+Note that your docstring submission must match the solution exactly. If you find yourself getting it wrong several times, it may be a good idea to refresh the sample code and start over.
+
+Instructions
+100 XP
+Complete the input code of the example in the docstring for sum_counters.
+Complete the docstring example by filling in the expected output.
+Run the testmod function from doctest to test your function's example code.
+
+def sum_counters(counters):
+    """Aggregate collections.Counter objects by summing counts
+
+    :param counters: list/tuple of counters to sum
+    :return: aggregated counters with counts summed
+
+    >>> d1 = text_analyzer.Document('1 2 fizz 4 buzz fizz 7 8')
+    >>> d2 = text_analyzer.Document('fizz buzz 11 fizz 13 14')
+    >>> sum_counters([d1.word_counts, d2.word_counts])
+    Counter({'fizz': 4, 'buzz': 2})
+    """
+    return sum(counters, Counter())
+
+doctest.testmod()
+
+_____________________________________________________________________________________________________________________________
+
+sing pytest
+doctest is a great tool, but it's not nearly as powerful as pytest. In this exercise, you'll write tests for your SocialMedia class using the pytest framework.
+
+Instructions 1/2
+50 XP
+1
+2
+Question
+Before you start writing tests, you need to be working in an appropriately named file for pytest to find your test. Which of the following would be the best, valid name for file containing tests for the SocialMedia class?
+
+
+import the SocialMedia class.
+Complete the name of the test function so it is run by pytest.
+Use the appropriate keyword to test that the hashtag_counts are as expected.
+
+
+from collections import Counter
+from text_analyzer import SocialMedia
+
+# Create an instance of SocialMedia for testing
+test_post = 'learning #python & #rstats is awesome! thanks @datacamp!'
+sm_post = SocialMedia(test_post)
+
+# Test hashtag counts are created properly
+def test_social_media_hashtags():
+    expected_hashtag_counts = Counter({'#python': 1, '#rstats': 1})
+    assert sm_post.hashtag_counts == expected_hashtag_counts
+
+
+_____________________________________________________________________________________________________________________________
+
+Documenting classes for Sphinx
+sphinx is a great tool for rendering documentation as HTML. In this exercise, you'll write a docstring for a class that can be taken advantage of by sphinx.
+
+Note that your docstring submission must match the solution exactly. If you find yourself getting it wrong several times, it may be a good idea to refresh the sample code and start over.
+
+Instructions
+100 XP
+import the Document class from the text_analyzer package for use in the class definition
+Complete the line of the docstring dealing with the parameters of the __init__ method
+Complete the docstring by filling out the documentation for the attributes or 'instance variables' of the SocialMedia class
+
+
+from text_analyzer import Document
+
+class SocialMedia(Document):
+    """Analyze text data from social media
+    
+    :param text: social media text to analyze
+
+    :ivar hashtag_counts: Counter object containing counts of hashtags used in text
+    :ivar mention_counts: Counter object containing counts of @mentions used in text
+    """
+    def __init__(self, text):
+        Document.__init__(self, text)
+        self.hashtag_counts = self._count_hashtags()
+        self.mention_counts = self._count_mentions()
+
+_____________________________________________________________________________________________________________________________
+
+Identifying tools
+Which of following lists of tools best corresponds to the 3 software engineering concepts of Modularity, Documentation, & Automated Testing. The correct answer will have the tools listed in the order that best corresponds to which concept they help you with.
+
+After this exercise you will be nearly done with the course! If you enjoyed it, feel free to send Adam a thank you via Twitter - he'll appreciate it! Tweet to Adam
+
+
+Code Climate, Sphinx, & Travis CI
+
+Great job! Code Climate can help point out if your code isn't modular, Sphinx can help create documentation for your project using your docstrings, and Travis CI can automatically run your tests every time you add code.
+
+

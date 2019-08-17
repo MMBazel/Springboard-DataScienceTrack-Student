@@ -14,11 +14,79 @@ In this chapter, you'll learn what it means to write efficient Python code. You'
 
 __________________________________________________________________________________________________________________________________
 
+Pop quiz: what is efficient
+In the context of this course, what is meant by efficient Python code?
+
+Code that executes quickly for the task at hand, minimizes the memory footprint and follows Python's coding style principles.
+
 
 
 _________________________________________________________________________________________________________________________________
 
+A taste of things to come
+In this exercise, you'll explore both the Non-Pythonic and Pythonic ways of looping over a list.
 
+names = ['Jerry', 'Kramer', 'Elaine', 'George', 'Newman']
+Suppose you wanted to collect the names in the above list that have six letters or more. In other programming languages, the typical approach is to create an index variable (i), use i to iterate over the list, and use an if statement to collect the names with six letters or more:
+
+i = 0
+new_list= []
+while i < len(names):
+    if len(names[i]) >= 6:
+        new_list.append(names[i])
+    i += 1
+Let's explore some more Pythonic ways of doing this.
+
+Instructions 1/3
+50 XP
+1
+Print the list, new_list, that was created using a Non-Pythonic approach.
+
+# Print the list created using the Non-Pythonic approach
+i = 0
+new_list= []
+while i < len(names):
+    if len(names[i]) >= 6:
+        new_list.append(names[i])
+    i += 1
+print(new_list)
+
+
+A more Pythonic approach would loop over the contents of names, rather than using an index variable. Print better_list.
+
+# Print the list created by looping over the contents of names
+better_list = []
+for name in names:
+    if len(name) >= 6:
+        better_list.append(name)
+print(better_list)
+
+
+# Print the list created by using list comprehension
+best_list = [name for name in names if len(name) >= 6]
+print(best_list)
+
+The best Pythonic way of doing this is by using list comprehension. Print best_list
+
+Great work! Don't get too caught up in the coding concepts just yet (you'll practice using lists, for loops, and list comprehensions later on). The important thing to notice here is that following some of Python's guiding principles allows you to write cleaner and more efficient code. 
+
+Remember, Pythonic code == efficient code. You'll explore these, and other, Pythonic concepts later on in the course, but for now, this is just a taste of things to come!
+_________________________________________________________________________________________________________________________________
+
+The best Pythonic way of doing this is by using list comprehension. Print best_list
+
+Zen of Python
+In the video, we covered the Zen of Python written by Tim Peters, which lists 19 idioms that serve as guiding principles for any Pythonista. Python has hundreds of Python Enhancement Proposals, commonly referred to as PEPs. The Zen of Python is one of these PEPs and is documented as PEP20.
+
+One little Easter Egg in Python is the ability to print the Zen of Python using the command import this. Let's take a look at one of the idioms listed in these guiding principles.
+
+Type and run the command import this within your IPython console and answer the following question:
+
+What is the 7th idiom of the Zen of Python?
+
+
+
+_________________________________________________________________________________________________________________________________
 
 
 

@@ -602,8 +602,234 @@ plt.axvline(x=tmp.Date, color=
 '--')
 plt.show()
 
+_____________________________________________________________________________________________________________________________________
+
+Parsing dates
+In this exercise you will practice parsing dates in Python. While often data pulled from a database will be correctly formatted, other data sources can be less nice. Knowing how to properly parse dates is crucial to get the data in a workable format. For reference refer to http://strftime.org/ throughout this exercise to see date format to use.
+
+Instructions 1/4
+25 XP
+1
+2
+3
+4
+Provide the correct format for the following date:
+
+Saturday January 27, 2017
+
+# Provide the correct format for the date
+date_data_one = pd.to_datetime(date_data_one, format='%A %B %d, %Y')
+print(date_data_one)
 
 
+# Provide the correct format for the following date:
+
+2017-08-01
+
+# Provide the correct format for the date
+date_data_two = pd.to_datetime(date_data_two, format='%Y-%m-%d')
+print(date_data_two)
+
+
+Provide the correct format for the following date.
+
+08/17/1978
+
+# Provide the correct format for the date
+date_data_three = pd.to_datetime(date_data_three, format='%m/%d/%Y')
+print(date_data_three)
+
+
+Provide the correct format for the following date:
+
+2016 March 01 01:56
+
+# Provide the correct format for the date
+date_data_four = pd.to_datetime(date_data_four, format='%Y %B %d %H:%M')
+print(date_data_four)
+
+_____________________________________________________________________________________________________________________________________
+
+Plotting time series data
+In trying to boost purchases, we have made some changes to our introductory in-app purchase pricing. In this exercise, you will check if this is having an impact on the number of purchases made by purchasing users during their first week.
+
+The dataset user_purchases has been joined to the demographics data and properly filtered. The column 'first_week_purchases' that is 1 for a first week purchase and 0 otherwise has been added. This column is converted to the average number of purchases made per day by users in their first week.
+
+We will try to view the impact of this change by looking at a graph of purchases as described in the instructions.
+
+Instructions
+100 XP
+Read through and understand code shown and then plot the user_purchases data with 'reg_date' on the x-axis and 'first_week_purchases' on the y-axis.
+
+
+# Group the data and aggregate first_week_purchases
+user_purchases = user_purchases.groupby(by=['reg_date', 'uid']).agg({'first_week_purchases': ['sum']})
+
+# Reset the indexes
+user_purchases.columns = user_purchases.columns.droplevel(level=1)
+user_purchases.reset_index(inplace=True)
+
+# Find the average number of purchases per day by first-week users
+user_purchases = user_purchases.groupby(by=['reg_date']).agg({'first_week_purchases': ['mean']})
+user_purchases.columns = user_purchases.columns.droplevel(level=1)
+user_purchases.reset_index(inplace=True)
+
+# Plot the results
+user_purchases.plot(x='reg_date', y='first_week_purchases')
+plt.show()
+
+_____________________________________________________________________________________________________________________________________
+
+Pivoting our data
+As you saw, there does seem to be an increase in the number of purchases by purchasing users within their first week. Let's now confirm that this is not driven only by one segment of users. We'll do this by first pivoting our data by 'country' and then by 'device'. Our change is designed to impact all of these groups equally.
+
+The user_purchases data from before has been grouped and aggregated by the 'country' and 'device' columns. These objects are available in your workspace as user_purchases_country and user_purchases_device.
+
+As a reminder, .pivot_table() has the following signature:
+
+pd.pivot_table(data, values, columns, index)
+
+
+1) Pivot the user_purchases_country table such that we have our first_week_purchases as our values, the country as the column, and our reg_date as the row.
+
+# Pivot the data
+country_pivot = pd.pivot_table(user_purchases_country, values=['first_week_purchases'], columns=['country'], index=['reg_date'])
+print(country_pivot.head())
+
+
+
+<script.py> output:
+               first_week_purchases                                             
+    country                     BRA  CAN       DEU       FRA       TUR       USA
+    reg_date                                                                    
+    2017-06-01             1.500000  NaN  1.000000  0.000000  0.333333  1.200000
+    2017-06-02             2.000000  NaN  0.500000       NaN  1.000000  1.428571
+    2017-06-03             1.000000  2.0  1.500000  1.333333  3.000000  1.200000
+    2017-06-04             4.000000  NaN  1.333333  4.000000       NaN  1.166667
+    2017-06-05             1.666667  NaN       NaN       NaN  2.000000  1.000000
+    
+    
+
+2) Now lets look at our device data. Let us pivot the user_purchases_device table such that we have our first_week_purchases as our values, the device as the column, and our reg_date as the row.
+
+# Pivot the data
+device_pivot = pd.pivot_table(user_purchases_device, values=['first_week_purchases'], columns=['device'], index=['reg_date'])
+print(device_pivot.head())
+
+<script.py> output:
+               first_week_purchases          
+    device                      and       iOS
+    reg_date                                 
+    2017-06-01             0.714286  1.000000
+    2017-06-02             1.400000  1.285714
+    2017-06-03             1.545455  1.000000
+    2017-06-04             1.600000  1.833333
+    2017-06-05             1.625000  2.000000
+    
+_____________________________________________________________________________________________________________________________________
+
+Examining the different cohorts
+To finish this lesson, you're now going to plot by 'country' and then by 'device' and examine the results. Hopefully you will see the observed lift across all groups as designed. This would point to the change being the cause of the lift, not some other event impacting the purchase rate.
+
+Instructions 1/2
+50 XP
+1
+Plot the average first week purchases for each country by registration date ('reg_date'). There are 6 countries here: 'USA', 'CAN', 'FRA', 'BRA', 'TUR', and 'DEU'. Plot them in the order shown.
+
+# Plot the average first week purchases for each country by registration date
+country_pivot.plot(x='reg_date', y=['USA', 'CAN', 'FRA', 'BRA', 'TUR', 'DEU'])
+plt.show()
+
+2
+Now, plot the average first week purchases for each device ('and' and 'iOS') by registration date ('reg_date'). Plot the devices in the order listed.
+
+
+# Plot the average first week purchases for each device by registration date
+device_pivot.plot(x='reg_date', y=['and', 'iOS'])
+plt.show()
+
+_____________________________________________________________________________________________________________________________________
+
+Seasonality and moving averages
+Stepping back, we will now look at the overall revenue data for our meditation app. We saw strong purchase growth in one of our products, and now we want to see if that is leading to a corresponding rise in revenue. As you may expect, revenue is very seasonal, so we want to correct for that and unlock macro trends.
+
+In this exercise, we will correct for weekly, monthly, and yearly seasonality and plot these over our raw data. This can reveal trends in a very powerful way.
+
+The revenue data is loaded for you as daily_revenue.
+
+Instructions
+100 XP
+Using the .rolling() method, find the rolling average of the data with a 7 day window and store it in a column 7_day_rev.
+Find the monthly (28 days) rolling average and store it in a column 28_day_rev.
+Find the yearly (365 days) rolling average and store it in a column 365_day_rev.
+Hit 'Submit Answer' to plot the three calculated rolling averages together along with the raw data.
+
+# Compute 7_day_rev
+daily_revenue['7_day_rev'] = daily_revenue.revenue.rolling(window=7,center=False).mean()
+
+# Compute 28_day_rev
+daily_revenue['28_day_rev'] = daily_revenue.revenue.rolling(window=28,center=False).mean()
+    
+# Compute 365_day_rev
+daily_revenue['365_day_rev'] = daily_revenue.revenue.rolling(window=365,center=False).mean()
+    
+# Plot date, and revenue, along with the 3 rolling functions (in order)    
+daily_revenue.plot(x='date', y=['revenue', '7_day_rev', '28_day_rev', '365_day_rev', ])
+plt.show()
+
+_____________________________________________________________________________________________________________________________________
+
+Exponential rolling average & over/under smoothing
+In the previous exercise, we saw that our revenue is somewhat flat over time. In this exercise we will dive deeper into the data to see if we can determine why this is the case. We will look at the revenue for a single in-app purchase product we are selling to see if this potentially reveals any trends. As this will have less data then looking at our overall revenue it will be much noisier. To account for this we will smooth the data using an exponential rolling average.
+
+A new daily_revenue dataset has been provided for us, containing the revenue for this product.
+
+Instructions
+100 XP
+Using the .ewm() method, calculate the exponential rolling average with a span of 10 and store it in a column small_scale.
+Repeat the previous step, now with a span of 100 and store it in a column medium_scale.
+Finally, calculate the exponential rolling average with a span of 500 and store it in a column large_scale.
+Plot the three averages, along with the raw data. Examine how clear the trend of the data is.
+
+
+# Calculate 'small_scale'
+daily_revenue['small_scale'] = daily_revenue.revenue.ewm(span=10).mean()
+
+# Calculate 'medium_scale'
+daily_revenue['medium_scale'] = daily_revenue.revenue.ewm(span=100).mean()
+
+# Calculate 'large_scale'
+daily_revenue['large_scale'] = daily_revenue.revenue.ewm(span=500).mean()
+
+# Plot 'date' on the x-axis and, our three averages and 'revenue'
+# on the y-axis
+daily_revenue.plot(x = 'date', y =['revenue', 'small_scale', 'medium_scale', 'large_scale'])
+plt.show()
+
+_____________________________________________________________________________________________________________________________________
+
+Visualizing user spending
+Recently, the Product team made some big changes to both the Android & iOS apps. They do not have any direct concerns about the impact of these changes, but want you to monitor the data to make sure that the changes don't hurt company revenue. Additionally, the product team believes that some of these changes may impact female users more than male users.
+
+In this exercise you're going to plot the monthly revenue for one of the updated products and evaluate the results.
+
+The dataset user_revenue containing the 'device', 'gender', 'country', 'date', and 'revenue' has been loaded. It has been grouped by month, device, and gender. Note that here, a 'month' column has been extracted from the 'date' column.
+
+Instructions
+100 XP
+Pivot user_revenue such that we have the 'month' as the rows (index),'device' and 'gender' as our columns and 'revenue' as our values.
+Remove the first and last row of the DataFrame once pivoted to prevent discontinuities from distorting the results. This has been done for you.
+Plot pivoted_data using its .plot() method.
+Take Hint (-30 XP)
+
+
+# Pivot user_revenue
+pivoted_data = pd.pivot_table(user_revenue, values ='revenue', columns=['device', 'gender'], index='month')
+pivoted_data = pivoted_data[1:(len(pivoted_data) -1 )]
+
+# Create and show the plot
+pivoted_data.plot()
+plt.show()
 
 
 _____________________________________________________________________________________________________________________________________

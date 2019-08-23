@@ -839,10 +839,315 @@ The Design and Application of A/B Testing
 0%
 In this chapter you will dive fully into A/B testing. You will learn the mathematics and knowledge needed to design and successfully plan an A/B test from determining an experimental unit to finding how large a sample size is needed. Accompanying this will be an introduction to the functions and code needed to calculate the various quantities associated with a statistical test of this type.
 
+_____________________________________________________________________________________________________________________________________
+
+Experimental units: Revenue per user day
+We are going to check what happens when we add a consumable paywall to our app. A paywall is a feature of a website or other technology that requires payment from users in order to access additional content or services.
+
+Here, you'll practice calculating experimental units and baseline values related to our consumable paywall. Both measure revenue only among users who viewed a paywall. Your job is to calculate revenue per user-day, with user-day as the experimental unit.
+
+The purchase_data dataset has been loaded for you.
+
+Instructions
+100 XP
+Extract the 'day' value from the date timestamp as you saw in the video: Using .date.dt.floor('d').
+To make the calculations easier, replace the NaN purchase_data.price values with 0 by using the np.where() method.
+Finally, find the mean amount paid per user-day among paywall viewers. To do this, you need to first aggregate the data by 'uid' and 'date', which has been done for you.
 
 
 
+# Extract the 'day'; value from the timestamp
+purchase_data.date = purchase_data.date.dt.floor('d')
 
+# Replace the NaN price values with 0 
+purchase_data.price = np.where(np.isnan(purchase_data.price),0, purchase_data.price)
+
+# Aggregate the data by 'uid' & 'date'
+purchase_data_agg = purchase_data.groupby(by=['uid', 'date'], as_index=False)
+revenue_user_day = purchase_data_agg.sum()
+
+# Calculate the final average
+revenue_user_day = revenue_user_day.price.mean()
+print(revenue_user_day)
+
+_____________________________________________________________________________________________________________________________________
+
+Conversion rate sensitivities
+To mix things up, we will spend the next few exercises working with the conversion rate metric we explored in Chapter One. Specifically you will work to examine what that value becomes under different percentage lifts and look at how many more conversions per day this change would result in. First you will find the average number of paywall views and purchases that were made per day in our observed sample. Good luck!
+
+Instructions
+100 XP
+Merge the paywall_views with demographics_data tables using an 'inner' join. This will limit the result to only include users who appear in both and will remove everyone who did not view a paywall, which is what we want in this scenario.
+Group purchase_data by 'date'. The result of this is then aggregated for you by summing over the purchase field to find the total number of purchases and counting over it to find the total number of paywall views.
+Average each of the resulting sum and count fields to find the average number of purchases and paywall views per day.
+The results reflect a sample of 0.1% of our overall population for ease of use. Multiply each of daily_purchases and daily_paywall_views by 1000 so our result reflects the magnitude change if we had been observing the entire population.
+
+# Merge and group the datasets
+purchase_data = demographics_data.merge(paywall_views,  how='inner', on=['uid'])
+purchase_data.date = purchase_data.date.dt.floor('d')
+
+# Group and aggregate our combined dataset 
+daily_purchase_data = purchase_data.groupby(by=['date'], as_index=False)
+daily_purchase_data = daily_purchase_data.agg({'purchase': ['sum', 'count']})
+
+# Find the mean of each field and then multiply by 1000 to scale the result
+daily_purchases = daily_purchase_data.purchase['sum'].mean()
+daily_paywall_views = daily_purchase_data.purchase['count'].mean()
+daily_purchases = daily_purchases * 1000
+daily_paywall_views = daily_paywall_views * 1000
+
+print(daily_purchases)
+print(daily_paywall_views)
+
+<script.py> output:
+    3181.8181818181815
+    91731.86409550045
+
+_____________________________________________________________________________________________________________________________________
+
+Sensitivity
+Continuing with the conversion rate metric, you will now utilize the results from the previous exercise to evaluate a few potential sensitivities that we could make use of in planning our experiment. The baseline conversion_rate has been loaded for you, calculated in the same way we saw in Chapter One. Additionally the daily_paywall_views and daily_purchases values you calculated previously have been loaded.
+
+Instructions 1/3
+30 XP
+1
+Using the proposed small_sensitivity of 0.1, find the lift in conversion rate and purchasers that would result by applying this sensitivity. Are these resulting values reasonable?
+
+
+small_sensitivity = 0.1 
+
+# Find the conversion rate when increased by the percentage of the sensitivity above
+small_conversion_rate = conversion_rate * (1 + small_sensitivity) 
+
+# Apply the new conversion rate to find how many more users per day that translates to
+small_purchasers = daily_paywall_views * small_conversion_rate
+
+# Subtract the initial daily_purcahsers number from this new value to see the lift
+purchaser_lift = small_purchasers - daily_purchases
+
+print(small_conversion_rate)
+print(small_purchasers)
+print(purchaser_lift)
+
+
+
+<script.py> output:
+    0.03814800000000001
+    3499.384706400001
+    317.58470640000087
+    
+    
+  2  
+  Now repeating the steps from before, find the lift in conversion rate and purchasers using the medium_sensitivity. In this exercise you are additionally asked to complete the step to find the increase in purchasers based on this new conversion rate.
+  
+  medium_sensitivity = 0.2
+
+# Find the conversion rate when increased by the percentage of the sensitivity above
+medium_conversion_rate = conversion_rate * (1 + medium_sensitivity) 
+
+# Apply the new conversion rate to find how many more users per day that translates to
+medium_purchasers = daily_paywall_views * medium_conversion_rate
+
+# Subtract the initial daily_purcahsers number from this new value to see the lift
+purchaser_lift = medium_purchasers - daily_purchases
+
+print(medium_conversion_rate)
+print(medium_purchasers)
+print(purchaser_lift)
+
+<script.py> output:
+    0.041616
+    3817.5105888000003
+    635.7105888000001
+    
+    
+    
+    3
+    Finally repeat the steps from before to find the increase in conversion rate and purchasers when using the very large sensitivity of 0.5. The steps required are the same as the previous exercise. How do the results compare those returned in the previous two exercises?
+    
+    
+    large_sensitivity = 0.5
+
+# Find the conversion rate lift with the sensitivity above
+large_conversion_rate = conversion_rate * (1 + large_sensitivity)
+
+# Find how many more users per day that translates to
+large_purchasers = daily_paywall_views * large_conversion_rate
+purchaser_lift = large_purchasers - daily_purchases
+
+print(large_conversion_rate)
+print(large_purchasers)
+print(purchaser_lift)
+
+<script.py> output:
+    0.052020000000000004
+    4771.888236000001
+    1590.0882360000005
+
+
+Awesome! While it seems that a 50% increase may be too drastic and unreasonable to expect, the small and medium sensitivities both seem very reasonable.
+_____________________________________________________________________________________________________________________________________
+
+
+Standard error
+Previously we observed how to calculate the standard deviation using the .std() method. In this exercise, you will explore how to calculate standard deviation for a conversion rate, which requires a slightly different procedure. You will calculate this step by step in this exercise.
+
+Loaded for you is our inner merged dataset purchase_data as well as the computed conversion_rate value.
+
+Instructions
+100 XP
+Find the number of paywall views in the dataset using .count(). Store this in n.
+Calculate a quantity we will call v by finding the conversion_rate times the rate of not converting.
+Now find our variance, var, by dividing v by n. This is the variance of our conversion rate estimate.
+Finally the square root of var has been taken and stored as the variable se for you. This is the standard error of our estimate.
+
+
+# Find the number of paywall views 
+n = purchase_data.purchase.count()
+
+# Calculate the quantitiy "v"
+v = conversion_rate * (1 - conversion_rate) 
+
+# Calculate the variance and standard error of the estimate
+var = v / n 
+se = var**0.5
+
+print(var)
+print(se)
+
+<script.py> output:
+    3.351780834114284e-07
+    0.0005789456653360731
+
+_____________________________________________________________________________________________________________________________________
+
+
+Exploring the power calculation
+As discussed, power is the probability of rejecting the null hypothesis when the alternative hypothesis is true. Here you will explore some properties of the power function and see how it relates to sample size among other parameters. The get_power() function has been included and takes the following arguments in the listed order n for sample size, p1 as the baseline value, p2 as the value with lift included, and cl as the confidence level.
+
+Instructions
+100 XP
+Calculate the power using n = 1000 and n = 2000 in that order, along with the pre-loaded parameters, p1, p2, and cl.
+Using the variable n1 for the sample size, find the power with a confidence level of cl = 0.8 and cl = 0.95 in that order.
+Hit 'Submit Answer' to compare the ratios. Which change has the bigger impact, increasing the confidence level or the sample size?
+
+
+# Look at the impact of sample size increase on power
+n_param_one = get_power(n=1000, p1=p1, p2=p2, cl=cl)
+n_param_two = get_power(n=2000, p1=p1, p2=p2, cl=cl)
+
+# Look at the impact of confidence level increase on power
+alpha_param_one = get_power(n=n1, p1=p1, p2=p2, cl=0.8)
+alpha_param_two = get_power(n=n1, p1=p1, p2=p2, cl=0.95)
+    
+# Compare the ratios
+print(n_param_two / n_param_one)
+print(alpha_param_one / alpha_param_two)
+
+
+<script.py> output:
+    1.7596440001351992
+    1.8857367092232278
+    
+    Great Job! With these particular values it looks like decreasing our confidence level has a slightly larger impact on the power than increasing our sample size
+    
+  _____________________________________________________________________________________________________________________________________  
+   Calculating the sample size
+You're now going to utilize the sample size function to determine how many users you need for the test and control groups under various circumstances.
+
+Included is the get_sample_size() function you viewed previously, which takes four primary arguments, power, p1, p2 and cl as described before:
+
+def get_sample_size(power, p1, p2, cl, max_n=1000000):
+    n = 1 
+    while n <= max_n:
+        tmp_power = get_power(n, p1, p2, cl)
+
+        if tmp_power >= power: 
+            return n 
+        else: 
+            n = n + 100
+
+    return "Increase Max N Value"
+You will continue working with the paywall conversion rate data for this exercise, which has been pre-loaded as purchase_data.
+
+Instructions 1/3
+30 XP
+1
+2
+3
+Calculate the baseline conversion_rate per paywall view by dividing the total amount spent across all purchase_data.purchase values by the count of purchase_data.purchase values in the dataset.
+
+
+# Merge the demographics and purchase data to only include paywall views
+purchase_data = demographics_data.merge(paywall_views, how='inner', on=['uid'])
+                            
+# Find the conversion rate
+conversion_rate = (sum(purchase_data.purchase) / purchase_data.purchase.count())
+            
+print(conversion_rate)
+
+
+<script.py> output:
+    0.03468607351645712
+    
+    
+    
+    
+    Great! Using the conversion_rate value you found, calculate p2, the baseline increased by the percent lift listed.
+
+Calculate the sample size needed using the parameters provided in the code comments. Remember the order of the arguments for get_sample_size is power, baseline conversion rate, lifted conversion rate and confidence level.
+
+# Merge the demographics and purchase data to only include paywall views
+purchase_data = demographics_data.merge(paywall_views, how='inner', on=['uid'])
+                            
+# Find the conversion rate
+conversion_rate = (sum(purchase_data.purchase) / purchase_data.purchase.count())
+            
+# Desired Power: 0.8
+# CL: 0.90
+# Percent Lift: 0.1
+p2 = conversion_rate * (1 + 0.1)
+sample_size = get_sample_size(0.8, conversion_rate, p2, 0.90)
+print(sample_size)
+
+<script.py> output:
+    36101
+    
+    
+    
+    Repeat the steps in the previous exercise only now with the new power parameter provided. How does increasing our desired power impact the outputed sample size?
+    
+    
+    # Merge the demographics and purchase data to only include paywall views
+purchase_data = demographics_data.merge(paywall_views, how='inner', on=['uid'])
+                            
+# Find the conversion rate
+conversion_rate = (sum(purchase_data.purchase) / purchase_data.purchase.count())
+
+# Desired Power: 0.95
+# CL 0.90
+# Percent Lift: 0.1
+p2 = conversion_rate * (1 + 0.1)
+sample_size = get_sample_size(0.95, conversion_rate, p2, 0.90)
+print(sample_size)
+
+
+<script.py> output:
+    63201
+
+   _____________________________________________________________________________________________________________________________________
+   
+   
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 _____________________________________________________________________________________________________________________________________
 
 4

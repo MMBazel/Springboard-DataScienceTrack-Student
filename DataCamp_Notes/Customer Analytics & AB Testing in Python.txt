@@ -1137,21 +1137,329 @@ print(sample_size)
 
    _____________________________________________________________________________________________________________________________________
    
-   
+   Confirming our test results
+To begin this chapter, you will confirm that everything ran correctly for an A/B test similar to that shown in the lesson. Like the A/B test in the lesson this one consists of trying to boost consumable sales through making changes to a paywall.
+
+The data from the test is loaded for you as "ab_test_results" and it has already been merged with the relevant demographics data. The checks you will perform will allow you to confidently report any results you uncover.
+
+Instructions 1/3
+30 XP
+1
+2
+3
+As discussed we created our test and control groups by assigning unique users to each. Confirm the size the groups are similar by grouping by group and aggregating to find the number of unique uid in each with the pd.Series.nunique() method.
+
+
+# Compute and print the results
+results = ab_test_results.groupby('group').agg({'uid':pd.Series.nunique}) 
+print(results)
+
+
+<script.py> output:
+              uid
+    group        
+    C      2825.0
+    V      2834.0
     
     
     
     
+    Great! Now convert this number to the percentage of overall users in each group. This will help in presenting the result and speaking about it precisely. To do this, use the len() function and unique()method to find the number of unique uid in ab_test_results and to then divide by this result.
+
+
+
+# Find the unique users in each group 
+results = ab_test_results.groupby('group').agg({'uid': pd.Series.nunique}) 
+
+# Find the overall number of unique users using "len" and "unique"
+unique_users = len(ab_test_results.uid.unique()) 
+
+# Find the percentage in each group
+results = results / unique_users * 100
+print(results)
+
+
+
+<script.py> output:
+                 uid
+    group           
+    C      49.920481
+    V      50.079519
     
     
     
-    
-    
-    
+Finally, additionally group by 'device' and 'gender' when finding the number of users in each group. This will let us compute our percentage calculation broken out by 'device' and 'gender' to confirm our result is truly random across cohorts.
+
+
+# Find the unique users in each group, by device and gender
+results = ab_test_results.groupby(by=['group', 'device', 'gender']).agg({'uid': pd.Series.nunique}) 
+
+# Find the overall number of unique users using "len" and "unique"
+unique_users = len(ab_test_results.uid.unique())
+
+# Find the percentage in each group
+results = results / unique_users * 100
+print(results)
+
+
+group device gender           
+    C     and    F       14.896625
+                 M       13.518289
+          iOS    F       11.309419
+                 M       10.196148
+    V     and    F       14.861283
+                 M       13.659657
+          iOS    F       10.920657
+                 M       10.637922
+		 
+		 
+		 
+	_____________________________________________________________________________________________________________________________________
+	
+	Thinking critically about p-values
+Below are four statements about p-values. It is up to you to identify which one is true. This is important because p-values are an unintuitive concept and being able to reason about them correctly is extremely important in most statistical work.
+
+
+The p-value is the probability of observing a value as or more extreme than the one observed under the Null Hypothesis.
+		 
+ 
 _____________________________________________________________________________________________________________________________________
 
 4
 Analyzing A/B Testing Results
 0%
 After running an A/B test, you must analyze the data and then effectively communicate the results. This chapter begins by interleaving the theory of statistical significance and confidence intervals with the tools you need to calculate them yourself from the data. Next we discuss how to effectively visualize and communicate these results. This chapter is the culmination of all the knowledge built over the entire course.
+_____________________________________________________________________________________________________________________________________
 
+
+Intuition behind statistical significance
+In this exercise you will work to gain an intuitive understanding of statistical significance. You will do this by utilizing the get_pvalue() function on a variety of parameter sets that could reasonably arise or be chosen during the course of an A/B test. While doing this you should observing how statistical significance results vary as you change the parameters. This will help build your intuition surrounding this concept, and reveal some of the subtle pitfalls of p-values. As a reminder, this is the get_pvalue() function signature:
+
+def get_pvalue(con_conv, test_conv, con_size, test_size):  
+    lift =  - abs(test_conv - con_conv)
+
+    scale_one = con_conv * (1 - con_conv) * (1 / con_size)
+    scale_two = test_conv * (1 - test_conv) * (1 / test_size)
+    scale_val = (scale_one + scale_two)**0.5
+
+    p_value = 2 * stats.norm.cdf(lift, loc = 0, scale = scale_val )
+
+    return p_value
+Instructions 1/3
+30 XP
+1
+Find the p-value with initial conversion rate of 0.1, test conversion rate of 0.17, and 1000 observations in each group.
+
+
+# Get the p-value
+p_value = get_pvalue(con_conv=0.1, test_conv=0.17, con_size=1000, test_size=1000)
+print(p_value)
+
+
+Find the p-value with control conversion of 0.1, test conversion of 0.15, and 100 observations in each group.
+
+
+# Get the p-value
+p_value = get_pvalue(con_conv=0.1, test_conv=0.15, con_size=100, test_size=100)
+print(p_value)
+
+
+Now find the p-value with control conversion of 0.48, test conversion of 0.50, and 1000 observations in each group.
+
+# Get the p-value
+p_value = get_pvalue(con_conv=0.48, test_conv=0.5, con_size=1000, test_size=1000)
+print(p_value)
+
+<script.py> output:
+    0.370901935824383
+    
+    
+    Great Work! To recap we observed that a large lift makes us confident in our observed result, while a small sample size makes us less so, and ultimately high variance can lead to a high p-value!
+
+
+_____________________________________________________________________________________________________________________________________
+
+
+Checking for statistical significance
+Now that you have an intuitive understanding of statistical significance and p-values, you will apply it to your test result data.
+
+The four parameters needed for the p-value function are the two conversion rates - cont_conv and test_conv and the two group sizes - cont_size and test_size. These are available in your workspace, so you have everything you need to check for statistical significance in our experiment results.
+
+Instructions
+100 XP
+Find the p-value of our experiment using the loaded variables cont_conv, test_conv, cont_size, test_size calculated from our data. Then determine if our result is statistically significant by running the second section of code.
+
+
+# Compute the p-value
+p_value = get_pvalue(con_conv=cont_conv, test_conv=test_conv, con_size=cont_size, test_size=test_size)
+print(p_value)
+
+# Check for statistical significance
+if p_value >= 0.05:
+    print("Not Significant")
+else:
+    print("Significant Result")
+    
+    
+    
+<script.py> output:
+    0.04900185792087508
+    Significant Result
+    
+    
+    _____________________________________________________________________________________________________________________________________
+
+
+Understanding confidence intervals
+In this exercise, you'll develop your intuition for how various parameter values impact confidence intervals. Specifically, you will explore through the get_ci() function how changes widen or tighten the confidence interval. This is the function signature, where cl is the confidence level and sd is the standard deviation.
+
+def get_ci(value, cl, sd):
+  loc = sci.norm.ppf(1 - cl/2)
+  rng_val = sci.norm.cdf(loc - value/sd)
+
+  lwr_bnd = value - rng_val
+  upr_bnd = value + rng_val 
+
+  return_val = (lwr_bnd, upr_bnd)
+  return(return_val)
+Instructions 1/3
+30 XP
+1
+Find the confidence interval with a value of 1, a confidence level of 0.975 and a standard deviation of 0.5.
+
+# Compute and print the confidence interval
+confidence_interval  = get_ci(1, 0.975, 0.5)
+print(confidence_interval)
+
+
+Repeat the calculation, updating the confidence level to 0.95 and the standard deviation to 2. Leave the value as 1
+
+# Compute and print the confidence interval
+confidence_interval  = get_ci(1, 0.95, 2)
+print(confidence_interval)
+
+
+Finally, update your code such that the standard deviation is 0.001 while leaving the confidence level and value the same as the previous exercise part. Compare the three confidence intervals outputted. How do they seem to relate to the parameters used?
+
+# Compute and print the confidence interval
+confidence_interval  = get_ci(1, 0.95, 0.001)
+print(confidence_interval)
+
+
+
+<script.py> output:
+    (0.9755040421682947, 1.0244959578317054)
+
+<script.py> output:
+    (0.6690506448818785, 1.3309493551181215)
+
+<script.py> output:
+    (1.0, 1.0)
+    
+    
+    _____________________________________________________________________________________________________________________________________
+    
+    
+    Calculating confidence intervals
+Now you will calculate the confidence intervals for the A/B test results.
+
+The four values that have been calculated previously have been loaded for you (cont_conv, test_conv, test_size, cont_size) as variables with those names.
+
+Instructions
+100 XP
+Calculate the mean of the distribution of our lift by subtracting cont_conv from test_conv.
+Calculate the variance of our lift distribution by completing the calculation. You must complete the control portion of the variance.
+Find the standard deviation of our lift distribution by taking the square root of the lift_variance
+Find the confidence bounds for our A/B test with a value equal to our lift_mean, a 0.95 confidence level, and our calculated lift_sd. Pass the arguments in that order.
+
+
+# Calculate the mean of our lift distribution 
+lift_mean = test_conv - cont_conv 
+
+# Calculate variance and standard deviation 
+lift_variance = (1 - test_conv) * test_conv /test_size + (1 - cont_conv) * cont_conv / cont_size
+lift_sd = lift_variance**0.5
+
+# Find the confidence intervals with cl = 0.95
+confidence_interval = get_ci(lift_mean, 0.95, lift_sd)
+print(confidence_interval)
+
+
+<script.py> output:
+    (0.011039999822042502, 0.011040000177957487)
+    
+    
+    Awesome, this really provides great context to our results! Notice that our interval is very narrow thanks to our substantial lift and large sample size.
+
+    _____________________________________________________________________________________________________________________________________
+    
+    
+    
+    Plotting the distribution
+In this exercise, you will visualize the test and control conversion rates as distributions. It is helpful to practice what was covered in the example, as this may be something you have not applied before. Additionally, viewing the data in this way can give a sense of the variability inherent in our estimation.
+
+Four variables, the test and control variances (test_var, cont_var), and the test and control conversion rates (test_conv and cont_conv) have been loaded for you.
+
+Instructions
+100 XP
+Using the calculated control_sd and test_sd create the range of x values to plot over. It should be 3 standard deviations in either direction from the cont_conv and test_conv respectively.
+Plot the Normal pdf of the test and control groups by specifying the conversion rate as the mean and the standard deviation in that order in mlab.normpdf()
+
+
+# Compute the standard deviations
+control_sd = cont_var**0.5
+test_sd = test_var**0.5
+
+# Create the range of x values 
+control_line = np.linspace( cont_conv - 3 * control_sd, cont_conv + 3 * control_sd , 100)
+test_line = np.linspace( test_conv - 3 * test_sd,  test_conv + 3 * test_sd , 100)
+
+# Plot the distribution 
+plt.plot(control_line, mlab.normpdf(control_line, cont_conv, control_sd))
+plt.plot(test_line, mlab.normpdf(test_line,test_conv, test_sd))
+plt.show()
+
+_____________________________________________________________________________________________________________________________________
+
+
+Plotting the difference distribution
+Now lets plot the difference distribution of our results that is, the distribution of our lift.
+
+The cont_var and test_var as well as the cont_conv and test_conv have been loaded for you. Additionally the upper and lower confidence interval bounds of this distribution have been provided as lwr_ci and upr_ci respectively.
+
+Instructions
+100 XP
+Calculate mean of the lift distribution by subtracting the control conversion rate (cont_conv) from the test conversion rate (test_conv)
+Generate the range of x-values for the difference distribution, making it 3 standard deviations wide.
+Plot a normal distribution by specifying the calculated lift_mean and lift_sd.
+Plot a green vertical line at the distributions mean, and a red vertical lines at each of the lower and upper confidence interval bounds. This has been done for you, so hit 'Submit Answer' to see the result!
+
+
+# Find the lift mean and standard deviation
+lift_mean = test_conv - cont_conv
+lift_sd = (test_var + cont_var) ** 0.5
+
+# Generate the range of x-values
+lift_line = np.linspace(lift_mean - 3 * lift_sd, lift_mean + 3 * lift_sd, 100)
+
+# Plot the lift distribution
+plt.plot(lift_line, mlab.normpdf(lift_line, lift_mean, lift_sd))
+
+# Add the annotation lines
+plt.axvline(x = lift_mean, color = 'green')
+plt.axvline(x = lwr_ci, color = 'red')
+plt.axvline(x = upr_ci, color = 'red')
+plt.show()
+
+Amazing work! This really contextualizes the lift we observed and provides more information than reporting the numerical point estimate alone would.
+
+
+
+
+    
+    
+    
+    
+    
+    
+    

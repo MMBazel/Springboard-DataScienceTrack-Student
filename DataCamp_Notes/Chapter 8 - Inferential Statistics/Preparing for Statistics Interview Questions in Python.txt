@@ -1,0 +1,70 @@
+Preparing for Statistics Interview Questions in Python
+
+Course Description
+Are you looking to land that next job or hone your statistics interview skills to stay sharp? Get ready to master classic interview concepts ranging from conditional probabilities to A/B testing to the bias-variance tradeoff, and much more! You’ll work with a diverse collection of datasets including web-based experiment results and Australian weather data. Following the course, you’ll be able to confidently walk into your next interview and tackle any statistics questions with the help of Python!
+
+=======================================================================================================================
+
+1
+Probability and Sampling Distributions
+FREE
+0%
+This chapter kicks the course off by reviewing conditional probabilities, Bayes' theorem, and central limit theorem. Along the way, you will learn how to handle questions that work with commonly referenced probability distributions.
+
+__________________________________________________________________________________________________________________________________
+
+Bayes' theorem applied
+Let's actually solve out a pretty straightforward, yet typical Bayes' theorem interview problem. You have two coins in your hand. Out of the two coins, one is a real coin and the other one is a faulty coin with tails on both sides.
+
+You are blindfolded and forced to choose a random coin and then toss it in the air. The coin lands with tails facing upwards. Find the probability that this is the faulty coin.
+
+Instructions
+0 XP
+Print the probability of the coin landing tails.
+Print the probability of the coin being faulty.
+Print the probability of the coin being faulty and landing tails.
+Print and solve for the probability that the coin is faulty, given it came down on tails.
+
+
+# Print P(tails)
+print(3 / 4)
+
+# Print P(faulty)
+print(1 / 2)
+
+# Print P(tails and faulty)
+print(0.5 * 1)
+
+# Print P(faulty | tails)
+print(0.5 / 0.75)
+
+
+All done! Congrats on completing the first lesson and moving a step closer to mastering the statistics interview in python! Keep practicing Bayes' theorem and reviewing different types of probability questions that might get thrown your way. Let's move on and talk about another popular interview topic: central limit theorem.
+
+________________________________________________________________________________________________________________________-
+
+
+
+
+
+=======================================================================================================================
+2
+Exploratory Data Analysis
+0%
+In this chapter, you will prepare for statistical concepts related to exploratory data analysis. The topics include descriptive statistics, dealing with categorical variables, and relationships between variables. The exercises will prepare you for an analytical assessment or stats-based coding question.
+
+
+=======================================================================================================================
+
+3
+Statistical Experiments and Significance Testing
+0%
+Prepare to dive deeper into crucial concepts regarding experiments and testing by reviewing confidence intervals, hypothesis testing, multiple tests, and the role that power and sample size play. We'll also discuss types of errors, and what they mean in practice.
+
+=======================================================================================================================
+
+4
+Regression and Classification
+0%
+Wrapping up, we'll address concepts related closely to regression and classification models. The chapter begins by reviewing fundamental machine learning algorithms and quickly ramps up to model evaluation, dealing with special cases, and the bias-variance tradeoff.
+

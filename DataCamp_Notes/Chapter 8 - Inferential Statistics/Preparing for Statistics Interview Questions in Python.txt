@@ -43,7 +43,17 @@ All done! Congrats on completing the first lesson and moving a step closer to ma
 
 ________________________________________________________________________________________________________________________-
 
+Samples from a rolled die
+Let's work through generating a simulation using the numpy package. You'll work with the same scenario from the slides, simulating rolls from a standard die numbered 1 through 6, using the randint() function. Take a look at the documentation for this function if you haven't encountered it before.
 
+Starting with a small sample and working your way up to a larger sample, examine the outcome means and come to a conclusion about the underlying theorem.
+
+Instructions
+100 XP
+Generate a sample of 10 die rolls using the randint() function; assign it to our small variable.
+Assign the mean of the sample to small_mean and print the results; notice how close it is to the true mean.
+Similarly, create a larger sample of 1000 die rolls and assign the list to our large variable.
+Assign the mean of the larger sample to large_mean and print the mean; which theorem is at work here?
 
 
 

@@ -400,6 +400,98 @@ Instructions 1/3
 35 XP
 1
 Visualize the relationship between the MinTemp and MaxTemp variables using the scatter() function.
+Adapt your code to visualize the relationship between the MaxTemp and Humidity9am variables instead.
+Lastly, adapt your code once again for MinTemp and Humidity3pm variables.
+
+
+# Display a scatter plot and examine the relationship
+plt.scatter(weather.MinTemp, weather.MaxTemp)
+plt.show()
+
+
+# Display a scatter plot and examine the relationship
+plt.scatter(weather.MaxTemp, weather.Humidity9am)
+plt.show()
+
+# Display a scatter plot and examine the relationship
+plt.scatter(weather.MinTemp, weather.Humidity3pm)
+plt.show()
+
+
+Good job! What did you conclude for each example? The first example gave us a decently strong positive relationship, the second example was about as strong but negative, and the final example had no apparent relationship. Understanding all of these terms is important, but make sure you understand what they mean in practice. In our first example, we saw that minimum temperature gave us some information about what the maximum temperature will be later on.
+________________________________________________________________________________________________________________________
+
+Pearson correlation
+You know how to identify different relationships based on scatter plots, but let's take a more practical approach now and dive a bit deeper into one relationship. We'll stick to the same version of the weather dataset that we just used.
+
+You'll analyze a seaborn pair plot of some features before drilling down for further analysis and coming to a conclusion about the correlation. This process should be something that you feel quite comfortable with.
+
+Instructions 1/4
+25 XP
+1
+2
+3
+4
+Display a seaborn pair plot for the weather dataset; explore the output a bit once it loads.
+Take a closer look at the relationship between the Humidity9am and Humidity3pm variables using the scatter() function.
+Calculate the Pearson correlation coefficient between the Humidity9am and Humidity3pm variables using pandas built-in corr() function; would you say these features are correlated?
+Assign the squared result to the r2 variable and print it out below; what does this means exactly?
+
+# Generate the pair plot for the weather dataset
+sns.pairplot(weather)
+plt.show()
+
+# Look at the scatter plot for the humidity variables
+plt.scatter(weather.Humidity9am, weather.Humidity3pm)
+plt.show()
+
+# Compute and print the Pearson correlation
+r = weather['Humidity9am'].corr(weather['Humidity3pm'])
+print(r)
+
+
+# Compute and print the Pearson correlation
+r = weather['Humidity9am'].corr(weather['Humidity3pm'])
+
+# Calculate the r-squared value and print the result
+r2 = r**2
+print(r2)
+
+________________________________________________________________________________________________________________________
+
+Sensitivity to outliers
+When we are analyzing the relationship of more than one variable, correlation is a great start. But how does correlation hold up against some more interesting datasets? How well does it hold up against outliers?
+
+In this exercise, you will plot and compute the correlation for a dataset with an outlier and then remove it and see what changes. In the end, you want to see how correlation performs and come to a conclusion about when and where you should use it.
+
+A sample dataset from the famous Anscombe's quartet has been imported for you as the df variable, along with the all the packages used previously in this chapter.
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Display a matplotlib scatter plot of the X and Y features; notice the outlier in the top right.
+Compute and print the Pearson correlation for the X and Y columns using the built-in corr() function within the pandas package.
+Drop the outlier at index 2 from our dataset using the drop() function; assign and print the correlation again.
+
+# Display the scatter plot of X and Y
+plt.scatter(df.X, df.Y)
+plt.show()
+
+# Compute and print the correlation
+corr  = df['X'].corr(df['Y'])
+print(corr)
+
+# Drop the outlier from the dataset
+df = df.drop(2)
+
+# Compute and print the correlation once more
+new_corr  = df['X'].corr(df['Y'])
+print(new_corr)
+
+Great! Notice how our correlation initially suffered due to the outlier, but became nearly perfect once it was removed. This effectively conveyed the biggest complaint about Pearson correlation; the metric is not very robust to outliers, so data scientists often must seek other tools when the outliers can't or shouldn't be easily removed. It's a good idea to think about the pros and cons of techniques to stand out during your interview!
+
 
 
 =======================================================================================================================
@@ -408,6 +500,314 @@ Visualize the relationship between the MinTemp and MaxTemp variables using the s
 Statistical Experiments and Significance Testing
 0%
 Prepare to dive deeper into crucial concepts regarding experiments and testing by reviewing confidence intervals, hypothesis testing, multiple tests, and the role that power and sample size play. We'll also discuss types of errors, and what they mean in practice.
+
+________________________________________________________________________________________________________________________
+
+Confidence interval by hand
+There are two common ways that interviewers will touch on confidence intervals; they will either ask you to explain it in simple terms, or elaborate on how they are calculated, possibly having you implement one. In this exercise, you'll practice the latter by producing a confidence interval by hand, using no packages other than those imported for you.
+
+We have gone ahead and assigned the appropriate z-score for a 95% confidence interval and sample mean to the z_score and sample_mean variables to simplify things a bit.
+
+Instructions
+100 XP
+Compute the standard error and the margin of error using the sem() function and z_score variable imported for you.
+Compute and print the lower boundary of our confidence interval using the sample_mean variable imported for you.
+Compute and print the upper boundary of our confidence interval using the sample_mean variable imported for you.
+
+from scipy.stats import sem, t
+data = [1, 2, 3, 4, 5]
+confidence = 0.95
+
+# Compute the standard error and margin of error
+std_err = sem(data)
+margin_error = std_err * z_score
+
+# Compute and print the lower threshold
+lower = sample_mean - margin_error
+print(lower)
+
+# Compute and print the upper threshold
+upper = sample_mean + margin_error
+print(upper)
+
+Good work showing your understanding of how confidence intervals are calculated! Now you'll be prepared if interviewers ever throw this at you in a coding assessment. Don't forget about the conceptual understanding, though. Make sure you're comfortable explaining confidence intervals to a beginner in an intuitive way.
+
+________________________________________________________________________________________________________________________
+Applying confidence intervals
+In practice, you aren't going to hand-code confidence intervals. Let's utilize the statsmodels package to streamline this process and examine some more tendencies of interval estimates.
+
+In this exercise, we've generated a binomial sample of the number of heads in 50 fair coin flips saved as the heads variable. You'll compute a few different confidence intervals for this sample, and then scale your work for 10 similar samples.
+
+The proportion_confint() function has already been imported to help you compute confidence intervals.
+
+Instructions 1/3
+35 XP
+1
+Compute and print a 99% confidence interval for 50 trials; does it contain the true proportion of a fair coin flip?
+Adapt your code to generate a 90% confidence interval this time; does it contain the true proportion this time?
+
+
+Examine your confidence interval results from the last step. You might see at least one confidence interval that does not contain 0.5, the true population proportion for a fair coin flip. You could decrease the likelihood of this happening by increasing your confidence level or lowering the alpha value.
+Repeat this process of sampling, computing the confidence interval, and printing the result 10 times using a loop.
+
+
+
+# Compute and print the 99% confidence interval
+confidence_int = proportion_confint(heads, 50, 0.01)
+print(confidence_int)
+
+# Compute and print the 90% confidence interval
+confidence_int = proportion_confint(heads, 50, 0.1)
+print(confidence_int)
+
+# Repeat this process 10 times 
+heads = binom.rvs(50, 0.5, size=10)
+for val in heads:
+    confidence_interval = proportion_confint(val, 50, .10)
+    print(confidence_interval)
+
+
+
+
+<script.py> output:
+    (0.35844514241179504, 0.721554857588205)
+
+<script.py> output:
+    (0.42406406993539053, 0.6559359300646095)
+
+<script.py> output:
+    (0.3440640699353905, 0.5759359300646095)
+    (0.3245317440082245, 0.5554682559917755)
+    (0.3836912846323326, 0.6163087153676674)
+    (0.42406406993539053, 0.6559359300646095)
+    (0.36378436885322046, 0.5962156311467796)
+    (0.5283436332470393, 0.7516563667529608)
+    (0.42406406993539053, 0.6559359300646095)
+    (0.3836912846323326, 0.6163087153676674)
+    (0.36378436885322046, 0.5962156311467796)
+    (0.36378436885322046, 0.5962156311467796)
+    
+________________________________________________________________________________________________________________________
+
+
+  One tailed z-test
+We know now that hypothesis tests can come in several forms. In this exercise, you'll implement a one tailed z-test on test data from tracking conversion on a mobile app. The data has been imported as results and numpy has already been imported for you along with pandas as well.
+
+The treatment group represents some graphic alteration that we expect to improve the conversion rate of users. Run a test with alpha as .05 and find out if the change actually helped.
+
+Instructions 1/4
+25 XP
+1
+2
+3
+4
+Assign and print the mean conversion rate for each group using the groupby() function on the Group column.
+Assign the number of control conversions to num_control and the total number of trials to the total_control variable by slicing the DataFrame.
+Similarly, assign the same values for the treatment group by slicing the DataFrame.
+Run the z-test using the proportions_ztest() function and passing it the count and nobs variables.    
+
+# Assign and print the conversion rate for each group
+conv_rates = results.groupby('Group').mean()
+print(conv_rates)
+
+# Assign the number of control conversions and trials
+num_control = results[results['Group'] == 'control']['Converted'].sum()
+total_control = len(results[results['Group'] == 'control'])
+
+# Assign the number of conversions and total trials
+num_control = results[results['Group'] == 'control']['Converted'].sum()
+total_control = len(results[results['Group'] == 'control'])
+
+# Assign the number of conversions and total trials
+num_treat = results[results['Group']=='treatment']['Converted'].sum()
+total_treat = len(results[results['Group']=='treatment'])
+
+
+# Assign the number of conversions and total trials
+num_control = results[results['Group'] == 'control']['Converted'].sum()
+total_control = len(results[results['Group'] == 'control'])
+
+# Assign the number of conversions and total trials
+num_treat = results[results['Group'] == 'treatment']['Converted'].sum()
+total_treat = len(results[results['Group'] == 'treatment'])
+
+from statsmodels.stats.proportion import proportions_ztest
+count = np.array([num_treat, num_control]) 
+nobs = np.array([total_treat, total_control])
+
+# Run the z-test and print the result 
+stat, pval = proportions_ztest(count, nobs, alternative="larger")
+print('{0:0.3f}'.format(pval))
+
+
+Good job! You see that our test gave us a resulting p-value of .009 which falls under our alpha value of .05, so we can conclude that there is an effect and, therefore, we reject the null hypothesis. It looks like the change actually did have a noticeable positive effect on conversion rate!
+
+________________________________________________________________________________________________________________________
+
+Two tailed t-test
+In this exercise, you'll tackle another type of hypothesis test with the two tailed t-test for means. More concretely, you'll run the test on our laptops dataset from before and try to identify a significant difference in price between Asus and Toshiba.
+
+Once again, we've imported all of the standard packages. Once you get your result, don't forget to make an actionable conclusion.
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Assign and print the mean price for each group using the groupby() function on the Company feature.
+Assign the prices of each group to their respective variable.
+Run the t-test and print the results using the imported ttest_ind() function; what's your conclusion?
+
+
+# Display the mean price for each group
+prices = laptops.groupby('Company').mean()
+print(prices)
+
+# Assign the prices of each group
+asus = laptops[laptops['Company'] == 'Asus']['Price']
+toshiba = laptops[laptops['Company'] == 'Toshiba']['Price']
+
+# Assign the prices of each group
+asus = laptops[laptops['Company'] == 'Asus']['Price']
+toshiba = laptops[laptops['Company'] == 'Toshiba']['Price']
+
+# Run the t-test
+from scipy.stats import ttest_ind
+tstat, pval = ttest_ind(asus, toshiba)
+print('{0:0.3f}'.format(pval))
+
+With a p-value of .133, we cannot reject the null hypothesis! There's not enough evidence here to conclude that Toshiba laptops are significantly more expensive than Asus. With that being said, .133 is fairly close to reasonable significance so we may want to run another test or examine this further. Interviewers won't hesitate to throw you tricky situations like this to see how you handle them. Come to a conclusion and make a strong argument for it. Good job!
+
+________________________________________________________________________________________________________________________
+
+Calculating sample size
+Let's finish up our dive into statistical tests by performing power analysis to generate needed sample size. Power analysis involves four moving parts:
+
+Sample size
+Effect size
+Minimum effect
+Power
+In this exercise, you're working with a website and want to test for a difference in conversion rate. Before you begin the experiment, you must decide how many samples you'll need per variant using 5% significance and 95% power.
+
+Instructions 1/3
+35 XP
+1
+Standardize the effect of a conversion rate increase from 20% to 25% success using the proportion_effectsize() function.
+Calculate and print the needed sample size using the zt_ind_solve_power() function.
+
+Adapt your code to solve for needed sample size using 80% power instead; observe what happens.
+
+# Standardize the effect size
+from statsmodels.stats.proportion import proportion_effectsize
+std_effect = proportion_effectsize(0.2,0.25)
+
+
+# Standardize the effect size
+from statsmodels.stats.proportion import proportion_effectsize
+std_effect = proportion_effectsize(.20, .25)
+
+# Assign and print the needed sample size
+from statsmodels.stats.power import  zt_ind_solve_power
+sample_size = zt_ind_solve_power(effect_size=std_effect, nobs1=None, alpha=0.05, power=0.95)
+print(sample_size)
+
+
+# Standardize the effect size
+from statsmodels.stats.proportion import proportion_effectsize
+std_effect = proportion_effectsize(.20, .25)
+
+# Assign and print the needed sample size
+from statsmodels.stats.power import  zt_ind_solve_power
+sample_size = zt_ind_solve_power(effect_size=std_effect, nobs1=None, alpha=.05, power=0.8)
+print(sample_size)
+
+All done! Notice how lowering the power allowed you fewer observations in your sample, yet increased your chance of a Type II error. Remember that doing these calculations by hand is quite difficult, so you may be asked to show or explain these tradeoffs with whiteboarding rather than programming.
+
+
+
+________________________________________________________________________________________________________________________
+
+
+Visualizing the relationship
+Now that we've gone over the effect on certain errors and calculated the necessary sample size for different power values, let's take a step back and look at the relationship between power and sample size with a useful plot.
+
+In this exercise, we'll switch gears and look at a t-test rather than a z-test. In order to visualize this, use the plot_power() function that shows sample size on the x-axis with power on the y-axis and different lines representing different minimum effect sizes.
+
+Instructions
+100 XP
+Assign a TTestIndPower() object to the results variable.
+Visualize the relationship between power and sample size using the plot_power() function with the appropriate parameter values; what do you notice?
+
+Good work! Notice that not only does an increase in power result in a larger sample size, but this increase grows exponentially as the minimum effect size is increased. Once again, power analysis can get confusing with all of these interconnected moving parts, but by mastering the relationships at hand, you'll be ready when the question comes up from your interviewer!
+
+________________________________________________________________________________________________________________________
+
+Calculating error rates
+We talked a bit about the multiple comparisons problem in the slides, but let's take things a step further. In this exercise, you'll look into how the phenomenon affects error rate more precisely.
+
+Your colleague is strongly considering running 60 distinct hypothesis tests. In order to convince them otherwise, compute the probability of a Type I error for 60 hypothesis tests with a single-test 5% significance level.
+
+Compute and print the probability of your colleague getting a Type I error.
+You successfully talked them down to 30 tests; adapt your code to compute and print the new error rate.
+One last try; adapt your code to compute and print the error rate for 10 tests.
+
+
+# Print error rate for 60 tests with 5% significance
+error_rate = 1 - (.95**(60))
+print(error_rate)
+
+# Print error rate for 30 tests with 5% significance
+error_rate = 1 - (.95**(30))
+print(error_rate)
+
+# Print error rate for 10 tests with 5% significance
+error_rate = 1 - (.95**(10))
+print(error_rate)
+
+
+
+<script.py> output:
+    0.953930201013048
+
+<script.py> output:
+    0.7853612360570628
+
+<script.py> output:
+    0.4012630607616213
+
+As you can see, the probability of encountering an error is still extremely high. This is where the Bonferroni correction comes in. While a bit conservative, it controls the family-wise error rate for circumstances like these to avoid the high probability of a Type I error. We'll go over this specific method in the next exercise!
+
+________________________________________________________________________________________________________________________
+Bonferroni correction
+Let's implement multiple hypothesis tests using the Bonferroni correction approach that we discussed in the slides. You'll use the imported multipletests() function in order to achieve this.
+
+Use a single-test significance level of .05 and observe how the Bonferroni correction affects our sample list of p-values already created.
+
+Instructions
+100 XP
+Compute a list of the Bonferroni adjusted p-values using the imported multipletests() function.
+Print the results of the multiple hypothesis tests returned in index 0 of your p_adjusted variable.
+Print the p-values themselves returned in index 1 of your p_adjusted variable.
+
+from statsmodels.sandbox.stats.multicomp import multipletests
+pvals = [.01, .05, .10, .50, .99]
+
+# Create a list of the adjusted p-values
+p_adjusted = multipletests(pvals, alpha=0.05, method='bonferroni')
+
+# Print the resulting conclusions
+print(p_adjusted[0])
+
+# Print the adjusted p-values themselves 
+print(p_adjusted[1])
+
+
+<script.py> output:
+    [ True False False False False]
+    [0.05 0.25 0.5  1.   1.  ]
+
+
+Good work! As you can see, the Bonferroni correction did it's job and corrected the family-wise error rate for our 5 hypothesis test results. In the end, only one of the tests remained signficant. If you're interested, check out some of the other methods, but interviewers typically won't get too far in the weeds here.
 
 =======================================================================================================================
 

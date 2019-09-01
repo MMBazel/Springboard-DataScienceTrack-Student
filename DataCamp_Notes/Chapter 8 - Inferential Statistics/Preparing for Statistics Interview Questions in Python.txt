@@ -55,13 +55,351 @@ Assign the mean of the sample to small_mean and print the results; notice how cl
 Similarly, create a larger sample of 1000 die rolls and assign the list to our large variable.
 Assign the mean of the larger sample to large_mean and print the mean; which theorem is at work here?
 
+from numpy.random import randint
 
+# Create a sample of 10 die rolls
+small = randint(1, 7, 10)
+
+# Calculate and print the mean of the sample
+small_mean = small.mean()
+print(small_mean)
+
+# Create a sample of 1000 die rolls
+large = randint(1, 7, 1000)
+
+# Calculate and print the mean of the large sample
+large_mean = large.mean()
+print(large_mean)
+
+<script.py> output:
+    3.4
+    3.486
+    
+    
+    Good job! Notice how the mean of the large sample has gotten closer to the true expected mean value of 3.5 for a rolled die. Which theorem did you say was being demonstrated here? Was it the law of large numbers? If so, you're correct! It's important to distinguish between the law of large numbers and central limit theorem in interviews.
+________________________________________________________________________________________________________________________
+Simulating central limit theorem
+Now that we have some practice creating a sample, we'll look at simulating the central limit theorem, similar to what you saw in the slides. We'll also continue dealing with a standard die numbered 1 through 6.
+
+In order to do this, you'll take a collection of sample means from numpy and examine the distribution of them using the matplotlib package, which has been imported as plt for the rest of the chapter.
+
+Instructions 1/3
+35 XP
+1
+Create a list named means with 1000 sample means from samples of 30 rolled dice by using list comprehension.
+
+2
+Create and show a histogram of the means using the hist() function; examine the shape of the distribution.
+
+3
+Adapt your code to visualize only 100 samples in the means list; did the distribution change at all?
+
+
+
+from numpy.random import randint
+
+# Create a list of 1000 sample means of size 30
+means = [randint(1, 7, 30).mean() for i in range(1000)]
+
+from numpy.random import randint
+
+# Create a list of 1000 sample means of size 30
+means = [randint(1, 7, 30).mean() for i in range(1000)]
+
+# Create and show a histogram of the means
+plt.hist(means)
+plt.show()
+
+from numpy.random import randint
+
+# Adapt code for 100 samples of size 30
+means = [randint(1, 7, 30).mean() for i in range(100)]
+
+# Create and show a histogram of the means
+plt.hist(means)
+plt.show()
+
+
+Nice! Note how whether we took 100 or 1000 sample means, the distribution was still approximately normal. This will always be the case when we have a large enough sample (typically above 30). That's the central limit theorem at work. Remember why it's so important. It serves as the basis for all statistical experiments that you'll do!
+
+________________________________________________________________________________________________________________________
+
+Bernoulli distribution
+Let's start simple with the Bernoulli distribution. In this exercise, you'll generate sample data for a Bernoulli event and then examine the visualization produced. Before we start, make yourself familiar with the rvs() function within scipy.stats that we'll use for sampling over the next few exercises.
+
+Let's stick to the prior example of flipping a fair coin and checking the outcome: heads or tails. Remember that matplotlib is already imported as plt for you.
+
+Instructions 1/3
+35 XP
+1
+Generate a sample using the rvs() function with size set to 100; assign it to the data variable.
+
+2
+Create and display a histogram using the hist() function; examine the shape of the distribution.
+
+3
+Adapt the code to take a sample of 1000 observations this time.
+
+
+# Generate bernoulli data
+from scipy.stats import bernoulli
+data = bernoulli.rvs(p=0.5, size=100)
+
+# Generate bernoulli data
+from scipy.stats import bernoulli
+data = bernoulli.rvs(p=0.5, size=100)
+
+# Plot distribution
+plt.hist(data)
+plt.show()
+
+# Generate bernoulli data
+from scipy.stats import bernoulli
+data = bernoulli.rvs(p=0.5, size=1000)
+
+# Plot distribution
+plt.hist(data)
+plt.show()
+
+Good job! Notice that heads and tails didn't have the exact same probability with a sample size of just 100. This is no fluke — when sampling, we won't always get perfect results. We can increase our accuracy however, as you saw when you upped the sample size to 1,000 observations. Now let's move forward to some more interesting distributions!
+________________________________________________________________________________________________________________________
+
+Binomial distribution
+As we touched on in the slides, the binomial distribution is used to model the number of successful outcomes in trials where there is some consistent probability of success.
+
+For this exercise, consider a game where you are trying to make a ball in a basket. You are given 10 shots and you know that you have an 80% chance of making a given shot. To simplify things, assume each shot is an independent event.
+
+Instructions
+100 XP
+Generate some data for the distribution using the rvs() function with size set to 1000; assign it to the data variable.
+Display a matplotlib histogram; examine the shape of the distribution.
+Assign the probability of making 8 or less shots to prob1 and print the result.
+Assign the probability of making all 10 shots to prob2 and print the result.
+
+# Generate binomial data
+from scipy.stats import binom
+data = binom.rvs(n=10, p=0.8, size=1000)
+
+# Plot the distribution
+plt.hist(data)
+plt.show()
+
+# Assign and print probability of 8 or less successes
+prob1 = binom.cdf(k=8, n=10, p=0.8)
+print(prob1)
+
+# Assign and print probability of all 10 successes
+prob2 = binom.pmf(k=10, n=10, p=0.8)
+print(prob2)
+
+
+<script.py> output:
+    0.6241903616
+    0.10737418240000005
+
+Nice job! Notice that we started out simple by just showing the general shape of the distribution, but quickly moved on to actual application. Remember, interviewers like to start out with fundamental concepts before getting incrementally more complex. By mastering the basics, you put yourself in a much better position right off the bat!
+
+________________________________________________________________________________________________________________________
+
+Normal distribution
+On to the most recognizable and useful distribution of the bunch: the normal or Gaussian distribution. In the slides, we briefly touched on the bell-curve shape and how the normal distribution along with the central limit theorem enables us to perform hypothesis tests.
+
+Similar to the previous exercises, here you'll start by simulating some data and examining the distribution, then dive a little deeper and examine the probability of certain observations taking place.
+
+Instructions
+100 XP
+Generate the data for the distribution by using the rvs() function with size set to 1000; assign it to the data variable.
+Display a matplotlib histogram; examine the shape of the distribution.
+Given a standardized normal distribution, what is the probability of an observation greater than 2?
+Looking at our sample, what is the probability of an observation greater than 2?
+
+
+# Generate normal data
+from scipy.stats import norm
+data = norm.rvs(size=1000)
+
+# Plot distribution
+plt.hist(data)
+plt.show()
+
+# Compute and print true probability for greater than 2
+true_prob = 1 - norm.cdf(2)
+print(true_prob)
+
+# Compute and print sample probability for greater than 2
+sample_prob = sum(obs > 2 for obs in data) / len(data)
+print(sample_prob)
+
+<script.py> output:
+    0.02275013194817921
+    0.014
+    
+All done! How close is the result from the true distribution vs. our sample distribution? Do these results make since in the context of the 68-95-99.7 rule discussed in the slides? Make sure to keep reviewing and going deeper on the topic of the normal distribution, as it's a favorite among interviewers. Congrats on finishing the first chapter and moving closer to acing your next interview!    
+    
+   
 
 =======================================================================================================================
 2
 Exploratory Data Analysis
 0%
 In this chapter, you will prepare for statistical concepts related to exploratory data analysis. The topics include descriptive statistics, dealing with categorical variables, and relationships between variables. The exercises will prepare you for an analytical assessment or stats-based coding question.
+
+________________________________________________________________________________________________________________________
+
+Mean or median
+As data scientists, we often look to describe data as concisely as possible. This brings us to the two most common measures of centrality: mean and median. In this exercise, you'll examine a couple different scenarios and decide which metric is optimal for effectively describing the data.
+
+More concretely, you'll be exploring Australian weather data containing features related to temperature and wind speeds. This dataset has already been imported as weather and both the matplotlib and pandas packages have been imported as plt and pd for you to use the rest of the chapter as well.
+
+Instructions 1/3
+35 XP
+1
+Plot the distribution of the Temp3pm column using the hist() function; is the data skewed at all?
+
+2
+Assign and print the mean and median for the Temp3pm column; which do you think is a better representation of the data?
+
+3
+Adapt the code to explore a different column; see how the results for Temp9am look.
+
+
+# Visualize the distribution 
+plt.hist(weather.Temp3pm)
+plt.show()
+
+
+# Visualize the distribution 
+plt.hist(weather['Temp3pm'])
+plt.show()
+
+# Assign the mean to the variable and print the result
+mean = weather.Temp3pm.mean()
+print('Mean:', mean)
+
+# Assign the median to the variable and print the result
+median = weather.Temp3pm.median()
+print('Median:', median)
+
+
+# Visualize the distribution 
+plt.hist(weather['Temp9am'])
+plt.show()
+
+# Assign the mean to the variable and print the result
+mean = weather['Temp9am'].mean()
+print('Mean:', mean)
+
+# Assign the median to the variable and print the result
+median = weather['Temp9am'].median()
+print('Median:', median)
+
+
+Great work! If you look closely here, you can see the that distribution for Temp3pm was skewed left while the distribution for Temp9am was more skewed right. For this reason, the median was higher than the mean initially, but after adapting our code we see that the mean became higher than the median due to the change in skewness. While neither column is harshly skewed, it is enough that we should consider using median instead of mean due to the robustness of the metric.
+
+________________________________________________________________________________________________________________________
+
+Standard deviation by hand
+In the video, we talked about measures of variability, and discussed standard deviation as the measure that is used most commonly. It's pretty important that you have a grasp on this concept, as interviewers will likely hit on it early on in the process through a coding assignment or something more conceptual.
+
+Here, you'll simulate this experience by computing standard deviation by hand, meaning that you won't use any existing functions like std() to get your results.
+
+Instructions
+100 XP
+Without using the mean() function, compute the mean of our nums list defined for you.
+Use the computed variance value along with the math.sqrt() function to get the standard deviation; print your result.
+Check your work by printing the actual standard deviation with the np.std() function mentioned earlier.
+
+# Create a sample list
+import math
+nums = [1, 2, 3, 4, 5]
+
+# Compute the mean of the list
+mean = sum(nums) / len(nums)
+
+# Compute the variance and print the std of the list
+variance = sum(pow(x - mean, 2) for x in nums) / len(nums)
+std = math.sqrt(variance)
+print(std)
+
+# Compute and print the actual result from numpy
+real_std = np.array(nums).std()
+print(real_std)
+
+Good job! Your output should match the results from the std() function. If you can do this, you probably have a solid grasp on the standard deviation formula and how it's calculated. Interviewers like this question especially because it gives them an opportunity to gut-check your coding skills while also getting a feel for your stats background.
+________________________________________________________________________________________________________________________
+
+Encoding techniques
+In the slides, we discussed two encoding techniques: label encoding and one-hot encoding. In practice, the technique that you use is determined by the situation at hand. That being said, you should have both of these at your disposal for your interview.
+
+In this exercise, you'll practice implementing both of these techniques on the same dataset of laptop prices that you saw earlier, pre-loaded within the laptops variable.
+
+Instructions 1/2
+50 XP
+1
+Use the created label encoder object in encoder to transform the Company column; print the results.
+One-hot encode laptops2 copied from our original DataFrame on the Company column; print the head of the DataFrame.
+
+
+from sklearn import preprocessing
+
+# Create the encoder and print our encoded new_vals
+encoder = preprocessing.LabelEncoder()
+new_vals = encoder.fit_transform(laptops.Company)
+print(new_vals)
+
+
+# One-hot encode Company for laptops2
+laptops2 = pd.get_dummies(data=laptops2, columns=['Company'])
+print(laptops2.head())
+
+
+Congrats! You can now encode categorical variables using the power of the pandas and scikit-learn packages. With more practice, you'll get a better feel for which scenarios demand each technique. Note that one-hot encoding can create extremely highly-dimensional data if you aren't careful.
+
+________________________________________________________________________________________________________________________
+Exploring laptop prices
+We walked through an example in the video of surface-level data analysis of categorical variables. Here, you'll perform a similar task first-hand. Taken from the same pre-loaded laptops dataset, you'll work with three separate brands: Acer, Asus, and Toshiba.
+
+You'll produce some initial information about the dataset, create a countplot of the companies, and analyze the relationship of each against the price in euros.
+
+All of the usual packages have been imported for you. We've also gone ahead and imported the seaborn package as sns for you, which we'll use for visualization.
+
+Instructions 1/3
+35 XP
+Get some initial information about the data using the info() function; here you can see the null values and data types quite easily.
+
+Visualize how many observations are from each brand by using the countplot() function on the Company column; examine the results.
+
+Plot the relationship between the Price and Company columns; what can you conclude from this?
+
+# Get some initial info about the data
+laptops.info()
+
+
+# Get some initial info about the data
+laptops.info()
+
+# Produce a countplot of companies
+sns.countplot(laptops.Company)
+plt.show()
+
+
+# Visualize the relationship with price
+laptops.boxplot('Price', 'Company', rot=30)
+plt.show()
+
+What did you conclude here? It appears that Asus is the most common brand while Toshiba is less common. Furthermore, despite a few outliers, there is a steady increase in price as we move from Acer to Asus to Toshiba models. During your interview prep, don't forget to emphasize communicating results. Companies are looking for someone that can break down insights and share them effectively with non-technical team members. Recording yourself is an excellent way to practice this.
+________________________________________________________________________________________________________________________
+
+
+Types of relationships
+How do we effectively identify these relationships in practice? The first and often only step you need, is to visualize the data using a scatter plot. In this exercise, you'll examine a few different relationships, produce the scatter plot, and then consider what each plot tells us about the relationship.
+
+You'll work with a few different features in the Australian weather dataset from before, imported as weather for you to use. For the sake of this exercise, make sure you pass features in the order they are given to you!
+
+Instructions 1/3
+35 XP
+1
+Visualize the relationship between the MinTemp and MaxTemp variables using the scatter() function.
 
 
 =======================================================================================================================

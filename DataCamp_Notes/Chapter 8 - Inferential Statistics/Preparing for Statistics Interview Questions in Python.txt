@@ -961,5 +961,154 @@ print(coefs)
 Since our features were normalized beforehand, we can look at the magnitude of our coefficients to tell us the importance of each independent variable. Here you can see the the second variable, Humidity3pm was much more important to our outcome than humidity from that morning. This is intuitive since we are trying to predict the rain for tomorrow!
 
     
+    _________________________________________________________________________________________________________________________
+    
+ Regression evaluation
+Let's revisit the linear regression model that you created with LinearRegression() and then trained with the fit() function a few exercises ago. Evaluate the performance your model, imported here as lm for you to call.
+
+The weather data has been imported for you with the X and y variables as well, just like before. Let's get to calculating the R-squared, mean squared error, and mean absolute error values for the model.
+
+Instructions 1/3
+35 XP
+1
+Compute and print the R-squared score of our model using the score() function.   
+  Compute and print mean squared error using the mean_squared_error() function.  
+Adapt your code to compute and print the mean absolute error this time using the mean_absolute_error() function.    
+
+
+# R-squared score
+r2 = lm.score(X,y)
+print(r2)
+
+# Mean squared error
+from sklearn.metrics import mean_squared_error
+preds = lm.predict(X)
+mse = mean_squared_error(y, preds)
+print(mse)
+
+# Mean absolute error
+from sklearn.metrics import mean_absolute_error
+preds = lm.predict(X)
+mae = mean_absolute_error(y, preds)
+print(mae)
+
+
+<script.py> output:
+    542.2291666666666
+
+<script.py> output:
+    226.12721831681654
+
+<script.py> output:
+    11.522404665934568
+
+    Good job! Note that our R-squared value tells us the percentage of the variance of y that X is responsible for. Which error metric would you recommend for this dataset? If you remember from when you plotted your model fit, there aren't too many outliers, so mean squared error would be a good choice to go with! When interviewing, make sure you have sound reasoning to back up your choice on questions like this.
     
     
+    _________________________________________________________________________________________________________________________
+    
+ Classification evaluation
+Moving forward with evaluation metrics, this time you'll evaluate our logistic regression model from before with the goal of predicting the binary RainTomorrow feature using humidity.
+
+We have gone ahead and imported the model as clf and the same test sets assigned to the X_test and y_test variables. Generate and analyze the confusion matrix and then compute both precision and recall before making a conclusion.
+
+Instructions 1/3
+35 XP
+1
+Generate and print out the confusion matrix for your model; identify the Type I and Type II errors.
+Compute and print the precision of your model; can you explain why precision is helpful in this context?
+Adapt your code to compute and print the recall of your model; what do you conclude?
+
+
+
+# Generate and output the confusion matrix
+from sklearn.metrics import confusion_matrix
+preds = clf.predict(X_test)
+matrix = confusion_matrix(y_test, preds)
+print(matrix)
+
+# Compute and print the precision
+from sklearn.metrics import precision_score
+preds = clf.predict(X_test)
+precision = precision_score(y_test, preds)
+print(precision)
+
+# Compute and print the recall
+from sklearn.metrics import recall_score
+preds = clf.predict(X_test)
+recall = recall_score(y_test, preds)
+print(recall)
+
+
+Good work! You can see here that the precision of our rain prediction model was quite high, meaning that we didn't make too many Type I errors. However, there were plenty of Type II errors shown in the bottom-left quadrant of the confusion matrix. This is indicated further by the low recall score, meaning that there were plenty of rainy days that we missed out on. Think a little about the context and what method you would choose to optimize for!
+
+
+________________________________________________________________________________________________________________________________
+
+Identifying outliers
+Let's keep at it with our laptops dataset and tackle some outliers hiding away. In this exercise, we'll stick to the first technique we discussed in the slides using standard deviations to identify extreme values, since this method is more common in practice.
+
+You'll compute the descriptive statistics and outlier boundaries, and then identify the rows with them before dropping them from the dataset. You'll be working primarily with the Price column here.
+
+
+Calculate the mean and standard deviation of the Price column.
+Compute and print the upper and lower boundaries for acceptable values.
+Identify the rows with outliers; print outliers when you have it.
+
+# Calculate the mean and std
+mean, std = laptops['Price'].mean(), laptops['Price'].std()
+
+# Compute and print the upper and lower threshold
+cut_off = 3 * std
+lower, upper = mean - cut_off, mean + cut_off
+print(lower, 'to', upper)
+
+# Identify and print rows with outliers
+outliers = laptops[(laptops['Price'] > upper) | 
+                   (laptops['Price'] < lower)]
+print(outliers)
+
+# Drop the rows from the dataset
+laptops = laptops[(laptops['Price'] <= upper) | 
+                  (laptops['Price'] >= lower)]
+
+
+Good job! In this scenario, dropping the outliers was likely the right move since the values were unthinkable for laptops prices. This implies that there was some mistake in data entry or data collection. With that being said, this won't always be the best path forward. It's important to understand why you got the outliers that you did and if they provide valuable information before you throw them out.
+
+
+________________________________________________________________________________________________________________________________
+
+Visualizing the tradeoff
+We know that the bias-variance tradeoff serves as the basis for dealing with issues like overfitting and underfitting in machine learning.
+
+In this final exercise, you'll revisit our weather dataset one last time by visualizing the difference between high bias and high variance models using the already imported preds and preds2 variables.
+
+As a reminder, we are using the Temp9am feature to predict our dependent variable, the Temp3pm feature. The usual packages have been imported.
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Visualize the relationship between the imported X and y variables using the scatter() function.
+Add the simple linear regression predictions saved as preds to your scatter plot; this is the model you created earlier in the chapter.
+
+
+
+# Use X and y to create a scatterplot
+plt.scatter(X, y)
+plt.show()
+
+
+# Use X and y to create a scatterplot
+plt.scatter(X, y)
+
+# Add your model predictions to the scatter plot 
+plt.plot(np.sort(X), preds)
+
+# Add the higher-complexity model predictions as well
+plt.plot(np.sort(X), preds2)
+plt.show()
+
+
+Great job! This plot does an excellent job of showing both high-bias and high-variance models. Your original simple linear regression fit (the straight blue line) has higher bias, while the higher-order polynomial model is much more flexible to new observations and therefore has higher variance. In most cases, you'll find that the best result comes somewhere in between these examples - hence the tradeoff!

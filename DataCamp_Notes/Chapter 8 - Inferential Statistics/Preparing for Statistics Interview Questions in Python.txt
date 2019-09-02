@@ -816,3 +816,150 @@ Regression and Classification
 0%
 Wrapping up, we'll address concepts related closely to regression and classification models. The chapter begins by reviewing fundamental machine learning algorithms and quickly ramps up to model evaluation, dealing with special cases, and the bias-variance tradeoff.
 
+
+________________________________________________________________________________________________________________________
+
+
+Linear regression
+In this exercise, you'll implement a simple linear regression model. Get ready to make predictions, visualize the model fit, and analyze the formula used to generate your fit.
+
+By now, you're probably comfortable with the weather dataset that we'll be using. Your dependent variable will be the Humidity3pm feature. All of the standard packages have been imported for you.
+
+Instructions 1/4
+25 XP
+1
+2
+3
+4
+Assign a LinearRegression() object to the lm variable; fit your model on the next line.
+Assign the predictions from your model to preds using the predict() function; print the list once you have it.
+Visualize the relationship between X and y with the scatter() function, then plot your predictions on top using the plot() function.
+Assign and print the coefficient for your independent variable; what does this mean?
+
+
+
+from sklearn.linear_model import LinearRegression 
+X = np.array(weather['Humidity9am']).reshape(-1,1)
+y = weather['Humidity3pm']
+
+# Create and fit your linear regression model
+lm = LinearRegression()
+lm.fit(X, y)
+
+
+from sklearn.linear_model import LinearRegression 
+X = np.array(weather['Humidity9am']).reshape(-1,1)
+y = weather['Humidity3pm']
+
+# Create and fit your linear regression model
+lm = LinearRegression()
+lm.fit(X, y)
+
+# Assign and print predictions
+preds = lm.predict(X)
+print(preds)
+
+
+from sklearn.linear_model import LinearRegression 
+X = np.array(weather['Humidity9am']).reshape(-1,1)
+y = weather['Humidity3pm']
+
+# Create and fit your linear regression model
+lm = LinearRegression()
+lm.fit(X, y)
+
+# Assign and print predictions
+preds = lm.predict(X)
+
+# Plot your fit to visualize your model
+plt.scatter(X, y)
+plt.plot(X, preds, color='red')
+plt.show()
+
+
+from sklearn.linear_model import LinearRegression 
+X_train = np.array(weather['Humidity9am']).reshape(-1,1)
+y_train = weather['Humidity3pm']
+
+# Create and fit your linear regression model
+lm = LinearRegression()
+lm.fit(X_train, y_train)
+
+# Assign and print predictions
+preds = lm.predict(X_train)
+
+# Assign and print coefficient 
+coef = lm.coef_
+print(coef)
+
+<script.py> output:
+    [62.90599123 54.20645768 43.92519074 52.6247243  51.04299093 61.32425786
+     64.48772461 60.53339117 47.87952418 65.27859129 59.74252449 37.59825725
+     70.8146581  74.76899154 27.31699032 38.38912393 70.8146581  48.67039087
+     47.08865749 68.44205804 36.80739056 70.02379142 58.16079111 59.74252449
+     62.11512455 45.50692412 28.89872369 69.23292473 59.74252449 48.67039087
+     71.60552479 57.36992442 47.08865749 51.83385761 57.36992442 26.52612363
+     66.86032467 32.06219044 58.16079111 47.87952418 50.25212424 57.36992442
+     75.55985823 48.67039087 29.68959038 53.41559099 47.87952418 66.06945798
+     51.83385761 58.16079111 43.13432406 49.46125755 76.35072491 49.46125755
+     32.85305712 54.99732436 19.40832344 46.2977908  69.23292473 40.761724
+     47.08865749 36.80739056 51.04299093 23.36265688 59.74252449 45.50692412
+     56.57905774 51.83385761 69.23292473 66.86032467 50.25212424 36.01652387
+     49.46125755 26.52612363 67.65119136 46.2977908  71.60552479 55.78819105
+     56.57905774 49.46125755 50.25212424 66.06945798 68.44205804 55.78819105
+     41.55259068 61.32425786 17.82659007 38.38912393 64.48772461 71.60552479
+     37.59825725 64.48772461 41.55259068 62.11512455 51.83385761 71.60552479]
+
+<script.py> output:
+    [0.79086669]
+    
+     You can see that despite some noise in the plot, we have a decent looking fit here using Humidity9am to predict the dependent variable Humidity3pm with a linear model. Furthermore, take another look at our coefficient. This means that for every 1 unit of humidity in the morning, we can expect about 0.80 units of humidity in the afternoon. More practically, this information tells us that humidity drops about 20% from morning to afternoon!
+    ______________________________________________________________________________________________________________________________
+    
+    Logistic regression
+Let's move on to logistic regression. You'll be working with the same weather dataset again, but the goal here is to predict if it's going to rain tomorrow. We've gone ahead and created your train and test sets for you. Your dependent variables are the Humidity9am and Humidity3pm features.
+
+It's also worth noting that the dataset has already been normalized in order to ensure that we can interpret the coefficients later on. This is always good to bring up during your interview when talking about regression for inference.
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Create and fit your logistic regression model using the X_train and y_train variables.
+Print the accuracy of your model using the score() function.
+Let's take a look at the coefficients of our model; what does this tell you?
+
+
+from sklearn.linear_model import LogisticRegression
+
+# Create and fit your model
+clf = LogisticRegression()
+clf.fit(X_train, y_train.values.ravel())
+
+from sklearn.linear_model import LogisticRegression
+
+# Create and fit your model
+clf = LogisticRegression()
+clf.fit(X_train, y_train.values.ravel())
+
+# Compute and print the accuracy
+acc = clf.score(X_test, y_test)
+print(acc)
+
+from sklearn.linear_model import LogisticRegression
+
+# Create and fit your model
+clf = LogisticRegression()
+clf.fit(X_train, y_train.values.ravel())
+
+# Assign and print the coefficents
+coefs = clf.coef_
+print(coefs)
+
+
+Since our features were normalized beforehand, we can look at the magnitude of our coefficients to tell us the importance of each independent variable. Here you can see the the second variable, Humidity3pm was much more important to our outcome than humidity from that morning. This is intuitive since we are trying to predict the rain for tomorrow!
+
+    
+    
+    

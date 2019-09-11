@@ -1,0 +1,243 @@
+Course Description
+You've done your analysis, built your report, and trained a model. What's next? Well, if you want to deploy your model into production, your code will need to be more reliable than exploratory scripts in a Jupyter notebook. Writing Functions in Python will give you a strong foundation in writing complex and beautiful functions so that you can contribute research and engineering skills to your team. You'll learn useful tricks, like how to write context managers and decorators. You'll also learn best practices around how to write maintainable reusable functions with good documentation. They say that people who can do good research and write high-quality code are unicorns. Take this course and discover the magic!
+
+
+=====================================================================================================================================
+(1) Best Practices
+
+
+FREE
+0%
+The goal of this course is to transform you into a Python expert, and so the first chapter starts off with best practices when writing functions. We'll cover docstrings and why they matter and how to know when you need to turn a chunk of code into a function. You will also learn the details of how Python passes arguments to functions, as well as some common gotchas that can cause debugging headaches when calling functions.
+
+__________________________________________________________________________________________________________________________
+
+Crafting a docstring
+You've decided to write the world's greatest open-source natural language processing Python package. It will revolutionize working with free-form text, the way numpy did for arrays, pandas did for tabular data, and scikit-learn did for machine learning.
+
+The first function you write is count_letter(). It takes a string and a single letter and returns the number of times the letter appears in the string. You want the users of your open-source package to be able to understand how this function works easily, so you will need to give it a docstring. Build up a Google Style docstring for this function by following these steps.
+
+Instructions 1/4
+25 XP
+1
+2
+3
+4
+Copy the following string and add it as the docstring for the function: Count the number of times `letter` appears in `content`.
+
+
+# Add a docstring to count_letter()
+def count_letter(content, letter):
+  """ Count the number of times `letter` appears in `content`."""
+  if (not isinstance(letter, str)) or len(letter) != 1:
+    raise ValueError('`letter` must be a single character string.')
+  return len([char for char in content if char == letter])
+	
+	
+	Now add the arguments section, using the Google style for docstrings. Use str to indicate a string.
+
+
+def count_letter(content, letter):
+  """Count the number of times `letter` appears in `content`.
+
+  # Add a Google style arguments section
+  Args:
+    content (str): The string to search.
+    letter (str): The letter to search for.
+  """
+  if (not isinstance(letter, str)) or len(letter) != 1:
+    raise ValueError('`letter` must be a single character string.')
+  return len([char for char in content if char == letter])
+	
+	
+	
+	Add a returns section that informs the user the return value is an int.
+	
+	def count_letter(content, letter):
+  """Count the number of times `letter` appears in `content`.
+
+  Args:
+    content (str): The string to search.
+    letter (str): The letter to search for.
+
+  # Add a returns section
+  Returns:
+    int
+  """
+  if (not isinstance(letter, str)) or len(letter) != 1:
+    raise ValueError('"letter" must be a single character string.')
+  return len([char for char in content if char == letter])
+	
+	
+	
+	Finally, add some information about the ValueError that gets raised when the arguments aren't correct.
+	
+	def count_letter(content, letter):
+  """Count the number of times `letter` appears in `content`.
+
+  Args:
+    content (str): The string to search.
+    letter (str): The letter to search for.
+
+  Returns:
+    int
+
+  # Add a section detailing what errors might be raised
+  Raises:
+    ValueError: If `letter` is not a one-character string.
+  """
+  if (not isinstance(letter, str)) or len(letter) != 1:
+    raise ValueError('`letter` must be a single character string.')
+  return len([char for char in content if char == letter])
+	
+
+
+What a delightful docstring! While it does require a bit more typing, the information presented here will make it very easy for others to use this code in the future. Remember that even though computers execute it, code is actually written for humans to read (otherwise you'd just be writing the 1s and 0s that the computer operates on)
+
+
+_________________________________________________________________________________________________________________________________
+
+Retrieving docstrings
+You and a group of friends are working on building an amazing new Python IDE (integrated development environment -- like PyCharm, Spyder, Eclipse, Visual Studio, etc.). The team wants to add a feature that displays a tooltip with a function's docstring whenever the user starts typing the function name. That way, the user doesn't have to go elsewhere to look up the documentation for the function they are trying to use. You've been asked to complete the build_tooltip() function that retrieves a docstring from an arbitrary function.
+
+Note that in Python, you can pass a function as an argument to another function. I'll talk more about this in chapter 3, but it will be useful to keep in mind for this exercise.
+
+Instructions 1/3
+50 XP
+1
+Begin by getting the docstring for the function count_letter(). Use an attribute of the count_letter() function.
+
+
+Begin by getting the docstring for the function count_letter(). Use an attribute of the count_letter() function.
+
+# Get the docstring with an attribute of count_letter()
+docstring = count_letter.__doc__
+
+border = '#' * 28
+print('{}\n{}\n{}'.format(border, docstring, border))
+
+
+Now use a function from the inspect module to get a better-formatted version of count_letter()'s docstring.
+
+import inspect
+
+# Get the docstring with a function from the inspect module
+docstring = inspect.getdoc(count_letter)
+
+border = '#' * 28
+print('{}\n{}\n{}'.format(border, docstring, border))
+
+
+Use the inspect module again to get the docstring for any function being passed to the build_tooltip() function.
+
+def build_tooltip(function):
+  """Create a tooltip for any function that shows the 
+  function's docstring.
+  
+  Args:
+    function (callable): The function we want a tooltip for.
+    
+  Returns:
+    str
+  """
+  # Use 'inspect' to get the docstring
+  docstring = inspect.getdoc(function)
+  border = '#' * 28
+  return '{}\n{}\n{}'.format(border, docstring, border)
+
+print(build_tooltip(count_letter))
+print(build_tooltip(range))
+print(build_tooltip(print))
+
+
+
+This IDE is going to be an incredibly delightful experience for your users now! Notice how the count_letter.__doc__ version of the docstring had strange whitespace at the beginning of all but the first line. That's because the docstring is indented to line up visually when reading the code. But when we want to print the docstring, removing those leading spaces with inspect.getdoc() will look much better.
+
+
+_____________________________________________________________________________________________________________________________
+
+
+Extract a function
+While you were developing a model to predict the likelihood of a student graduating from college, you wrote this bit of code to get the z-scores of students' yearly GPAs. Now you're ready to turn it into a production-quality system, so you need to do something about the repetition. Writing a function to calculate the z-scores would improve this code.
+
+# Standardize the GPAs for each year
+df['y1_z'] = (df.y1_gpa - df.y1_gpa.mean()) / df.y1_gpa.std()
+df['y2_z'] = (df.y2_gpa - df.y2_gpa.mean()) / df.y2_gpa.std()
+df['y3_z'] = (df.y3_gpa - df.y3_gpa.mean()) / df.y3_gpa.std()
+df['y4_z'] = (df.y4_gpa - df.y4_gpa.mean()) / df.y4_gpa.std()
+Note: df is a pandas DataFrame where each row is a student with 4 columns of yearly student GPAs: y1_gpa, y2_gpa, y3_gpa, y4_gpa
+
+Instructions
+100 XP
+Finish the function so that it returns the z-scores of a column.
+Use the function to calculate the z-scores for each year (df['y1_z'], df['y2_z'], etc.) from the raw GPA scores (df.y1_gpa, df.y2_gpa, etc.).
+
+_____________________________________________________________________________________________________________________________
+
+Best practice for default arguments
+One of your co-workers (who obviously didn't take this course) has written this function for adding a column to a panda's DataFrame. Unfortunately, they used a mutable variable as a default argument value! Please show them a better way to do this so that they don't get unexpected behavior.
+
+def add_column(values, df=pandas.DataFrame()):
+  """Add a column of `values` to a DataFrame `df`.
+  The column will be named "col_<n>" where "n" is
+  the numerical index of the column.
+
+  Args:
+    values (iterable): The values of the new column
+    df (DataFrame, optional): The DataFrame to update.
+      If no DataFrame is passed, one is created by default.
+
+  Returns:
+    DataFrame
+  """
+  df['col_{}'.format(len(df.columns))] = values
+  return df
+Instructions
+100 XP
+Change the default value of df to an immutable variable to follow best practices.
+Update the code of the function so that a new DataFrame is created if the caller didn't pass one.
+
+
+
+
+# Use an immutable variable for the default argument 
+def better_add_column(values, df=None):
+  """Add a column of `values` to a DataFrame `df`.
+  The column will be named "col_<n>" where "n" is
+  the numerical index of the column.
+
+  Args:
+    values (iterable): The values of the new column
+    df (DataFrame, optional): The DataFrame to update.
+      If no DataFrame is passed, one is created by default.
+
+  Returns:
+    DataFrame
+  """
+  # Update the function to create a default DataFrame
+  if df is None:
+    df = pandas.DataFrame()
+  df['col_{}'.format(len(df.columns))] = values
+  return df
+
+=====================================================================================================================================
+
+(2)
+Context Managers
+0%
+If you've ever seen the "with" keyword in Python and wondered what its deal was, then this is the chapter for you! Context managers are a convenient way to provide connections in Python and guarantee that those connections get cleaned up when you are done using them. This chapter will show you how to use context managers, as well as how to write your own.
+
+
+=====================================================================================================================================
+
+(3)
+Decorators
+0%
+Decorators are an extremely powerful concept in Python. They allow you to modify the behavior of a function without changing the code of the function itself. This chapter will lay the foundational concepts needed to thoroughly understand decorators (functions as objects, scope, and closures), and give you a good introduction into how decorators are used and defined. This deep dive into Python internals will set you up to be a superstar Pythonista.
+
+=====================================================================================================================================
+
+(4) More on Decorators
+0%
+Now that you understand how decorators work under the hood, this chapter gives you a bunch of real-world examples of when and how you would write decorators in your own code. You will also learn advanced decorator concepts like how to preserve the metadata of your decorated functions and how to write decorators that take arguments.
+

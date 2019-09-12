@@ -226,8 +226,148 @@ def better_add_column(values, df=None):
 Context Managers
 0%
 If you've ever seen the "with" keyword in Python and wondered what its deal was, then this is the chapter for you! Context managers are a convenient way to provide connections in Python and guarantee that those connections get cleaned up when you are done using them. This chapter will show you how to use context managers, as well as how to write your own.
+_____________________________________________________________________________________________________________________________
+
+The number of cats
+You are working on a natural language processing project to determine what makes great writers so great. Your current hypothesis is that great writers talk about cats a lot. To prove it, you want to count the number of times the word "cat" appears in "Alice's Adventures in Wonderland" by Lewis Carroll. You have already downloaded a text file, alice.txt, with the entire contents of this great book.
+
+Instructions
+100 XP
+Use the open() context manager to open alice.txt and assign the file to the file variable.
 
 
+
+The number of cats
+You are working on a natural language processing project to determine what makes great writers so great. Your current hypothesis is that great writers talk about cats a lot. To prove it, you want to count the number of times the word "cat" appears in "Alice's Adventures in Wonderland" by Lewis Carroll. You have already downloaded a text file, alice.txt, with the entire contents of this great book.
+
+Instructions
+100 XP
+Use the open() context manager to open alice.txt and assign the file to the file variable.
+
+
+# Open "alice.txt" and assign the file to "file"
+with open('alice.txt') as file:
+  text = file.read()
+
+n = 0
+for word in text.split():
+  if word.lower() in ['cat', 'cats']:
+    n += 1
+
+print('Lewis Carroll uses the word "cat" {} times'.format(n))
+
+
+Cool cat counting! By opening the file using the with open() statement, you were able to read in the text of the file. More importantly, when you were done reading the text, the context manager closed the file for you.
+_____________________________________________________________________________________________________________________________
+
+The speed of cats
+You're working on a new web service that processes Instagram feeds to identify which pictures contain cats (don't ask why -- it's the internet). The code that processes the data is slower than you would like it to be, so you are working on tuning it up to run faster. Given an image, image, you have two functions that can process it:
+
+process_with_numpy(image)
+process_with_pytorch(image)
+Your colleague wrote a context manager, timer(), that will print out how long the code inside the context block takes to run. She is suggesting you use it to see which of the two options is faster. Time each function to determine which one to use in your web service.
+
+Instructions
+100 XP
+Use the timer() context manager to time how long process_with_numpy(image) takes to run.
+Use the timer() context manager to time how long process_with_pytorch(image) takes to run.
+
+image = get_image_from_instagram()
+
+# Time how long process_with_numpy(image) takes to run
+with timer():
+  print('Numpy version')
+  process_with_numpy(image)
+
+# Time how long process_with_pytorch(image) takes to run
+with timer():
+  print('Pytorch version')
+  process_with_pytorch(image)
+  
+  
+  Terrific timing! Now that you know the pytorch version is faster, you can use it in your web service to ensure your users get the rapid response time they expect.
+
+You may have noticed there was no as <variable name> at the end of the with statement in timer() context manager. That is because timer() is a context manager that does not return a value, so the as <variable name> at the end of the with statement isn't necessary. In the next lesson, you'll learn how to write your own context managers like timer().
+  
+_____________________________________________________________________________________________________________________________
+
+The timer() context manager
+A colleague of yours is working on a web service that processes Instagram photos. Customers are complaining that the service takes too long to identify whether or not an image has a cat in it, so your colleague has come to you for help. You decide to write a context manager that they can use to time how long their functions take to run.
+
+Instructions
+100 XP
+Add a decorator from the contextlib module to the timer() function that will make it act like a context manager.
+Send control from the timer() function to the context block.
+
+
+# Add a decorator that will make timer() a context manager
+@contextlib.contextmanager
+def timer():
+  """Time the execution of a context block.
+
+  Yields:
+    None
+  """
+  start = time.time()
+  # Send control back to the context block
+  yield
+  end = time.time()
+  print('Elapsed: {:.2f}s'.format(end - start))
+
+with timer():
+  print('This should take approximately 0.25 seconds')
+  time.sleep(0.25)
+  
+  You're managing context like a boss! And your colleague can now use your timer() context manager to figure out which of their functions is running too slow. Notice that the three elements of a context manager are all here: a function definition, a yield statement, and the @contextlib.contextmanager decorator. It's also worth noticing that timer() is a context manager that does not return an explicit value, so yield is written by itself without specifying anything to return.
+  
+  
+  _____________________________________________________________________________________________________________________________
+  
+  A read-only open() context manager
+You have a bunch of data files for your next deep learning project that took you months to collect and clean. It would be terrible if you accidentally overwrote one of those files when trying to read it in for training, so you decide to create a read-only version of the open() context manager to use in your project.
+
+The regular open() context manager:
+
+takes a filename and a mode ('r' for read, 'w' for write, or 'a' for append)
+opens the file for reading, writing, or appending
+sends control back to the context, along with a reference to the file
+waits for the context to finish
+and then closes the file before exiting
+Your context manager will do the same thing, except it will only take the filename as an argument and it will only open the file for reading.
+
+Instructions
+100 XP
+Send control from open_read_only() to the context block, ensuring that the read_only_file object gets assigned to my_file.
+Use read_only_file's .close() method to ensure that you don't leave open files lying around.
+
+
+  @contextlib.contextmanager
+def open_read_only(filename):
+  """Open a file in read-only mode.
+
+  Args:
+    filename (str): The location of the file to read
+
+  Yields:
+    file object
+  """
+  read_only_file = open(filename, mode='r')
+  # Yield read_only_file so it can be assigned to my_file
+  yield read_only_file
+  # Close read_only_file
+  read_only_file.close()
+
+with open_read_only('my_file.txt') as my_file:
+  print(my_file.read())
+  
+  
+  That is a radical read-only context manager! Now you can relax, knowing that every time you use with open_read_only() your files are safe from being accidentally overwritten. This function is an example of a context manager that does return a value, so we write yield read_only_file instead of just yield. Then the read_only_file object gets assigned to my_file in the with statement so that whoever is using your context can call its .read() method in the context block.
+  
+  
+  _____________________________________________________________________________________________________________________________
+  
+  
+  
 =====================================================================================================================================
 
 (3)

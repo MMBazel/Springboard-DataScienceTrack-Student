@@ -367,13 +367,204 @@ with open_read_only('my_file.txt') as my_file:
   _____________________________________________________________________________________________________________________________
   
   
-  
+  Context manager use cases
+Which of the following would NOT be a good opportunity to use a context manager?
+
+Possible Answers
+A function that starts a timer that keeps track of how long some block of code takes to run.
+press
+1
+A function that prints all of the prime numbers between 2 and some value n.
+press
+2
+A function that connects to a smart thermostat so that it can be programmed remotely.
+press
+3
+A function that prevents multiple users from updating an online spreadsheet at the same time by locking access to the spreadsheet before every operation.
+
+
+Answer: A function that prints all of the prime numbers between 2 and some value n.
+
+__________________________________________________________________________________________________________________________
+
+Scraping the NASDAQ
+Training deep neural nets is expensive! You might as well invest in NVIDIA stock since you're spending so much on GPUs. To pick the best time to invest, you are going to collect and analyze some data on how their stock is doing. The context manager stock('NVDA') will connect to the NASDAQ and return an object that you can use to get the latest price by calling its .price() method.
+
+You want to connect to stock('NVDA') and record 10 timesteps of price data by writing it to the file NVDA.txt.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Use the stock('NVDA') context manager and assign the result to nvda.
+Open a file for writing with open('NVDA.txt', 'w') and assign the file object to f_out so you can record the price over time.
+
+# Use the "stock('NVDA')" context manager
+# and assign the result to the variable "nvda"
+with stock('NVDA') as nvda:
+  # Open "NVDA.txt" for writing as f_out
+  with open('NVDA.txt','w') as f_out:
+    for _ in range(10):
+      value = nvda.price()
+      print('Logging ${:.2f} for NVDA'.format(value))
+      f_out.write('{:.2f}\n'.format(value))
+      
+      
+Super stock scraping! Now you can monitor the NVIDIA stock price and decide when is the exact right time to buy. Nesting context managers like this allows you to connect to the stock market (the CONNECT/DISCONNECT pattern) and write to a file (the OPEN/CLOSE pattern) at the same time.
+
+
+____________________________________________________________________________________________________________________________________
+
+Changing the working directory
+You are using an open-source library that lets you train deep neural networks on your data. Unfortunately, during training, this library writes out checkpoint models (i.e., models that have been trained on a portion of the data) to the current working directory. You find that behavior frustrating because you don't want to have to launch the script from the directory where the models will be saved.
+
+You decide that one way to fix this is to write a context manager that changes the current working directory, lets you build your models, and then resets the working directory to its original location. You'll want to be sure that any errors that occur during model training don't prevent you from resetting the working directory to its original location.
+
+Instructions
+100 XP
+Add a statement that lets you handle any errors that might occur inside the context.
+Add a statement that ensures os.chdir(current_dir) will be called, whether there was an error or not.
+
+
+def in_dir(directory):
+  """Change current working directory to `directory`,
+  allow the user to run some code, and change back.
+
+  Args:
+    directory (str): The path to a directory to work in.
+  """
+  current_dir = os.getcwd()
+  os.chdir(directory)
+
+  # Add code that lets you handle errors
+  try:
+    yield
+  # Ensure the directory is reset,
+  # whether there was an error or not
+  finally:
+    os.chdir(current_dir)
+    
+    
+    Excellent error handling! Now, even if someone writes buggy code when using your context manager, you will be sure to change the current working directory back to what it was when they called in_dir(). This is important to do because your users might be relying on their working directory being what it was when they started the script. in_dir() is a great example of the CHANGE/RESET pattern that indicates you should use a context manager.
+
+
+
 =====================================================================================================================================
 
 (3)
 Decorators
 0%
 Decorators are an extremely powerful concept in Python. They allow you to modify the behavior of a function without changing the code of the function itself. This chapter will lay the foundational concepts needed to thoroughly understand decorators (functions as objects, scope, and closures), and give you a good introduction into how decorators are used and defined. This deep dive into Python internals will set you up to be a superstar Pythonista.
+
+
+___________________________________________________________________________________________________________________________
+
+
+Building a command line data app
+You are building a command line tool that lets a user interactively explore a data set. We've defined four functions: mean(), std(), minimum(), and maximum() that users can call to analyze their data. Help finish this section of the code so that your users can call any of these functions by typing the function name at the input prompt.
+
+Note: The function get_user_input() in this exercise is a mock version of asking the user to enter a command. It randomly returns one of the four function names. In real life, you would ask for input and wait until the user entered a value.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Add the functions std(), minimum(), and maximum() to the function_map dictionary, like we did with mean().
+The name of the function the user wants to call is stored in func_name. Use the dictionary of functions, function_map, to call the chosen function and pass data as an argument.
+
+# Add the missing function references to the function map
+function_map = {
+  'mean': mean,
+  'std': std,
+  'minimum': minimum,
+  'maximum': maximum
+}
+
+data = load_data()
+print(data)
+
+func_name = get_user_input()
+
+# Call the chosen function and pass "data" as an argument
+function_map[func_name](data)
+
+
+Phenomenal function referencing! By adding the functions to a dictionary, you can select the function based on the user's input. You could have also used a series of if/else statements, but putting them in a dictionary like this is much easier to read and maintain.
+__________________________________________________________________________________________________________________________________
+
+Reviewing your co-worker's code
+Your co-worker is asking you to review some code that they've written and give them some tips on how to get it ready for production. You know that having a docstring is considered best practice for maintainable, reusable functions, so as a sanity check you decide to run this has_docstring() function on all of their functions.
+
+def has_docstring(func):
+  """Check to see if the function 
+  `func` has a docstring.
+
+  Args:
+    func (callable): A function.
+
+  Returns:
+    bool
+  """
+  return func.__doc__ is not None
+Instructions 1/3
+35 XP
+1
+1) Call has_docstring() on your co-worker's load_and_plot_data() function.
+
+# Call has_docstring() on the load_and_plot_data() function
+ok = has_docstring(load_and_plot_data)
+
+if not ok:
+  print("load_and_plot_data() doesn't have a docstring!")
+else:
+  print("load_and_plot_data() looks ok")
+
+
+Take Hint (-10 XP)
+
+2) Check if the function as_2D() has a docstring.
+
+# Call has_docstring() on the as_2D() function
+ok = has_docstring(as_2D)
+
+if not ok:
+  print("as_2D() doesn't have a docstring!")
+else:
+  print("as_2D() looks ok")
+
+
+3) Check if the function log_product() has a docstring.
+
+# Call has_docstring() on the log_product() function
+ok = has_docstring(log_product)
+
+if not ok:
+  print("log_product() doesn't have a docstring!")
+else:
+  print("log_product() looks ok")
+  
+  
+  Awesome job writing functions as arguments! You have discovered that your co-worker forgot to write a docstring for log_product(). You have learned enough about best practices to tell them how to fix it.
+
+To pass a function as an argument to another function, you had to determine which one you were calling and which one you were referencing. Keeping those straight will be important as we dig deeper into this chapter. From the function names can you think of any other advice you might give your co-worker about their functions?
+
+______________________________________________________________________________________________________________________________
+
+Returning functions for a math game
+You are building an educational math game where the player enters a math term, and your program returns a function that matches that term. For instance, if the user types "add", your program returns a function that adds two numbers. So far you've only implemented the "add" function. Now you want to include a "subtract" function.
+
+Instructions
+100 XP
+Define the subtract() function. It should take two arguments and return the first argument minus the second argument.
+
+Nice nested function! Now that you've implemented the subtract() function, you can keep going to include multiply() and divide(). I predict this game is going to be even bigger than Fortnite!
+
+Notice how we assign the return value from create_math_function() to the add and subtract variables in the script. Since create_math_function() returns a function, we can then call those variables as functions.
+
+
+
+
+  
 
 =====================================================================================================================================
 

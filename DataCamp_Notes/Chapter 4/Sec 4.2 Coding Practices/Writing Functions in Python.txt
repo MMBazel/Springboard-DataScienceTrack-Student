@@ -562,9 +562,236 @@ Nice nested function! Now that you've implemented the subtract() function, you c
 Notice how we assign the return value from create_math_function() to the add and subtract variables in the script. Since create_math_function() returns a function, we can then call those variables as functions.
 
 
+______________________________________________________________________________________________________________________________
 
+Understanding scope
+What four values does this script print?
 
+x = 50
+
+def one():
+  x = 10
+
+def two():
+  global x
+  x = 30
+
+def three():
+  x = 100
+  print(x)
+
+for func in [one, two, three]:
+  func()
+  print(x)
   
+  
+  
+  Good job! one() doesn't change the global x, so the first print() statement prints 50.
+
+two() does change the global x so the second print() statement prints 30.
+
+The print() statement inside the function three() is referencing the x value that is local to three(), so it prints 100.
+
+But three() does not change the global x value so the last print() statement prints 30 again.
+
+__________________________________________________________________________________________________________________________
+
+Modifying variables outside local scope
+Sometimes your functions will need to modify a variable that is outside of the local scope of that function. While it's generally not best practice to do so, it's still good to know-how in case you need to do it. Update these functions so they can modify variables that would usually be outside of their scope.
+
+Instructions 1/3
+35 XP
+1
+Add a keyword that lets us update call_count from inside the function.
+
+Take Hint (-10 XP)
+
+call_count = 0
+
+def my_function():
+  # Use a keyword that lets us update call_count 
+  global call_count
+  call_count += 1
+  
+  print("You've called my_function() {} times!".format(
+    call_count
+  ))
+  
+for _ in range(20):
+  my_function()
+  
+  
+  Add a keyword that lets us modify file_contents from inside save_contents().
+  
+  
+  def read_files():
+  file_contents = None
+  
+  def save_contents(filename):
+    # Add a keyword that lets us modify file_contents
+    nonlocal file_contents
+    if file_contents is None:
+      file_contents = []
+    with open(filename) as fin:
+      file_contents.append(fin.read())
+      
+  for filename in ['1984.txt', 'MobyDick.txt', 'CatsEye.txt']:
+    save_contents(filename)
+    
+  return file_contents
+
+print('\n'.join(read_files()))
+
+
+Add a keyword to done in check_is_done() so that wait_until_done() eventually stops looping.
+def wait_until_done():
+  def check_is_done():
+    # Add a keyword so that wait_until_done() 
+    # doesn't run forever
+    global done
+    if random.random() < 0.1:
+      done = True
+      
+  while not done:
+    check_is_done()
+
+done = False
+wait_until_done()
+
+print('Work done? {}'.format(done))
+
+
+Stellar scoping! By adding global done in check_is_done(), you ensure that the done being referenced is the one that was set to False before wait_until_done() was called. Without this keyword, wait_until_done() would loop forever because the done = True in check_is_done() would only be changing a variable that is local to check_is_done(). Understanding what scope your variables are in will help you debug tricky situations like this one.
+_____________________________________________________________________________________________________________________________
+
+Checking for closure
+You're teaching your niece how to program in Python, and she is working on returning nested functions. She thinks she has written the code correctly, but she is worried that the returned function won't have the necessary information when called. Show her that all of the nonlocal variables she needs are in the new function's closure.
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Use an attribute of the my_func() function to show that it has a closure that is not None.
+
+def return_a_func(arg1, arg2):
+  def new_func():
+    print('arg1 was {}'.format(arg1))
+    print('arg2 was {}'.format(arg2))
+  return new_func
+    
+my_func = return_a_func(2, 17)
+
+# Show that my_func()'s closure is not None
+print(my_func.__closure__ is not None)
+
+
+Show that there are two variables in the closure.
+
+def return_a_func(arg1, arg2):
+  def new_func():
+    print('arg1 was {}'.format(arg1))
+    print('arg2 was {}'.format(arg2))
+  return new_func
+    
+my_func = return_a_func(2, 17)
+
+print(my_func.__closure__ is not None)
+
+# Show that there are two variables in the closure
+print(len(my_func.__closure__) == 2)
+
+
+Get the values of the variables in the closure so you can show that they are equal to [2, 17], the arguments passed to return_a_func().
+
+def return_a_func(arg1, arg2):
+  def new_func():
+    print('arg1 was {}'.format(arg1))
+    print('arg2 was {}'.format(arg2))
+  return new_func
+    
+my_func = return_a_func(2, 17)
+
+print(my_func.__closure__ is not None)
+print(len(my_func.__closure__) == 2)
+
+# Get the values of the variables in the closure
+closure_values = [
+  my_func.__closure__[i].cell_contents for i in range(2)
+]
+print(closure_values == [2, 17])
+
+
+Case closed! Your niece is relieved to see that the values she passed to return_a_func() are still accessible to the new function she returned, even after the program has left the scope of return_a_func().
+
+Values get added to a function's closure in the order they are defined in the enclosing function (in this case, arg1 and then arg2), but only if they are used in the nested function. That is, if return_a_func() took a third argument (e.g., arg3) that wasn't used by new_func(), then it would not be captured in new_func()'s closure.
+
+_____________________________________________________________________________________________________________________________
+
+Closures keep your values safe
+You are still helping your niece understand closures. You have written the function get_new_func() that returns a nested function. The nested function call_func() calls whatever function was passed to get_new_func(). You've also written my_special_function() which simply prints a message that states that you are executing my_special_function().
+
+You want to show your niece that no matter what you do to my_special_function() after passing it to get_new_func(), the new function still mimics the behavior of the original my_special_function() because it is in the new function's closure.
+
+Instructions 1/3
+35 XP
+1
+Show that you still get the original message even if you redefine my_special_function() to only print "hello".
+
+def my_special_function():
+  print('You are running my_special_function()')
+  
+def get_new_func(func):
+  def call_func():
+    func()
+  return call_func
+
+new_func = get_new_func(my_special_function)
+
+# Redefine my_special_function() to just print "hello"
+def my_special_function():
+  print('hello')
+
+new_func()
+
+Show that even if you delete my_special_function(), you can still call new_func() without any problems.
+
+
+def my_special_function():
+  print('You are running my_special_function()')
+  
+def get_new_func(func):
+  def call_func():
+    func()
+  return call_func
+
+new_func = get_new_func(my_special_function)
+
+# Delete my_special_function()
+del(my_special_function)
+
+new_func()
+
+
+Show that you still get the original message even if you overwrite my_special_function() with the new function.
+
+def my_special_function():
+  print('You are running my_special_function()')
+  
+def get_new_func(func):
+  def call_func():
+    func()
+  return call_func
+
+# Overwrite `my_special_function` with the new function
+my_special_function = get_new_func(my_special_function)
+
+my_special_function()
+
+
+Well done! Your niece feels like she understands closures now. She has seen that you can modify, delete, or overwrite the values needed by the nested function, but the nested function can still access those values because they are stored safely in the function's closure. She even realized that you could run into memory issues if you wound up adding a very large array or object to the closure, and has resolved to keep her eye out for that sort of problem.
+
+
 
 =====================================================================================================================================
 

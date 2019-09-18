@@ -860,7 +860,7 @@ multiply(5, 10)
     
     What a darling decorator! The decorator print_before_and_after() defines a nested function wrapper() that calls whatever function gets passed to print_before_and_after(). wrapper() adds a little something else to the function call by printing one message before the decorated function is called and another right afterwards. Since print_before_and_after() returns the new wrapper() function, we can use it as a decorator to decorate the multiply() function.
     
-_____________________________________________________________________________________________________________________________________
+
 
     
     
@@ -870,4 +870,202 @@ ________________________________________________________________________________
 (4) More on Decorators
 0%
 Now that you understand how decorators work under the hood, this chapter gives you a bunch of real-world examples of when and how you would write decorators in your own code. You will also learn advanced decorator concepts like how to preserve the metadata of your decorated functions and how to write decorators that take arguments.
+
+_____________________________________________________________________________________________________________________________________
+
+Print the return type
+You are debugging a package that you've been working on with your friends. Something weird is happening with the data being returned from one of your functions, but you're not even sure which function is causing the trouble. You know that sometimes bugs can sneak into your code when you are expecting a function to return one thing, and it returns something different. For instance, if you expect a function to return a numpy array, but it returns a list, you can get unexpected behavior. To ensure this is not what is causing the trouble, you decide to write a decorator, print_return_type(), that will print out the type of the variable that gets returned from every call of any function it is decorating.
+
+Instructions
+100 XP
+Create a nested function, wrapper(), that will become the new decorated function.
+Call the function being decorated.
+Return the new decorated function.
+
+
+def print_return_type(func):
+  # Define wrapper(), the decorated function
+  def wrapper(*args, **kwargs):
+    # Call the function being decorated
+    result = func(*args, **kwargs)
+    print('{}() returned type {}'.format(
+      func.__name__, type(result)
+    ))
+    return result
+  # Return the decorated function
+  return wrapper
+  
+@print_return_type
+def foo(value):
+  return value
+  
+print(foo(42))
+print(foo([1, 2, 3]))
+print(foo({'a': 42}))
+
+<script.py> output:
+    foo() returned type <class 'int'>
+    42
+    foo() returned type <class 'list'>
+    [1, 2, 3]
+    foo() returned type <class 'dict'>
+    {'a': 42}
+
+
+Righteous return types! Your new decorator helps you examine the results of your functions at runtime. Now you can apply this decorator to every function in the package you are developing and run your scripts. Being able to examine the types of your return values will help you understand what is happening and will hopefully help you find the bug.
+
+_____________________________________________________________________________________________________________________________________
+
+
+Counter
+You're working on a new web app, and you are curious about how many times each of the functions in it gets called. So you decide to write a decorator that adds a counter to each function that you decorate. You could use this information in the future to determine whether there are sections of code that you could remove because they are no longer being used by the app.
+
+Instructions
+100 XP
+Call the function being decorated and return the result.
+Return the new decorated function.
+Decorate foo() with the counter() decorator.
+
+def counter(func):
+  def wrapper(*args, **kwargs):
+    wrapper.count += 1
+    # Call the function being decorated and return the result
+    return wrapper.count
+  wrapper.count = 0
+  # Return the new decorated function
+  return wrapper
+
+# Decorate foo() with the counter() decorator
+@counter
+def foo():
+  print('calling foo()')
+  
+foo()
+foo()
+
+print('foo() was called {} times.'.format(foo.count))
+
+
+
+<script.py> output:
+    foo() was called 2 times.
+    
+    
+Cool counting! Now you can go decorate a bunch of functions with the counter() decorator, let your program run for a while, and then print out how many times each function was called.
+
+It seems a little magical that you can reference the wrapper() function from inside the definition of wrapper() as we do here on line 3. That's just one of the many neat things about functions in Python -- any function, not just decorators.    
+    
+_____________________________________________________________________________________________________________________________________
+
+Preserving docstrings when decorating functions
+Your friend has come to you with a problem. They've written some nifty decorators and added them to the functions in the open-source library they've been working on. However, they were running some tests and discovered that all of the docstrings have mysteriously disappeared from their decorated functions. Show your friend how to preserve docstrings and other metadata when writing decorators.
+
+Instructions 1/4
+25 XP
+1
+2
+3
+4
+Decorate print_sum() with the add_hello() decorator to replicate the issue that your friend saw - that the docstring disappears.
+
+To show your friend that they are printing the wrapper() function's docstring, not the print_sum() docstring, add the following docstring to wrapper():
+"""Print 'hello' and then call the decorated function."""
+
+Import a function that will allow you to add the metadata from print_sum() to the decorated version of print_sum().
+
+Finally, decorate wrapper() so that the metadata from func() is preserved in the new decorated function.
+
+
+
+from functools import wraps
+
+def add_hello(func):
+  # Decorate wrapper() so that it keeps func()'s metadata
+  @wraps(func)
+  def wrapper(*args, **kwargs):
+    """Print 'hello' and then call the decorated function."""
+    print('Hello')
+    return func(*args, **kwargs)
+  return wrapper
+  
+@add_hello
+def print_sum(a, b):
+  """Adds two numbers and prints the sum"""
+  print(a + b)
+  
+print_sum(10, 20)
+print(print_sum.__doc__)
+
+
+<script.py> output:
+    Hello
+    30
+    None
+
+<script.py> output:
+    Hello
+    30
+    Print 'hello' and then call the decorated function.
+
+<script.py> output:
+    Hello
+    30
+    Print 'hello' and then call the decorated function.
+
+<script.py> output:
+    Hello
+    30
+    Adds two numbers and prints the sum
+
+That's a wrap! Your friend was concerned that they couldn't print the docstrings of their functions. They now realize that the strange behavior they were seeing was caused by the fact that they were accidentally printing the wrapper() docstring instead of the docstring of the original function. After adding @wraps(func) to all of their decorators, they see that the docstrings are back where they expect them to be.
+
+
+_____________________________________________________________________________________________________________________________________
+
+Measuring decorator overhead
+Your boss wrote a decorator called check_everything() that they think is amazing, and they are insisting you use it on your function. However, you've noticed that when you use it to decorate your functions, it makes them run much slower. You need to convince your boss that the decorator is adding too much processing time to your function. To do this, you are going to measure how long the decorated function takes to run and compare it to how long the undecorated function would have taken to run. This is the decorator in question:
+
+def check_everything(func):
+  @wraps(func)
+  def wrapper(*args, **kwargs):
+    check_inputs(*args, **kwargs)
+    result = func(*args, **kwargs)
+    check_outputs(result)
+    return result
+  return wrapper
+Instructions
+100 XP
+Call the original function instead of the decorated version by using an attribute of the function that the wraps() statement in your boss's decorator added to the decorated function.
+
+@check_everything
+def duplicate(my_list):
+  """Return a new list that repeats the input twice"""
+  return my_list + my_list
+
+t_start = time.time()
+duplicated_list = duplicate(list(range(50)))
+t_end = time.time()
+decorated_time = t_end - t_start
+
+t_start = time.time()
+# Call the original function instead of the decorated one
+duplicated_list = duplicate.__wrapped__(list(range(50)))
+t_end = time.time()
+undecorated_time = t_end - t_start
+
+print('Decorated time: {:.5f}s'.format(decorated_time))
+print('Undecorated time: {:.5f}s'.format(undecorated_time))
+
+<script.py> output:
+    Finished checking inputs
+    Finished checking outputs
+    Decorated time: 1.51022s
+    Undecorated time: 0.00012s
+    
+    
+    Wow! Your function ran approximately 10,000 times faster without your boss's decorator. At least they were smart enough to add @wraps(func) to the nested wrapper() function so that you were able to access the original function. You should show them the results of this test. Be sure to ask for a raise while you're at it!
+    
+    
+
+
 

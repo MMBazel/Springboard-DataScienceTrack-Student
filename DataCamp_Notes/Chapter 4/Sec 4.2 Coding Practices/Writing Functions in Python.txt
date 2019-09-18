@@ -1065,7 +1065,268 @@ print('Undecorated time: {:.5f}s'.format(undecorated_time))
     
     Wow! Your function ran approximately 10,000 times faster without your boss's decorator. At least they were smart enough to add @wraps(func) to the nested wrapper() function so that you were able to access the original function. You should show them the results of this test. Be sure to ask for a raise while you're at it!
     
+_____________________________________________________________________________________________________________________________________
+
+Run_n_times()
+In the video exercise, I showed you an example of a decorator that takes an argument: run_n_times(). The code for that decorator is repeated below to remind you how it works. Practice different ways of applying the decorator to the function print_sum(). Then I'll show you a funny prank you can play on your co-workers.
+
+def run_n_times(n):
+  """Define and return a decorator"""
+  def decorator(func):
+    def wrapper(*args, **kwargs):
+      for i in range(n):
+        func(*args, **kwargs)
+    return wrapper
+  return decorator
+Instructions 1/3
+35 XP
+1
+Add the run_n_times() decorator to print_sum() using decorator syntax so that print_sum() runs 10 times.
+
+Use run_n_times() to create a decorator run_five_times() that will run any function five times.
+
+Here's the prank: use run_n_times() to modify the built-in print() function so that it always prints 20 times!
+
+# Make print_sum() run 10 times with the run_n_times() decorator
+@run_n_times(10)
+def print_sum(a, b):
+  print(a + b)
+  
+print_sum(15, 20)
+
+# Use run_n_times() to create the run_five_times() decorator
+run_five_times = run_n_times(5)
+
+@run_five_times
+def print_sum(a, b):
+  print(a + b)
+  
+print_sum(4, 100)
+
+
+# Modify the print() function to always run 20 times
+print = run_n_times(20)(print)
+
+print('What is happening?!?!')
+
+
+
+<script.py> output:
+    35
+    35
+    35
+    35
+    35
+    35
+    35
+    35
+    35
+    35
+
+<script.py> output:
+    104
+    104
+    104
+    104
+    104
+
+<script.py> output:
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+    What is happening?!?!
+
+
+    Good job!
+Good job!
+Good job!
+
+You've become an expert at using decorators. Notice how when you use decorator syntax for a decorator that takes arguments, you need to call the decorator by adding parentheses, but you don't add parenthesis for decorators that don't take arguments.
+
+Warning: overwriting commonly used functions is probably not a great idea, so think twice before using these powers for evil.
+    _____________________________________________________________________________________________________________________________________
     
+    
+    HTML Generator
+You are writing a script that generates HTML for a webpage on the fly. So far, you have written two decorators that will add bold or italics tags to any function that returns a string. You notice, however, that these two decorators look very similar. Instead of writing a bunch of other similar looking decorators, you want to create one decorator, html(), that can take any pair of opening and closing tags.
+
+def bold(func):
+  @wraps(func)
+  def wrapper(*args, **kwargs):
+    msg = func(*args, **kwargs)
+    return '<b>{}</b>'.format(msg)
+  return wrapper
+def italics(func):
+  @wraps(func)
+  def wrapper(*args, **kwargs):
+    msg = func(*args, **kwargs)
+    return '<i>{}</i>'.format(msg)
+  return wrapper
+Instructions 1/4
+25 XP
+Instructions 1/4
+25 XP
+1
+Return the decorator and the decorated function from the correct places in the new html() decorator.
+
+def html(open_tag, close_tag):
+  def decorator(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+      msg = func(*args, **kwargs)
+      return '{}{}{}'.format(open_tag, msg, close_tag)
+    # Return the decorated function
+    return wrapper
+  # Return the decorator
+  return decorator
+  
+  
+  Use the html() decorator to wrap the return value of hello() in <b> and </b> (the HTML tags that mean "bold").
+  
+  # Make hello() return bolded text
+@html('<b>', '</b>')
+def hello(name):
+  return 'Hello {}!'.format(name)
+
+print(hello('Alice'))
+
+
+Use html() to wrap the return value of goodbye() in <i> and </i> (the HTML tags that mean "italics").
+
+# Make goodbye() return italicized text
+@html('<i>', '</i>')
+def goodbye(name):
+  return 'Goodbye {}.'.format(name)
+  
+print(goodbye('Alice'))
+
+
+Use html() to wrap hello_goodbye() in a DIV, which is done by adding <div> and </div> tags around a string.
+
+# Wrap the result of hello_goodbye() in <div> and </div>
+@html('<div>','</div>')
+def hello_goodbye(name):
+  return '\n{}\n{}\n'.format(hello(name), goodbye(name))
+  
+print(hello_goodbye('Alice'))
+
+
+That's some HTML hotness! With the new html() decorator you can focus on writing simple functions that return the information you want to display on the webpage and let the decorator take care of wrapping them in the appropriate HTML tags.
+
+_____________________________________________________________________________________________________________________________________
+
+
+Tag your functions
+Tagging something means that you have given that thing one or more strings that act as labels. For instance, we often tag emails or photos so that we can search for them later. You've decided to write a decorator that will let you tag your functions with an arbitrary list of tags. You could use these tags for many things:
+
+Adding information about who has worked on the function, so a user can look up who to ask if they run into trouble using it.
+Labeling functions as "experimental" so that users know that the inputs and outputs might change in the future.
+Marking any functions that you plan to remove in a future version of the code.
+Etc.
+Instructions
+100 XP
+Define a new decorator, named decorator(), to return.
+Ensure the decorated function keeps its metadata.
+Call the function being decorated and return the result.
+Return the new decorator.
+
+def tag(*tags):
+  # Define a new decorator, named "decorator", to return
+  def decorator(func):
+    # Ensure the decorated function keeps its metadata
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+      # Call the function being decorated and return the result
+      return func(*args, **kwargs)
+    wrapper.tags = tags
+    return wrapper
+  # Return the new decorator
+  return decorator
+
+@tag('test', 'this is a tag')
+def foo():
+  pass
+
+print(foo.tags)
+
+
+Terrific tagging! With this new decorator, you can do some really interesting things. For instance, you could tag a bunch of image transforming functions, and then write code that searches for all of the functions that transform images and apply them, one after the other, on a given input image. What other neat uses can you come up with for this decorator?
+
+_____________________________________________________________________________________________________________________________________
+
+
+Check the return type
+Python's flexibility around data types is usually cited as one of the benefits of the language. It can occasionally cause problems though if incorrect data types go unnoticed. You've decided that in order to make sure your code is doing exactly what you want it to do, you will explicitly check the return types of all of your functions and make sure they are what you expect them to be. To do that, you are going to create a decorator that checks that the return type of the decorated function is correct.
+
+Note: assert(condition) is a function that you can use to test whether something is true. If condition is True, this function doesn't do anything. If condition is False, this function raises an error. The type of error that it raises is called an AssertionError.
+
+Instructions 1/2
+50 XP
+1
+2
+Start by completing the returns_dict() decorator so that it raises an AssertionError if the return type of the decorated function is not a dictionary.
+
+def returns_dict(func):
+  # Complete the returns_dict() decorator
+  def wrapper(*args, **kwargs):
+    result = func(*args, **kwargs)
+    assert(type(result) == dict)
+    return result
+  return wrapper
+
+@returns_dict
+def foo(value):
+  return value
+
+try:
+  print(foo([1,2,3]))
+except AssertionError:
+  print('foo() did not return a dict!')
+  
+  
+  Now complete the returns() decorator, which takes the expected return type as an argument.
+
+def returns(return_type):
+  # Write a decorator that raises an AssertionError if the
+  # decorated function returns a value that is not return_type
+  def decorator(func):
+    def wrapper(*args, **kwargs):
+      result = func(*args, **kwargs)
+      assert(type(result) == return_type)
+      return result
+    return wrapper
+  return decorator
+  
+@returns(dict)
+def foo(value):
+  return value
+
+try:
+  print(foo([1,2,3]))
+except AssertionError:
+  print('foo() did not return a dict!')
+  
+  You did it! We took the training wheels off on this exercise, and you still did a great job. You know how to write your own decorators now, but even more importantly, you know why they work the way they do.
+  
+  
+  
+
 
 
 

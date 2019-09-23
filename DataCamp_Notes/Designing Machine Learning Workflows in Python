@@ -121,6 +121,87 @@ The Human in the Loop
 0%
 In the previous chapter, you perfected your knowledge of the standard supervised learning workflows. In this chapter, you will critically examine the ways in which expert knowledge is incorporated in supervised learning. This is done through the identification of the appropriate unit of analysis which might require feature engineering across multiple data sources, through the sometimes imperfect process of labeling examples, and through the specification of a loss function that captures the true business value of errors made by your machine learning model.
 
+___________________________________________________________________________________________________________________________________
+
+Is the source or the destination bad?
+In the previous lesson, you used the destination computer as your entity of interest. However, your cybersecurity analyst just told you that it is the infected machines that generate the bad traffic, and will therefore appear as a source, not a destination, in the flows dataset.
+
+The data flows has been preloaded, as well as the list bad of infected IDs and the feature extractor featurizer() from the previous lesson. You also have numpy available as np, AdaBoostClassifier(), and cross_val_score().
+
+Instructions
+100 XP
+Create a data frame where each row is a feature vector for a source_computer. Group by source computer ID in the flows dataset and apply the feature extractor to each group.
+Convert the iterator to a data frame by calling list() on it.
+Create labels by checking whether each source_computer ID belongs in the list of bads you have been given.
+Assess an AdaBoostClassifier() on this data using cross_val_score().
+
+
+# Group by source computer, and apply the feature extractor
+out = flows.groupby('source_computer').apply(featurize)
+
+# Convert the iterator to a dataframe by calling list on it
+X = pd.DataFrame(list(out), index=out.index)
+
+# Check which sources in X.index are bad to create labels
+y = [x in bads for x in X.index]
+
+# Report the average accuracy of Adaboost over 3-fold CV
+print(np.mean(cross_val_score(AdaBoostClassifier(), X, y)))
+
+
+
+<script.py> output:
+    0.9361199939089387
+    
+    
+___________________________________________________________________________________________________________________________________
+
+Feature engineering on grouped data
+You will now build on the previous exercise, by considering one additional feature: the number of unique protocols used by each source computer. Note that with grouped data, it is always possible to construct features in this manner: you can take the number of unique elements of all categorical columns, and the mean of all numeric columns as your starting point. As before, you have flows preloaded, cross_val_score() for measuring accuracy, AdaBoostClassifier(), pandas as pd and numpy as np.
+
+Instructions
+100 XP
+Apply a lambda function on the group iterator provided, to compute the number of unique protocols used by each source computer. You can use set() to reduce the protocol column to a set of unique values.
+Convert the result to a data frame with the right shape by providing an index and naming the column protocol.
+Concatenate the new data frame with the old one, which is available as X.
+Assess the accuracy of AdaBoostClassifier() on this new dataset using cross_val_score().
+
+# Create a feature counting unique protocols per source
+protocols = flows.groupby('source_computer').apply(
+  lambda df: len(set(df['protocol'])))
+
+# Convert this feature into a dataframe, naming the column
+protocols_DF = pd.DataFrame(
+  protocols, index=protocols.index, columns=['protocol'])
+
+# Now concatenate this feature with the previous dataset, X
+X_more = pd.concat([X, protocols_DF], axis=1)
+
+# Refit the classifier and report its accuracy
+print(np.mean(cross_val_score(
+  AdaBoostClassifier(), X_more, y)))
+  
+  
+  <script.py> output:
+    0.9377950357849856
+    
+___________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
 ==================================================================================================================================
 
 

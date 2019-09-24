@@ -188,16 +188,89 @@ print(np.mean(cross_val_score(
 ___________________________________________________________________________________________________________________________________
 
 
+Turning a heuristic into a classifier
+You are surprised by the fact that heuristics can be so helpful. So you decide to treat the heuristic that "too many unique ports is suspicious" as a classifier in its own right. You achieve that by thresholding the number of unique ports per source by the average number used in bad source computers -- these are computers for which the label is True. The dataset is preloaded and split into training and test, so you have objects X_train, X_test, y_train and y_test in memory. Your imports include accuracy_score(), and numpy as np. To clarify: you won't be fitting a classifier from scikit-learn in this exercise, but instead you will define your own classification rule explicitly!
+
+Instructions
+100 XP
+Subselect all bad hosts from X_train to form a new dataset X_train_bad. Note that y_train is a Boolean array.
+Calculate the average of the unique_ports column for bad hosts, and store it in avg_bad_ports.
+Now consider a classifier that predicts as positive every example whose unique_ports exceed avg_bad_ports. Save the predictions of this classifier on the test data on a new variable, pred_port.
+Calculate this classifier's accuracy on the test data using accuracy_score().
+
+
+# Create a new dataset X_train_bad by subselecting bad hosts
+X_train_bad = X_train[y_train]
+
+# Calculate the average of unique_ports in bad examples
+avg_bad_ports = np.mean(X_train_bad['unique_ports'])
+
+# Label as positive sources that use more ports than that
+pred_port = X_test['unique_ports'] > avg_bad_ports
+
+# Print the accuracy of the heuristic
+print(accuracy_score(y_test, pred_port))
+
+
+___________________________________________________________________________________________________________________________________
+
+Combining heuristics
+A different cyber analyst tells you that during certain types of attack, the infected source computer sends small bits of traffic, to avoid detection. This makes you wonder whether it would be better to create a combined heuristic that simultaneously looks for large numbers of ports and small packet sizes. Does this improve performance over the simple port heuristic? As with the last exercise, you have X_train, X_test, y_train and y_test in memory. The sample code also helps you reproduce the outcome of the port heuristic, pred_port. You also have numpy as np and accuracy_score() preloaded.
+
+Instructions
+100 XP
+The column average_packet computes the average packet size over all flows observed from a single source. Take the mean of those values for bad sources only on the training set.
+Now construct a new rule which flags as positive all sources whose average traffic is less than the value above.
+Combine the rules so that both heuristics have to simultaneously apply, using an appropriate arithmetic operation.
+Report the accuracy of the combined heuristic.
+
+# Compute the mean of average_packet for bad sources
+avg_bad_packet = np.mean(X_train[y_train]['average_packet'])
+
+# Label as positive if average_packet is lower than that
+pred_packet = X_test['average_packet'] < avg_bad_packet
+
+# Find indices where pred_port and pred_packet both True
+pred_port = X_test['unique_ports'] > avg_bad_ports
+pred_both = pred_packet * pred_port
+
+# Ports only produced an accuracy of 0.919. Is this better?
+print(accuracy_score(y_test, pred_both))
+
+___________________________________________________________________________________________________________________________________
+
+
+Dealing with label noise
+One of your cyber analysts informs you that many of the labels for the first 100 source computers in your training data might be wrong because of a database error. She hopes you can still use the data because most of the labels are still correct, but asks you to treat these 100 labels as "noisy". Thankfully you know how to do that, using weighted learning. The contaminated data is available in your workspace as X_train, X_test, y_train_noisy, y_test. You want to see if you can improve the performance of a GaussianNB() classifier using weighted learning. You can use the optional parameter sample_weight, which is supported by the .fit() methods of most popular classifiers. The function accuracy_score() is preloaded. You can consult the image below for guidance.
 
 
 
+Instructions
+100 XP
+Fit an instance of GaussianNB() to the training data with the contaminated labels.
+Report its accuracy on the test data using accuracy_score().
+Create weights that assign twice as much weight to ground truth labels than to noisy labels. Remember that the weights concern the training data.
+Refit the classifier using the above weights and report its accuracy.
+
+# Fit a Gaussian Naive Bayes classifier to the training data
+clf = GaussianNB().fit(X_train, y_train_noisy)
+
+# Report its accuracy on the test data
+print(accuracy_score(y_test, clf.predict(X_test)))
+
+# Assign half the weight to the first 100 noisy examples
+weights = [0.5]*100 + [1.0]*(len(y_train_noisy)-100)
+
+# Refit using weights and report accuracy. Has it improved?
+clf_weights = GaussianNB().fit(X_train, y_train_noisy, sample_weight=weights)
+print(accuracy_score(y_test, clf_weights.predict(X_test)))
+
+  ___________________________________________________________________________________________________________________________________
+  
+  
 
 
 
-
-
-
-    
 
 
 

@@ -268,9 +268,61 @@ print(accuracy_score(y_test, clf_weights.predict(X_test)))
   ___________________________________________________________________________________________________________________________________
   
   
+Real-world cost analysis
+You will still work on the credit dataset for this exercise. Recall that a "positive" in this dataset means "bad credit", i.e., a customer who defaulted on their loan, and a "negative" means a customer who continued to pay without problems. The bank manager informed you that the bank makes 10K profit on average from each "good risk" customer, but loses 150K from each "bad risk" customer. Your algorithm will be used to screen applicants, so those that are labeled as "negative" will be given a loan, and the "positive" ones will be turned down. What is the total cost of your classifier? The data is available as X_train, X_test, y_train and y_test. The functions confusion_matrix(), f1_score(), and precision_score() and RandomForestClassifier() are available.
+
+Instructions
+100 XP
+Fit a random forest classifier to the training data.
+Use it to label the test data.
+Extract the false negatives and false positives from confusion_matrix(). You will have to flatten the matrix.
+Falsely classifying a "good" customer as "bad" means that the bank would have lost the chance to make 10K profit. Falsely classifying a "bad" customer as "good" means that the bank would have lost 150K due to the customer defaulting on their loan.
 
 
+# Fit a random forest classifier to the training data
+clf = RandomForestClassifier(random_state=2).fit(X_train, y_train)
 
+# Label the test data
+preds = clf.predict(X_test)
+
+# Get false positives/negatives from the confusion matrix
+tp, fp, fn, tn = confusion_matrix(y_test, preds).ravel()
+
+# Now compute the cost using the manager's advice
+cost = fp*10000 + fn*150000
+
+___________________________________________________________________________________________________________________________________
+
+Confusion matrix calculations
+Your classifier on the credit data achieved the following statistics: 168 true positives, 19 false positives, 49 false negatives, and 25 true negatives. These numbers are preloaded in the console environment for you as tp, fp, fn and tn respectively. The following statements involve two metrics: accuracy, given by the proportion of examples classified correctly, and recall, which is the proportion of truly positive examples that were classified as positive. Which of the statements is true?
+
+
+___________________________________________________________________________________________________________________________________
+
+
+Default thresholding
+You would like to confirm that the DecisionTreeClassifier() uses the same default classification threshold as mentioned in the previous lesson, namely 0.5. It seems strange to you that all classifiers should use the same threshold. Let's check! A fitted decision tree classifier clf has been preloaded for you, as have the training and test data with their usual names: X_train, X_test, y_train and y_test. You will have to extract probability scores from the classifier using the .predict_proba() method.
+
+Instructions
+100 XP
+Produce scores for the test examples, using the preloaded classifier clf.
+Now extract labels from the scores. Remember that you have a pair of scores for each example, not a single score, and the second element is the probability of the positive class.
+Now label the test data using the standard .predict() method
+Finally, compare with the predictions you got before. Are they identical?
+
+# Score the test data using the given classifier
+scores = clf.predict_proba(X_test)
+
+# Get labels from the scores using the default threshold
+preds = [s[1] > 0.5 for s in scores]
+
+# Use the predict method to label the test data again
+preds_default = clf.predict(X_test)
+
+# Compare the two sets of predictions
+all(preds == preds_default)
+
+___________________________________________________________________________________________________________________________________
 
 
 

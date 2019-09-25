@@ -324,9 +324,85 @@ all(preds == preds_default)
 
 ___________________________________________________________________________________________________________________________________
 
+Optimizing the threshold
+You heard that the default value of 0.5 maximizes accuracy in theory, but you want to test what happens in practice. So you try out a number of different threshold values, to see what accuracy you get, and hence determine the best-performing threshold value. You repeat this experiment for the F1 score. Is 0.5 the optimal threshold? Is the optimal threshold for accuracy and for the F1 score the same? Go ahead and find out! You have a scores matrix available, obtained by scoring the test data. The ground truth labels for the test data is also available as y_test. Finally, two numpy functions are preloaded, argmin() and argmax(), which retrieve the index of the minimum and maximum values in an array respectively, in addition to the metrics accuracy_score() and f1_score().
+
+Instructions
+100 XP
+Create a range of threshold values that include 0.0, 0.25, 0.5, 0.75 and 1.0.
+Via double list comprehension, store the predictions for each threshold value in the range above. Recall that obtaining labels for a scores matrix using a threshold thr is possible using [s[1] > thr for s in scores].
+Run through that list and compute the accuracy for each threshold. Repeat for the F1 score.
+Using either argmin() or argmax(), find the optimal threshold for accuracy, and for F1.
 
 
+# Create a range of equally spaced threshold values
+t_range = [0.0,0.25,0.5,0.75,1.0]
 
+# Store the predicted labels for each value of the threshold
+preds = [[s[1] > thr for s in scores] for thr in t_range]
+
+# Compute the accuracy for each threshold
+accuracies = [accuracy_score(y_test, p) for p in preds]
+
+# Compute the F1 score for each threshold
+f1_scores = [f1_score(y_test, p) for p in preds]
+
+# Report the optimal threshold for accuracy, and for F1
+print(t_range[argmax(accuracies)], t_range[argmax(f1_scores)])
+
+You were right to be suspicious: in practice, accuracy is sometimes optimized with a threshold other than 0.5. Moreover, if you want to use a different metric, you should re-tune your threshold!
+
+___________________________________________________________________________________________________________________________________
+
+Bringing it all together
+One of the engineers in your arrhythmia detection startup rushes into your office to let you know that there is a problem with the ECG sensor for overweight users. You decide to reduce the influence of examples with weight over 80 by 50%. You are also told that since your startup is targeting the fitness market and makes no medical claims, scaring an athlete unnecessarily is costlier than missing a possible case of arrhythmia. You decide to create a custom loss that makes each "false alarm" ten times costlier than missing a case of arrhythmia. Does down-weighting overweight subjects improve this custom loss? Your training data X_train, y_train and test data X_test, y_test are preloaded, as are confusion_matrix(), numpy as np, and DecisionTreeClassifier().
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Start by creating a custom loss which extracts the false positives and false negatives from the confusion matrix, and then makes each false alarm count ten times as much as a missed case of arrhythmia.
+
+
+# Create a scorer assigning more cost to false positives
+def my_scorer(y_test, y_est, cost_fp=10.0, cost_fn=1.0):
+    tn, fp, fn, tp = confusion_matrix(y_test,y_est).ravel()
+    return cost_fp*fp + cost_fn*fn
+    
+    
+Fit a DecisionTreeClassifier to the original data and estimate this loss.
+
+# Create a scorer assigning more cost to false positives
+def my_scorer(y_test, y_est, cost_fp=10.0, cost_fn=1.0):
+    tn, fp, fn, tp = confusion_matrix(y_test, y_est).ravel()
+    return cost_fp*fp + cost_fn*fn
+
+# Fit a DecisionTreeClassifier to the data and compute the loss
+clf = DecisionTreeClassifier(random_state=2).fit(X_train, y_train)
+print(my_scorer(y_test, clf.predict(X_test)))
+
+
+# Create a scorer assigning more cost to false positives
+def my_scorer(y_test, y_est, cost_fp=10.0, cost_fn=1.0):
+    tn, fp, fn, tp = confusion_matrix(y_test, y_est).ravel()
+    return cost_fp*fp + cost_fn*fn
+
+# Fit a DecisionTreeClassifier to the data and compute the loss
+clf = DecisionTreeClassifier(random_state=2).fit(X_train, y_train)
+print(my_scorer(y_test, clf.predict(X_test)))
+
+# Refit, downweighting subjects whose weight is above 80
+weights = [0.5 if w > 80 else 1.0 for w in X_train.weight]
+clf_weighted = DecisionTreeClassifier(random_state=2).fit(
+  X_train, y_train, sample_weight=weights)
+print(my_scorer(y_test, clf_weighted.predict(X_test)))
+
+
+Create a list of weights so that each example where the weight is greater than 80 has half the weight of any other example. Does this improve your loss?
+
+
+Great work! You have mastered the art of using weights in order to assign different importance to different parts of the data. Time to revisit your optimization skills using pipelines.
 ==================================================================================================================================
 
 
@@ -334,6 +410,83 @@ ________________________________________________________________________________
 Model Lifecycle Management
 0%
 In the previous chapter, you employed different ways of incorporating feedback from experts in your workflow, and evaluating it in ways that are aligned with business value. Now it is time for you to practice the skills needed to productize your model and ensure it continues to perform well thereafter by iteratively improving it. You will also learn to diagnose dataset shift and mitigate the effect that a changing environment can have on your model's accuracy.
+
+___________________________________________________________________________________________________________________________________
+
+Your first pipeline - again!
+Back in the arrhythmia startup, your monthly review is coming up, and as part of that an expert Python programmer will be reviewing your code. You decide to tidy up by following best practices and replace your script for feature selection and random forest classification, with a pipeline. You are using a training dataset available as X_train and y_train, and a number of modules: RandomForestClassifier, SelectKBest() and f_classif() for feature selection, as well as GridSearchCV and Pipeline.
+
+Instructions
+100 XP
+Create a pipeline with the feature selector given by the sample code, and a random forest classifier. Name the first step feature_selection.
+Add two key-value pairs in params, one for the number of features k in the selector with values 10 and 20, and one for n_estimators in the forest with possible values 2 and 5.
+Initialize a GridSearchCV object with the given pipeline and parameter grid.
+Fit the object to the data and print the best performing parameter combination.
+
+# Create pipeline with feature selector and classifier
+pipe = Pipeline([
+    ('feature_selection', SelectKBest(f_classif)),
+    ('clf', RandomForestClassifier(random_state=2))])
+
+# Create a parameter grid
+params = {
+   'feature_selection__k':[10,20],
+    'clf__n_estimators':[2, 5]}
+
+# Initialize the grid search object
+grid_search = GridSearchCV(pipe, param_grid=params)
+
+# Fit it to the data and print the best value combination
+print(grid_search.fit(X_train, y_train).best_params_)
+
+___________________________________________________________________________________________________________________________________
+
+Custom scorers in pipelines
+You are proud of the improvement in your code quality, but just remembered that previously you had to use a custom scoring metric in order to account for the fact that false positives are costlier to your startup than false negatives. You hence want to equip your pipeline with scorers other than accuracy, including roc_auc_score(), f1_score(), and you own custom scoring function. The pipeline from the previous lesson is available as pipe, as is the parameter grid as params and the training data as X_train, y_train. You also have confusion_matrix() for the purpose of writing your own metric.
+
+Instructions 1/3
+35 XP
+1
+Convert the metric roc_auc_score() into a scorer, and feed it into GridSearchCV(). Then fit that to the data.
+
+# Create a custom scorer
+scorer = make_scorer(roc_auc_score)
+
+# Initialize the CV object
+gs = GridSearchCV(pipe, param_grid=params, scoring=scorer)
+
+# Fit it to the data and print the winning combination
+print(gs.fit(X_train, y_train).best_params_)
+
+
+<script.py> output:
+    {'clf__n_estimators': 5, 'feature_selection__k': 20}
+
+Now repeat for the F1 score, instead, given by f1_score().
+
+# Create a custom scorer
+scorer = make_scorer(f1_score)
+
+# Initialise the CV object
+gs = GridSearchCV(pipe, param_grid=params, scoring=scorer)
+
+# Fit it to the data and print the winning combination
+print(gs.fit(X_train, y_train).best_params_)
+
+Now repeat with a custom metric which is available to you as as simple Python function called my_metric().
+
+# Create a custom scorer
+scorer = make_scorer(my_metric)
+
+# Initialise the CV object
+gs = GridSearchCV(pipe, param_grid=params, scoring=scorer)
+
+# Fit it to the data and print the winning combination
+print(gs.fit(X_train, y_train).best_params_)
+___________________________________________________________________________________________________________________________________
+
+
+
 
 ==================================================================================================================================
 Unsupervised Workflows

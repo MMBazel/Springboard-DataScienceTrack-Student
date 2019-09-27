@@ -485,7 +485,189 @@ gs = GridSearchCV(pipe, param_grid=params, scoring=scorer)
 print(gs.fit(X_train, y_train).best_params_)
 ___________________________________________________________________________________________________________________________________
 
+Pickles
+Finally, it is time for you to push your first model to production. It is a random forest classifier which you will use as a baseline, while you are still working to develop a better alternative. You have access to the data split in training test with their usual names, X_train, X_test, y_train and y_test, as well as to the modules RandomForestClassifier() and pickle, whose methods .load() and .dump() you will need for this exercise.
 
+Instructions
+100 XP
+Fit a random forest classifier to the data. Fix the random seed to 42 ensure that your results are reproducible.
+Write the model to file using pickle. Open the destination file using the with open(____) as ____ syntax.
+Now load the model from file into a different variable name, clf_from_file.
+Store the predictions from the model you loaded into a variable preds.
+# Fit a random forest to the training set
+clf = RandomForestClassifier(random_state=42).fit(
+  X_train, y_train)
+
+# Save it to a file, to be pushed to production
+with open('model.pkl', 'wb') as file:
+    pickle.dump(clf, file=file)
+
+# Now load the model from file in the production environment
+with open('model.pkl', 'rb') as file:
+    clf_from_file = pickle.load(file)
+
+# Predict the labels of the test dataset
+preds = clf_from_file.predict(X_test)
+
+
+Hint
+The random seed is fixed via the optional parameter random_state
+Make sure the file you open is writeable and binary using the wb option.
+Make sure the file you open is writeable and binary using the rb option.
+The model object you recovered from file has all its usual methods, including predict().
+
+
+___________________________________________________________________________________________________________________________________
+
+Custom function transformers in pipelines
+At some point, you were told that the sensors might be performing poorly for obese individuals. Previously you had dealt with that using weights, but now you are thinking that this information might also be useful for feature engineering, so you decide to replace the recorded weight of an individual with an indicator of whether they are obese. You want to do this using pipelines. You have numpy available as np, RandomForestClassifier(), FunctionTransformer(), and GridSearchCV().
+
+Instructions
+100 XP
+Define a custom feature extractor. This is a function that will output a modified copy of its input.
+Replace each value of the first column with the indicator of whether that value is above a threshold given by a multiple of the column mean.
+Convert the feature extractor above to a transformer and place it in a pipeline together with a random forest classifier.
+Use grid search CV to try values 1, 2 and 3 for the multiplication constant multiplier in your feature extractor.
+
+# Define a feature extractor to flag very large values
+def more_than_average(X, multiplier=1.0):
+  Z = X.copy()
+  Z[:,1] = Z[:,1] > multiplier*np.mean(Z[:,1])
+  return Z
+
+# Convert your function so that it can be used in a pipeline
+pipe = Pipeline([
+  ('ft', FunctionTransformer(more_than_average)),
+  ('clf', RandomForestClassifier(random_state=2))])
+
+# Optimize the parameter multiplier using GridSearchCV
+params = dict(ft__multiplier=[1,2,3])
+grid_search = GridSearchCV(pipe, param_grid=params)
+
+___________________________________________________________________________________________________________________________________
+
+
+Challenge the champion
+Having pushed your random forest to production, you suddenly worry that a naive Bayes classifier might be better. You want to run a champion-challenger test, by comparing a naive Bayes, acting as the challenger, to exactly the model which is currently in production, which you will load from file to make sure there is no confusion. You will use the F1 score for assessment. You have the data X_train, X_test, y_train and y_test available as before and GaussianNB(), f1_score() and pickle().
+
+Instructions
+100 XP
+Instructions
+100 XP
+Load the existing model from memory using pickle.
+Fit a Gaussian Naive Bayes classifier to the training data.
+Print the F1 score of the champion and then the challenger on the test data.
+Overwrite the current model to disk with the one that performed best.
+
+# Load the current model from disk
+champion = pickle.load(open('model.pkl', 'rb'))
+
+# Fit a Gaussian Naive Bayes to the training data
+challenger = GaussianNB().fit(X_train, y_train)
+
+# Print the F1 test scores of both champion and challenger
+print(f1_score(y_test, champion.predict(X_test)))
+print(f1_score(y_test, challenger.predict(X_test)))
+
+# Write back to disk the best-performing model
+with open('model.pkl', 'wb') as file:
+    pickle.dump(champion, file=file)
+
+___________________________________________________________________________________________________________________________________
+
+Cross-validation statistics
+You used grid search CV to tune your random forest classifier, and now want to inspect the cross-validation results to ensure you did not overfit. In particular you would like to take the difference of the mean test score for each fold from the mean training score. The dataset is available as X_train and y_train, the pipeline as pipe, and a number of modules are pre-loaded including pandas as pd and GridSearchCV().
+
+Instructions
+100 XP
+Create a grid search object with three cross-validation folds and ensure it returns training as well as test statistics.
+Fit the grid search object to the training data.
+Store the results of the cross-validation, available in the cv_results_ attribute of the fitted CV object, into a dataframe.
+Print the difference between the column containing the average test score and that containing the average training score.
+
+# Fit your pipeline using GridSearchCV with three folds
+grid_search = GridSearchCV(
+  pipe, params, cv=3, return_train_score=True)
+
+# Fit the grid search
+gs = grid_search.fit(X_train, y_train)
+
+# Store the results of CV into a pandas dataframe
+results = pd.DataFrame(gs.cv_results_)
+
+# Print the difference between mean test and training scores
+print(
+  results['mean_test_score']-results['mean_train_score'])
+  
+  <script.py> output:
+    0   -0.234513
+    1   -0.246313
+    2   -0.308260
+    3   -0.265487
+    dtype: float64
+    
+    ___________________________________________________________________________________________________________________________________
+    
+    Tuning the window size
+You want to check for yourself that the optimal window size for the arrhythmia dataset is 50. You have been given the dataset as a pandas data frame called arrh, and want to use a subset of the data up to time t_now. Your test data is available as X_test, y_test. You will try out a number of window sizes, ranging from 10 to 100, fit a naive Bayes classifier to each window, assess its F1 score on the test data, and then pick the best performing window size. You also have numpy available as np, and the function f1_score() has been imported already. Finally, an empty list called accuracies has been initialized for you to store the accuracies of the windows.
+
+Instructions
+100 XP
+Define the index of a sliding window of size w_size stopping at t_now using the .loc() method.
+Construct X from the sliding window by removing the class column. Store that latter column as y.
+Fit a naive Bayes classifier to X and y, and use it to predict the labels of the test data X_test.
+Compute the F1 score of these predictions for each window size, and find the best-performing window size.
+
+
+# Loop over window sizes
+for w_size in wrange:
+
+    # Define sliding window
+    sliding = arrh.loc[(t_now - w_size + 1):t_now]
+
+    # Extract X and y from the sliding window
+    X, y = sliding.drop('class', 1), sliding['class']
+    
+    # Fit the classifier and store the F1 score
+    preds = GaussianNB().fit(X, y).predict(X_test)
+    accuracies.append(f1_score(y_test, preds))
+
+# Estimate the best performing window size
+optimal_window = wrange[np.argmax(accuracies)]
+
+
+Well done! You now realise that the possibility of dataset shift introduces yet another parameter to optimize: the window size. This cannot be done with Cross-Validation on historical data, but instead requires the technique shown here.
+___________________________________________________________________________________________________________________________________
+
+Bringing it all together
+You have two concerns about your pipeline at the arrhythmia detection startup:
+
+The app was trained on patients of all ages, but is primarily being used by fitness users who tend to be young. You suspect this might be a case of domain shift, and hence want to disregard all examples above 50 years old.
+You are still concerned about overfitting, so you want to see if making the random forest classifier less complex and selecting some features might help with that.
+You will create a pipeline with a feature selection SelectKBest() step and a RandomForestClassifier, both of which have been imported. You also have access to GridSearchCV(), Pipeline, numpy as np and pickle. The data is available as arrh.
+
+Instructions
+100 XP
+Create a pipeline with SelectKBest() as step ft and RandomForestClassifier() as step clf.
+Create a parameter grid to tune k in SelectKBest() and max_depth in RandomForestClassifier().
+Use GridSearchCV() to optimize your pipeline against that grid and data containing only those aged under 50.
+Save the optimized pipeline to a pickle for production.
+
+# Create a pipeline 
+pipe = Pipeline([
+  ('ft', SelectKBest()), ('clf', RandomForestClassifier(random_state=2))])
+
+# Create a parameter grid
+grid = {'ft__k':[5, 10], 'clf__max_depth':[10, 20]}
+
+# Execute grid search CV on a dataset containing under 50s
+grid_search = GridSearchCV(pipe, param_grid=grid)
+arrh = arrh.iloc[np.where(arrh['age'] < 50)]
+grid_search.fit(arrh.drop('class', 1), arrh['class'])
+
+# Push the fitted pipeline to production
+with open('pipe.pkl', 'wb') as file:
+    pickle.dump(grid_search, file)
 
 
 ==================================================================================================================================

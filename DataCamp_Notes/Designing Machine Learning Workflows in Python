@@ -675,5 +675,66 @@ Unsupervised Workflows
 0%
 In the previous chapters you established a solid foundation in supervised learning, complete with knowledge of deploying models in production but always assumed you a labeled dataset would be available for your analysis. In this chapter, you take on the challenge of modeling data without any, or with very few, labels. This takes you into a journey into anomaly detection, a kind of unsupervised modeling, as well as distance-based learning, where beliefs about what constitutes similarity between two examples can be used in place of labels to help you achieve levels of accuracy comparable to a supervised workflow. Upon completing this chapter, you will clearly stand out from the crowd of data scientists in confidently knowing what tools to use to modify your workflow in order to overcome common real-world challenges.
 
+___________________________________________________________________________________________________________________________________
+
+
+A simple outlier
+When you first encounter a new type of algorithm, it is always a great idea to test it with a very simple example. So you decide to create a list containing thirty examples with the value 1.0 and just one example with value 10.0, which you expect should be flagged as an outlier. To make sure you use the algorithm correctly, you convert the list to a pandas dataframe, and feed it into the local outlier factor algorithm. pandas is available to you as pd.
+
+Instructions
+100 XP
+Import the LocalOutlierFactor module as lof for convenience.
+Create a list with thirty 1s followed by a 10, [1.0, 1.0, ..., 1.0, 10.0].
+Cast the list to a data frame.
+Print the outlier scores produced by the local outlier factor algorithm.
+
+
+# Import the LocalOutlierFactor module
+from sklearn.neighbors import LocalOutlierFactor as lof
+
+# Create the list [1.0, 1.0, ..., 1.0, 10.0] as explained
+x = [1.0]*30
+x.append(10.0)
+
+# Cast to a data frame
+X = pd.DataFrame(x)
+
+# Fit the local outlier factor and print the outlier scores
+print(lof().fit_predict(X))
+___________________________________________________________________________________________________________________________________
+
+
+LoF contamination
+Your medical advisor at the arrhythmia startup informs you that your training data might not contain all possible types of arrhythmia. How on earth will you detect these other types without any labeled examples? Could an anomaly detector tell the difference between healthy and unhealthy without access to labels? But first, you experiment with the contamination parameter to see its effect on the confusion matrix. You have LocalOutlierFactor as lof, numpy as np, the labels as ground_truth encoded in -1and 1 just like local outlier factor output, and the unlabeled training data as X.
+
+Instructions 1/3
+35 XP
+1
+Fit a local outlier factor and output the predictions on X and print the confusion matrix for these predictions.
+
+# Fit the local outlier factor and output predictions
+preds = lof().fit_predict(X)
+
+# Print the confusion matrix
+print(confusion_matrix(ground_truth, preds))
+
+Repeat but now set the proportion of datapoints to be flagged as outliers to 0.2. Print the confusion matrix
+
+# Set the contamination parameter to 0.2
+preds = lof(contamination=0.2).fit_predict(X)
+
+# Print the confusion matrix
+print(confusion_matrix(ground_truth,preds))
+
+Now set the contamination to be equal to the actual proportion of outliers in the data.
+
+# Contamination to match outlier frequency in ground_truth
+preds = lof(
+  contamination=np.mean(ground_truth==-1.0)).fit_predict(X)
+
+# Print the confusion matrix
+print(confusion_matrix(ground_truth, preds))
+
+___________________________________________________________________________________________________________________________________
 
 

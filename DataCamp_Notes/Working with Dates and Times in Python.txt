@@ -447,11 +447,165 @@ Out[1]:
  ('2017-10-02 18:48:08', '2017-10-02 19:10:54'),
  
  
+ ___________________________________________________________________________________________________________________________________
  
  
+ Recreating ISO format with strftime()
+In the last chapter, you used strftime() to create strings from date objects. Now that you know about datetime objects, let's practice doing something similar.
+
+Re-create the .isoformat() method, using .strftime(), and print the first trip start in our data set.
+
+Reference	
+%Y	4 digit year (0000-9999)
+%m	2 digit month (1-12)
+%d	2 digit day (1-31)
+%H	2 digit hour (0-23)
+%M	2 digit minute (0-59)
+%S	2 digit second (0-59)
+Instructions
+100 XP
+Instructions
+100 XP
+Complete fmt to match the format of ISO 8601.
+Print first_start with both .isoformat() and .strftime(); they should match.
+
+# Import datetime
+from datetime import datetime
+
+# Pull out the start of the first trip
+first_start = onebike_datetimes[0]['start']
+
+# Format to feed to strftime()
+fmt = "%Y-%m-%dT%H:%M:%S"
+
+# Print out date with .isoformat(), then with .strftime() to compare
+print(first_start.isoformat())
+print(first_start.strftime(fmt))
+
+<script.py> output:
+    2017-10-01T15:23:25
+    2017-10-01T15:23:25
 
 
+ +100 XP
+Awesome! There are a wide variety of time formats you can create with strftime(), depending on your needs. However, if you don't know exactly what you need, .isoformat() is a perfectly fine place to start.
+___________________________________________________________________________________________________________________________________
 
+Unix timestamps
+Datetimes are sometimes stored as Unix timestamps: the number of seconds since January 1, 1970. This is especially common with computer infrastructure, like the log files that websites keep when they get visitors.
+
+Instructions
+100 XP
+Complete the for loop to loop over timestamps.
+Complete the code to turn each timestamp ts into a datetime.
+
+# Import datetime
+from datetime import datetime
+
+# Starting timestamps
+timestamps = [1514665153, 1514664543]
+
+# Datetime objects
+dts = []
+
+# Loop
+for ts in timestamps:
+  dts.append(datetime.fromtimestamp(ts))
+  
+# Print results
+print(dts)
+
+<script.py> output:
+    [datetime.datetime(2017, 12, 30, 20, 19, 13), datetime.datetime(2017, 12, 30, 20, 9, 3)]
+    
+     +70 XP
+Nice! The largest number that some older computers can hold in one variable is 2147483648, which as a Unix timestamp is in January 2038. On that day, many computers which haven't been upgraded will fail. Hopefully, none of them are running anything critical!
+    
+___________________________________________________________________________________________________________________________________
+
+Turning pairs of datetimes into durations
+When working with timestamps, we often want to know how much time has elapsed between events. Thankfully, we can use datetime arithmetic to ask Python to do the heavy lifting for us so we don't need to worry about day, month, or year boundaries. Let's calculate the number of seconds that the bike was out of the dock for each trip.
+
+Continuing our work from a previous coding exercise, the bike trip data has been loaded as the list onebike_datetimes. Each element of the list consists of two datetime objects, corresponding to the start and end of a trip, respectively.
+
+Instructions
+100 XP
+Within the loop:
+Use the the start and end objects to find the length of the trip and call it trip_duration.
+Calculate the trip_length_seconds from trip_duration.
+Append trip_length_seconds to the list onebike_durations.
+
+# Initialize a list for all the trip durations
+onebike_durations = []
+
+for trip in onebike_datetimes:
+  # Create a timedelta object corresponding to the length of the trip
+  trip_duration = trip['end'] - trip['start']
+  
+  # Get the total elapsed seconds in trip_duration
+  trip_length_seconds = trip_duration.total_seconds()
+  
+  # Append the results to our list
+  onebike_durations.append(trip_length_seconds)
+
+Success! Remember that timedelta objects are represented in Python as a number of days and seconds of elapsed time. Be careful not to use .seconds on a timedelta object, since you'll just get the number of seconds without the days!
+
+___________________________________________________________________________________________________________________________________
+
+Average trip time
+W20529 took 291 trips in our data set. How long were the trips on average? We can use the built-in Python functions sum() and len() to make this calculation.
+
+Based on your last coding exercise, the data has been loaded as onebike_durations. Each entry is a number of seconds that the bike was out of the dock.
+
+Instructions
+100 XP
+Calculate total_elapsed_time across all trips in onebike_durations.
+Calculate number_of_trips for onebike_durations.
+Divide total_elapsed_time by number_of_trips to get the average trip length.
+
+
+# What was the total duration of all trips?
+total_elapsed_time = sum(onebike_durations)
+
+# What was the total number of trips?
+number_of_trips = len(onebike_durations)
+  
+# Divide the total duration by the number of trips
+print(total_elapsed_time / number_of_trips)
+
+
+<script.py> output:
+    1178.9310344827586
+
+
+Great work, and not remotely average! For the average to be a helpful summary of the data, we need for all of our durations to be reasonable numbers, and not a few that are way too big, way too small, or even malformed. For example, if there is anything fishy happening in the data, and our trip ended before it started, we'd have a negative trip length.
+___________________________________________________________________________________________________________________________________
+
+The long and the short of why time is hard
+Out of 291 trips taken by W20529, how long was the longest? How short was the shortest? Does anything look fishy?
+
+As before, data has been loaded as onebike_durations.
+
+Instructions
+100 XP
+Calculate shortest_trip from onebike_durations.
+Calculate longest_trip from onebike_durations.
+Print the results, turning shortest_trip and longest_trip into strings so they can print.
+
+# Calculate shortest and longest trips
+shortest_trip = min(onebike_durations)
+longest_trip = max(onebike_durations)
+
+# Print out the results
+print("The shortest trip was " + str(shortest_trip) + " seconds")
+print("The longest trip was " + str(longest_trip) + " seconds")
+
+<script.py> output:
+    The shortest trip was -3346.0 seconds
+    The longest trip was 76913.0 seconds
+
+
+Weird huh?! For at least one trip, the bike returned before it left. Why could that be? Here's a hint: it happened in early November, around 2AM local time. What happens to clocks around that time each year? By the end of the next chapter, we'll have all the tools we need to deal with this situation!
 
 
 

@@ -839,6 +839,183 @@ Did you notice the time offset for this one? It's at UTC+14! Samoa used to be UT
 ___________________________________________________________________________________________________________________________________
 
 
+How many hours elapsed around daylight saving?
+Since our bike data takes place in the fall, you'll have to do something else to learn about the start of daylight savings time.
+
+Let's look at March 12, 2017, in the Eastern United States, when Daylight Saving kicked in at 2 AM.
+
+If you create a datetime for midnight that night, and add 6 hours to it, how much time will have elapsed?
+
+Instructions 1/3
+35 XP
+1
+2
+3
+You already have a datetime called start, set for March 12, 2017 at midnight, set to the timezone 'America/New_York'.
+
+Add six hours to start and assign it to end. Look at the UTC offset for the two
+
+# Import datetime, timedelta, tz, timezone
+from datetime import datetime, timedelta, timezone
+from dateutil import tz
+
+# Start on March 12, 2017, midnight, then add 6 hours
+start = datetime(2017, 3, 12, tzinfo = tz.gettz('America/New_York'))
+end = start + timedelta(hours=6)
+print(start.isoformat() + " to " + end.isoformat())
+
+
+You already have a datetime called start, set for March 12, 2017 at midnight, set to the timezone 'America/New_York'.
+
+Add six hours to start and assign it to end. Look at the UTC offset for the two results.
+
+
+# Import datetime, timedelta, tz, timezone
+from datetime import datetime, timedelta, timezone
+from dateutil import tz
+
+# Start on March 12, 2017, midnight, then add 6 hours
+start = datetime(2017, 3, 12, tzinfo = tz.gettz('America/New_York'))
+end = start + timedelta(hours=6)
+print(start.isoformat() + " to " + end.isoformat())
+
+# How many hours have elapsed?
+print((end - start).total_seconds()/(60*60))
+
+
+Move your datetime objects into UTC and calculate the elapsed time again.
+
+Once you're in UTC, what result do you get?
+
+# Import datetime, timedelta, tz, timezone
+from datetime import datetime, timedelta, timezone
+from dateutil import tz
+
+# Start on March 12, 2017, midnight, then add 6 hours
+start = datetime(2017, 3, 12, tzinfo = tz.gettz('America/New_York'))
+end = start + timedelta(hours=6)
+print(start.isoformat() + " to " + end.isoformat())
+
+# How many hours have elapsed?
+print((end - start).total_seconds()/(60*60))
+
+# What if we move to UTC?
+print((end.astimezone(timezone.utc) - start.astimezone(timezone.utc))\
+      .total_seconds()/(60*60))
+      
+      
+ +90 XP
+When we compare times in local time zones, everything gets converted into clock time. Remember if you want to get absolute time differences, always move to UTC!      
+
+________________________________________________________________________________________________________________________
+
+March 29, throughout a decade
+Daylight Saving rules are complicated: they're different in different places, they change over time, and they usually start on a Sunday (and so they move around the calendar).
+
+For example, in the United Kingdom, as of the time this lesson was written, Daylight Saving begins on the last Sunday in March. Let's look at the UTC offset for March 29, at midnight, for the years 2000 to 2010.
+
+Instructions
+100 XP
+Using tz, set the timezone for dt to be 'Europe/London'.
+Within the for loop:
+Use the .replace() method to change the year for dt to be y.
+Call .isoformat() on the result to observe the results.
+
+
+# Import datetime and tz
+from datetime import datetime
+from dateutil import tz
+
+# Create starting date
+dt = datetime(2000, 3, 29, tzinfo = tz.gettz('Europe/London'))
+
+# Loop over the dates, replacing the year, and print the ISO timestamp
+for y in range(2000, 2011):
+  print(dt.replace(year=y).isoformat())
+
+<script.py> output:
+    2000-03-29T00:00:00+01:00
+    2001-03-29T00:00:00+01:00
+    2002-03-29T00:00:00+00:00
+    2003-03-29T00:00:00+00:00
+    2004-03-29T00:00:00+01:00
+    2005-03-29T00:00:00+01:00
+    2006-03-29T00:00:00+01:00
+    2007-03-29T00:00:00+01:00
+    2008-03-29T00:00:00+00:00
+    2009-03-29T00:00:00+00:00
+    2010-03-29T00:00:00+01:00
+
+ +100 XP
+Nice! As you can see, the rules for Daylight Saving are not trivial. When in doubt, always use tz instead of hand-rolling timezones, so it will catch the Daylight Saving rules (and rule changes!) for you.
+________________________________________________________________________________________________________________________
+
+Finding ambiguous datetimes
+At the end of lesson 2, we saw something anomalous in our bike trip duration data. Let's see if we can identify what the problem might be.
+
+The data has is loaded as onebike_datetimes, and tz has already been imported from dateutil.
+
+Instructions
+100 XP
+Loop over the trips in onebike_datetimes:
+Print any rides whose start is ambiguous.
+Print any rides whose end is ambiguous.
+
+
+
+# Loop over trips
+for trip in onebike_datetimes:
+  # Rides with ambiguous start
+  if tz.datetime_ambiguous(trip['start']):
+    print("Ambiguous start at " + str(trip['start']))
+  # Rides with ambiguous end 
+  if tz.datetime_ambiguous(trip['end']):
+    print("Ambiguous end at " + str(trip['end']))
+    
+    
+ <script.py> output:
+    Ambiguous start at 2017-11-05 01:56:50-04:00
+    Ambiguous end at 2017-11-05 01:01:04-04:00   
+
+ +100 XP
+Good work! Note that tz.datetime_ambiguous() only catches ambiguous datetimes from Daylight Saving changes. Other weird edge cases, like jurisdictions which change their Daylight Saving rules, hopefully should be caught by tz. And if they're not, at least those kinds of things are pretty rare in most data sets!
+
+
+________________________________________________________________________________________________________________________
+
+
+Cleaning daylight saving data with fold
+As we've just discovered, there is a ride in our data set which is being messed up by a Daylight Savings shift. Let's fix up the data set so we actually have a correct minimum ride length. We can use the fact that we know the end of the ride happened after the beginning to fix up the duration messed up by the shift out of Daylight Savings.
+
+Since Python does not handle tz.enfold() when doing arithmetic, we must put our datetime objects into UTC, where ambiguities have been resolved.
+
+onebike_datetimes is already loaded and in the right timezone. tz and timezone have been imported.
+
+Instructions
+100 XP
+Complete the if statement to be true only when a ride's start comes after its end.
+When start is after end, call tz.enfold() on the end so you know it refers to the one after the daylight savings time change.
+After the if statement, convert the start and end to UTC so you can make a proper comparison.
+
+trip_durations = []
+for trip in onebike_datetimes:
+  # When the start is later than the end, set the fold to be 1
+  if trip['start'] > trip['end']:
+    trip['end'] = tz.enfold(trip['end'])
+  # Convert to UTC
+  start = trip['start'].astimezone(timezone.utc)
+  end = trip['end'].astimezone(timezone.utc)
+
+  # Subtract the difference
+  trip_length_seconds = (end-start).total_seconds()
+  trip_durations.append(trip_length_seconds)
+
+# Take the shortest trip duration
+print("Shortest trip: " + str(min(trip_durations)))
+
+
+ +100 XP
+Good work! Now you know how to handle some pretty gnarly edge cases in datetime data. To give a sense for how tricky these things are: we actually still don't know how long the rides are which only started or ended in our ambiguous hour but not both. If you're collecting data, store it in UTC or with a fixed UTC offset!
 
 
 <====================================================================================================================================>
@@ -847,3 +1024,73 @@ ________________________________________________________________________________
 Easy and Powerful: Dates and Times in Pandas
 0%
 To conclude this course, you'll apply everything you've learned about working with dates and times in standard Python to working with dates and times in Pandas. With additional information about each bike ride, such as what station it started and stopped at and whether or not the rider had a yearly membership, you'll be able to dig much more deeply into the bike trip data. In this chapter, you'll cover powerful Pandas operations, such as grouping and plotting results by time.
+
+________________________________________________________________________________________________________________________
+
+Loading a csv file in Pandas
+The capital_onebike.csv file covers the October, November and December rides of the Capital Bikeshare bike W20529.
+
+Here are the first two columns:
+
+Start date	End date	...
+2017-10-01 15:23:25	2017-10-01 15:26:26	...
+2017-10-01 15:42:57	2017-10-01 17:49:59	...
+Instructions
+100 XP
+Import Pandas.
+Complete the call to read_csv() so that it correctly parses the date columns Start date and End date.
+
+# Import pandas
+import pandas as pd
+
+# Load CSV into the rides variable
+rides = pd.read_csv('capital-onebike.csv', 
+                    parse_dates = ['Start date','End date'])
+
+# Print the initial (0th) row
+print(rides.iloc[0])
+
+<script.py> output:
+    Start date                        2017-10-01 15:23:25
+    End date                          2017-10-01 15:26:26
+    Start station number                            31038
+    Start station                    Glebe Rd & 11th St N
+    End station number                              31036
+    End station             George Mason Dr & Wilson Blvd
+    Bike number                                    W20529
+    Member type                                    Member
+    Name: 0, dtype: object
+
+ +100 XP
+Geat! Did you know that pandas has a pd.read_excel(), pd.read_json(), and even a pd.read_clipboard() function to read tabular data that you've copied from a document or website? Most have date parsing functionality too.
+________________________________________________________________________________________________________________________
+
+Making timedelta columns
+Earlier in this course, you wrote a loop to subtract datetime objects and determine how long our sample bike had been out of the docks. Now you'll do the same thing with Pandas.
+
+rides has already been loaded for you.
+
+Instructions
+100 XP
+Subtract the Start date column from the End date column to get a Series of timedeltas; assign the result to ride_durations.
+Convert ride_durations into seconds and assign the result to the 'Duration' column of rides.
+
+# Subtract the start date from the end date
+ride_durations = rides['End date'] - rides['Start date']
+
+# Convert the results to seconds
+rides['Duration'] = ride_durations.dt.total_seconds()
+
+print(rides['Duration'].head())
+
+Hint
+Access columns in rides with the [] operator.
+The method to turn a timedelta into a number is .dt.total_seconds().
+Assign a Series x to be column "x" in a dataframe df with df['x'] = x.
+
+ +0 XP
+Great! Because Pandas supports method chaining, you could also perform this operation in one line: rides['Duration'] = (rides['End date'] - rides['Start date']).dt.total_seconds()
+________________________________________________________________________________________________________________________
+
+
+

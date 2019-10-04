@@ -1,0 +1,472 @@
+Course Description
+You'll probably never have a time machine, but how about a machine for analyzing time? As soon as time enters any analysis, things can get weird. It's easy to get tripped up on day and month boundaries, time zones, daylight saving time, and all sorts of other things that can confuse the unprepared. If you're going to do any kind of analysis involving time, you’ll want to use Python to sort it out. Working with data sets on hurricanes and bike trips, we’ll cover counting events, figuring out how much time has elapsed between events and plotting data over time. You'll work in both standard Python and in Pandas, and we'll touch on the dateutil library, the only timezone library endorsed by the official Python documentation. After this course, you'll confidently handle date and time data in any format like a champion.
+
+
+<====================================================================================================================================>
+
+
+1
+Dates and Calendars
+FREE
+0%
+Hurricanes (also known as cyclones or typhoons) hit the U.S. state of Florida several times per year. To start off this course, you'll learn how to work with date objects in Python, starting with the dates of every hurricane to hit Florida since 1950. You'll learn how Python handles dates, common date operations, and the right way to format dates to avoid confusion.
+
+___________________________________________________________________________________________________________________________________
+
+How many hurricanes come early?
+In this chapter, you will work with a list of the hurricanes that made landfall in Florida from 1950 to 2017. There were 235 in total. Check out the variable florida_hurricane_dates, which has all of these dates.
+
+Atlantic hurricane season officially begins on June 1. How many hurricanes since 1950 have made landfall in Florida before the official start of hurricane season?
+
+Instructions
+100 XP
+Complete the for loop to iterate through florida_hurricane_dates.
+Complete the if statement to increment the counter (early_hurricanes) if the hurricane made landfall before June.
+
+# Counter for how many before June 1
+early_hurricanes = 0
+
+# We loop over the dates
+for hurricane in florida_hurricane_dates:
+  # Check if the month is before June (month number 6)
+  if hurricane.month < 6:
+    early_hurricanes = early_hurricanes + 1
+    
+print(early_hurricanes)
+
+___________________________________________________________________________________________________________________________________
+
+Subtracting dates
+Python date objects let us treat calendar dates as something similar to numbers: we can compare them, sort them, add, and even subtract them. This lets us do math with dates in a way that would be a pain to do by hand.
+
+The 2007 Florida hurricane season was one of the busiest on record, with 8 hurricanes in one year. The first one hit on May 9th, 2007, and the last one hit on December 13th, 2007. How many days elapsed between the first and last hurricane in 2007?
+
+Instructions
+100 XP
+Import date from datetime.
+Create a date object for May 9th, 2007, and assign it to the start variable.
+Create a date object for December 13th, 2007, and assign it to the end variable.
+Subtract start from end, to print the number of days in the resulting timedelta object.
+
+# Import date
+from datetime import date
+
+# Create a date object for May 9th, 2007
+start = date(2007, 5, 9)
+
+# Create a date object for December 13th, 2007
+end = date(2007, 12, 13)
+
+# Subtract the two dates and print the number of days
+print((end - start).days)
+
+ +100 XP
+Good job! One thing to note: be careful using this technique for historical dates hundreds of years in the past. Our calendar systems have changed over time, and not every date from then would be the same day and month today.
+
+___________________________________________________________________________________________________________________________________
+
+
+Counting events per calendar month
+Hurricanes can make landfall in Florida throughout the year. As we've already discussed, some months are more hurricane-prone than others.
+
+Using florida_hurricane_dates, let's see how hurricanes in Florida were distributed across months throughout the year.
+
+We've created a dictionary called hurricanes_each_month to hold your counts and set the initial counts to zero. You will loop over the list of hurricanes, incrementing the correct month in hurricanes_each_month as you go, and then print the result.
+
+Instructions
+100 XP
+Within the for loop:
+Assign month to be the month of that hurricane.
+Increment hurricanes_each_month for the relevant month by 1.
+
+# A dictionary to count hurricanes per calendar month
+hurricanes_each_month = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6:0,
+		  				 7: 0, 8:0, 9:0, 10:0, 11:0, 12:0}
+
+# Loop over all hurricanes
+for hurricane in florida_hurricane_dates:
+  # Pull out the month
+  month = hurricane.month
+  # Increment the count in your dictionary by one
+  hurricanes_each_month[month] += 1
+  
+print(hurricanes_each_month)
+
+<script.py> output:
+    {1: 0, 2: 1, 3: 0, 4: 1, 5: 8, 6: 32, 7: 21, 8: 49, 9: 70, 10: 43, 11: 9, 12: 1}
+
+Success! This illustrated a generally useful pattern for working with complex data: creating a dictionary, performing some operation on each element, and storing the results back in the dictionary.
+
+___________________________________________________________________________________________________________________________________
+
+Putting a list of dates in order
+Much like numbers and strings, date objects in Python can be put in order. Earlier dates come before later ones, and so we can sort a list of date objects from earliest to latest.
+
+What if our Florida hurricane dates had been scrambled? We've gone ahead and shuffled them so they're in random order and saved the results as dates_scrambled. Your job is to put them back in chronological order, and then print the first and last dates from this sorted list.
+
+Instructions 1/2
+50 XP
+1
+2
+Print the first and last dates in dates_scrambled.
+
+# Print the first and last scrambled dates
+print(dates_scrambled[0])
+print(dates_scrambled[-1])
+
+
+Sort dates_scrambled and save the results to dates_ordered.
+Print the first and last dates in dates_ordered.
+
+# Print the first and last scrambled dates
+print(dates_scrambled[0])
+print(dates_scrambled[-1])
+
+# Put the dates in order
+dates_ordered = sorted(dates_scrambled)
+
+# Print the first and last ordered dates
+print(dates_ordered[0])
+print(dates_ordered[-1])
+
+<script.py> output:
+    1988-08-04
+    2011-07-18
+    1950-08-31
+    2017-10-29
+
+Excellent! You can use sorted() on several data types in Python, including sorting lists of numbers, lists of strings, or even lists of lists, which by default are compared on the first element.
+
+
+___________________________________________________________________________________________________________________________________
+
+Printing dates in a friendly format
+Because people may want to see dates in many different formats, Python comes with very flexible functions for turning date objects into strings.
+
+Let's see what event was recorded first in the Florida hurricane data set. In this exercise, you will format the earliest date in the florida_hurriance_dates list in two ways so you can decide which one you want to use: either the ISO standard or the typical US style.
+
+Instructions
+100 XP
+Assign the earliest date in florida_hurricane_dates to first_date.
+Print first_date in the ISO standard. For example, December 1st, 2000 would be "2000-12-01".
+Print first_date in the US style, using .strftime(). For example, December 1st, 2000 would be "12/1/2000" .
+
+# Assign the earliest date to first_date
+first_date = min(florida_hurricane_dates)
+
+# Convert to ISO and US formats
+iso = "Our earliest hurricane date: " + first_date.isoformat()
+us = "Our earliest hurricane date: " + first_date.strftime("%m/%d/%Y")
+
+print("ISO: " + iso)
+print("US: " + us)
+
+
+
+
+<script.py> output:
+    ISO: Our earliest hurricane date: 1950-08-31
+    US: Our earliest hurricane date: 08/31/1950
+
+
+Correct! When in doubt, use the ISO format for dates. ISO dates are unambiguous. And if you sort them 'alphabetically', for example, in filenames, they will be in the correct order.
+
+___________________________________________________________________________________________________________________________________
+
+Representing dates in different ways
+date objects in Python have a great number of ways they can be printed out as strings. In some cases, you want to know the date in a clear, language-agnostic format. In other cases, you want something which can fit into a paragraph and flow naturally.
+
+Let's try printing out the same date, August 26, 1992 (the day that Hurricane Andrew made landfall in Florida), in a number of different ways, to practice using the .strftime() method.
+
+A date object called andrew has already been created.
+
+Instructions 1/3
+35 XP
+1
+Print andrew in the format 'YYYY-MM'.
+
+# Import date
+from datetime import date
+
+# Create a date object
+andrew = date(1992, 8, 26)
+
+# Print the date in the format 'YYYY-MM'
+print(andrew.strftime('%Y-%M'))
+
+
+Print andrew in the format 'MONTH (YYYY)', where MONTH is the full name (%B).
+
+# Import date
+from datetime import date
+
+# Create a date object
+andrew = date(1992, 8, 26)
+
+# Print the date in the format 'MONTH (YYYY)'
+print(andrew.strftime('%MM (%Y)'))
+
+Print andrew in the format 'YYYY-DDD' where DDD is the day of the year.
+
+# Import date
+from datetime import date
+
+# Create a date object
+andrew = date(1992, 8, 26)
+
+# Print the date in the format 'YYYY-DDD'
+print(andrew.strftime('%Y - %D'))
+
+
+Nice! Pick the format that best matches your needs. For example, astronomers usually use the 'day number' out of 366 instead of the month and date, to avoid ambiguities between languages.
+
+
+<====================================================================================================================================>
+
+2
+Combining Dates and Times
+0%
+Bike sharing programs have swept through cities around the world -- and luckily for us, every trip gets recorded! Working with all of the comings and goings of one bike in Washington, D.C., you'll practice working with dates and times together. You'll parse dates and times from text, analyze peak trip times, calculate ride durations, and more.
+
+___________________________________________________________________________________________________________________________________
+
+Creating datetimes by hand
+Often you create datetime objects based on outside data. Sometimes though, you want to create a datetime object from scratch.
+
+You're going to create a few different datetime objects from scratch to get the hang of that process. These come from the bikeshare data set that you'll use throughout the rest of the chapter.
+
+Instructions 3/3
+0 XP
+Instructions 3/3
+0 XP
+Import the datetime class.
+Create a datetime for October 1, 2017 at 15:26:26.
+Print the results in ISO format.
+
+# Import datetime
+from datetime import datetime
+
+# Create a datetime object
+dt = datetime(2017, 10, 1, 15, 26, 26)
+
+# Print the results in ISO 8601 format
+print(dt.isoformat())
+
+
+Import the datetime class.
+Create a datetime for December 31, 2017 at 15:19:13.
+Print the results in ISO format.
+# Import datetime
+from datetime import datetime
+
+# Create a datetime object
+dt = datetime(2017, 12, 31, 15, 19, 13)
+
+# Print the results in ISO 8601 format
+print(dt.isoformat())
+
+
+
+Create a new datetime by replacing the year in dt with 1917 (instead of 2017)
+# Import datetime
+from datetime import datetime
+
+# Create a datetime object
+dt = datetime(2017, 12, 31, 15, 19, 13)
+
+# Replace the year with 1917
+dt_old = dt.replace(year=1917)
+
+# Print the results in ISO 8601 format
+print(dt_old)
+___________________________________________________________________________________________________________________________________
+
+Counting events before and after noon
+In this chapter, you will be working with a list of all bike trips for one Capital Bikeshare bike, W20529, from October 1, 2017 to December 31, 2017. This list has been loaded as onebike_datetimes.
+
+Each element of the list is a dictionary with two entries: start is a datetime object corresponding to the start of a trip (when a bike is removed from the dock) and end is a datetime object corresponding to the end of a trip (when a bike is put back into a dock).
+
+You can use this data set to understand better how this bike was used. Did more trips start before noon or after noon?
+
+Instructions
+100 XP
+Instructions
+100 XP
+Within the for loop, complete the if statement to check if the trip started before noon.
+Within the for loop, increment trip_counts['AM'] if the trip started before noon, and trip_counts['PM'] if it started after noon.
+
+# Create dictionary to hold results
+trip_counts = {'AM': 0, 'PM': 0}
+  
+# Loop over all trips
+for trip in onebike_datetimes:
+  # Check to see if the trip starts before noon
+  if trip['start'].hour < 12:
+    # Increment the counter for before noon
+    trip_counts['AM'] += 1
+  else:
+    # Increment the counter for after noon
+    trip_counts['PM'] += 1
+  
+print(trip_counts)
+
+
+<script.py> output:
+    {'AM': 94, 'PM': 196}
+		
+		
+
+Great! It looks like this bike is used about twice as much after noon than it is before noon. One obvious follow up would be to see which hours the bike is most likely to be taken out for a ride.
+___________________________________________________________________________________________________________________________________
+
+Turning strings into datetimes
+When you download data from the Internet, dates and times usually come to you as strings. Often the first step is to turn those strings into datetime objects.
+
+In this exercise, you will practice this transformation.
+
+Reference	
+%Y	4 digit year (0000-9999)
+%m	2 digit month (1-12)
+%d	2 digit day (1-31)
+%H	2 digit hour (0-23)
+%M	2 digit minute (0-59)
+%S	2 digit second (0-59)
+Instructions 1/3
+35 XP
+Instructions 1/3
+35 XP
+1
+Determine the format needed to convert s to datetime and assign it to fmt.
+Convert the string s to datetime using fmt.
+Take Hint (-10 XP)
+
+# Import the datetime class
+from datetime import datetime
+
+# Starting string, in YYYY-MM-DD HH:MM:SS format
+s = '2017-02-03 00:00:01'
+
+# Write a format string to parse s
+fmt = '%Y-%m-%d %H:%M:%S'
+
+# Create a datetime object d
+d = datetime.strptime(s, fmt)
+
+# Print d
+print(d)
+
+
+2
+Determine the format needed to convert s to datetime and assign it to fmt.
+Convert the string s to datetime using fmt.
+
+# Import the datetime class
+from datetime import datetime
+
+# Starting string, in YYYY-MM-DD format
+s = '2030-10-15'
+
+# Write a format string to parse s
+fmt = '%Y-%m-%d'
+
+# Create a datetime object d
+d = datetime.strptime(s, fmt)
+
+# Print d
+print(d)
+
+
+
+3
+Determine the format needed to convert s to datetime and assign it to fmt.
+Convert the string s to datetime using fmt.
+
+# Import the datetime class
+from datetime import datetime
+
+# Starting string, in MM/DD/YYYY HH:MM:SS format
+s = '12/15/1986 08:00:00'
+
+# Write a format string to parse s
+fmt = '%m/%d/%Y %H:%M:%S'
+
+# Create a datetime object d
+d = datetime.strptime(s, fmt)
+
+# Print d
+print(d)
+
+Great! Now you can parse dates in most common formats. Unfortunately, Python does not have the ability to parse non-zero-padded dates and times out of the box (such as 1/2/2018). If needed, you can use other string methods to create zero-padded strings suitable for strptime().
+
+___________________________________________________________________________________________________________________________________
+
+Parsing pairs of strings as datetimes
+Up until now, you've been working with a pre-processed list of datetimes for W20529's trips. For this exercise, you're going to go one step back in the data cleaning pipeline and work with the strings that the data started as.
+
+Explore onebike_datetime_strings in the IPython shell to determine the correct format. datetime has already been loaded for you.
+
+Reference	
+%Y	4 digit year (0000-9999)
+%m	2 digit month (1-12)
+%d	2 digit day (1-31)
+%H	2 digit hour (0-23)
+%M	2 digit minute (0-59)
+%S	2 digit second (0-59)
+Instructions
+100 XP
+Outside the for loop, fill out the fmt string with the correct parsing format for the data.
+Within the for loop, parse the start and end strings into the trip dictionary with start and end keys and datetime objects for values.
+
+# Write down the format string
+fmt = "%Y-%m-%d %H:%M:%S"
+
+# Initialize a list for holding the pairs of datetime objects
+onebike_datetimes = []
+
+# Loop over all trips
+for (start, end) in onebike_datetime_strings:
+  trip = {'start': datetime.strptime(start, fmt),
+          'end': datetime.strptime(end, fmt)}
+  
+  # Append the trip
+  onebike_datetimes.append(trip)
+	
+	
+	
+ +100 XP
+Excellent! Now you know how to process lists of strings into a more useful structure. If you haven't come across this approach before, many complex data cleaning tasks follow this same format: start with a list, process each element, and add the processed data to a new list.	
+	
+
+In [1]: onebike_datetime_strings
+Out[1]: 
+[('2017-10-01 15:23:25', '2017-10-01 15:26:26'),
+ ('2017-10-01 15:42:57', '2017-10-01 17:49:59'),
+ ('2017-10-02 06:37:10', '2017-10-02 06:42:53'),
+ ('2017-10-02 08:56:45', '2017-10-02 09:18:03'),
+ ('2017-10-02 18:23:48', '2017-10-02 18:45:05'),
+ ('2017-10-02 18:48:08', '2017-10-02 19:10:54'),
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+<====================================================================================================================================>
+
+3
+Time Zones and Daylight Saving
+0%
+In this chapter, you'll learn to confidently tackle the time-related topic that causes people the most trouble: time zones and daylight saving. Continuing with our bike data, you'll learn how to compare clocks around the world, how to gracefully handle "spring forward" and "fall back," and how to get up-to-date timezone data from the dateutil library.
+
+
+
+<====================================================================================================================================>
+
+4
+Easy and Powerful: Dates and Times in Pandas
+0%
+To conclude this course, you'll apply everything you've learned about working with dates and times in standard Python to working with dates and times in Pandas. With additional information about each bike ride, such as what station it started and stopped at and whether or not the rider had a yearly membership, you'll be able to dig much more deeply into the bike trip data. In this chapter, you'll cover powerful Pandas operations, such as grouping and plotting results by time.

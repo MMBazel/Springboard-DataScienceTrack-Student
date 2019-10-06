@@ -1,0 +1,190 @@
+Course Description
+From stock prices to climate data, time series data are found in a wide variety of domains, and being able to effectively work with such data is an increasingly important skill for data scientists. This course will introduce you to time series analysis in Python. After learning about what a time series is, you'll learn about several time series models ranging from autoregressive and moving average models to cointegration models. Along the way, you'll learn how to estimate, forecast, and simulate these models using statistical libraries in Python. You'll see numerous examples of how these models are used, with a particular emphasis on applications in finance.
+
+<=====================================================================================================================================>
+
+1
+Correlation and Autocorrelation
+FREE
+0%
+In this chapter you'll be introduced to the ideas of correlation and autocorrelation for time series. Correlation describes the relationship between two time series and autocorrelation describes the relationship of a time series with its past values.
+
+_____________________________________________________________________________________________________________________________________
+
+A "Thin" Application of Time Series
+Google Trends allows users to see how often a term is searched for. We downloaded a file from Google Trends containing the frequency over time for the search word "diet", which is pre-loaded in a DataFrame called diet. A first step when analyzing a time series is to visualize the data with a plot. You should be able to clearly see a gradual decrease in searches for "diet" throughout the calendar year, hitting a low around the December holidays, followed by a spike in searches around the new year as people make New Year's resolutions to lose weight.
+
+Like many time series datasets you will be working with, the index of dates are strings and should be converted to a datetime index before plotting.
+
+This course touches on a lot of concepts you may have forgotten, so if you ever need a quick refresher, download the pandas basics Cheat Sheet and keep it handy!
+
+Instructions 1/3
+50 XP
+1
+2
+3
+Convert the date index to datetime using pandas's to_datetime()
+
+
+# Import pandas and plotting modules
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Convert the date index to datetime
+diet.index = pd.to_datetime(diet.index)
+
+
+Plot the time series and set the argument grid to True to better see the year-ends.
+
+# From previous step
+diet.index = pd.to_datetime(diet.index)
+
+# Plot the entire time series diet and show gridlines
+diet.plot(grid=True)
+plt.show()
+
+
+Slice the diet dataset to keep only values from 2012, assigning to diet2012.
+Plot the diet2012, again creating gridlines with the grid argument.
+
+
+# From previous step
+diet.index = pd.to_datetime(diet.index)
+
+# Slice the dataset to keep only 2012
+diet2012 = diet['2012']
+
+# Plot 2012 data
+diet2012.plot(grid=True)
+plt.show()
+_____________________________________________________________________________________________________________________________________
+
+
+Merging Time Series With Different Dates
+Stock and bond markets in the U.S. are closed on different days. For example, although the bond market is closed on Columbus Day (around Oct 12) and Veterans Day (around Nov 11), the stock market is open on those days. One way to see the dates that the stock market is open and the bond market is closed is to convert both indexes of dates into sets and take the difference in sets.
+
+The pandas .join() method is a convenient tool to merge the stock and bond DataFrames on dates when both markets are open.
+
+Stock prices and 10-year US Government bond yields, which were downloaded from FRED, are pre-loaded in DataFrames stocks and bonds.
+
+Instructions
+100 XP
+Convert the dates in the stocks.index and bonds.index into sets.
+Take the difference of the stock set minus the bond set to get those dates where the stock market has data but the bond market does not.
+Merge the two DataFrames into a new DataFrame, stocks_and_bonds using the .join() method, which has the syntax df1.join(df2).
+To get the intersection of dates, use the argument how='inner'.
+
+
+# Import pandas
+import pandas as pd
+
+# Convert the stock index and bond index into sets
+set_stock_dates = set(stocks.index)
+set_bond_dates = set(bonds.index)
+
+# Take the difference between the sets and print
+print(set_stock_dates - set_bond_dates)
+
+# Merge stocks and bonds DataFrames using join()
+stocks_and_bonds = stocks.join(bonds, how='inner')
+
+<script.py> output:
+    {'2009-11-11', '2007-11-12', '2015-10-12', '2011-10-10', '2010-11-11', '2012-11-12', '2010-10-11', '2015-11-11', '2007-10-08', '2014-10-13', '2008-11-11', '2016-10-10', '2009-10-12', '2017-06-09', '2011-11-11', '2008-10-13', '2014-11-11', '2013-11-11', '2016-11-11', '2013-10-14', '2012-10-08'}
+	_____________________________________________________________________________________________________________________________________
+	
+	Correlation of Stocks and Bonds
+Investors are often interested in the correlation between the returns of two different assets for asset allocation and hedging purposes. In this exercise, you'll try to answer the question of whether stocks are positively or negatively correlated with bonds. Scatter plots are also useful for visualizing the correlation between the two variables.
+
+Keep in mind that you should compute the correlations on the percentage changes rather than the levels.
+
+Stock prices and 10-year bond yields are combined in a DataFrame called stocks_and_bonds under columns SP500 and US10Y
+
+The pandas and plotting modules have already been imported for you. For the remainder of the course, pandas is imported as pd and matplotlib.pyplot is imported as plt.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Compute percent changes on the stocks_and_bonds DataFrame using the .pct_change() method and call the new DataFrame returns.
+Compute the correlation of the columns SP500 and US10Y in the returns DataFrame using the .corr() method for Series which has the syntax series1.corr(series2).
+Show a scatter plot of the percentage change in stock and bond yields.
+
+
+# Compute percent change using pct_change()
+returns = stocks_and_bonds.pct_change()
+
+# Compute correlation using corr()
+correlation = returns['SP500'].corr(returns['US10Y'])
+print("Correlation of stocks and interest rates: ", correlation)
+
+# Make scatter plot
+plt.scatter(x=returns.SP500, y=returns.US10Y)
+plt.show()
+
+	
+<script.py> output:
+    Correlation of stocks and interest rates:  0.4119448886249272
+		
+	The positive correlation means that when interest rates go down, stock prices go down. For example, during crises like 9/11, investors sold stocks and moved their money to less risky bonds (this is sometimes referred to as a 'flight to quality'). During these periods, stocks drop and interest rates drop as well. Of course, there are times when the opposite relationship holds too.	
+		
+_____________________________________________________________________________________________________________________________________
+
+Flying Saucers Aren't Correlated to Flying Markets
+Two trending series may show a strong correlation even if they are completely unrelated. This is referred to as "spurious correlation". That's why when you look at the correlation of say, two stocks, you should look at the correlation of their returns and not their levels.
+
+To illustrate this point, calculate the correlation between the levels of the stock market and the annual sightings of UFOs. Both of those time series have trended up over the last several decades, and the correlation of their levels is very high. Then calculate the correlation of their percent changes. This will be close to zero, since there is no relationship between those two series.
+
+The DataFrame levels contains the levels of DJI and UFO. UFO data was downloaded from www.nuforc.org.
+
+Instructions
+100 XP
+Calculate the correlation of the columns DJI and UFO.
+Create a new DataFrame of changes using the .pct_change() method.
+Re-calculate the correlation of the columns DJI and UFO on the changes.
+
+# Compute correlation of levels
+correlation1 = levels['DJI'].corr(levels['UFO'])
+print("Correlation of levels: ", correlation1)
+
+# Compute correlation of percent changes
+changes = levels.pct_change()
+correlation2 = changes['DJI'].corr(changes['UFO'])
+print("Correlation of changes: ", correlation2)
+
+<script.py> output:
+    Correlation of levels:  0.9399762210726432
+    Correlation of changes:  0.06026935462405376
+
+Great work! Notice that the correlation on levels is high but the correlation on changes is close to zero.
+
+
+
+<=====================================================================================================================================>
+
+
+2
+Some Simple Time Series
+0%
+In this chapter you'll learn about some simple time series models. These include white noise and a random walk.
+
+<=====================================================================================================================================>
+
+3
+Autoregressive (AR) Models
+0%
+In this chapter you'll learn about autoregressive, or AR, models for time series. These models use past values of the series to predict the current value.
+
+<=====================================================================================================================================>
+
+4
+Moving Average (MA) and ARMA Models
+0%
+In this chapter you'll learn about another kind of model, the moving average, or MA, model. You will also see how to combine AR and MA models into a powerful ARMA model.
+
+VIEW CHAPTER DETAILS
+<=====================================================================================================================================>
+
+5
+Putting It All Together
+0%
+This chapter will show you how to model two series jointly using cointegration models. Then you'll wrap up with a case study where you look at a time series of temperature data from New York City.

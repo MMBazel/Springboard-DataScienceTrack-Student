@@ -156,9 +156,149 @@ print("Correlation of changes: ", correlation2)
     Correlation of changes:  0.06026935462405376
 
 Great work! Notice that the correlation on levels is high but the correlation on changes is close to zero.
+_____________________________________________________________________________________________________________________________________
 
 
+Looking at a Regression's R-Squared
+R-squared measures how closely the data fit the regression line, so the R-squared in a simple regression is related to the correlation between the two variables. In particular, the magnitude of the correlation is the square root of the R-squared and the sign of the correlation is the sign of the regression coefficient.
 
+In this exercise, you will start using the statistical package statsmodels, which performs much of the statistical modeling and testing that is found in R and software packages like SAS and MATLAB.
+
+You will take two series, x and y, compute their correlation, and then regress y on x using the function OLS(y,x) in the statsmodels.api library (note that the dependent, or right-hand side variable y is the first argument). Most linear regressions contain a constant term which is the intercept (the α in the regression yt=α+βxt+ϵt). To include a constant using the function OLS(), you need to add a column of 1's to the right hand side of the regression.
+
+The module statsmodels.api has been imported for you as sm.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Compute the correlation between x and y using the .corr() method.
+Run a regression:
+First convert the Series x to a DataFrame dfx.
+Add a constant using sm.add_constant(), assigning it to dfx1
+Regress y on dfx1 using sm.OLS().fit().
+Print out the results of the regression and compare the R-squared with the correlation.
+
+# Import the statsmodels module
+import statsmodels.api as sm
+
+# Compute correlation of x and y
+correlation = x.corr(y)
+print("The correlation between x and y is %4.2f" %(correlation))
+
+# Convert the Series x to a DataFrame and name the column x
+dfx = pd.DataFrame(x, columns=['x'])
+
+# Add a constant to the DataFrame dfx
+dfx1 = sm.add_constant(dfx)
+
+# Regress y on dfx1
+result = sm.OLS(y, dfx1).fit()
+
+# Print out the results and look at the relationship between R-squared and the correlation above
+print(result.summary())
+
+
+<script.py> output:
+    The correlation between x and y is -0.90
+                                OLS Regression Results                            
+    ==============================================================================
+    Dep. Variable:                      y   R-squared:                       0.818
+    Model:                            OLS   Adj. R-squared:                  0.817
+    Method:                 Least Squares   F-statistic:                     4471.
+    Date:                Sun, 06 Oct 2019   Prob (F-statistic):               0.00
+    Time:                        22:38:46   Log-Likelihood:                -560.10
+    No. Observations:                1000   AIC:                             1124.
+    Df Residuals:                     998   BIC:                             1134.
+    Df Model:                           1                                         
+    Covariance Type:            nonrobust                                         
+    ==============================================================================
+                     coef    std err          t      P>|t|      [0.025      0.975]
+    ------------------------------------------------------------------------------
+    const         -0.0052      0.013     -0.391      0.696      -0.032       0.021
+    x             -0.9080      0.014    -66.869      0.000      -0.935      -0.881
+    ==============================================================================
+    Omnibus:                        0.048   Durbin-Watson:                   2.066
+    Prob(Omnibus):                  0.976   Jarque-Bera (JB):                0.103
+    Skew:                          -0.003   Prob(JB):                        0.950
+    Kurtosis:                       2.951   Cond. No.                         1.03
+    ==============================================================================
+    
+    Warnings:
+    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+
+ +100 XP
+Notice that the two different methods of computing correlation give the same result. The correlation is about -0.9 and the R-squared is about 0.81
+
+_____________________________________________________________________________________________________________________________________
+
+A Popular Strategy Using Autocorrelation
+One puzzling anomaly with stocks is that investors tend to overreact to news. Following large jumps, either up or down, stock prices tend to reverse. This is described as mean reversion in stock prices: prices tend to bounce back, or revert, towards previous levels after large moves, which are observed over time horizons of about a week. A more mathematical way to describe mean reversion is to say that stock returns are negatively autocorrelated.
+
+This simple idea is actually the basis for a popular hedge fund strategy. If you're curious to learn more about this hedge fund strategy (although it's not necessary reading for anything else later in the course), see here.
+
+You'll look at the autocorrelation of weekly returns of MSFT stock from 2012 to 2017. You'll start with a DataFrame MSFT of daily prices. You should use the .resample() method to get weekly prices and then compute returns from prices. Use the pandas method .autocorr() to get the autocorrelation and show that the autocorrelation is negative. Note that the .autocorr() method only works on Series, not DataFrames (even DataFrames with one column), so you will have to select the column in the DataFrame.
+
+Instructions
+100 XP
+Use the .resample() method with rule='W' and how='last'to convert daily data to weekly data.
+The argument how in .resample() has been deprecated.
+The new syntax .resample().last() also works.
+Create a new DataFrame, returns, of percent changes in weekly prices using the .pct_change() method.
+Compute the autocorrelation using the .autocorr() method on the series of closing stock prices, which is the column 'Adj Close' in the DataFrame returns.
+
+# Convert the daily data to weekly data
+MSFT = MSFT.resample(rule='W',how='last')
+
+# Compute the percentage change of prices
+returns = MSFT.pct_change()
+
+# Compute and print the autocorrelation of returns
+autocorrelation = returns['Adj Close'].autocorr()
+print("The autocorrelation of weekly returns is %4.2f" %(autocorrelation))
+
+
+<script.py> output:
+    The autocorrelation of weekly returns is -0.16
+    
+
+_____________________________________________________________________________________________________________________________________
+
+Are Interest Rates Autocorrelated?
+When you look at daily changes in interest rates, the autocorrelation is close to zero. However, if you resample the data and look at annual changes, the autocorrelation is negative. This implies that while short term changes in interest rates may be uncorrelated, long term changes in interest rates are negatively autocorrelated. A daily move up or down in interest rates is unlikely to tell you anything about interest rates tomorrow, but a move in interest rates over a year can tell you something about where interest rates are going over the next year. And this makes some economic sense: over long horizons, when interest rates go up, the economy tends to slow down, which consequently causes interest rates to fall, and vice versa.
+
+The DataFrame daily_rates contains daily data of 10-year interest rates from 1962 to 2017.
+
+Instructions
+100 XP
+Create a new DataFrame, daily_diff, of changes in daily rates using the .diff() method.
+Compute the autocorrelation of the column 'US10Y' in daily_diff using the .autocorr() method.
+Use the .resample() method with arguments rule='A' to convert to annual frequency and how='last'.
+The argument how in .resample() has been deprecated.
+The new syntax .resample().last() also works.
+Create a new DataFrame, yearly_diff of changes in annual rates and compute the autocorrelation, as above.
+
+# Compute the daily change in interest rates
+daily_diff = daily_rates.diff()
+
+# Compute and print the autocorrelation of daily changes
+autocorrelation_daily = daily_diff['US10Y'].autocorr()
+print("The autocorrelation of daily interest rate changes is %4.2f" %(autocorrelation_daily))
+
+# Convert the daily data to annual data
+yearly_rates = daily_rates.resample(rule='A').last()
+
+# Repeat above for annual data
+yearly_diff = yearly_rates.diff()
+autocorrelation_yearly = yearly_diff['US10Y'].autocorr()
+print("The autocorrelation of annual interest rate changes is %4.2f" %(autocorrelation_yearly))
+
+
+<script.py> output:
+    The autocorrelation of daily interest rate changes is 0.07
+    The autocorrelation of annual interest rate changes is -0.22
+    
 <=====================================================================================================================================>
 
 
@@ -166,6 +306,101 @@ Great work! Notice that the correlation on levels is high but the correlation on
 Some Simple Time Series
 0%
 In this chapter you'll learn about some simple time series models. These include white noise and a random walk.
+_____________________________________________________________________________________________________________________________________
+
+Taxing Exercise: Compute the ACF
+In the last chapter, you computed autocorrelations with one lag. Often we are interested in seeing the autocorrelation over many lags. The quarterly earnings for H&R Block (ticker symbol HRB) is plotted on the right, and you can see the extreme cyclicality of its earnings. A vast majority of its earnings occurs in the quarter that taxes are due.
+
+You will compute the array of autocorrelations for the H&R Block quarterly earnings that is pre-loaded in the DataFrame HRB. Then, plot the autocorrelation function using the plot_acf module. This plot shows what the autocorrelation function looks like for cyclical earnings data. The ACF at lag=0 is always one, of course. In the next exercise, you will learn about the confidence interval for the ACF, but for now, suppress the confidence interval by setting alpha=1.
+
+Instructions
+100 XP
+Import the acf module and plot_acf module from statsmodels.
+Compute the array of autocorrelations of the quarterly earnings data in DataFrame HRB.
+Plot the autocorrelation function of the quarterly earnings data in HRB, and pass the argument alpha=1 to suppress the confidence interval.
+
+
+# Import the acf module and the plot_acf module from statsmodels
+from statsmodels.tsa.stattools import acf
+from statsmodels.graphics.tsaplots import plot_acf
+
+# Compute the acf array of HRB
+acf_array = acf(HRB)
+print(acf_array)
+
+# Plot the acf function
+plot_acf(HRB, alpha=1)
+plt.show()
+
+
+<script.py> output:
+    [ 1.         -0.22122696 -0.39856504 -0.26615093  0.83479804 -0.1901038
+     -0.3475634  -0.23140368  0.71995993 -0.15661007 -0.29766783 -0.22097189
+      0.61656933 -0.15022869 -0.27922022 -0.22465946  0.5725259  -0.08758288
+     -0.24075584 -0.20363054  0.4797058  -0.06091139 -0.20935484 -0.18303202
+      0.42481275 -0.03352559 -0.17471087 -0.16384328  0.34341079 -0.01734364
+     -0.13820811 -0.12232172  0.28407164 -0.01927656 -0.11757974 -0.10386933
+      0.20156485 -0.0120634  -0.07509539 -0.0707104   0.10222029]
+      
+      
+ _____________________________________________________________________________________________________________________________________
+ 
+ 
+Are We Confident This Stock is Mean Reverting?
+In the last chapter, you saw that the autocorrelation of MSFT's weekly stock returns was -0.16. That autocorrelation seems large, but is it statistically significant? In other words, can you say that there is less than a 5% chance that we would observe such a large negative autocorrelation if the true autocorrelation were really zero? And are there any autocorrelations at other lags that are significantly different from zero?
+
+Even if the true autocorrelations were zero at all lags, in a finite sample of returns you won't see the estimate of the autocorrelations exactly zero. In fact, the standard deviation of the sample autocorrelation is 1/N−−√ where N is the number of observations, so if N=100, for example, the standard deviation of the ACF is 0.1, and since 95% of a normal curve is between +1.96 and -1.96 standard deviations from the mean, the 95% confidence interval is ±1.96/N−−√. This approximation only holds when the true autocorrelations are all zero.
+
+You will compute the actual and approximate confidence interval for the ACF, and compare it to the lag-one autocorrelation of -0.16 from the last chapter. The weekly returns of Microsoft is pre-loaded in a DataFrame called returns.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Recompute the autocorrelation of weekly returns in the Series 'Adj Close' in the returns DataFrame.
+Find the number of observations in the returns DataFrame using the len() function.
+Approximate the 95% confidence interval of the estimated autocorrelation. The math function sqrt() has been imported and can be used.
+Plot the autocorrelation function of returns using plot_acf that was imported from statsmodels. Set alpha=0.05 for the confidence intervals (that's the default) and lags=20.
+
+# Import the plot_acf module from statsmodels and sqrt from math
+from statsmodels.graphics.tsaplots import plot_acf
+from math import sqrt
+
+# Compute and print the autocorrelation of MSFT weekly returns
+autocorrelation = returns['Adj Close'].autocorr()
+print("The autocorrelation of weekly MSFT returns is %4.2f" %(autocorrelation))
+
+# Find the number of observations by taking the length of the returns DataFrame
+nobs = len(returns)
+
+# Compute the approximate confidence interval
+conf = 1.96/sqrt(nobs)
+print("The approximate confidence interval is +/- %4.2f" %(conf))
+
+# Plot the autocorrelation function with 95% confidence intervals and 20 lags using plot_acf
+plot_acf(returns, alpha=0.05, lags=20)
+plt.show()
+
+
+<script.py> output:
+    The autocorrelation of weekly MSFT returns is -0.16
+    The approximate confidence interval is +/- 0.12
+    
+    
+Notice that the autocorrelation with lag 1 is significantly negative, but none of the other lags are significantly different from zero
+
+  _____________________________________________________________________________________________________________________________________
+  
+  
+  
+
+
+
+
+
+
+
+
 
 <=====================================================================================================================================>
 

@@ -16,6 +16,165 @@ You will learn how to leverage basic plottings tools in Python, and how to annot
 -----------------------------------------------------------------------------------------------------------------
 
 
+Load your time series data
+The most common way to import time series data in Python is by using the pandas library. You can use the read_csv() from pandas to read the contents of a file into a DataFrame. This can be achieved using the following command:
+
+df = pd.read_csv("name_of_your_file.csv")
+Once your data is loaded into Python, you can display the first rows of your DataFrame by calling the .head(n=5) method, where n=5 indicates that you want to print the first five rows of your DataFrame.
+
+In this exercise, you will read in a time series dataset that contains the number of "great" inventions and scientific discoveries from 1860 to 1959, and display its first five rows.
+
+Instructions
+100 XP
+Import the pandas library using the pd alias.
+Read in the time series data from the csv file located at url_discoveries into a DataFrame called discoveries.
+Print the first 5 lines of the DataFrame using the .head() method.
+
+# Import pandas
+import pandas as pd
+
+# Read in the file content in a DataFrame called discoveries
+discoveries = pd.read_csv(url_discoveries)
+
+# Display the first five lines of the DataFrame
+print(discoveries.head())
+
+-----------------------------------------------------------------------------------------------------------------
+
+Test whether your data is of the correct type
+When working with time series data in pandas, any date information should be formatted as a datetime64 type. Therefore, it is important to check that the columns containing the date information are of the correct type. You can check the type of each column in a DataFrame by using the .dtypes attribute. Fortunately, if your date columns come as strings, epochs, etc... you can use the to_datetime() function to convert them to the appropriate datetime64 type:
+
+df['date_column'] = pd.to_datetime(df['date_column'])
+In this exercise, you will learn how to check the data type of the columns in your time series data and convert a date column to the appropriate datetime type.
+
+Instructions 1/3
+30 XP
+1
+2
+3
+Print out the data type of the column in the discoveries object.
+
+# Print the data type of each column in discoveries
+print(discoveries.dtypes)
+
+# Convert the date column to a datestamp type
+discoveries['date'] = pd.to_datetime(discoveries['date'])
+
+# Print the data type of each column in discoveries, again
+print(discoveries.dtypes)
+-----------------------------------------------------------------------------------------------------------------
+
+Your first plot!
+Let's take everything you have learned so far and plot your first time series plot. You will set the groundwork by producing a time series plot of your data and labeling the axes of your plot, as this makes the plot more readable and interpretable for the intended audience.
+
+matplotlib is the most widely used plotting library in Python, and would be the most appropriate tool for this job. Fortunately for us, the pandas library has implemented a .plot() method on Series and DataFrame objects that is a wrapper around matplotlib.pyplot.plot(), which makes it easier to produce plots.
+
+Instructions
+100 XP
+Set the 'date' column as the index of your DataFrame.
+Using the discoveries DataFrame, plot the time series in your DataFrame using a "blue" line plot and assign it to ax.
+Specify the x-axis label on your plot: 'Date'.
+Specify the y-axis label on your plot: 'Number of great discoveries'.
+
+
+# Set the date column as the index of your DataFrame discoveries
+discoveries = discoveries.set_index('date')
+
+# Plot the time series in your DataFrame
+ax = discoveries.plot(color='blue')
+
+# Specify the x-axis label in your plot
+ax.set_xlabel('Date')
+
+# Specify the y-axis label in your plot
+ax.set_ylabel('Number of great discoveries')
+
+# Show plot
+plt.show()
+
+-----------------------------------------------------------------------------------------------------------------
+
+Specify plot styles
+The matplotlib library also comes with a number of built-in stylesheets that allow you to customize the appearance of your plots. To use a particular style sheet for your plots, you can use the command plt.style.use(your_stylesheet) where your_stylesheet is the name of the style sheet.
+
+In order to see the list of available style sheets that can be used, you can use the command print(plt.style.available). For the rest of this course, we will use the awesome fivethirtyeight style sheet.
+
+Instructions 1/2
+50 XP
+1
+2
+Import matplotlib.pyplot using its usual alias plt.
+Use the fivethirtyeight style sheet to plot a line plot of the discoveries data.
+
+# Import the matplotlib.pyplot sub-module
+import matplotlib.pyplot as plt
+
+# Use the fivethirtyeight style
+plt.style.use('fivethirtyeight')
+
+# Plot the time series
+ax1 = discoveries.plot()
+ax1.set_title('FiveThirtyEight Style')
+plt.show()
+
+
+Use the ggplot style sheet to plot a line plot of the discoveries data.
+Set the title of your second plot as 'ggplot Style'.
+
+# Import the matplotlib.pyplot sub-module
+import matplotlib.pyplot as plt
+
+# Use the ggplot style
+plt.style.use('ggplot')
+ax2 = discoveries.plot()
+
+# Set the title
+ax2.set_title('ggplot Style')
+plt.show()
+-----------------------------------------------------------------------------------------------------------------
+
+
+Display and label plots
+As you saw earlier, if the index of a pandas DataFrame consists of dates, then pandas will automatically format the x-axis in a human-readable way. In addition the .plot() method allows you to specify various other parameters to tailor your time series plot (color of the lines, width of the lines and figure size).
+
+You may have noticed the use of the notation ax = df.plot(...) and wondered about the purpose of the ax object. This is because the plot function returns a matplotlib AxesSubplot object, and it is common practice to assign this returned object to a variable called ax. Doing so also allows you to include additional notations and specifications to your plot such as axis labels.
+
+Instructions
+100 XP
+Display a line chart of the discoveries DataFrame.
+
+Specify the color of the line as 'blue'.
+Width of the line as 2.
+The dimensions of your plot to be of length 8 and width 3.
+Specify the fontsize of 6.
+
+
+# Plot a line chart of the discoveries DataFrame using the specified arguments
+ax = discoveries.plot(color='blue', figsize=(8, 3), linewidth=2, fontsize=6)
+
+# Specify the title in your plot
+ax.set_title('Number of great inventions and scientific discoveries from 1860 to 1959', fontsize=8)
+
+# Show plot
+plt.show()
+-----------------------------------------------------------------------------------------------------------------
+Subset time series data
+When plotting time series data, you may occasionally want to visualize only a subset of the data. The pandas library provides powerful indexing and subsetting methods that allow you to extract specific portions of a DataFrame. For example, you can subset all the data between 1950 and 1960 in the discoveries DataFrame by specifying the following date range:
+
+subset_data = discoveries['1950-01-01':'1960-01-01']
+Note: Subsetting your data this way is only possible if the index of your DataFrame contains dates of the datetime type. Failing that, the pandas library will return an error message.
+
+Instructions 1/2
+50 XP
+1
+2
+Use discoveries to create a new DataFrame discoveries_subset_1 that contains all the data between January 1, 1945 and January 1, 1950.
+Plot the time series of discoveries_subset_1 using a "blue" line plot.
+
+
+
+
+
 <=====================================================================================================================================>
 
 2

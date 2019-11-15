@@ -122,8 +122,235 @@ right_index=True
 _______________________________________________________________________________________________________________________________
 
 
+Investigate the data
+Great work so far! Now you know the key techniques to explore and prepare datasets for supervised machine learning models. You will now test your knowledge in practice. In this exercise, you will explore the key characteristics of the telecom churn dataset. You should run each line separately before submitting the assignment so you get valuable information about the dataset. The pandas module has been loaded for you as pd.
+
+The raw telecom churn dataset telco_raw has been loaded for you as a pandas DataFrame. You can familiarize yourself with the dataset by exploring it in the console.
+
+Instructions
+100 XP
+Print the data types of telco_raw.
+Print the header of telco_raw.
+Print the number of unique values in each telco_raw column.
 
 
+# Print the data types of telco_raw dataset
+print(telco_raw.dtypes)
+
+# Print the header of telco_raw dataset
+print(telco_raw.head())
+
+# Print the number of unique values in each telco_raw column
+print(telco_raw.nunique())
+
+
+<script.py> output:
+    customerID           object
+    gender               object
+    SeniorCitizen        object
+    Partner              object
+    Dependents           object
+    tenure                int64
+    PhoneService         object
+    MultipleLines        object
+    InternetService      object
+    OnlineSecurity       object
+    OnlineBackup         object
+    DeviceProtection     object
+    TechSupport          object
+    StreamingTV          object
+    StreamingMovies      object
+    Contract             object
+    PaperlessBilling     object
+    PaymentMethod        object
+    MonthlyCharges      float64
+    TotalCharges        float64
+    Churn                 int64
+    dtype: object
+       customerID  gender SeniorCitizen Partner Dependents  tenure PhoneService     MultipleLines InternetService OnlineSecurity  ... DeviceProtection TechSupport StreamingTV StreamingMovies        Contract PaperlessBilling              PaymentMethod MonthlyCharges  TotalCharges  Churn
+    0  7590-VHVEG  Female            No     Yes         No       1           No  No phone service             DSL             No  ...               No          No          No              No  Month-to-month              Yes           Electronic check          29.85         29.85      0
+    1  5575-GNVDE    Male            No      No         No      34          Yes                No             DSL            Yes  ...              Yes          No          No              No        One year               No               Mailed check          56.95       1889.50      0
+    2  3668-QPYBK    Male            No      No         No       2          Yes                No             DSL            Yes  ...               No          No          No              No  Month-to-month              Yes               Mailed check          53.85        108.15      1
+    3  7795-CFOCW    Male            No      No         No      45           No  No phone service             DSL            Yes  ...              Yes         Yes          No              No        One year               No  Bank transfer (automatic)          42.30       1840.75      0
+    4  9237-HQITU  Female            No      No         No       2          Yes                No     Fiber optic             No  ...               No          No          No              No  Month-to-month              Yes           Electronic check          70.70        151.65      1
+    
+    [5 rows x 21 columns]
+    customerID          7032
+    gender                 2
+    SeniorCitizen          2
+    Partner                2
+    Dependents             2
+    tenure                72
+    PhoneService           2
+    MultipleLines          3
+    InternetService        3
+    OnlineSecurity         2
+    OnlineBackup           2
+    DeviceProtection       2
+    TechSupport            2
+    StreamingTV            2
+    StreamingMovies        2
+    Contract               3
+    PaperlessBilling       2
+    PaymentMethod          4
+    MonthlyCharges      1584
+    TotalCharges        6530
+    Churn                  2
+    dtype: int64
+
+_______________________________________________________________________________________________________________________________
+
+Separate numerical and categorical columns
+In the last exercise, you have explored the dataset characteristics and are ready to do some data pre-processing. You will now separate categorical and numerical variables from the telco_raw DataFrame with a customized categorical vs. numerical unique value count threshold. The pandas module has been loaded for you as pd.
+
+The raw telecom churn dataset telco_raw has been loaded for you as a pandas DataFrame. You can familiarize with the dataset by exploring it in the console.
+
+Instructions
+0 XP
+Store customerID and Churn column names.
+Assign to categorical the column names that have less than 5 unique values.
+Remove target from the list.
+Assign to numerical all column names that are not in the custid, target and categorical.
+
+
+# Store customerID and Churn column names
+custid = ['customerID']
+target = ['Churn']
+
+# Store categorical column names
+categorical = telco_raw.nunique()[telco_raw.nunique() < 5].keys().tolist()
+
+# Remove target from the list of categorical variables
+categorical.remove(target[0])
+
+# Store numerical column names
+numerical = [x for x in telco_raw.columns if x not in custid + target + categorical]
+
+_______________________________________________________________________________________________________________________________
+
+Encode categorical and scale numerical variables
+In this final step, you will perform one-hot encoding on the categorical variables and then scale the numerical columns. The pandas library has been loaded for you as pd, as well as the StandardScaler module from the sklearn.preprocessing module.
+
+The raw telecom churn dataset telco_raw has been loaded for you as a pandas DataFrame, as well as the lists custid, target, categorical, and numerical with column names you have created in the previous exercise. You can familiarize yourself with the dataset by exploring it in the console.
+
+Instructions
+100 XP
+Perform one-hot encoding on the categorical variables.
+Initialize a StandardScaler instance.
+Fit and transform the scaler on the numerical columns.
+Build a DataFrame from scaled_numerical.
+
+
+# Perform one-hot encoding to categorical variables 
+telco_raw = pd.get_dummies(data = telco_raw, columns = categorical, drop_first=True)
+
+# Initialize StandardScaler instance
+scaler = StandardScaler()
+
+# Fit and transform the scaler on numerical columns
+scaled_numerical = scaler.fit_transform(telco_raw[numerical])
+
+# Build a DataFrame from scaled_numerical
+scaled_numerical = pd.DataFrame(scaled_numerical, columns=numerical)
+
+
+ +100 XP
+Fantastic! Great work in one-hot encoding categorical variables and scaling the numerical ones!
+_______________________________________________________________________________________________________________________________
+
+Split data to training and testing
+You are now ready to build an end-to-end machine learning model by following a few simple steps! You will explore modeling nuances in much more detail in the next chapters, but for now you will practice and understand the key steps.
+
+The independent features have been loaded for you as a pandas DataFrame named X, and the dependent values as a pandas Series named Y.
+
+Also, the train_test_split function has been loaded from the sklearn library. You will now create training and testing datasets, and then make sure the data was correctly split.
+
+Instructions
+100 XP
+Split X and Y into train and test sets with 25% of the data split into testing.
+Ensure that the training dataset has only 75% of original data.
+Ensure that the testing dataset has only 25% of original data.
+
+
+
+# Split X and Y into training and testing datasets
+train_X, test_X, train_Y, test_Y = train_test_split(X, Y, test_size=0.25)
+
+# Ensure training dataset has only 75% of original X data
+print(train_X.shape[0] / X.shape[0])
+
+# Ensure testing dataset has only 25% of original X data
+print(test_X.shape[0] / X.shape[0])
+
+
+<script.py> output:
+    0.7499051952976867
+    0.2500948047023132
+    
+    Good job! You have successfully split the data into training and testing, and are now ready to build machine learning model on them!
+    _______________________________________________________________________________________________________________________________
+    
+    
+    Fit a decision tree
+Now, you will take a stab at building a decision tree model. The decision tree is a list of machine-learned if-else rules that decide in the telecom churn case, whether customers will churn or not. Here's an example decision tree graph built on the famous Titanic survival dataset.
+
+
+
+The train_X, test_X, train_Y, test_Y from the previous exercise have been loaded for you. Also, the tree module and the accuracy_score function have been loaded from the sklearn library. You will now build your model and check its performance on unseen data.
+
+Instructions
+100 XP
+Initialize the decision tree model with max_depth set at 5.
+Fit the model on the training data, first train_X, then train_Y.
+Predict values of the testing data, or in this case test_X.
+Measure your model's performance on the testing data by comparing between your actual test labels and predicted ones.
+
+
+# Initialize the model with max_depth set at 5
+mytree = tree.DecisionTreeClassifier(max_depth = 5)
+
+# Fit the model on the training data
+treemodel = mytree.fit(train_X, train_Y)
+
+# Predict values on the testing data
+pred_Y = treemodel.predict(test_X)
+
+# Measure model performance on testing data
+accuracy_score(test_Y, pred_Y)
+
+Fantastic! You have just built a decision tree predicting churn with 77.7% accuracy!
+    _______________________________________________________________________________________________________________________________
+    
+    
+   Predict churn with decision tree
+Now you will build on the skills you acquired in the earlier exercise, and build a more complex decision tree with additional parameters to predict customer churn. You will dive deep into the churn prediction problem in the next chapter. Here you will run the decision tree classifier again on your training data, predict the churn rate on unseen (test) data, and assess model accuracy on both datasets.
+
+The tree module from the sklearn library has been loaded for you, as well as the accuracy_score function from sklearn.metrics. The features and target variables have also been imported as train_X, train_Y for training data, and test_X, test_Y for test data.
+
+Instructions
+100 XP
+Initialize a Decision tree with maximum depth set to 7 and by using the gini criterion.
+Fit the model to the training data.
+Predict the values on the test dataset.
+Print the accuracy values for both training and test datasets.
+
+# Initialize the Decision Tree
+clf = tree.DecisionTreeClassifier(max_depth = 7, 
+               criterion = 'gini', 
+               splitter  = 'best')
+
+# Fit the model to the training data
+clf = clf.fit(train_X, train_Y)
+
+# Predict the values on test dataset
+pred_Y = clf.predict(test_X)
+
+# Print accuracy values
+print("Training accuracy: ", np.round(clf.score(train_X, train_Y), 3)) 
+print("Test accuracy: ", np.round(accuracy_score(test_Y, pred_Y), 3))
+
+
+Great results! With no parameter tuning you are accurate in around 3/4 of the cases - these are impressive results!
 
 <==============================================================================================================================>
 
@@ -132,6 +359,348 @@ VIEW CHAPTER DETAILS
 Churn prediction and drivers
 0%
 In this chapter you will learn churn prediction fundamentals, then fit logistic regression and decision tree models to predict churn. Finally, you will explore the results and extract insights on what are the drivers of the churn.
+
+
+_______________________________________________________________________________________________________________________________
+
+Churn prediction
+fundamentals
+MA CH IN E LE A RN IN G FOR MA RKETIN G IN PYTH ON
+
+
+Whatis churn?
+Churn happens when a customer stops buying / engaging
+The business context could be contractual or non-contractual
+Sometimes churn can be viewed as either voluntary or involuntary
+
+Types of churn
+Main churn typology is based on two business modeltypes:
+Contractual (phone subscription, TV streaming subscription)
+Non-contractual (grocery shopping, online shopping
+
+
+Modeling differenttypes of churn
+Typically:
+Non-contractual churn is harder to dene and model, as there's no explicit customer decision
+We will model contractual churn in the telecom business model
+
+
+Encoding churn
+Typically 1/0, with 1 =Churn, 0 = No Churn
+Could be a string Churn / No Churn or Yes / No - best practice to transform as 1 and 0
+set(telcom['Churn'])
+{0, 1}
+
+
+Exploring churn distribution
+telcom.groupby(['Churn']).size() / telcom.shape[0] * 100
+Churn
+0 73.421502
+1 26.578498
+dtype: float64
+
+
+Splitto training and testing data
+from sklearn.model_selection import train_test_split
+train, test = train_test_split(telcom, test_size = .25)
+
+
+Separate features and target variables
+Separate column names by data types
+target = ['Churn']
+custid = ['customerID']
+cols = [col for col in telcom.columns if col not in custid + target]
+Build training and testing datasets
+train_X = train[cols]
+train_Y = train[target]
+test_X = test[cols]
+test_Y = test[target]
+
+_______________________________________________________________________________________________________________________________
+
+Explore churn rate and split data
+Building on top of the overview you saw in Chapter 1, in this lesson, you're going to dig deeper into the data preparation needed for using machine learning to perform churn prediction. You will explore the churn distribution and split the data into training and testing before you proceed to modeling. In this step you get to understand how the churn rate is distributed, and pre-process the data so you can build a model on the training set, and measure its performance on unused testing data.
+
+The telecom dataset has been loaded as a pandas DataFrame named telcom. The target variable column is called Churn.
+
+Instructions
+100 XP
+Print the unique values in the Churn column.
+Calculate the ratio size of each churn group.
+Import the function for splitting data to train and test.
+Split the data into 75% train and 25% test.
+
+
+# Print the unique Churn values
+print(set(telcom['Churn']))
+
+# Calculate the ratio size of each churn group
+telcom.groupby(['Churn']).size() / telcom.shape[0] * 100
+
+# Import the function for splitting data to train and test
+from sklearn.model_selection import train_test_split
+
+# Split the data into train and test
+train, test = train_test_split(telcom, test_size = .25)
+
+Great work! You have explored the churn distribution and have split the data into training and testing for our next modeling steps!
+
+_______________________________________________________________________________________________________________________________
+
+Separate features and target variable
+Now that you have split the data intro training and testing, it's time to perform he final step before fitting the model which is to separate the features and target variables into different datasets. You will use the list of columns names that have been loaded for you.
+
+The main dataset is loaded as telcom, and split into training and testing datasets which are loaded as pandas DataFrames into train and test respectively. The target and custid lists contain the names of the target variable and the customer ID respectively. You will have to create the cols list with the names of the remaining columns. Feel free to explore the datasets in the console.
+
+Instructions
+100 XP
+Store the column names of telcom in a list excluding the target variable and customer ID names.
+Extract the training features and target.
+Extract the testing features and target.
+
+
+
+
+
+_______________________________________________________________________________________________________________________________
+
+Predict churn with
+logistic regression
+MA CH IN E LE A RN IN G FOR MA RKETIN G IN PYTH ON
+
+
+
+Introduction to logistic regression
+Statistical classication model for binary responses
+Models log-odds ofthe probability ofthe target
+Assumes linear relationship between log-odds target and predictors
+Returns coefcients and
+
+
+Modeling steps
+1. Split data to training and testing
+2. Initialize the model
+3. Fitthe model on the training data
+4. Predict values on the testing data
+5. Measure model performance on testing data
+
+
+Fitting the model
+Import the LogisticRegression classier
+from sklearn.linear_model import LogisticRegression
+Initialize LogisticRegression instance
+logreg = LogisticRegression()
+Fit the model on the training data
+logreg.fit(train_X, train_Y)
+
+
+Model performance metrics
+Key metrics:
+Accuracy - The % of correctly predicted labels (both Churn and non Churn)
+Precision - The % oftotal model's positive class predictions (here - predicted as Churn) that were
+correctly classied
+Recall- The % oftotal positive class samples (all churned customers) that were correctly
+classied
+
+
+Measuring model accuracy
+from sklearn.metrics import accuracy_score
+pred_train_Y = logreg.predict(train_X)
+pred_test_Y = logreg.predict(test_X)
+train_accuracy = accuracy_score(train_Y, pred_train_Y)
+test_accuracy = accuracy_score(test_Y, pred_test_Y)
+print('Training accuracy:'
+, round(train_accuracy,4))
+print('Test accuracy:'
+, round(test_accuracy, 4))
+Training accuracy: 0.8108
+Test accuracy: 0.8009
+
+
+Measuring precision and recall
+from sklearn.metrics import precision_score, recall_score
+train_precision = round(precision_score(train_Y, pred_train_Y), 4)
+test_precision = round(precision_score(test_Y, pred_test_Y), 4)
+train_recall = round(recall_score(train_Y, pred_train_Y), 4)
+test_recall = round(recall_score(test_Y, pred_test_Y), 4)
+print('Training precision: {}, Training recall: {}'.format(train_precision, train_recall
+print('Test precision: {}, Test recall: {}'.format(train_recall, test_recall))
+Training precision: 0.6725, Training recall: 0.5736
+Test precision: 0.5736, Test recall: 0.4835
+
+
+Regularization
+Introduces penalty coefcient in the model building phase
+Addresses over-tting (when patterns are "memorized by the model")
+Some regularization techniques also perform feature selection e.g. L1
+Makes the model more generalizable to unseen samples
+
+
+L1 regularization and feature selection
+LogisticRegression from sklearn performs L2 regularization by default
+L1 regularization or also called LASSO can be called explicitly, and this approach performs feature
+selection by shrinking some ofthe model coefcients to zero.
+from sklearn.linear_model import LogisticRegression
+logreg = LogisticRegression(penalty=
+'l1'
+, C=0.1, solver=
+'liblinear')
+logreg.fit(train_X, train_Y)
+C parameter needs to be tuned to nd the optimal value
+
+
+Tuning L1 regularization
+C = [1, .5, .25, .1, .05, .025, .01, .005, .0025]
+l1_metrics = np.zeros((len(C), 5))
+l1_metrics[:,0] = C
+for index in range(0, len(C)):
+logreg = LogisticRegression(penalty='l1', C=C[index], solver='liblinear')
+logreg.fit(train_X, train_Y)
+pred_test_Y = logreg.predict(test_X)
+l1_metrics[index,1] = np.count_nonzero(logreg.coef_)
+l1_metrics[index,2] = accuracy_score(test_Y, pred_test_Y)
+l1_metrics[index,3] = precision_score(test_Y, pred_test_Y)
+l1_metrics[index,4] = recall_score(test_Y, pred_test_Y)
+col_names = ['C','Non-Zero Coeffs','Accuracy','Precision','Recall']
+print(pd.DataFrame(l1_metrics, columns=col_names)
+
+
+Let's run some
+logistic regression
+models!
+
+
+_______________________________________________________________________________________________________________________________
+
+Predict churn with
+decision trees
+MA CH IN E LE A RN IN G FOR MA RKETIN G IN PYTH ON
+
+
+Modeling steps
+1. Split data to training and testing
+2. Initialize the model
+3. Fitthe model on the training data
+4. Predict values on the testing data
+5. Measure model performance on testing data
+
+
+Fitting the model
+Import the decision tree module
+from sklearn.tree import DecisionTreeClassifier
+Initialize the Decision Tree model
+mytree = DecisionTreeClassifier()
+Fit the model on the training data
+treemodel = mytree.fit(train_X, train_Y)
+
+
+Measuring model accuracy
+from sklearn.metrics import accuracy_score
+pred_train_Y = mytree.predict(train_X)
+pred_test_Y = mytree.predict(test_X)
+train_accuracy = accuracy_score(train_Y, pred_train_Y)
+test_accuracy = accuracy_score(test_Y, pred_test_Y)
+print('Training accuracy:'
+, round(train_accuracy,4))
+print('Test accuracy:'
+, round(test_accuracy, 4))
+Training accuracy: 0.9973
+Test accuracy: 0.7196
+
+
+Measuring precision and recall
+from sklearn.metrics import precision_score, recall_score
+train_precision = round(precision_score(train_Y, pred_train_Y), 4)
+test_precision = round(precision_score(test_Y, pred_test_Y), 4)
+train_recall = round(recall_score(train_Y, pred_train_Y), 4)
+test_recall = round(recall_score(test_Y, pred_test_Y), 4)
+print('Training precision: {}, Training recall: {}'.format(train_precision, train_recall
+print('Test precision: {}, Test recall: {}'.format(train_recall, test_recall))
+Training precision: 0.9993, Training recall: 0.9906
+Test precision: 0.9906, Test recall: 0.4878
+
+
+Tree depth parameter tuning
+depth_list = list(range(2,15))
+depth_tuning = np.zeros((len(depth_list), 4))
+depth_tuning[:,0] = depth_list
+for index in range(len(depth_list)):
+mytree = DecisionTreeClassifier(max_depth=depth_list[index])
+mytree.fit(train_X, train_Y)
+pred_test_Y = mytree.predict(test_X)
+depth_tuning[index,1] = accuracy_score(test_Y, pred_test_Y)
+depth_tuning[index,2] = precision_score(test_Y, pred_test_Y)
+depth_tuning[index,3] = recall_score(test_Y, pred_test_Y)
+col_names = ['Max_Depth'
+,
+'Accuracy'
+,
+'Precision'
+,
+'Recall']
+print(pd.DataFrame(depth_tuning, columns=col_names))
+
+
+_______________________________________________________________________________________________________________________________
+Identify and
+interpret churn
+drivers
+
+
+Plotting decision tree rules
+from sklearn import tree
+import graphviz
+exported = tree.export_graphviz(
+decision_tree=mytree,
+out_file=None,
+feature_names=cols,
+precision=1,
+class_names=['Not churn'
+,
+'Churn'],
+filled = True)
+graph = graphviz.Source(exported)
+display(graph)
+
+
+Interpreting decision tree chart
+
+
+Logistic regression coefcients
+Logistic regression returns beta coefcients
+Can be interpreted as change in log-odds of churn associated with 1 unit increase in the feature
+
+
+Extracting logistic regression coefcients
+Coefcients can be extracted using .coef_ method on tted LogisticRegression instance
+logreg.coef_
+array([[ 0. , 0.09784772, 0. , -0.03935476, -0.82068131,
+-0.41231806, -0.14319622, -0.01746504, -0.41830733, 0. ,
+0. , 0.07138468, 0. , 0. , 0. ,
+0. , -0.41424363, -0.59539021, 0. , 0.18846525,
+0. , -0.90766135, 0.90151342, 0. ]])
+
+
+Transforming logistic regression coefcients
+Log-odds is difcult to interpret
+Solution - calculate exponent ofthe coefcients
+This gives us the change in odds associated with 1 unit increase in the feature
+coefficients = pd.concat([pd.DataFrame(train_X.columns),
+pd.DataFrame(np.transpose(logit.coef_))],
+axis = 1)
+coefficients.columns = ['Feature'
+,
+'Coefficient']
+coefficients['Exp_Coefficient'] = np.exp(coefficients['Coefficient'])
+coefficients = coefficients[coefficients['Coefficient']!=0]
+print(coefficients.sort_values(by=['Coefficient']))
+
+
+
+Meaning oftransformed coefcients
+
+
+
 
 
 <==============================================================================================================================>

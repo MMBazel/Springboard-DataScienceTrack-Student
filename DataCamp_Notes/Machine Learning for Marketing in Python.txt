@@ -1,0 +1,152 @@
+INTERACTIVE COURSE
+Machine Learning for Marketing in Python
+
+
+Course Description
+The rise of machine learning (almost sounds like "rise of the machines"?) and applications of statistical methods to marketing have changed the field forever. Machine learning is being used to optimize customer journeys which maximize their satisfaction and lifetime value. This course will give you the foundational tools which you can immediately apply to improve your company’s marketing strategy. You will learn how to use different techniques to predict customer churn and interpret its drivers, measure, and forecast customer lifetime value, and finally, build customer segments based on their product purchase patterns. You will use customer data from a telecom company to predict churn, construct a recency-frequency-monetary dataset from an online retailer for customer lifetime value prediction, and build customer segments from product purchase data from a grocery shop.
+
+1
+Machine learning for marketing basics
+FREE
+0%
+In this chapter, you will explore the basics of machine learning methods used in marketing. You will learn about different types of machine learning, data preparation steps, and will run several end to end models to understand their power.
+
+<_______________________________________________________________________________________________________________________________>
+
+
+Types of machine learning
+Supervised learning
+Given X, can we predict Y?
+Classication - when Y is categorical (e.g.Churned/Not-churned, Yes/No, Fish/Dog/Cat).
+Regression - when Y is continuous (e.g. Purchases,Clicks, Time Spent on Website).
+Unsupervised learning
+Given X, can we detect patterns and clusters that are homogenous?
+Reinforcement learning
+Given a current state and a number potential actions, which path maximizes the reward?
+
+
+Supervised learning data parts and steps
+1. Dene the target (dependent variable orY) - what do we want to predict?
+Example 1 - which customers will churn?[CLASSIFICATION]
+Example 2 - which customers will buy again?[CLASSIFICATION]
+Example 3 - how much will customers spend in the next 30 days?[REGRESSION]
+2. Collect features (independent variables orX) which could have predictive power:
+Example 1 - Purchase patterns prior churning.
+Example 2 - Number of missed loan payments prior defaulting on a loan.
+
+
+Supervised learning data format
+X by N+1 matrix:
+X number of observations (customer, vendor, product)
+N + 1 number of columns (N features + 1 target variable)
+Feature 1 Feature 2 ... Feature N Target Y
+11 21 N1 Y1
+12 22 N2 Y2
+
+
+Unsupervised learning
+Collect usage or purchase data and run modelto identify homogenous groups i.e. clusters or segments of
+data:
+Example 1 - customer segmentation by their product purchases.
+Example 2 - product segmentation for bundling
+
+
+
+Unsupervised learning data format
+X by N matrix:
+X number of observations (customer, vendor, product)
+N number of columns (N features)
+A list ofindependent variables (features) as separate columns for each observation
+Feature 1 Feature 2 ... Feature N
+11 21 N1
+12 22 N2
+
+<_______________________________________________________________________________________________________________________________>
+
+
+Supervised vs. unsupervised learning
+Great work! You now know a lot about the differences between supervised and unsupervised learning. For this exercise, a telecom churn dataset named telco has been loaded for you. The last column called Churn defines whether or not a specific customer has churned. You will explore this dataset and determine whether it fits the supervised or unsupervised data format.
+
+Instructions 1/2
+50 XP
+1
+2
+Print the first 5 rows of the telco dataset by printing its header.
+
+# Print header of telco dataset
+print(telco.head())
+_______________________________________________________________________________________________________________________________
+
+Separate categorical and numerical columns
+Separate the identier and target variable names as lists
+custid = ['customerID']
+target = ['Churn']
+Separate categorical and numeric column names as lists
+categorical = telco_raw.nunique()[telcom.nunique()<10].keys().tolist()
+categorical.remove(target[0])
+numerical = [col for col in telco_raw.columns
+if col not in custid+target+categorical]
+
+
+One-hot encoding categorical variables
+One-hot encoding categorical variables
+telco_raw = pd.get_dummies(data=telco_raw, columns=categorical, drop_first=True)
+
+
+
+Scaling numerical features
+# Import StandardScaler library
+from sklearn.preprocessing import StandardScaler
+# Initialize StandardScaler instance
+scaler = StandardScaler()
+# Fit the scaler to numerical columns
+scaled_numerical = scaler.fit_transform(telco_raw[numerical])
+# Build a DataFrame
+scaled_numerical = pd.DataFrame(scaled_numerical, columns=numerical)
+
+
+
+Bringing it all together
+# Drop non-scaled numerical columns
+telco_raw = telco_raw.drop(columns=numerical, axis=1)
+# Merge the non-numerical with the scaled numerical data
+telco = telco_raw.merge(right=scaled_numerical,
+how=
+'left'
+,
+left_index=True,
+right_index=True
+)
+
+
+_______________________________________________________________________________________________________________________________
+
+
+
+
+
+<==============================================================================================================================>
+
+VIEW CHAPTER DETAILS
+2
+Churn prediction and drivers
+0%
+In this chapter you will learn churn prediction fundamentals, then fit logistic regression and decision tree models to predict churn. Finally, you will explore the results and extract insights on what are the drivers of the churn.
+
+
+<==============================================================================================================================>
+VIEW CHAPTER DETAILS
+3
+Customer Lifetime Value (CLV) prediction
+0%
+In this chapter, you will learn the basics of Customer Lifetime Value (CLV) and its different calculation methodologies. You will harness this knowledge to build customer level purchase features to predict next month's transactions using linear regression.
+
+
+<==============================================================================================================================>
+VIEW CHAPTER DETAILS
+4
+Customer segmentation
+0%
+This final chapter dives into customer segmentation based on product purchase history. You will explore two different models that provide insights into purchasing patterns of customers and group them into well separated and interpretable customer segments.
+
+VIEW CHAPTER DETAILS

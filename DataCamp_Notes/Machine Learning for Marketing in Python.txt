@@ -698,7 +698,331 @@ print(coefficients.sort_values(by=['Coefficient']))
 
 
 Meaning oftransformed coefcients
+_______________________________________________________________________________________________________________________________
 
+Separate features and target variable
+Now that you have split the data intro training and testing, it's time to perform he final step before fitting the model which is to separate the features and target variables into different datasets. You will use the list of columns names that have been loaded for you.
+
+The main dataset is loaded as telcom, and split into training and testing datasets which are loaded as pandas DataFrames into train and test respectively. The target and custid lists contain the names of the target variable and the customer ID respectively. You will have to create the cols list with the names of the remaining columns. Feel free to explore the datasets in the console.
+
+Instructions
+100 XP
+Store the column names of telcom in a list excluding the target variable and customer ID names.
+Extract the training features and target.
+Extract the testing features and target.
+
+# Store column names from `telcom` excluding target variable and customer ID
+cols = [col for col in telcom.columns if col not in custid + target]
+
+# Extract training features
+train_X = train[cols]
+
+# Extract training target
+train_Y = train[target]
+
+# Extract testing features
+test_X = test[cols]
+
+# Extract testing target
+test_Y = test[target]
+
+
+_______________________________________________________________________________________________________________________________
+
+
+Fit logistic regression model
+Logistic regression is a simple yet very powerful classification model that is used in many different use cases. You will now fit a logistic regression on the training part of the telecom churn dataset, and then predict labels on the unseen test set. Afterwards, you will calculate the accuracy of your model predictions.
+
+The accuracy_score function has been imported, and a LogisticRegression instance from sklearn has been initialized as logreg. The training and testing datasets that you've built previously have been loaded as train_X and test_X for features, and train_Y and test_Y for target variables.
+
+Instructions
+100 XP
+Fit a logistic regression on the training data.
+Predict churn labels for the test data.
+Calculate the accuracy score on the testing data.
+Print the test accuracy rounded to 4 decimals.
+
+# Fit logistic regression on training data
+logreg.fit(train_X, train_Y)
+
+# Predict churn labels on testing data
+pred_test_Y = logreg.predict(test_X)
+
+# Calculate accuracy score on testing data
+test_accuracy = accuracy_score(test_Y, pred_test_Y)
+
+# Print test accuracy score rounded to 4 decimals
+print('Test accuracy:', round(test_accuracy, 4))
+
+ +100 XP
+Good job! You have succesfully built a logistic regression model predicting churn, and have measured its accuracy on the unseen dataset!
+
+
+_______________________________________________________________________________________________________________________________
+
+Fit logistic regression with L1 regularization
+You will now run a logistic regression model on scaled data with L1 regularization to perform feature selection alongside model building. In the video exercise you have seen how the different C values have an effect on your accuracy score and the number of non-zero features. In this exercise, you will set the C value to 0.025.
+
+The LogisticRegression and accuracy_score functions from sklearn library have been loaded for you. Also, the scaled features and target variables have been loaded as train_X, train_Y for training data, and test_X, test_Y for test data.
+
+Instructions
+100 XP
+Initialize a logistic regression with L1 regularization and C value of 0.025.
+Fit the model on the training data.
+Predict churn values on the test data.
+Print the accuracy score of your predicted labels on the test data.
+
+# Initialize logistic regression instance 
+logreg = LogisticRegression(penalty='l1', C=0.025, solver='liblinear')
+
+# Fit the model on training data
+logreg.fit(train_X, train_Y)
+
+# Predict churn values on test data
+pred_test_Y = logreg.predict(test_X)
+
+# Print the accuracy score on test data
+print('Test accuracy:', round(accuracy_score(test_Y, pred_test_Y), 4))
+
+<script.py> output:
+    Test accuracy: 0.7969
+    
+   +100 XP
+Great progress! With this knowledge you are now equipped to predict customer churn while simultaneously running feature selection!
+
+_______________________________________________________________________________________________________________________________
+
+Identify optimal L1 penalty coefficient
+You will now tune the C parameter for the L1 regularization to discover the one which reduces model complexity while still maintaining good model performance metrics. You will run a for loop through possible C values and build logistic regression instances on each, as well as calculate performance metrics.
+
+A list C has been created with the possible values. The l1_metrics array has been built with 3 columns, with the first being the C values, and the next two being placeholders for non-zero coefficient counts and the recall score of the model. The scaled features and target variables have been loaded as train_X, train_Y for training, and test_X, test_Y for testing.
+
+Both numpy and pandas are loaded as np and pd as well as the recall_score function from sklearn.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Run a for loop over the range from 0 to the length of the list C.
+For each C candidate, initialize and fit a Logistic Regression and predict churn on test data.
+For each C candidate, store the non-zero coefficients and the recall score in the second and third columns of l1_metrics.
+Create a pandas DataFrame out of l1_metrics with the appropriate column names.
+
+
+
+# Run a for loop over the range of C list length
+for index in range(0, len(C)):
+  # Initialize and fit Logistic Regression with the C candidate
+  logreg = LogisticRegression(penalty='l1', C=C[index], solver='liblinear')
+  logreg.fit(train_X, train_Y)
+  # Predict churn on the testing data
+  pred_test_Y = logreg.predict(test_X)
+  # Create non-zero count and recall score columns
+  l1_metrics[index,1] = np.count_nonzero(logreg.coef_)
+  l1_metrics[index,2] = recall_score(test_Y, pred_test_Y)
+
+# Name the columns and print the array as pandas DataFrame
+col_names = ['C','Non-Zero Coeffs','Recall']
+print(pd.DataFrame(l1_metrics, columns=col_names))
+
+
+<script.py> output:
+            C  Non-Zero Coeffs    Recall
+    0  1.0000             23.0  0.485714
+    1  0.5000             22.0  0.481319
+    2  0.2500             21.0  0.485714
+    3  0.1000             20.0  0.479121
+    4  0.0500             18.0  0.479121
+    5  0.0250             13.0  0.448352
+    6  0.0100              5.0  0.386813
+    7  0.0050              3.0  0.301099
+    8  0.0025              2.0  0.021978
+    
+    
+     +100 XP
+Great! You can now explore the C values and associated count of non-zero coefficients and the recall score to decide which parameter value to choose.
+_______________________________________________________________________________________________________________________________
+
+Fit decision tree model
+Now you will fit a decision tree on the training set of the telecom dataset, and then predict labels on the unseen testing data, and calculate the accuracy of your model predictions. You will see the difference in the performance compared to the logistic regression.
+
+The accuracy_score function has been imported, also the training and testing datasets that you've built previously have been loaded as train_X and test_X for features, and train_Y and test_Y for target variables.
+
+Instructions
+100 XP
+Initialize a decision tree classifier.
+Fit the decision tree on the training data.
+Predict churn labels on the testing data.
+Calculate and print the accuracy score on the testing data.
+
+# Initialize decision tree classifier
+mytree = tree.DecisionTreeClassifier()
+
+# Fit the decision tree on training data
+mytree.fit(train_X, train_Y)
+
+# Predict churn labels on testing data
+pred_test_Y = mytree.predict(test_X)
+
+# Calculate accuracy score on testing data
+test_accuracy = accuracy_score(test_Y, pred_test_Y)
+
+# Print test accuracy
+print('Test accuracy:', round(test_accuracy, 4))
+
+In [1]: # Initialize decision tree classifier
+        mytree = tree.DecisionTreeClassifier()
+        
+        # Fit the decision tree on training data
+        mytree.fit(train_X, train_Y)
+        
+        # Predict churn labels on testing data
+        pred_test_Y = mytree.predict(test_X)
+        
+        # Calculate accuracy score on testing data
+        test_accuracy = accuracy_score(test_Y, pred_test_Y)
+        
+        # Print test accuracy
+        print('Test accuracy:', round(test_accuracy, 4))
+Test accuracy: 0.7275
+
+<script.py> output:
+    Test accuracy: 0.7275
+    
+    
+  +100 XP
+Fantastic! You can now use decision tree to predict churn and compare its performance to logistic regression!   
+_______________________________________________________________________________________________________________________________
+
+
+Identify optimal tree depth
+Now you will tune the max_depth parameter of the decision tree to discover the one which reduces over-fitting while still maintaining good model performance metrics. You will run a for loop through multiple max_depth parameter values and fit a decision tree for each, and then calculate performance metrics.
+
+The list called depth_list with the parameter candidates has been loaded for you. The depth_tuning array has been built for you with 2 columns, with the first one being filled with the depth candidates, and the next one being a placeholder for the recall score. Also, the features and target variables have been loaded as train_X, train_Y for the training data, and test_X, test_Y for the test data. Both numpy and pandas libraries are loaded as np and pd respectively.
+
+Instructions
+100 XP
+Run a for loop over the range from 0 to the length of the list depth_list.
+For each depth candidate, initialize and fit a decision tree classifier and predict churn on test data.
+For each depth candidate, calculate the recall score by using the recall_score() function and store it in the second column of depth_tunning.
+Create a pandas DataFrame out of depth_tuning with the appropriate column names.
+
+
+# Run a for loop over the range of depth list length
+for index in range(0, len(depth_list)):
+  # Initialize and fit decision tree with the `max_depth` candidate
+  mytree = DecisionTreeClassifier(max_depth=depth_list[index])
+  mytree.fit(train_X, train_Y)
+  # Predict churn on the testing data
+  pred_test_Y = mytree.predict(test_X)
+  # Calculate the recall score 
+  depth_tuning[index,1] = recall_score(test_Y, pred_test_Y)
+
+# Name the columns and print the array as pandas DataFrame
+col_names = ['Max_Depth','Recall']
+print(pd.DataFrame(depth_tuning, columns=col_names))
+
+<script.py> output:
+        Max_Depth    Recall
+    0         2.0  0.622449
+    1         3.0  0.365306
+    2         4.0  0.365306
+    3         5.0  0.538776
+    4         6.0  0.481633
+    5         7.0  0.463265
+    6         8.0  0.438776
+    7         9.0  0.457143
+    8        10.0  0.514286
+    9        11.0  0.487755
+    10       12.0  0.475510
+    11       13.0  0.461224
+    12       14.0  0.459184
+
+ +100 XP
+Good job! You can see how the recall scores change with different depth parameter values, and can make a decision on which one to choose.
+_______________________________________________________________________________________________________________________________
+
+Explore logistic regression coefficients
+You will now explore the coefficients of the logistic regression to understand what is driving churn to go up or down. For this exercise, you will extract the logistic regression coefficients from your fitted model, and calculate their exponent to make them more interpretable.
+
+The fitted logistic regression instance is loaded as logreg and the scaled features are loaded as a pandas DataFrame called train_X. The numpy and pandas libraries are loaded as np and pd respectively.
+
+Instructions
+100 XP
+Combine feature names and coefficients into a pandas DataFrame.
+Calculate the exponent of the logistic regression coefficients.
+Remove the coefficients that are equal to zero and print them sorted by the exponent coefficient.
+
+# Combine feature names and coefficients into pandas DataFrame
+feature_names = pd.DataFrame(train_X.columns, columns=['Feature'])
+log_coef = pd.DataFrame(np.transpose(logreg.coef_), columns=['Coefficient'])
+coefficients = pd.concat([feature_names, log_coef], axis = 1)
+
+# Calculate exponent of the logistic regression coefficients
+coefficients['Exp_Coefficient'] = np.exp(coefficients['Coefficient'])
+
+# Remove coefficients that are equal to zero
+coefficients = coefficients[coefficients['Coefficient']!=0]
+
+# Print the values sorted by the exponent coefficient
+print(coefficients.sort_values(by=['Exp_Coefficient']))
+
+
+<script.py> output:
+                               Feature  Coefficient  Exp_Coefficient
+    21                          tenure    -0.907750         0.403431
+    4                 PhoneService_Yes    -0.820517         0.440204
+    17               Contract_Two year    -0.595271         0.551413
+    8                  TechSupport_Yes    -0.418254         0.658195
+    16               Contract_One year    -0.414158         0.660896
+    5               OnlineSecurity_Yes    -0.412228         0.662173
+    6                 OnlineBackup_Yes    -0.143100         0.866667
+    3                   Dependents_Yes    -0.039299         0.961463
+    7             DeviceProtection_Yes    -0.017465         0.982687
+    11            PaperlessBilling_Yes     0.071389         1.073999
+    1                SeniorCitizen_Yes     0.097904         1.102857
+    19  PaymentMethod_Electronic check     0.188533         1.207477
+    22                  MonthlyCharges     0.901454         2.463182
+    
+    
+
+ +0 XP
+Great work! You have extracted and transformed logistic regression coefficients and can now understand which of them increase of decrease the odds of churn!
+
+_______________________________________________________________________________________________________________________________
+
+Break down decision tree rules
+In this exercise you will extract the if-else rules from the decision tree and plot them to identify the main drivers of the churn.
+
+The fitted decision tree instance is loaded as mytree and the scaled features are loaded as a pandas DataFrame called train_X. The tree module from sklearn library and the graphviz library have been already loaded for you.
+
+Note that we've used a proprietary display_image() function instead of display(graph) to make it easier for you to view the output.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Export the graphviz object from the trained decision tree .
+Assign the feature names.
+Set the precision to 1 and add the class names.
+Call the Source() function from graphviz and pass the exported graphviz object.
+
+
+# Export graphviz object from the trained decision tree 
+exported = tree.export_graphviz(decision_tree=mytree, 
+			# Assign feature names
+            out_file=None, feature_names=train_X.columns, 
+			# Set precision to 1 and add class names
+			precision=1, class_names=['Not churn','Churn'], filled = True)
+
+# Call the Source function and pass the exported graphviz object
+graph = graphviz.Source(exported)
+
+# Display the decision tree
+display_image("/usr/local/share/datasets/decision_tree_rules.png")
+
+ +100 XP
+Looks great! Decision tree visualizations is a powerful tool to communicate complex model infromation in an attractive format, great work!
 
 
 

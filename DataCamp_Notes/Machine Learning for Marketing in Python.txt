@@ -1034,6 +1034,370 @@ Customer Lifetime Value (CLV) prediction
 0%
 In this chapter, you will learn the basics of Customer Lifetime Value (CLV) and its different calculation methodologies. You will harness this knowledge to build customer level purchase features to predict next month's transactions using linear regression.
 
+_______________________________________________________________________________________________________________________________
+
+
+Build retention and churn tables
+You have learned the main elements of the customer lifetime value calculation and certain variations of it. Now you will use use the monthly cohort activity dataset to calculate retention and churn values, which you will then explore and later use to project average customer lifetime value.
+
+The pandas library has been loaded as pd and the cohorts_counts dataset has been imported. Feel free to explore it in the console.
+
+Instructions
+100 XP
+Extract cohort sizes from the first column of cohort_counts.
+Calculate retention by dividing the cohort counts with the cohort sizes.
+Calculate churn by subtracting 1 and the retention rates.
+Print the retention table.
+
+# Extract cohort sizes from the first column of cohort_counts
+cohort_sizes = cohort_counts.iloc[:,0]
+
+# Calculate retention by dividing the counts with the cohort sizes
+retention = cohort_counts.divide(cohort_sizes, axis=0)
+
+# Calculate churn
+churn = 1 - retention
+
+# Print the retention table
+print(retention)
+
+
+<script.py> output:
+                        1         2         3         4         5         6         7         8         9        10        11        12        13
+    AcquisitionMonth                                                                                                                             
+    2010-12           1.0  0.343575  0.308659  0.350559  0.342179  0.398045  0.347765  0.329609  0.335196  0.370112  0.354749  0.486034  0.240223
+    2011-01           1.0  0.207831  0.246988  0.243976  0.331325  0.271084  0.246988  0.259036  0.313253  0.307229  0.373494  0.135542       NaN
+    2011-02           1.0  0.183544  0.180380  0.262658  0.268987  0.234177  0.253165  0.262658  0.272152  0.300633  0.088608       NaN       NaN
+    2011-03           1.0  0.162371  0.257732  0.195876  0.213918  0.172680  0.252577  0.219072  0.275773  0.097938       NaN       NaN       NaN
+    2011-04           1.0  0.192157  0.203922  0.192157  0.184314  0.203922  0.219608  0.231373  0.066667       NaN       NaN       NaN       NaN
+    2011-05           1.0  0.160643  0.172691  0.144578  0.208835  0.232932  0.244980  0.088353       NaN       NaN       NaN       NaN       NaN
+    2011-06           1.0  0.159420  0.125604  0.198068  0.236715  0.299517  0.091787       NaN       NaN       NaN       NaN       NaN       NaN
+    2011-07           1.0  0.161850  0.179191  0.219653  0.254335  0.098266       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+    2011-08           1.0  0.215827  0.201439  0.251799  0.100719       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+    2011-09           1.0  0.200717  0.279570  0.121864       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+    2011-10           1.0  0.210692  0.094340       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+    2011-11           1.0  0.109966       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+    2011-12           1.0       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+
+
+
+_______________________________________________________________________________________________________________________________
+
+Explore retention and churn
+Now that you have calculated the monthly retention and churn metrics for monthly customer cohorts, you can calculate the overall mean retention and churn rates. You will use the .mean() method twice in a row (this is called "chaining") to calculate the overall mean. You will have to exclude the first month values (first column) from this calculation as they are constant given this is the first month the customers have been active therefore their retention will be 100% and churn will be 0% for all cohorts.
+
+The pandas and numpy libraries have been loaded as pd as np respectively. The retention and churn monthly datasets that you built in the previous exercises are also imported.
+
+Instructions
+100 XP
+Calculate the mean retention rate.
+Calculate the mean churn rate.
+Print rounded retention and churn rates.
+
+
+
+# Calculate the mean retention rate
+retention_rate = retention.iloc[:,1:].mean().mean()
+
+# Calculate the mean churn rate
+churn_rate = churn.iloc[:,1:].mean().mean()
+
+# Print rounded retention and churn rates
+print('Retention rate: {:.2f}; Churn rate: {:.2f}'.format(retention_rate, churn_rate))
+
+
+<script.py> output:
+    Retention rate: 0.21; Churn rate: 0.79
+
+
+ +100 XP
+Good work! Exploring these rates is critical in customer lifetime value calculation as it gives you insight into the customer behavior.
+
+_______________________________________________________________________________________________________________________________
+
+
+The goal of CLV
+Measure customer value in revenue / prot
+Benchmark customers
+Identify maximum investment into customer acquisition
+In our case - we'll skip the prot margin for simplicity and use revenue-based CLV formulas
+
+
+
+Basic CLV calculation
+# Calculate monthly spend per customer
+monthly_revenue = online.groupby(['CustomerID'
+,
+'InvoiceMonth'])['TotalSum'].sum().mean()
+# Calculate average monthly spend
+monthly_revenue = np.mean(monthly_revenue)
+# Define lifespan to 36 months
+lifespan_months = 36
+# Calculate basic CLV
+clv_basic = monthly_revenue * lifespan_months
+# Print basic CLV value
+print('Average basic CLV is {:.1f} USD'.format(clv_basic))
+Average basic CLV is 4774.6 USD
+
+
+Granular CLV calculation
+# Calculate average revenue per invoice
+revenue_per_purchase = online.groupby(['InvoiceNo'])['TotalSum'].mean().mean()
+# Calculate average number of unique invoices per customer per month
+freq = online.groupby(['CustomerID','InvoiceMonth'])['InvoiceNo'].nunique().mean()
+# Define lifespan to 36 months
+lifespan_months = 36
+# Calculate granular CLV
+clv_granular = revenue_per_purchase * freq * lifespan_months
+# Print granular CLV value
+print('Average granular CLV is {:.1f} USD'.format(clv_granular))
+Average granular CLV is 1635.2 USD
+Revenue per purchase: 34.8 USD
+Frequency per month: 1.3
+
+
+Traditional CLV calculation
+# Calculate monthly spend per customer
+monthly_revenue = online.groupby(['CustomerID','InvoiceMonth'])['TotalSum'].sum().mean()
+# Calculate average monthly retention rate
+retention_rate = retention_rate = retention.iloc[:,1:].mean().mean()
+# Calculate average monthly churn rate
+churn_rate = 1 - retention_rate
+# Calculate traditional CLV
+clv_traditional = monthly_revenue * (retention_rate / churn_rate)
+# Print traditional CLV and the retention rate values
+print('Average traditional CLV is {:.1f} USD at {:.1f} % retention_rate'.format(
+clv_traditional, retention_rate*100))
+Average traditional CLV is 49.9 USD at 27.3 % retention_rate
+Monthly average revenue: 132.6 USD
+
+
+Which method to use?
+Depends on the business model.
+Traditional CLV model - assumes churn is denitive = customer "dies".
+Traditional model is not robust at low retention values - will under-report theCLV.
+Hardest thing to predict - frequency in the future.
+
+_______________________________________________________________________________________________________________________________
+
+Calculate basic CLV
+You are now ready to calculate average customer lifetime with three different methods! In this exercise you will calculate the basic CLV which multiplies average monthly spent with the projected customer lifespan.
+
+The pandas and numpy libraries have been loaded as pd as np respectively. The online dataset has been imported for you.
+
+Instructions
+100 XP
+Group by CustomerID and calculate monthly spend per customer.
+Calculate average monthly spend.
+Define lifespan to 36 months.
+Calculate basic CLV by multiplying monthly average spend with the lifespan.
+
+# Calculate monthly spend per customer
+monthly_revenue = online.groupby(['CustomerID','InvoiceMonth'])['TotalSum'].sum()
+
+# Calculate average monthly spend
+monthly_revenue = np.mean(monthly_revenue)
+
+# Define lifespan to 36 months
+lifespan_months = 36
+
+# Calculate basic CLV
+clv_basic = monthly_revenue * lifespan_months
+
+# Print the basic CLV value
+print('Average basic CLV is {:.1f} USD'.format(clv_basic))
+
+<script.py> output:
+    Average basic CLV is 4774.6 USD
+    
+   Congratulations! You have successfully calculated the basic customer lifetime value. 
+
+_______________________________________________________________________________________________________________________________
+
+Calculate granular CLV
+In this scenario you will use more granular data points at the invoice level. This approach uses more granular data and can give a better customer lifetime value estimate. Make sure you compare the results with the one from the basic CLV model.
+
+The pandas and numpy libraries have been loaded as pd as np respectively. The online dataset has been imported for you.
+
+Instructions
+100 XP
+Group by InvoiceNo and calculate the mean of the TotalSum column.
+Group by CustomerID and InvoiceMonth and calculate the mean number of unique monthly invoices per customer.
+Define lifespan to 36 months.
+Calculate the granular CLV by multiplying the three previous metrics.
+
+# Calculate average revenue per invoice
+revenue_per_purchase = online.groupby(['InvoiceNo'])['TotalSum'].mean().mean()
+
+# Calculate average number of unique invoices per customer per month
+frequency_per_month = online.groupby(['CustomerID','InvoiceMonth'])['InvoiceNo'].nunique().mean()
+
+# Define lifespan to 36 months
+lifespan_months = 36
+
+# Calculate granular CLV
+clv_granular = revenue_per_purchase * frequency_per_month * lifespan_months
+
+# Print granular CLV value
+print('Average granular CLV is {:.1f} USD'.format(clv_granular))
+
+<script.py> output:
+    Average granular CLV is 1635.2 USD
+    
+    
+ +100 XP
+Good job! You can see how the granular approach gets you a different lifetime value estimate than the basic one.
+
+_______________________________________________________________________________________________________________________________
+
+Calculate traditional CLV
+Now you will calculate one of the most popular descriptive CLV models that accounts for the retention and churn rates. This gives a more robust estimate, but comes with certain assumptions that have to be validated. Make sure you review the video slides before you apply this method to your own use case.
+
+The pandas and numpy libraries have been loaded as pd as np respectively. The online and retention datasets have been imported for you.
+
+Instructions
+100 XP
+Group by CustomerID and InvoiceMonth and calculate monthly spend per customer.
+Calculate average monthly retention rate.
+Calculate average monthly churn rate.
+Calculate traditional CLV by multiplying monthly average spend with retention to churn ratio.
+
+# Calculate monthly spend per customer
+monthly_revenue = online.groupby(['CustomerID','InvoiceMonth'])['TotalSum'].sum().mean()
+
+# Calculate average monthly retention rate
+retention_rate = retention.iloc[:,1:].mean().mean()
+
+# Calculate average monthly churn rate
+churn_rate = 1 - retention_rate
+
+# Calculate traditional CLV 
+clv_traditional = monthly_revenue * (retention_rate / churn_rate)
+
+# Print traditional CLV and the retention rate values
+print('Average traditional CLV is {:.1f} USD at {:.1f} % retention_rate'.format(clv_traditional, retention_rate*100))
+
+<script.py> output:
+    Average traditional CLV is 34.7 USD at 20.7 % retention_rate
+
+ +100 XP
+Looks great! As you can see, the traditional CLV formula yields a much lower estimate as it accounts for monthly retention which is quite low for this company.
+
+
+_______________________________________________________________________________________________________________________________
+
+
+Data preparation for
+purchase prediction
+MA CH IN E LE A RN IN G FOR MA RKETIN G IN PYTH ON
+
+
+
+Regression - predicting continuous variable
+Regression - type of supervised learning
+Target variable - continuous or count variable
+Simplest version - linear regression
+Count data (e.g. number of days active) sometimes better predicted by Poisson or Negative Binomial
+regression
+
+
+
+Recency, frequency, monetary (RFM) features
+RFM - approach that underlies many feature engineering methods
+Recency - time since last customer transaction
+Frequency - number of purchases in the observed period
+Monetary value - total amount spent in the observed period
+
+
+Separate feature data
+# Exclude target variable
+online_X = online[online['InvoiceMonth']!='2011-11']
+# Define snapshot date
+NOW = dt.datetime(2011,11,1)
+# Build the features
+features = online_X.groupby('CustomerID').agg({
+'InvoiceDate': lambda x: (NOW - x.max()).days,
+'InvoiceNo': pd.Series.nunique,
+'TotalSum': np.sum,
+'Quantity': ['mean', 'sum']
+}).reset_index()
+features.columns = ['CustomerID', 'recency', 'frequency',
+'monetary', 'quantity_avg', 'quantity_total']
+
+
+Review features
+print(features.head())
+
+
+Calculate target variable
+# Build pivot table with monthly transactions per customer
+cust_month_tx = pd.pivot_table(data=online, index=['CustomerID'],
+values='InvoiceNo',
+columns=['InvoiceMonth'],
+aggfunc=pd.Series.nunique, fill_value=0)
+print(cust_month_tx.head())
+
+
+
+Finalize data preparation and splitto train/test
+# Store identifier and target variable column names
+custid = ['CustomerID']
+target = ['2011-11']
+# Extract target variable
+Y = cust_month_tx[target]
+# Extract feature column names
+cols = [col for col in features.columns if col not in custid]
+# Store features
+X = features[cols]
+
+
+Split data to training and testing
+# Randomly split 25% of the data to testing
+from sklearn.model_selection import train_test_split
+train_X, test_X, train_Y, test_Y = train_test_split(X, Y,
+test_size=0.25,
+random_state=99)
+# Print shapes of the datasets
+print(train_X.shape, train_Y.shape, test_X.shape, test_Y.shape)
+_______________________________________________________________________________________________________________________________
+
+Build features
+You are now fully equipped to build recency, frequency, monetary value and other customer level features for your regression model. Feature engineering is the most important step in the machine learning process. In this exercise you will create five customer-level features that you will then use in predicting next month's customer transactions. These features capture highly predictive customer behavior patterns.
+
+The pandas and numpy libraries have been loaded as pd as np respectively. The online_X dataset has been imported for you. The datetime object NOW depicting the snapshot date you will use to calculate recency has been created for you.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Calculate recency by subtracting the current date from the latest InvoiceDate.
+Calculate frequency by counting the unique number of invoices.
+Calculate monetary value by summing all spend values.
+Calculate average and total quantity.
+
+
+# Define the snapshot date
+NOW = dt.datetime(2011,11,1)
+
+# Calculate recency by subtracting current date from the latest InvoiceDate
+features = online_X.groupby('CustomerID').agg({
+  'InvoiceDate': lambda x: (NOW - x.max()).days,
+  # Calculate frequency by counting unique number of invoices
+  'InvoiceNo': pd.Series.nunique,
+  # Calculate monetary value by summing all spend values
+  'TotalSum': np.sum,
+  # Calculate average and total quantity
+  'Quantity': ['mean', 'sum']}).reset_index()
+
+# Rename the columns
+features.columns = ['CustomerID', 'recency', 'frequency', 'monetary', 'quantity_avg', 'quantity_total']
+
+
+ +100 XP
+Fantastic! You have successfully built the features for purchase prediction.
+
+
+
 
 <==============================================================================================================================>
 VIEW CHAPTER DETAILS

@@ -1396,6 +1396,193 @@ features.columns = ['CustomerID', 'recency', 'frequency', 'monetary', 'quantity_
  +100 XP
 Fantastic! You have successfully built the features for purchase prediction.
 
+_______________________________________________________________________________________________________________________________
+
+Define target variable
+Here, you'll build a pandas pivot table with customers as rows, invoice months as columns, and number of invoice counts as values. You will use the last month's value as the target variable. The remaining variables can be used as the so-called lagged features in the model. You will not use them, but are highly encouraged to check if adding these variables will improve your model performance beyond what you'll see in the upcoming exercises.
+
+The pandas and numpy libraries have been loaded as pd as np respectively. The online dataset has been imported for you.
+
+Instructions
+100 XP
+Build a pivot table using the pivot_table() function counting invoices.
+Store November 2011 sales data column name as a list.
+Store the target value as Y.
+
+# Build a pivot table counting invoices for each customer monthly
+cust_month_tx = pd.pivot_table(data=online, values='InvoiceNo',
+                               index=['CustomerID'], columns=['InvoiceMonth'],
+                               aggfunc=pd.Series.nunique, fill_value=0)
+
+# Store November 2011 data column name as a list
+target = ['2011-11']
+
+# Store target value as `Y`
+Y = cust_month_tx[target]
+
+ +100 XP
+Perfect! Now with the target variable defined and the features built previously, you are ready to split the data into training and testing.
+_______________________________________________________________________________________________________________________________
+
+Split data to training and testing
+Final step before we move to building the regression model! Here, you will follow the steps of identifying the names of the target variable and the feature columns, extract the data, and split them into training and testing.
+
+The pandas and numpy libraries have been loaded as pd as np respectively. The input features are imported as the features dataset, and the target variable you built in the previous exercise has been imported for you as Y.
+
+Instructions
+100 XP
+Store the customer identifier column name as a list.
+Select the feature column names excluding the customer identifier.
+Extract the features as X.
+Split the data to training and testing by using the train_test_split() function.
+
+# Store customer identifier column name as a list
+custid = ['CustomerID']
+
+# Select feature column names excluding customer identifier
+cols = [col for col in features.columns if col not in custid]
+
+# Extract the features as `X`
+X = features[cols]
+
+# Split data to training and testing
+train_X, test_X, train_Y, test_Y = train_test_split(X, Y, test_size=0.25, random_state=99)
+
+
+ +100 XP
+Good job! The data is now fully prepared to be used for predicting next month transactions.
+
+_______________________________________________________________________________________________________________________________
+
+
+Predict next month transactions
+You are finally in the stage of predicting next month's transaction with linear regression. Here you will use the input features you've previously built, train the model on them and the target variable, and predict the values on the unseen testing data. In the next exercise you will measure the model performance.
+
+The LinearRegression function from sklearn library has been loaded for you. The training and testing features are loaded as train_X and test_X respectively, and the training and testing target variables are loaded as train_Y and test_Y.
+
+Instructions
+100 XP
+Initialize a linear regression instance.
+Fit the model to the training dataset.
+Predict the target variable for the training data.
+Predict the target variable for the testing data.
+
+# Initialize linear regression instance
+linreg = LinearRegression()
+
+# Fit the model to training dataset
+linreg.fit(train_X, train_Y)
+
+# Predict the target variable for training data
+train_pred_Y = linreg.predict(train_X)
+
+# Predict the target variable for testing data
+test_pred_Y = linreg.predict(test_X)
+
+ +100 XP
+Great! You have built the model on the training data, and predicted values on testing data. Next, you will explore model fit.
+
+_______________________________________________________________________________________________________________________________
+
+Measure model fit
+Now you will measure the regression performance on both training and testing data with two metrics - root mean squared error and mean absolute error. This is a critical step where you are measuring how "close" are the model predictions compared to actual values.
+
+The numpy library has been loaded as np. The mean_absolute_error and mean_squared_error functions have been loaded. The training and testing target variables are loaded as train_Y and test_Y, and the predicted training and testing values are imported as train_pred_Y and test_pred_Y respectively.
+
+Instructions
+100 XP
+Calculate the root mean squared error on the training data by using the np.sqrt() function.
+Calculate the mean absolute error on the training data.
+Calculate the root mean squared error on the testing data.
+Calculate the mean absolute error on the testing data.
+
+# Calculate root mean squared error on training data
+rmse_train = np.sqrt(mean_squared_error(train_Y, train_pred_Y))
+
+# Calculate mean absolute error on training data
+mae_train = mean_absolute_error(train_Y, train_pred_Y)
+
+# Calculate root mean squared error on testing data
+rmse_test = np.sqrt(mean_squared_error(test_Y, test_pred_Y))
+
+# Calculate mean absolute error on testing data
+mae_test = mean_absolute_error(test_Y, test_pred_Y)
+
+# Print the performance metrics
+print('RMSE train: {}; RMSE test: {}\nMAE train: {}, MAE test: {}'.format(rmse_train, rmse_test, mae_train, mae_test))
+
+
+<script.py> output:
+    RMSE train: 0.7167503307950375; RMSE test: 1.2156885786624645
+    MAE train: 0.5138783671689997, MAE test: 0.5548888276615969
+
+ +100 XP
+Looks great! You have successfully calculated the root mean squared error and mean absolute error of the model performance on both training and testing datasets.
+_______________________________________________________________________________________________________________________________
+
+Explore model coefficients
+You will now explore the model performance from a different angle, and only on the training data. One thing you learned in the latest lesson is that not all model coefficients are statistically significant and we should look at the model summary table to explore their significance. Fortunately, the statsmodels library provides this functionality. Once you print the model summary table, explore which variables have the p-value lower than 0.05 (i.e. lower than 5%) to make sure the coefficient is significant.
+
+The training features are loaded as train_X, and the target variable as train_Y which was converted to a numpy array.
+
+Instructions
+100 XP
+Import the statsmodels.api module.
+Initialize a model instance on the training data using the OLS() function.
+Fit the model.
+Print model summary using the .summary() method.
+
+
+# Import `statsmodels.api` module
+import statsmodels.api as sm
+
+# Initialize model instance on the training data
+olsreg = sm.OLS(train_Y, train_X)
+
+# Fit the model
+olsreg = olsreg.fit()
+
+# Print model summary
+print(olsreg.summary())
+
+
+ +100 XP
+Perfect! As you can see, the summary table provides many details about the model fit and gives you insight into model drivers as well as statistical significance of each of the coefficients.
+
+
+<script.py> output:
+                                     OLS Regression Results                                
+    =======================================================================================
+    Dep. Variable:                      y   R-squared (uncentered):                   0.488
+    Model:                            OLS   Adj. R-squared (uncentered):              0.487
+    Method:                 Least Squares   F-statistic:                              480.3
+    Date:                Thu, 28 Nov 2019   Prob (F-statistic):                        0.00
+    Time:                        04:03:53   Log-Likelihood:                         -2769.8
+    No. Observations:                2529   AIC:                                      5550.
+    Df Residuals:                    2524   BIC:                                      5579.
+    Df Model:                           5                                                  
+    Covariance Type:            nonrobust                                                  
+    ==================================================================================
+                         coef    std err          t      P>|t|      [0.025      0.975]
+    ----------------------------------------------------------------------------------
+    recency            0.0002      0.000      1.701      0.089   -2.92e-05       0.000
+    frequency          0.1316      0.003     38.000      0.000       0.125       0.138
+    monetary        1.001e-06   3.59e-05      0.028      0.978   -6.95e-05    7.15e-05
+    quantity_avg       0.0001      0.000      0.803      0.422      -0.000       0.000
+    quantity_total    -0.0001   5.74e-05     -2.562      0.010      -0.000   -3.45e-05
+    ==============================================================================
+    Omnibus:                      987.494   Durbin-Watson:                   1.978
+    Prob(Omnibus):                  0.000   Jarque-Bera (JB):             5536.657
+    Skew:                           1.762   Prob(JB):                         0.00
+    Kurtosis:                       9.334   Cond. No.                         249.
+    ==============================================================================
+    
+    Warnings:
+    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+
+
+
 
 
 
@@ -1407,3 +1594,321 @@ Customer segmentation
 This final chapter dives into customer segmentation based on product purchase history. You will explore two different models that provide insights into purchasing patterns of customers and group them into well separated and interpretable customer segments.
 
 VIEW CHAPTER DETAILS
+
+
+_______________________________________________________________________________________________________________________________
+
+Explore customer product purchase dataset
+You have explored the customer by product purchase dataset in the video exercise and are now ready to plot some exploratory charts to understand the distribution of the variables and relationships between them. Here, you will explore the wholesale dataset and plot the pairwise relationships as well as the estimated distributions for each variable with the pairplot function from the seaborn library. It's an important step to explore the distribution types, and the relationships between the variables to inform the need for further data preprocessing.
+
+The pandas library is loaded as pd, seaborn as sns, and matplotlib.pyplot as plt. Also, the wholesale dataset has been loaded as a pandas DataFrame.
+
+Instructions
+100 XP
+Print the header of the wholesale dataset
+Plot the pairwise relationships between the variables
+Display the chart.
+
+
+# Print the header of the `wholesale` dataset
+print(wholesale.head())
+
+# Plot the pairwise relationships between the variables
+sns.pairplot(wholesale, diag_kind='kde')
+
+# Display the chart
+plt.show()
+
+<script.py> output:
+       Fresh  Milk  Grocery  Frozen  Detergents_Paper  Delicassen
+    0  12669  9656     7561     214              2674        1338
+    1   7057  9810     9568    1762              3293        1776
+    2   6353  8808     7684    2405              3516        7844
+    3  13265  1196     4221    6404               507        1788
+    4  22615  5410     7198    3915              1777        5185
+
+ +100 XP
+Good! You can see that most variables have non-symmetrical distributions i.e. they are skewed.
+
+
+_______________________________________________________________________________________________________________________________
+
+Understand differences in variables
+Now, you will analyze the averages and standard deviations of each variable by plotting them in a barplot. This is a complementary step to the one before, as you will visually explore the differences in variable scales and variances.
+
+The pandas library is loaded as pd and matplotlib.pyplot as plt. Also, the wholesale dataset has been loaded as a pandas DataFrame, while the averages and standard deviations for each column of the wholesale dataset are loaded as pandas Series named averages and std_devs respectively. Make sure you explore them in the console.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Create a list with wholesale's column names and another one with sorted values from 0 to the number of columns in wholesale.
+Plot averages in grey and std_devs in orange, adjust the x-axis by 0.2
+Add x_ix as ticks and x_names as labels and make sure you rotate them by 90 degrees.
+Add the legend and display the chart.
+
+# Create column names list and same length integer list
+x_names = wholesale.columns
+x_ix = np.arange(wholesale.shape[1])
+
+# Plot the averages data in gray and standard deviations in orange 
+plt.bar(x=x_ix-0.2, height=averages, color='grey', label='Average', width=0.4)
+plt.bar(x=x_ix+0.2, height=std_devs, color='orange', label='Standard Deviation', width=0.4)
+
+# Add x-axis labels and rotate
+plt.xticks(ticks=x_ix, labels=x_names, rotation=90)
+
+# Add the legend and display the chart
+plt.legend()
+plt.show()
+
+
+ +100 XP
+Great! This plot gives you a visual sense of the differences in averages and standard deviations.
+
+
+_______________________________________________________________________________________________________________________________
+
+
+Unskew the variables
+You will now transform the wholesale columns using Box-Cox transformation, and then explore the pairwise relationships plot to make sure the skewness of the distributions has been reduced to make them more normal. This is a critical step to make sure the K-means algorithm converges and discovers homogeneous groups (a.k.a. clusters or segments) of observations.
+
+The stats module is loaded from the scipy library, and the wholesale dataset has been imported as a pandas DataFrame.
+
+Instructions
+100 XP
+Define a custom Box Cox transformation function that could be applied to a pandas DataFrame.
+Apply the function to the wholesale dataset.
+Plot the pairwise relationships between the transformed variables.
+Display the chart.
+
+# Define custom Box Cox transformation function
+def boxcox_df(x):
+    x_boxcox, _ = stats.boxcox(x)
+    return x_boxcox
+
+# Apply the function to the `wholesale` dataset
+wholesale_boxcox = wholesale.apply(boxcox_df, axis=0)
+
+# Plot the pairwise relationships between the transformed variables 
+sns.pairplot(wholesale_boxcox, diag_kind='kde')
+
+# Display the chart
+plt.show()
+
+
+ +100 XP
+Fantastic! By using Box-Cox transformation you have successfully unskewed the variables and they now are almost normally distributed.
+
+_______________________________________________________________________________________________________________________________
+
+Normalize the variables
+Now, for the last step in data preparation. You will transform the unskewed dataset wholesale_boxcox to the same scale, meaning all columns have a mean of zero, and standard deviation of 1. You will use the StandardScaler function from the sklearn.preprocessing module.
+
+The unskewed wholesale_coxbox dataset you have transformed in the previous exercise has been imported as a pandas DataFrame. Also, the StandardScaler() instance has been initialized as scaler.
+
+Instructions
+100 XP
+Fit the initialized scaler instance on the Box-Cox transformed dataset.
+Transform and store the scaled dataset as wholesale_scaled.
+Create a pandas DataFrame from the scaled dataset.
+Print the mean and standard deviation for all columns.
+
+# Fit the initialized `scaler` instance on the Box-Cox transformed dataset
+scaler.fit(wholesale_boxcox)
+
+# Transform and store the scaled dataset as `wholesale_scaled`
+wholesale_scaled = scaler.transform(wholesale_boxcox)
+
+# Create a `pandas` DataFrame from the scaled dataset
+wholesale_scaled_df = pd.DataFrame(data=wholesale_scaled,
+                                       index=wholesale_boxcox.index,
+                                       columns=wholesale_boxcox.columns)
+
+# Print the mean and standard deviation for all columns
+print(wholesale_scaled_df.agg(['mean','std']).round())
+
+<script.py> output:
+          Fresh  Milk  Grocery  Frozen  Detergents_Paper  Delicassen
+    mean    0.0   0.0      0.0     0.0               0.0         0.0
+    std     1.0   1.0      1.0     1.0               1.0         1.0
+    
+    
+
+ +100 XP
+That looks correct! As you can see, the averages are roughly zero, and the standard deviations are around one, which is what we wanted!
+
+_______________________________________________________________________________________________________________________________
+
+
+Determine the optimal number of clusters
+Here, you will use the elbow criterion method to identify the optimal number of clusters where the squared sum of error decrease becomes marginal. This is an important step to get a mathematical ball-park number of clusters to start testing. You will iterate through multiple k number of clusters and run a KMeans algorithm for each, then plot the errors against each k to identify the "elbow" where the decrease in errors slows downs.
+
+The KMeans module is loaded from sklearn.cluster, the seaborn library is loaded as sns, and the matplotlib.pyplot module is loaded as plt. Also, the scaled dataset is loaded as wholesale_scaled_df as a pandas DataFrame.
+
+Instructions
+100 XP
+Create an empty sse dictionary.
+Fit a KMeans algorithm on k values between 1 and 11 and store the errors in the sse dictionary.
+Add the title to the plot.
+Create a scatter plot with keys on X-axis and values on the Y-axis and display the chart.
+
+# Create empty sse dictionary
+sse = {}
+
+# Fit KMeans algorithm on k values between 1 and 11
+for k in range(1, 11):
+    kmeans = KMeans(n_clusters=k, random_state=333)
+    kmeans.fit(wholesale_scaled_df)
+    sse[k] = kmeans.inertia_
+
+# Add the title to the plot
+plt.title('Elbow criterion method chart')
+
+# Create and display a scatter plot
+sns.pointplot(x=list(sse.keys()), y=list(sse.values()))
+plt.show()
+
+
+ +100 XP
+Good job! You can see that the "elbow" is somewhere around 2 or 3 clusters, which means you should start cluster with +1 number of clusters i.e. with 3 or 4.
+
+
+_______________________________________________________________________________________________________________________________
+
+
+Build segmentation with k-means clustering
+In this exercise, you will build the customer segmentation with KMeans algorithm. As you've identified in the previous step, the mathematically optimal number of clusters is somewhere around 3 and 4. Here, you will build one with 4 segments.
+
+The pre-processed dataset has been loaded as wholesale_scaled_df. You will use it to run the KMeans algorithm, and the raw un-processed dataset as wholesale - you will later use it to explore the average column values for the 4 segments you'll build.
+
+Instructions
+100 XP
+Import the KMeans algorithm from sklearn.cluster module.
+Initialize KMeans algorithm with 4 clusters and a random state set to 123.
+Fit the model on the pre-processed wholesale_scaled_df dataset.
+Assign the generated labels to a new column called segment in the raw wholesale dataset
+
+
+# Import `KMeans` module
+from sklearn.cluster import KMeans
+
+# Initialize `KMeans` with 4 clusters
+kmeans=KMeans(n_clusters=4, random_state=123)
+
+# Fit the model on the pre-processed dataset
+kmeans.fit(wholesale_scaled_df)
+
+# Assign the generated labels to a new column
+wholesale_kmeans4 = wholesale.assign(segment = kmeans.labels_)
+
+ +100 XP
+Great job! You have created a 3-segment solution with K-means clustering and have assigned labels the the original dataset.
+
+
+_______________________________________________________________________________________________________________________________
+
+
+Alternative segmentation with NMF
+In this exercise, you will analyze product purchase data and identify meaningful segments using non-negative matrix factorization algorithm (NMF). It works well with sparse customer by product matrices that are typical in the e-commerce or retail space. Finally, you will extract the components that you will then explore in the upcoming exercise.
+
+We have loaded pandas as pd and numpy as np. Also, the raw customer by product purchase dataset has been loaded as wholesale.
+
+Instructions
+100 XP
+Import the non-negative matrix factorization function from sklearn.decomposition.
+Initialize NMF instance with 4 components.
+Fit the model on the wholesale sales data.
+Extract and store the components as a pandas DataFrame.
+
+
+# Import the non-negative matrix factorization module
+from sklearn.decomposition import NMF
+
+# Initialize NMF instance with 4 components
+nmf = NMF(4)
+
+# Fit the model on the wholesale sales data
+nmf.fit(wholesale)
+
+# Extract the components 
+components = pd.DataFrame(data=nmf.components_, columns=wholesale.columns)
+
+
+ +100 XP
+Great job! You have extracted the components from a 3-segment solution with non-negative matrix factorization.
+
+_______________________________________________________________________________________________________________________________
+
+
+K-means segmentation averages
+In this exercise, you will explore the average column values for a 3-segment solution with K-means. As part of the test & learn exploration process, visually inspecting the segmentation solutions is critical to identify the most business relevant option.
+
+The seaborn as sns, and matplotlib.pyplot as plt. Also, we have run a 3-segment solution with K-means and loaded the dataset with assigned segment labels as wholesale_kmeans3 DataFrame.
+
+Instructions
+100 XP
+Group by the segment label and calculate average column values.
+Print the average column values per each segment.
+Create a heatmap on the average column values per each segment.
+Display the chart.
+
+
+# Group by the segment label and calculate average column values
+kmeans3_averages = wholesale_kmeans3.groupby(['segment']).mean().round(0)
+
+# Print the average column values per each segment
+print(kmeans3_averages)
+
+# Create a heatmap on the average column values per each segment
+sns.heatmap(kmeans3_averages.T, cmap='YlGnBu')
+
+# Display the chart
+plt.show()
+
+<script.py> output:
+               Fresh     Milk  Grocery  Frozen  Detergents_Paper  Delicassen
+    segment                                                                 
+    0         6363.0  10004.0  15539.0  1236.0            6904.0      1362.0
+    1        10526.0   2012.0   2576.0  2543.0             471.0       771.0
+    2        26244.0   7767.0   7769.0  7836.0            1653.0      3770.0
+    
+    
+  +100 XP
+Looks good! You can see how different are the 3 segments from each other - can you try to name each segment by their purchase patters?   
+
+_______________________________________________________________________________________________________________________________
+
+NMF segmentation averages
+Finally, you will visually explore the average values of the 3-segment solution built by NMF and can compare it to the K-means one. Here you will extract the features matrix W which we will use to extract the hard segment assignment by choosing the column value (segment) with highest associated value in this matrix for each customer.
+
+We have loaded pandas library as pd and seaborn library as sns. The raw wholesale dataset has been imported, and the already fitted 3-segment NMF instance as nmf. The components dataset has been loaded as pandas DataFrame.
+
+Instructions
+100 XP
+Create the W matrix by passing the transformed values as data, and components index as column values.
+Assign the segment value by selecting the column name where the corresponding value is the largest.
+Calculate the average column values per each segment.
+Plot the average values as a heatmap.
+
+
+# Create the W matrix
+W = pd.DataFrame(data=nmf.transform(wholesale), columns=components.index)
+W.index = wholesale.index
+
+# Assign the column name where the corresponding value is the largest
+wholesale_nmf3 = wholesale.assign(segment = W.idxmax(axis=1))
+
+# Calculate the average column values per each segment
+nmf3_averages = wholesale_nmf3.groupby('segment').mean().round(0)
+
+# Plot the average values as heatmap
+sns.heatmap(nmf3_averages.T, cmap='YlGnBu')
+
+# Display the chart
+plt.show()
+
+
+ +100 XP
+Looks beautiful! You can see that this solution is different from the K-means 3-segment results - can you name the segments from this solution and spot the difference?
+

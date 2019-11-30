@@ -8,6 +8,475 @@ FREE
 0%
 Before you can build advanced models in TensorFlow 2.0, you will first need to understand the basics. In this chapter, you’ll learn how to define constants and variables, perform tensor addition and multiplication, and compute derivatives. Knowledge of linear algebra will be helpful, but not necessary.
 
+_________________________________________________________________________________________________________________________________
+
+
+Constants and
+variables
+IN TRODUCTION TO TEN S ORF LOW IN PYTH ON
+
+
+Whatis TensorFlow?
+Open-source library for graph-based numerical computation
+Developed by the Google Brain Team
+Low and high level APIs
+Addition, multiplication, differentiation
+Machine learning models
+Important changes in TensorFlow 2.0
+Eager execution by default
+Model building with Keras and Estimators
+
+
+Whatis a tensor?
+Generalization of vectors and matrices
+Collection of numbers
+Specic shape
+
+
+Dening tensors in TensorFlow
+import tensorflow as tf
+# 0D Tensor
+d0 = tf.ones((1,))
+# 1D Tensor
+d1 = tf.ones((2,))
+# 2D Tensor
+d2 = tf.ones((2, 2))
+# 3D Tensor
+d3 = tf.ones((2, 2, 2))
+
+
+
+Dening constants in TensorFlow
+A constantis the simplest category of tensor
+Not trainable
+Can have any dimension
+
+from tensorflow import constant
+# Define a 2x3 constant.
+a = constant(3, shape=[2, 3])
+# Define a 2x2 constant.
+b = constant([1, 2, 3, 4], shape=[2, 2])
+
+Using convenience functions to dene constants
+Operation Example
+tf.constant() constant([1, 2, 3])
+tf.zeros() zeros([2, 2])
+tf.zeros_like() zeros_like(input_tensor)
+tf.ones() ones([2, 2])
+tf.ones_like() ones_like(input_tensor)
+tf.fill() fill([3, 3], 7)
+
+Dening and initializing variables
+import tensorflow as tf
+# Define a variable
+a0 = tf.Variable([1, 2, 3, 4, 5, 6], dtype=tf.float32)
+a1 = tf.Variable([1, 2, 3, 4, 5, 6], dtype=tf.int16)
+# Define a constant
+b = tf.constant(2, tf.float32)
+# Compute their product
+c0 = tf.multiply(a0, b)
+c1 = a0*b
+
+_________________________________________________________________________________________________________________________________
+
+
+Defining data as constants
+Throughout this course, we will use tensorflow version 2.0 and will exclusively import the submodules needed to complete each exercise. This will usually be done for you, but you will do it in this exercise by importing constant from tensorflow.
+
+After you have imported constant, you will use it to transform a numpy array, credit_numpy, into a tensorflow constant, credit_constant. This array contains feature columns from a dataset on credit card holders and is previewed in the image below. We will return to this dataset in later chapters.
+
+Note that tensorflow version 2.0 allows you to use data as either a numpy array or a tensorflow constant object. Using a constant will ensure that any operations performed with that object are done in tensorflow.
+
+This image shows four feature columns from a dataset on credit card default: education, marriage, age, and bill amount.
+
+Instructions
+100 XP
+Import the constant submodule from the tensorflow module.
+Convert the credit_numpy array into a constant object in tensorflow. Do not set the data type.
+
+# Import constant from TensorFlow
+from tensorflow import constant
+
+# Convert the credit_numpy array into a tensorflow constant
+credit_constant = constant(credit_numpy)
+
+# Print constant datatype
+print('The datatype is:', credit_constant.dtype)
+
+# Print constant shape
+print('The shape is:', credit_constant.shape)
+
+<script.py> output:
+    The datatype is: <dtype: 'float64'>
+    The shape is: (30000, 4)
+    
+    
+ +100 XP
+Excellent! You now understand how constants are used in tensorflow. In the following exercise, you'll practice defining variables.
+
+_________________________________________________________________________________________________________________________________
+
+
+Defining variables
+Unlike a constant, a variable's value can be modified. This will be quite useful when we want to train a model by updating its parameters. Constants can't be used for this purpose, so variables are the natural choice.
+
+Let's try defining and working with a variable. Note that Variable(), which is used to create a variable tensor, has been imported from tensorflow and is available to use in the exercise.
+
+Instructions
+100 XP
+Define a variable, A1, as the 1-dimensional tensor: [1, 2, 3, 4].
+Print A1. Do not use the .numpy() method. What did this tell you?
+Apply .numpy() to A1 and assign it to B1.
+Print B1. What did this tell you?
+
+
+# Define the 1-dimensional variable A1
+A1 = Variable([1, 2, 3, 4])
+
+# Print the variable A1
+print(A1)
+
+# Convert A1 to a numpy array and assign it to B1
+B1 = A1.numpy()
+
+# Print B1
+print(B1)
+
+<script.py> output:
+    <tf.Variable 'Variable:0' shape=(4,) dtype=int32, numpy=array([1, 2, 3, 4], dtype=int32)>
+    [1 2 3 4]
+
+
+ +100 XP
+Nice work! In our next exercise, we'll review how to check the properties of a tensor after it is already defined.
+_________________________________________________________________________________________________________________________________
+
+
+
+Basic operations
+IN TRODUCTION TO TEN S ORF LOW IN PYTH ON
+
+Applying the addition operator
+#Import constant and add from tensorflow
+from tensorflow import constant, add
+# Define 0-dimensional tensors
+A0 = constant([1])
+B0 = constant([2])
+# Define 1-dimensional tensors
+A1 = constant([1, 2])
+B1 = constant([3, 4])
+# Define 2-dimensional tensors
+A2 = constant([[1, 2], [3, 4]])
+B2 = constant([[5, 6], [7, 8]])
+
+
+Applying the addition operator
+# Perform tensor addition with add()
+C0 = add(A0, B0)
+C1 = add(A1, B1)
+C2 = add(A2, B2)
+
+
+Performing tensor addition
+The add() operation performs element-wise addition with two tensors
+Element-wise addition requires both tensors to have the same shape:
+Scalar addition: 1 + 2 = 3
+Vector addition: [1, 2] + [3, 4] = [4, 6]
+Matrix addition: [
+1
+3
+2
+4
+] [
+5
+7
+6
+8
+] [
+6
+10
+8
+12
+The add() operator is overloaded
+
+
+How to perform multiplication in TensorFlow
+Element-wise multiplication performed using multiply() operation
+The tensors multiplied must have the same shape
+E.g. [1,2,3] and [3,4,5] or [1,2] and [3,4]
+Matrix multiplication performed with matmul() operator
+The matmul(A,B) operation multiplies A by B
+Number of columns ofA must equalthe number of rows of B
+
+
+Applying the multiplication operators
+# Import operators from tensorflow
+from tensorflow import ones, matmul, multiply
+# Define tensors
+A0 = ones(1)
+A31 = ones([3, 1])
+A34 = ones([3, 4])
+A43 = ones([4, 3])
+What types of operations are valid?
+multiply(A0, A0) , multiply(A31, A31) , and multiply(A34, A34)
+matmul(A43, A34 ), but not matmul(A43, A43)
+
+Summing over tensor dimensions
+The reduce_sum() operator sums over the dimensions of a tensor
+reduce_sum(A) sums over all dimensions ofA
+reduce_sum(A, i) sums over dimension i
+# Import operations from tensorflow
+from tensorflow import ones, reduce_sum
+# Define a 2x3x4 tensor of ones
+A = ones([2, 3, 4])
+
+
+Summing over tensor dimensions
+# Sum over all dimensions
+B = reduce_sum(A)
+# Sum over dimensions 0, 1, and 2
+B0 = reduce_sum(A, 0)
+B1 = reduce_sum(A, 1)
+B2 = reduce_sum(A, 2)
+
+_________________________________________________________________________________________________________________________________
+
+Performing element-wise multiplication
+Element-wise multiplication in TensorFlow is performed using two tensors with identical shapes. This is because the operation multiplies elements in corresponding positions in the two tensors. An example of an element-wise multiplication, denoted by the ⊙ symbol, is shown below:
+
+[1221]⊙[3215]=[3425]
+In this exercise, you will perform element-wise multiplication, paying careful attention to the shape of the tensors you multiply. Note that multiply(), constant(), and ones_like() have been imported for you.
+
+Instructions
+100 XP
+Define the tensors A1 and A23 as constants.
+Set B1 to be a tensor of ones with the same shape as A1.
+Set B23 to be a tensor of ones with the same shape as A23.
+Set C1 and C23 equal to the element-wise products of A1 and B1, and A23 and B23, respectively.
+
+# Define tensors A1 and A23 as constants
+A1 = constant([1, 2, 3, 4])
+A23 = constant([[1, 2, 3], [1, 6, 4]])
+
+# Define B1 and B23 to have the correct shape
+B1 = ones_like(A1)
+B23 = ones_like(A23)
+
+# Perform element-wise multiplication
+C1 = multiply(A1,B1)
+C23 = multiply(A23,B23)
+
+# Print the tensors C1 and C23
+print('C1: {}'.format(C1.numpy()))
+print('C23: {}'.format(C23.numpy()))
+
+<script.py> output:
+    C1: [1 2 3 4]
+    C23: [[1 2 3]
+     [1 6 4]]
+
+ +100 XP
+Excellent work! Notice how performing element-wise multiplication with tensors of ones leaves the original tensors unchanged.
+_________________________________________________________________________________________________________________________________
+
+Making predictions with matrix multiplication
+In later chapters, you will learn to train linear regression models. This process will yield a vector of parameters that can be multiplied by the input data to generate predictions. In this exercise, you will use input data, features, and a target vector, bill, which are taken from a credit card dataset we will use later in the course.
+
+features=⎡⎣⎢⎢⎢222124265737⎤⎦⎥⎥⎥, bill=⎡⎣⎢⎢⎢39132682861764400⎤⎦⎥⎥⎥, params=[1000150]
+The matrix of input data, features, contains two columns: education level and age. The target vector, bill, is the size of the credit card borrower's bill.
+
+Since we have not trained the model, you will enter a guess for the values of the parameter vector, params. You will then use matmul() to perform matrix multiplication of features by params to generate predictions, billpred, which you will compare with bill. Note that we have imported matmul() and constant().
+
+Instructions
+100 XP
+Define features, params, and bill as constants.
+Compute the predicted value vector, billpred, by multiplying the input data, features, by the parameters, params. Use matrix multiplication, rather than the element-wise product.
+Define error as the targets, bill, minus the predicted values, billpred.
+
+# Define features, params, and bill as constants
+features = constant([[2, 24], [2, 26], [2, 57], [1, 37]])
+params = constant([[1000], [150]])
+bill = constant([[3913], [2682], [8617], [64400]])
+
+# Compute billpred using features and params
+billpred = matmul(features,params)
+
+# Compute and print the error
+error = bill - billpred
+print(error.numpy())
+
+<script.py> output:
+    [[-1687]
+     [-3218]
+     [-1933]
+     [57850]]
+
+ +100 XP
+Nice job! Understanding matrix multiplication will make things simpler when we start making predictions with linear models.
+
+
+
+_________________________________________________________________________________________________________________________________
+
+Advanced operations
+IN TRODUCTION TO TEN S ORF LOW IN PYTH ON
+
+
+Overview of advanced operations
+We have covered basic operations in TensorFlow
+add() , multiply() , matmul() , and reduce_sum()
+In this lesson, we explore advanced operations
+gradient() , reshape() , and random()
+
+
+Overview of advanced operations
+Operation Use
+gradient() Computes the slope of a function at a point
+reshape() Reshapes a tensor (e.g. 10x10 to 100x1)
+random() Populates tensor with entries drawn from a probability distribution
+
+
+Finding the optimum
+In many problems, we will want to nd the optimum of a function.
+Minimum: Lowest value of a loss function.
+Maximum: Highest value of objective function.
+We can do this using the gradient() operation.
+Optimum: Find a point where gradient = 0.
+Minimum: Change in gradient > 0
+Maximum: Change in gradient < 0
+
+Gradients in TensorFlow
+# Import tensorflow under the alias tf
+import tensorflow as tf
+# Define x
+x = tf.Variable(-1.0)
+# Define y within instance of GradientTape
+with tf.GradientTape() as tape:
+tape.watch(x)
+y = tf.multiply(x, x)
+# Evaluate the gradient of y at x = -1
+g = tape.gradient(y, x)
+print(g.numpy())
+
+
+How to reshape a grayscale image
+# Import tensorflow as alias tf
+import tensorflow as tf
+# Generate grayscale image
+gray = tf.random.uniform([2, 2], maxval=255, dtype='int32')
+# Reshape grayscale image
+gray = tf.reshape(gray, [2*2, 1])
+
+
+How to reshape a color image
+# Import tensorflow as alias tf
+import tensorflow as tf
+# Generate color image
+color = tf.random.uniform([2, 2, 3], maxval=255, dtype='int32')
+# Reshape color image
+color = tf.reshape(color, [2*2, 3])
+
+
+_________________________________________________________________________________________________________________________________
+Reshaping tensors
+Later in the course, you will classify images of sign language letters using a neural network. In some cases, the network will take 1-dimensional tensors as inputs, but your data will come in the form of images, which will either be either 2- or 3-dimensional tensors, depending on whether they are grayscale or color images.
+
+The figure below shows grayscale and color images of the sign language letter A. The two images have been imported for you and converted to the numpy arrays gray_tensor and color_tensor. Reshape these arrays into 1-dimensional vectors using the reshape operation, which has been imported for you from tensorflow. Note that the shape of gray_tensor is 28x28 and the shape of color_tensor is 28x28x3.
+
+This figure shows grayscale and color images of the sign language letter "A".
+
+Instructions
+100 XP
+Reshape gray_tensor from a 28x28 matrix into a 784x1 vector named gray_vector.
+Reshape color_tensor from a 28x28x3 tensor into a 2352x1 vector named color_vector.
+
+# Reshape the grayscale image tensor into a vector
+gray_vector = reshape(gray_tensor, (784, 1))
+
+# Reshape the color image tensor into a vector
+color_vector = reshape(color_tensor, (2352, 1))
+
+
+ +100 XP
+Excellent work! Notice that there are 3 times as many elements in color_vector as there are in gray_vector, since color_tensor has 3 color channels.
+
+_________________________________________________________________________________________________________________________________
+
+ptimizing with gradients
+You are given a loss function, y=x2, which you want to minimize. You can do this by computing the slope using the GradientTape() operation at different values of x. If the slope is positive, you can decrease the loss by lowering x. If it is negative, you can decrease it by increasing x. This is how gradient descent works.
+
+The image shows a plot of y equals x squared. It also shows the gradient at x equals -1, x equals 0, and x equals 1.
+
+In practice, you will use a high level tensorflow operation to perform gradient descent automatically. In this exercise, however, you will compute the slope at x values of -1, 1, and 0. The following operations are available: GradientTape(), multiply(), and Variable().
+
+Instructions
+100 XP
+Define x as a variable with the initial value x0.
+Set the loss function, y, equal to x multiplied by x. Do not make use of operator overloading.
+Set the function to return the gradient of y with respect to x.
+
+
+def compute_gradient(x0):
+  	# Define x as a variable with an initial value of x0
+	x = Variable(x0)
+	with GradientTape() as tape:
+		tape.watch(x)
+        # Define y using the multiply operation
+		y = multiply(x,x)
+    # Return the gradient of y with respect to x
+	return tape.gradient(y, x).numpy()
+
+# Compute and print gradients at x = -1, 1, and 0
+print(compute_gradient(-1.0))
+print(compute_gradient(1.0))
+print(compute_gradient(0.0))
+
+
+<script.py> output:
+    -2.0
+    2.0
+    0.0
+    
+    
+ +100 XP
+Excellent work! Notice that the slope is positive at x = 1, which means that we can lower the loss by reducing x. The slope is negative at x = -1, which means that we can lower the loss by increasing x. The slope at x = 0 is 0, which means that we cannot lower the loss by either increasing or decreasing x. This is because the loss is minimized at x = 0.    
+_________________________________________________________________________________________________________________________________
+
+
+Working with image data
+You are given a black-and-white image of a letter, which has been encoded as a tensor, letter. You want to determine whether the letter is an X or a K. You don't have a trained neural network, but you do have a simple model, model, which can be used to classify letter.
+
+The 3x3 tensor, letter, and the 1x3 tensor, model, are available in the Python shell. You can determine whether letter is a K by multiplying letter by model, summing over the result, and then checking if it is equal to 1. As with more complicated models, such as neural networks, model is a collection of weights, arranged in a tensor.
+
+Note that the functions reshape(), matmul(), and reduce_sum() have been imported from tensorflow and are available for use.
+
+Instructions
+100 XP
+The model, model, is 1x3 tensor, but should be a 3x1. Reshape model.
+Perform a matrix multiplication of the 3x3 tensor, letter, by the 3x1 tensor, model.
+Sum over the resulting tensor, output, and assign this value to prediction.
+Print prediction using the .numpy() method to determine whether letter is K.
+
+
+# Reshape model from a 1x3 to a 3x1 tensor
+model = reshape(model, (3, 1))
+
+# Multiply letter by model
+output = matmul(letter, model)
+
+# Sum over output and print prediction using the numpy method
+prediction = reduce_sum(output)
+print(prediction.numpy())
+
+
+
+<script.py> output:
+    1.0
+    
+    
+ +100 XP
+Excellent work! Your model found that prediction=1.0 and correctly classified the letter as a K. In the coming chapters, you will use data to train a model, model, and then combine this with matrix multiplication, matmul(letter, model), as we have done here, to make predictions about the classes of objects.
+
 
 <==================================================================================================================================>
 VIEW CHAPTER DETAILS
@@ -15,6 +484,202 @@ VIEW CHAPTER DETAILS
 Linear models
 0%
 In this chapter, you will learn how to build, solve, and make predictions with models in TensorFlow 2.0. You will focus on a simple class of models – the linear regression model – and will try to predict housing prices. By the end of the chapter, you will know how to load and manipulate data, construct loss functions, perform minimization, make predictions, and reduce resource use with batch training.
+
+Input data
+IN TRODUCTION TO TEN S ORF LOW IN PYTH ON
+
+
+
+Importing data for use in TensorFlow
+Data can be imported using tensorflow
+Useful for managing complex pipelines
+Not necessary for this chapter
+Simpler option used in this chapter
+Import data using pandas
+Convert data to numpy array
+Use in tensorflow without modication
+
+
+How to import and convert data
+# Import numpy and pandas
+import numpy as np
+import pandas as pd
+# Load data from csv
+housing = pd.read_csv('kc_housing.csv')
+# Convert to numpy array
+housing = np.array(housing)
+We will focus on data stored in csv format in this chapter
+Pandas also has methods for handling data in other formats
+E.g. read_json() , read_html() , read_excel()
+
+
+Parameters of read_csv()
+Parameter Description Default
+filepath_or_buffer Accepts a le path or a URL. None
+sep Delimiter between columns. ,
+delim_whitespace Boolean for whether to delimit whitespace. False
+encoding Species encoding to be used if any. None
+
+
+
+Setting the data type
+# Load KC dataset
+housing = pd.read_csv('kc_housing.csv')
+# Convert price column to float32
+price = np.array(housing['price'], np.float32)
+# Convert waterfront column to Boolean
+waterfront = np.array(housing['waterfront'], np.bool)
+
+
+Setting the data type
+# Load KC dataset
+housing = pd.read_csv('kc_housing.csv')
+# Convert price column to float32
+price = tf.cast(housing['price'], tf.float32)
+# Convert waterfront column to Boolean
+waterfront = tf.cast(housing['waterfront'], tf.bool)
+
+
+
+_________________________________________________________________________________________________________________________________
+
+
+
+Load data using pandas
+Before you can train a machine learning model, you must first import data. There are several valid ways to do this, but for now, we will use a simple one-liner from pandas: pd.read_csv(). Recall from the video that the first argument specifies the path or URL. All other arguments are optional.
+
+In this exercise, you will import the King County housing dataset, which we will use to train a linear model later in the chapter.
+
+Instructions
+100 XP
+Import pandas under the alias pd.
+Assign the path to a string variable with the name data_path.
+Load the dataset as a pandas dataframe named housing.
+Print the price column of housing.
+
+# Import pandas under the alias pd
+import pandas as pd
+
+# Assign the path to a string variable named data_path
+data_path = 'kc_house_data.csv'
+
+# Load the dataset as a dataframe named housing
+housing = pd.read_csv(data_path)
+
+# Print the price column of housing
+print(housing.price)
+
+
+
+<script.py> output:
+    0         221900.0
+    1         538000.0
+    2         180000.0
+    3         604000.0
+    4         510000.0
+    5        1225000.0
+    6         257500.0
+    7         291850.0
+    8         229500.0
+    9         323000.0
+    10        662500.0
+    11        468000.0
+    12        310000.0
+    13        400000.0
+    14        530000.0
+    15        650000.0
+    16        395000.0
+    17        485000.0
+    18        189000.0
+    19        230000.0
+    20        385000.0
+    21       2000000.0
+    22        285000.0
+    23        252700.0
+    24        329000.0
+    25        233000.0
+    26        937000.0
+    27        667000.0
+    28        438000.0
+    29        719000.0
+               ...    
+    21583     399950.0
+    21584     380000.0
+    21585     270000.0
+    21586     505000.0
+    21587     385000.0
+    21588     414500.0
+    21589     347500.0
+    21590    1222500.0
+    21591     572000.0
+    21592     475000.0
+    21593    1088000.0
+    21594     350000.0
+    21595     520000.0
+    21596     679950.0
+    21597    1575000.0
+    21598     541800.0
+    21599     810000.0
+    21600    1537000.0
+    21601     467000.0
+    21602     224000.0
+    21603     507250.0
+    21604     429000.0
+    21605     610685.0
+    21606    1007500.0
+    21607     475000.0
+    21608     360000.0
+    21609     400000.0
+    21610     402101.0
+    21611     400000.0
+    21612     325000.0
+    Name: price, Length: 21613, dtype: float64
+    
+    
+     +100 XP
+Excellent work! Notice that you did not have to specify a delimiter with the sep parameter, since the dataset was stored in the default, comma-separated format.
+
+
+_________________________________________________________________________________________________________________________________
+
+Setting the data type
+In this exercise, you will both load data and set its type. Note that housing is available and pandas has been imported as pd. You will import numpy and tensorflow, and define tensors that are usable in tensorflow using columns in housing with a given data type. Recall that you can select the price column, for instance, from housing using housing['price'].
+
+Instructions
+100 XP
+Import numpy and tensorflow under their standard aliases.
+Use a numpy array to set the tensor price to have a data type of 32-bit floating point number
+Use the tensorflow function cast() to set the tensor waterfront to have a Boolean data type.
+Print price and then waterfront. Did you notice any important differences?
+
+# Import numpy and tensorflow with their standard aliases
+import numpy as np
+import tensorflow as tf
+
+# Use a numpy array to define price as a 32-bit float
+price = np.array(housing['price'], np.float32)
+
+# Define waterfront as a Boolean using cast
+waterfront = tf.cast(housing['waterfront'], tf.bool)
+
+# Print price and waterfront
+print(price)
+print(waterfront)
+
+<script.py> output:
+    [221900. 538000. 180000. ... 402101. 400000. 325000.]
+    tf.Tensor([False False False ... False False False], shape=(21613,), dtype=bool)
+    
+     +100 XP
+Great job! Notice that printing price yielded a numpy array; whereas printing waterfront yielded a tf.Tensor().
+
+
+_________________________________________________________________________________________________________________________________
+
+
+
+
+
 
 
 <==================================================================================================================================>

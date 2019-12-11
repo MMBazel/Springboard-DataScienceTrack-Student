@@ -1,0 +1,230 @@
+Course Description
+Every day you read about the amazing breakthroughs in how the newest applications of machine learning are changing the world. Often this reporting glosses over the fact that a huge amount of data munging and feature engineering must be done before any of these fancy models can be used. In this course, you will learn how to do just that. You will work with Stack Overflow Developers survey, and historic US presidential inauguration addresses, to understand how best to preprocess and engineer features from categorical, continuous, and unstructured data. This course will give you hands-on experience on how to prepare any data for your own machine learning models.
+
+<==================================================================================================================================>
+
+1
+Creating Features
+FREE
+0%
+In this chapter, you will explore what feature engineering is and how to get started with applying it to real-world data. You will load, explore and visualize a survey response dataset, and in doing so you will learn about its underlying data types and why they have an influence on how you should engineer your features. Using the pandas package you will create new features from both categorical and continuous columns.
+
+_______________________________________________________________________________________________________________________
+
+One-hot encoding and dummy variables
+To use categorical variables in a machine learning model, you first need to represent them in a quantitative way. The two most common approaches are to one-hot encode the variables using or to use dummy variables. In this exercise, you will create both types of encoding, and compare the created column sets. We will continue using the same DataFrame from previous lesson loaded as so_survey_df and focusing on its Country column.
+
+Instructions 1/2
+50 XP
+1
+One-hot encode the Country column, adding "OH" as a prefix for each column.
+
+Take Hint (-15 XP)
+2
+Create dummy variables for the Country column, adding "DM" as a prefix for each column.
+
+
+# Convert the Country column to a one hot encoded Data Frame
+one_hot_encoded = pd.get_dummies(so_survey_df, columns=['Country'], prefix='OH')
+
+# Print the columns names
+print(one_hot_encoded.columns)
+
+# Create dummy variables for the Country column
+dummy = pd.get_dummies(so_survey_df, columns=['Country'], drop_first=True, prefix='DM')
+
+# Print the columns names
+print(dummy.columns)
+
+ +100 XP
+Great job! Did you notice that the column for France was missing when you created dummy variables? Now you can choose to use one-hot encoding or dummy variables where appropriate.
+
+_______________________________________________________________________________________________________________________
+
+Dealing with uncommon categories
+Some features can have many different categories but a very uneven distribution of their occurrences. Take for example Data Science's favorite languages to code in, some common choices are Python, R, and Julia, but there can be individuals with bespoke choices, like FORTRAN, C etc. In these cases, you may not want to create a feature for each value, but only the more common occurrences.
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Extract the Country column of so_survey_df as a series and assign it to countries.
+Find the counts of each category in the newly created countries series.
+
+
+# Create a series out of the Country column
+countries = so_survey_df['Country']
+
+# Get the counts of each category
+country_counts = countries.value_counts()
+
+# Print the count values for each category
+print(country_counts)
+
+
+Create a mask for values occurring less than 10 times in country_counts.
+Print the first 5 rows of the mask.
+
+# Create a series out of the Country column
+countries = so_survey_df['Country']
+
+# Get the counts of each category
+country_counts = countries.value_counts()
+
+# Create a mask for only categories that occur less than 10 times
+mask = countries.isin(country_counts[country_counts<10].index)
+
+# Print the top 5 rows in the mask series
+print(mask.head())
+
+
+
+Instructions 3/3
+30 XP
+3
+Label values occurring less than the mask cutoff as 'Other'.
+Print the new category counts in countries.
+
+
+# Create a series out of the Country column
+countries = so_survey_df['Country']
+
+# Get the counts of each category
+country_counts = countries.value_counts()
+
+# Create a mask for only categories that occur less than 10 times
+mask = countries.isin(country_counts[country_counts < 10].index)
+
+# Label all other categories as Other
+countries[mask] = 'Other'
+
+# Print the updated category counts
+print(countries.value_counts())
+
+_______________________________________________________________________________________________________________________
+
+Binarizing columns
+While numeric values can often be used without any feature engineering, there will be cases when some form of manipulation can be useful. For example on some occasions, you might not care about the magnitude of a value but only care about its direction, or if it exists at all. In these situations, you will want to binarize a column. In the so_survey_df data, you have a large number of survey respondents that are working voluntarily (without pay). You will create a new column titled Paid_Job indicating whether each person is paid (their salary is greater than zero).
+
+Instructions
+100 XP
+Create a new column called Paid_Job filled with zeros.
+Replace all the Paid_Job values with a 1 where the corresponding ConvertedSalary is greater than 0.
+
+# Create the Paid_Job column filled with zeros
+so_survey_df['Paid_Job'] = 0
+
+# Replace all the Paid_Job values where ConvertedSalary is > 0
+so_survey_df.loc[so_survey_df['ConvertedSalary']>0, 'Paid_Job'] = 1
+
+# Print the first five rows of the columns
+print(so_survey_df[['Paid_Job', 'ConvertedSalary']].head())
+
+
+
+<script.py> output:
+       Paid_Job  ConvertedSalary
+    0         0              0.0
+    1         1          70841.0
+    2         0              0.0
+    3         1          21426.0
+    4         1          41671.0
+    
+    
+  +100 XP
+Good work, binarizing columns can also be useful for your target variables.
+_______________________________________________________________________________________________________________________
+
+
+Binning values
+For many continuous values you will care less about the exact value of a numeric column, but instead care about the bucket it falls into. This can be useful when plotting values, or simplifying your machine learning models. It is mostly used on continuous variables where accuracy is not the biggest concern e.g. age, height, wages.
+
+Bins are created using pd.cut(df['column_name'], bins) where bins can be an integer specifying the number of evenly spaced bins, or a list of bin boundaries.
+
+Instructions 1/2
+50 XP
+1
+Bin the ConvertedSalary column values into 5 equal bins, in a new column called equal_binned.
+
+
+Bin the ConvertedSalary column using the boundaries in the list bins and label the bins using labels.
+
+
+# Bin the continuous variable ConvertedSalary into 5 bins
+so_survey_df['equal_binned'] = pd.cut(so_survey_df['ConvertedSalary'], bins=5)
+
+# Print the first 5 rows of the equal_binned column
+print(so_survey_df[['equal_binned', 'ConvertedSalary']].head())
+
+
+<script.py> output:
+              equal_binned  ConvertedSalary
+    0  (-2000.0, 400000.0]              0.0
+    1  (-2000.0, 400000.0]          70841.0
+    2  (-2000.0, 400000.0]              0.0
+    3  (-2000.0, 400000.0]          21426.0
+    4  (-2000.0, 400000.0]          41671.0
+    
+    
+    
+
+# Import numpy
+import numpy as np
+
+# Specify the boundaries of the bins
+bins = [-np.inf, 10000, 50000, 100000, 150000, np.inf]
+
+# Bin labels
+labels = ['Very low', 'Low', 'Medium', 'High', 'Very high']
+
+# Bin the continuous variable ConvertedSalary using these boundaries
+so_survey_df['boundary_binned'] = pd.cut(so_survey_df['ConvertedSalary'], 
+                                         bins=bins, labels=labels)
+
+# Print the first 5 rows of the boundary_binned column
+print(so_survey_df[['boundary_binned', 'ConvertedSalary']].head())
+
+
+
+<script.py> output:
+      boundary_binned  ConvertedSalary
+    0        Very low              0.0
+    1          Medium          70841.0
+    2        Very low              0.0
+    3             Low          21426.0
+    4             Low          41671.0
+    
+    
+     +100 XP
+Correct, now you can bin columns with equal spacing and predefined boundaries.
+
+
+
+    
+<==================================================================================================================================>
+
+
+VIEW CHAPTER DETAILS
+2
+Dealing with Messy Data
+0%
+This chapter introduces you to the reality of messy and incomplete data. You will learn how to find where your data has missing values and explore multiple approaches on how to deal with them. You will also use string manipulation techniques to deal with unwanted characters in your dataset.
+
+
+<==================================================================================================================================>
+VIEW CHAPTER DETAILS
+3
+Conforming to Statistical Assumptions
+0%
+In this chapter, you will focus on analyzing the underlying distribution of your data and whether it will impact your machine learning pipeline. You will learn how to deal with skewed data and situations where outliers may be negatively impacting your analysis.
+
+
+<==================================================================================================================================>
+VIEW CHAPTER DETAILS
+4
+Dealing with Text Data
+0%
+Finally, in this chapter, you will work with unstructured text data, understanding ways in which you can engineer columnar features out of a text corpus. You will compare how different approaches may impact how much context is being extracted from a text, and how to balance the need for context, without too many features being created.
+
+VIEW CHAPTER DETAILS

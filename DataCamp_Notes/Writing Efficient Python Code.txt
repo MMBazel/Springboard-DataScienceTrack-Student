@@ -88,8 +88,285 @@ What is the 7th idiom of the Zen of Python?
 
 _________________________________________________________________________________________________________________________________
 
+# Create a range object that goes from 0 to 5
+nums = range(0,6)
+print(type(nums))
+
+# Convert nums to a list
+nums_list = list(nums)
+print(nums_list)
+
+# Create a new list of odd numbers from 1 to 11 by unpacking a range object
+nums_list2 = [*range(1,12,2)]
+print(nums_list2)
+
+<script.py> output:
+    <class 'range'>
+    [0, 1, 2, 3, 4, 5]
+    [1, 3, 5, 7, 9, 11]
+    
+    
+
+ +100 XP
+Nicely done! Notice that using Python's range() function allows you to create a range object of numbers without explicitly typing them out. You can convert the range object into a list by using the list() function or by unpacking it into a list using the star character (*). Cool!
+
+_________________________________________________________________________________________________________________________________
+
+Built-in practice: enumerate()
+In this exercise, you'll practice using Python's built-in function enumerate(). This function is useful for obtaining an indexed list. For example, suppose you had a list of people that arrived at a party you are hosting. The list is ordered by arrival (Jerry was the first to arrive, followed by Kramer, etc.):
+
+names = ['Jerry', 'Kramer', 'Elaine', 'George', 'Newman']
+If you wanted to attach an index representing a person's arrival order, you could use the following for loop:
+
+indexed_names = []
+for i in range(len(names)):
+    index_name = (i, names[i])
+    indexed_names.append(index_name)
+
+[(0,'Jerry'),(1,'Kramer'),(2,'Elaine'),(3,'George'),(4,'Newman')]
+But, that's not the most efficient solution. Let's explore how to use enumerate() to make this more efficient.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Instead of using for i in range(len(names)), update the for loop to use i as the index variable and name as the iterator variable and use enumerate().
+Rewrite the previous for loop using enumerate() and list comprehension to create a new list, indexed_names_comp.
+Create another list (indexed_names_unpack) by using the star character (*) to unpack the enumerate object created from using enumerate() on names. This time, start the index for enumerate() at one instead of zero.
+
+# Rewrite the for loop to use enumerate
+indexed_names = []
+for i,name in enumerate(names):
+    index_name = (i,name)
+    indexed_names.append(index_name) 
+print(indexed_names)
+
+# Rewrite the above for loop using list comprehension
+indexed_names_comp = [(i,name) for i,name in enumerate(names)]
+print(indexed_names_comp)
+
+# Unpack an enumerate object with a starting index of one
+indexed_names_unpack = [*enumerate(names, 1)]
+print(indexed_names_unpack)
+
+<script.py> output:
+    [(0, 'Jerry'), (1, 'Kramer'), (2, 'Elaine'), (3, 'George'), (4, 'Newman')]
+    [(0, 'Jerry'), (1, 'Kramer'), (2, 'Elaine'), (3, 'George'), (4, 'Newman')]
+    [(1, 'Jerry'), (2, 'Kramer'), (3, 'Elaine'), (4, 'George'), (5, 'Newman')]
+
+ +100 XP
+Awesome! Using Python's built-in enumerate() function allows you to create an index for each item in the object you give it. You can use list comprehension, or even unpack the enumerate object directly into a list, to write a nice simple one-liner.
+
+_________________________________________________________________________________________________________________________________
 
 
+Built-in practice: map()
+In this exercise, you'll practice using Python's built-in map() function to apply a function to every element of an object. Let's look at a list of party guests:
+
+names = ['Jerry', 'Kramer', 'Elaine', 'George', 'Newman']
+Suppose you wanted to create a new list (called names_uppercase) that converted all the letters in each name to uppercase. you could accomplish this with the below for loop:
+
+names_uppercase = []
+
+for name in names:
+  names_uppercase.append(name.upper())
+
+['JERRY', 'KRAMER', 'ELAINE', 'GEORGE', 'NEWMAN']
+Let's explore using the map() function to do this more efficiently in one line of code.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Use map() and the method str.upper() to convert each name in the list names to uppercase. Save this to the variable names_map.
+Print the data type of names_map.
+Unpack the contents of names_map into a list called names_uppercase using the star character (*).
+Print names_uppercase and observe its contents.
+
+
+Hint
+To apply a function (func()) to each element of names, you can use the command map(func, names). Note that the func argument should not contain closing parentheses.
+You can print the data type of names_map by placing it within the type() function.
+
+# Use map to apply str.upper to each element in names
+names_map  = map(str.upper, names)
+
+# Print the type of the names_map
+print(type(names_map))
+
+# Unpack names_map into a list
+names_uppercase = [*names_map]
+
+# Print the list created above
+print(names_uppercase)
+
+ +0 XP
+Well done! You used Python's built-in map() function to apply the str.upper() method to each element in the names object. Later on in the course, you'll explore how using map() can provide some efficiency improvements to your code.
+
+
+<script.py> output:
+    <class 'map'>
+    ['JERRY', 'KRAMER', 'ELAINE', 'GEORGE', 'NEWMAN']
+    
+    
+    _________________________________________________________________________________________________________________________________
+    
+    
+    Practice with NumPy arrays
+Let's practice slicing numpy arrays and using NumPy's broadcasting concept. Remember, broadcasting refers to a numpy array's ability to vectorize operations, so they are performed on all elements of an object at once.
+
+A two-dimensional numpy array has been loaded into your session (called nums) and printed into the console for your convenience. numpy has been imported into your session as np.
+
+Instructions 1/2
+50 XP
+Print the second row of nums.
+Print the items of nums that are greater than six.
+Create nums_dbl that doubles each number in nums.
+Replace the third column in nums with a new column that adds 1 to each item in the original column.
+
+
+ Question
+When compared to a list object, what are two advantages of using a numpy array?
+
+Possible Answers
+A numpy array is the only data structure that can be used with the numpy package and often has less verbose indexing syntax.
+A numpy array contains homogeneous data types (which reduces memory consumption) and provides the ability to apply operations on all elements through broadcasting.
+A numpy array supports boolean indexing and has much better one-dimensional indexing capabilities.
+Both a list object and a numpy array are identical.
+
+
+# Print second row of nums
+print(nums[1,:])
+
+# Print all elements of nums that are greater than six
+print(nums[nums > 6])
+
+# Double every element of nums
+nums_dbl = nums * 2
+print(nums_dbl)
+
+# Replace the third column of nums
+nums[:,2] = nums[:,2] + 1
+print(nums)
+
+
+[[ 1  2  3  4  5]
+ [ 6  7  8  9 10]]
+[[ 1  2  3  4  5]
+ [ 6  7  8  9 10]]
+[[ 1  2  3  4  5]
+ [ 6  7  8  9 10]]
+
+
+   +100 XP
+Well done! You're slicing numpy arrays like a pro and learning how to take advantage of NumPy's broadcasting concept. Using numpy arrays allows you to take advantage of an array's memory efficient nature and easily perform mathematical operations on your data.  
+
+_________________________________________________________________________________________________________________________________
+
+Bringing it all together: Festivus!
+In this exercise, you will be throwing a party—a Festivus if you will!
+
+You have a list of guests (the names list). Each guest, for whatever reason, has decided to show up to the party in 10-minute increments. For example, Jerry shows up to Festivus 10 minutes into the party's start time, Kramer shows up 20 minutes into the party, and so on and so forth.
+
+We want to write a few simple lines of code, using the built-ins we have covered, to welcome each of your guests and let them know how many minutes late they are to your party. Note that numpy has been imported into your session as np and the names list has been loaded as well.
+
+Let's welcome your guests!
+
+Instructions 1/4
+25 XP
+1
+2
+3
+4
+Use range() to create a list of arrival times (10 through 50 incremented by 10). Create the list arrival_times by unpacking the range object.
+
+
+# Create a list of arrival times
+arrival_times = [*range(10, 60, 10)]
+
+print(arrival_times)
+<script.py> output:
+    [10, 20, 30, 40, 50]
+
+
+
+You realize your clock is three minutes fast. Convert the arrival_times list into a numpy array (called arrival_times_np) and use NumPy broadcasting to subtract three minutes from each arrival time.
+
+# Create a list of arrival times
+arrival_times = [*range(10,60,10)]
+
+# Convert arrival_times to an array and update the times
+arrival_times_np = np.array(arrival_times)
+new_times = arrival_times_np - 3
+
+print(new_times)
+
+<script.py> output:
+    [ 7 17 27 37 47]
+    
+    
+   Use list comprehension with enumerate() to pair each guest in the names list to their updated arrival time in the new_times array. You'll need to use the index variable created from using enumerate() on new_times to index the names list.
+   
+  Hint
+When using enumerate(), the first variable is called an index variable. The second variable is called the iterator variable. Use i as the index variable and time as the iterator variable in when you use enumerate() in your list comprehension.
+You'll need to use the index variable (i) created from using enumerate() on new_times to index the names list (i.e., names[i]) within your list comprehension. 
+    
+    # Create a list of arrival times
+arrival_times = [*range(10,60,10)]
+
+# Convert arrival_times to an array and update the times
+arrival_times_np = np.array(arrival_times)
+new_times = arrival_times_np - 3
+
+# Use list comprehension and enumerate to pair guests to new times
+guest_arrivals = [(names[i],time) for i,time in enumerate(new_times)]
+
+print(guest_arrivals)
+
+<script.py> output:
+    [ 7 17 27 37 47]
+
+
+A function named welcome_guest() has been pre-loaded into your session. Use map() to apply this function to each element of the guest_arrivals list and save it as the variable welcome_map.
+
+# Create a list of arrival times
+arrival_times = [*range(10,60,10)]
+
+# Convert arrival_times to an array and update the times
+arrival_times_np = np.array(arrival_times)
+new_times = arrival_times_np - 3
+
+# Use list comprehension and enumerate to pair guests to new times
+guest_arrivals = [(names[i],time) for i,time in enumerate(new_times)]
+
+
+<script.py> output:
+    [ 7 17 27 37 47]
+
+
+
+
+# Map the welcome_guest function to each (guest,time) pair
+welcome_map = map(welcome_guest, guest_arrivals)
+
+guest_welcomes = [*welcome_map]
+print(*guest_welcomes, sep='\n')
+
+
+<script.py> output:
+    [('Jerry', 7), ('Kramer', 17), ('Elaine', 27), ('George', 37), ('Newman', 47)]
+
+<script.py> output:
+    Welcome to Festivus Jerry... You're 7 min late.
+    Welcome to Festivus Kramer... You're 17 min late.
+    Welcome to Festivus Elaine... You're 27 min late.
+    Welcome to Festivus George... You're 37 min late.
+    Welcome to Festivus Newman... You're 47 min late.
+    
+    
+    
+     +93 XP
+Congratulations and happy Festivus! You're using Python built-ins like a pro and well on your way to writing efficient Python code. Believe it or not, there is a way to make these simple lines of code even more efficient! We'll cover this in a future chapter, so continue on to see how!
 
 ==================================================================================================================================
 

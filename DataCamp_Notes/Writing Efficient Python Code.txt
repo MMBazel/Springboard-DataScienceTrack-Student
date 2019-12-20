@@ -1430,12 +1430,519 @@ ________________________________________________________________________________
 
 
 
+Run differentials with .iterrows()
+You've been hired by the San Francisco Giants as an analyst—congrats! The team's owner wants you to calculate a metric called the run differential for each season from the year 2008 to 2012. This metric is calculated by subtracting the total number of runs a team allowed in a season from the team's total number of runs scored in a season. 'RS' means runs scored and 'RA' means runs allowed.
+
+The below function calculates this metric:
+
+def calc_run_diff(runs_scored, runs_allowed):
+
+    run_diff = runs_scored - runs_allowed
+
+    return run_diff
+A DataFrame has been loaded into your session as giants_df and printed into the console. Let's practice using .iterrows() to add a run differential column to this DataFrame.
+
+Instructions 1/4
+35 XP
+1
+2
+3
+4
+Create an empty list called run_diffs that will be used to store the run differentials you will calculate.
+
+# Create an empty list to store run differentials
+run_diffs = []
+
+
+
+Instructions 2/4
+35 XP
+2
+3
+4
+Write a for loop that uses .iterrows() to loop over giants_df and collects each row's runs scored and runs allowed.
+
+# Create an empty list to store run differentials
+run_diffs = []
+
+# Write a for loop and collect runs allowed and runs scored for each row
+for i,row in giants_df.iterrows():
+    runs_scored = row[3]
+    runs_allowed = row[4]
+    
+    
+    
+Instructions 3/4
+30 XP
+3
+4
+Add a line to the for loop that uses the provided function to calculate each row's run differential.
+
+# Create an empty list to store run differentials
+run_diffs = []
+
+# Write a for loop and collect runs allowed and runs scored for each row
+for i,row in giants_df.iterrows():
+    runs_scored = row['RS']
+    runs_allowed = row['RA']
+    
+    # Use the provided function to calculate run_diff for each row
+    run_diff = calc_run_diff(runs_scored, runs_allowed)
+    
+    
+Instructions 4/4
+0 XP
+4
+Add a line to the loop that appends each row's run differential to the run_diffs list.
+
+# Create an empty list to store run differentials
+run_diffs = []
+
+# Write a for loop and collect runs allowed and runs scored for each row
+for i,row in giants_df.iterrows():
+    runs_scored = row['RS']
+    runs_allowed = row['RA']
+    
+    # Use the provided function to calculate run_diff for each row
+    run_diff = calc_run_diff(runs_scored, runs_allowed)
+    
+    # Append each run differential to the output list
+    run_diffs.append(run_diff)
+
+giants_df['RD'] = run_diffs
+print(giants_df)
+
+
+ +100 XP
+Great job! Take a look at the giants_df DataFrame with the new run differential column ('RD') you created (it has been printed in the console).
+
+The 'Playoffs' column tells you if a team made the playoffs for a given season. A 1 means that the team made the playoffs in that season and a 0 means the team did not make the playoffs in that season.
+
+Did you notice that in the seasons with the highest run differentials the Giants made the playoffs? In fact, in both of these seasons (2010 and 2012), the San Francisco Giants not only made the playoffs but also won the World Series! Cool!
+
+
+
+_________________________________________________________________________________________________________________________________
+
+
+Iterating with .itertuples()
+Remember, .itertuples() returns each DataFrame row as a special data type called a namedtuple. You can look up an attribute within a namedtuple with a special syntax. Let's practice working with namedtuples.
+
+A pandas DataFrame has been loaded into your session called rangers_df. This DataFrame contains the stats ('Team', 'League', 'Year', 'RS', 'RA', 'W', 'G', and 'Playoffs') for the Major League baseball team named the Texas Rangers (abbreviated as 'TEX').
+
+Instructions 1/3
+35 XP
+1
+Use .itertuples() to loop over rangers_df and print each row.
+
+Take Hint (-10 XP)
+2
+Loop over rangers_df with .itertuples() and save each row's Index, Year, and Wins (W) attribute as i, year, and wins.
+
+3
+Now, loop over rangers_df and print these values only for those rows where the Rangers made the playoffs.
+
+
+# Loop over the DataFrame and print each row
+for row in rangers_df.itertuples():
+  print(row)
+  
+  
+<script.py> output:
+    Pandas(Index=0, Team='TEX', League='AL', Year=2012, RS=808, RA=707, W=93, G=162, Playoffs=1)
+    Pandas(Index=1, Team='TEX', League='AL', Year=2011, RS=855, RA=677, W=96, G=162, Playoffs=1)
+    Pandas(Index=2, Team='TEX', League='AL', Year=2010, RS=787, RA=687, W=90, G=162, Playoffs=1)
+    Pandas(Index=3, Team='TEX', League='AL', Year=2009, RS=784, RA=740, W=87, G=162, Playoffs=0)
+    Pandas(Index=4, Team='TEX', League='AL', Year=2008, RS=901, RA=967, W=79, G=162, Playoffs=0)
+    Pandas(Index=5, Team='TEX', League='AL', Year=2007, RS=816, RA=844, W=75, G=162, Playoffs=0)
+    Pandas(Index=6, Team='TEX', League='AL', Year=2006, RS=835, RA=784, W=80, G=162, Playoffs=0)
+    Pandas(Index=7, Team='TEX', League='AL', Year=2005, RS=865, RA=858, W=79, G=162, Playoffs=0)
+    Pandas(Index=8, Team='TEX', League='AL', Year=2004, RS=860, RA=794, W=89, G=162, Playoffs=0)
+    Pandas(Index=9, Team='TEX', League='AL', Year=2003, RS=826, RA=969, W=71, G=162, Playoffs=0)
+    Pandas(Index=10, Team='TEX', League='AL', Year=2002, RS=843, RA=882, W=72, G=162, Playoffs=0)
+    Pandas(Index=11, Team='TEX', League='AL', Year=2001, RS=890, RA=968, W=73, G=162, Playoffs=0)
+    Pandas(Index=12, Team='TEX', League='AL', Year=2000, RS=848, RA=974, W=71, G=162, Playoffs=0)
+    Pandas(Index=13, Team='TEX', League='AL', Year=1999, RS=945, RA=859, W=95, G=162, Playoffs=1)
+    Pandas(Index=14, Team='TEX', League='AL', Year=1998, RS=940, RA=871, W=88, G=162, Playoffs=1)
+    Pandas(Index=15, Team='TEX', League='AL', Year=1997, RS=807, RA=823, W=77, G=162, Playoffs=0)
+    Pandas(Index=16, Team='TEX', League='AL', Year=1996, RS=928, RA=799, W=90, G=163, Playoffs=1)
+    Pandas(Index=17, Team='TEX', League='AL', Year=1993, RS=835, RA=751, W=86, G=162, Playoffs=0)
+    Pandas(Index=18, Team='TEX', League='AL', Year=1992, RS=682, RA=753, W=77, G=162, Playoffs=0)
+    Pandas(Index=19, Team='TEX', League='AL', Year=1991, RS=829, RA=814, W=85, G=162, Playoffs=0)
+    Pandas(Index=20, Team='TEX', League='AL', Year=1990, RS=676, RA=696, W=83, G=162, Playoffs=0)
+    Pandas(Index=21, Team='TEX', League='AL', Year=1989, RS=695, RA=714, W=83, G=162, Playoffs=0)
+    Pandas(Index=22, Team='TEX', League='AL', Year=1988, RS=637, RA=735, W=70, G=161, Playoffs=0)
+    Pandas(Index=23, Team='TEX', League='AL', Year=1987, RS=823, RA=849, W=75, G=162, Playoffs=0)
+    Pandas(Index=24, Team='TEX', League='AL', Year=1986, RS=771, RA=743, W=87, G=162, Playoffs=0)
+    Pandas(Index=25, Team='TEX', League='AL', Year=1985, RS=617, RA=785, W=62, G=161, Playoffs=0)
+    Pandas(Index=26, Team='TEX', League='AL', Year=1984, RS=656, RA=714, W=69, G=161, Playoffs=0)
+    Pandas(Index=27, Team='TEX', League='AL', Year=1983, RS=639, RA=609, W=77, G=163, Playoffs=0)
+    Pandas(Index=28, Team='TEX', League='AL', Year=1982, RS=590, RA=749, W=64, G=162, Playoffs=0)
+    Pandas(Index=29, Team='TEX', League='AL', Year=1980, RS=756, RA=752, W=76, G=163, Playoffs=0)
+    Pandas(Index=30, Team='TEX', League='AL', Year=1979, RS=750, RA=698, W=83, G=162, Playoffs=0)
+    Pandas(Index=31, Team='TEX', League='AL', Year=1978, RS=692, RA=632, W=87, G=162, Playoffs=0)
+    Pandas(Index=32, Team='TEX', League='AL', Year=1977, RS=767, RA=657, W=94, G=162, Playoffs=0)
+    Pandas(Index=33, Team='TEX', League='AL', Year=1976, RS=616, RA=652, W=76, G=162, Playoffs=0)
+    Pandas(Index=34, Team='TEX', League='AL', Year=1975, RS=714, RA=733, W=79, G=162, Playoffs=0)
+    Pandas(Index=35, Team='TEX', League='AL', Year=1974, RS=690, RA=698, W=83, G=161, Playoffs=0)
+    Pandas(Index=36, Team='TEX', League='AL', Year=1973, RS=619, RA=844, W=57, G=162, Playoffs=0)
+    
+    
+    # Loop over the DataFrame and print each row's Index, Year and Wins (W)
+for row in rangers_df.itertuples():
+  i = row.Index
+  year = row.Year
+  wins = row.W
+  print(i, year, wins)
+  
+  
+  Now, loop over rangers_df and print these values only for those rows where the Rangers made the playoffs.
+
+
+    # Loop over the DataFrame and print each row's Index, Year and Wins (W)
+for row in rangers_df.itertuples():
+  i = row.Index
+  year = row.Year
+  wins = row.W
+  
+  # Check if rangers made Playoffs (1 means yes; 0 means no)
+  if row.Playoffs == 1:
+    print(i, year, wins)
+    
+    
+  +100 XP
+Awesome! You're getting the hang of using .itertuples(). Remember, you need to use the dot syntax for referencing an attribute in a namedtuple.
+
+You can create a new variable using a row's dot reference (as you did when storing row.Index as the variable i). Or you can use the row's dot reference directly to perform calculations and checks. Notice that you did not have to save row.Playoffs to a new variable in your check statement (you were able to use row.Playoffs directly in your check).
+
+Did you notice the pattern in the Texas Rangers playoff appearances? Only six appearances and two distinct sets of groupings (one from 2010 - 2012 and one from 1996 - 1999).
+_________________________________________________________________________________________________________________________________
+
+Run differentials with .itertuples()
+The New York Yankees have made a trade with the San Francisco Giants for your analyst contract— you're a hot commodity! Your new boss has seen your work with the Giants and now wants you to do something similar with the Yankees data. He'd like you to calculate run differentials for the Yankees from the year 1962 to the year 2012 and find which season they had the best run differential.
+
+You've remembered the function you used when working with the Giants and quickly write it down:
+
+def calc_run_diff(runs_scored, runs_allowed):
+
+    run_diff = runs_scored - runs_allowed
+
+    return run_diff
+Let's use .itertuples() to loop over the yankees_df DataFrame (which has been loaded into your session) and calculate run differentials.
+
+Instructions 1/4
+25 XP
+1
+2
+3
+4
+Use .itertuples() to loop over yankees_df and grab each row's runs scored and runs allowed values.
+
+run_diffs = []
+
+# Loop over the DataFrame and calculate each row's run differential
+for row in yankees_df.itertuples():
+    
+    runs_scored = row.RS
+    runs_allowed = row.RA
+    
+    
+Now, calculate each row's run differential using calc_run_diff(). Be sure to append each row's run differential to run_diffs.
+
+run_diffs = []
+
+# Loop over the DataFrame and calculate each row's run differential
+for row in yankees_df.itertuples():
+    
+    runs_scored = row.RS
+    runs_allowed = row.RA
+
+    run_diff = calc_run_diff(runs_scored, runs_allowed)
+    
+    run_diffs.append(run_diff)
+    
+    
+ Append a new column called 'RD' to the yankees_df DataFrame that contains the run differentials you calculated.
+ 
+ 
+    run_diffs = []
+
+# Loop over the DataFrame and calculate each row's run differential
+for row in yankees_df.itertuples():
+    
+    runs_scored = row.RS
+    runs_allowed = row.RA
+
+    run_diff = calc_run_diff(runs_scored, runs_allowed)
+    
+    run_diffs.append(run_diff)
+
+# Append new column
+yankees_df['RD'] = run_diffs
+print(yankees_df)
+
+
+ +100 XP
+Great job! You used .itertuples() to help the Yankees calculate run differentials. Remember, using .itertuples() is just like using .iterrows() except it tends to be faster. You also have to use a dot reference when looking up attributes with .itertuples().
+
+You found that the Yankees' highest run differential was in 1998. Did you know they actually hold the record for the highest run differential in an MLB season (411 in the year 1939 where they scored 967 runs and allowed 556)? Wow!
+
+
+_________________________________________________________________________________________________________________________________
+
+
+Analyzing baseball stats with .apply()
+The Tampa Bay Rays want you to analyze their data.
+
+They'd like the following metrics:
+
+The sum of each column in the data
+The total amount of runs scored in a year ('RS' + 'RA' for each year)
+The 'Playoffs' column in text format rather than using 1's and 0's
+The below function can be used to convert the 'Playoffs' column to text:
+
+def text_playoffs(num_playoffs): 
+    if num_playoffs == 1:
+        return 'Yes'
+    else:
+        return 'No' 
+Use .apply() to get these metrics. A DataFrame (rays_df) has been loaded and printed to the console. This DataFrame is indexed on the 'Year' column.
+
+Instructions 1/3
+35 XP
+1
+Apply sum() to each column of rays_df to collect the sum of each column. Be sure to specify the correct axis.
+
+Take Hint (-10 XP)
+2
+Apply sum() to each row of rays_df, only looking at the 'RS' and 'RA' columns, and specify the correct axis.
+
+3
+Use .apply() and a lambda function to apply text_playoffs() to each row's 'Playoffs' value of the rays_df DataFrame.
+
+
+
+   RS   RA   W  Playoffs
+2012  697  577  90         0
+2011  707  614  91         1
+2010  802  649  96         1
+2009  803  754  84         0
+2008  774  671  97         1
+
+
+# Gather sum of all columns
+stat_totals = rays_df.apply(sum, axis=0)
+print(stat_totals)
+
+
+# Gather total runs scored in all games per year
+total_runs_scored = rays_df[['RS', 'RA']].apply(sum, axis=1)
+print(total_runs_scored)
+
+# Convert numeric playoffs to text
+textual_playoffs = rays_df.apply(lambda row: text_playoffs(row['Playoffs']), axis=1)
+print(textual_playoffs)
+
+
+ +91 XP
+Great work! The .apply() method let's you apply functions to all rows or columns of a DataFrame by specifying an axis.
+
+If you've been using pandas for some time, you may have noticed that a better way to find these stats would use the pandas built-in .sum() method.
+
+You could have used rays_df.sum(axis=0) to get columnar sums and rays_df[['RS', 'RA']].sum(axis=1) to get row sums.
+
+You could have also used .apply() directly on a Series (or column) of the DataFrame. For example, you could use rays_df['Playoffs'].apply(text_playoffs) to convert the 'Playoffs' column to text.
+
+
+_________________________________________________________________________________________________________________________________
+
+Settle a debate with .apply()
+Word has gotten to the Arizona Diamondbacks about your awesome analytics skills. They'd like for you to help settle a debate amongst the managers. One manager claims that the team has made the playoffs every year they have had a win percentage of 0.50 or greater. Another manager says this is not true.
+
+Let's use the below function and the .apply() method to see which manager is correct.
+
+def calc_win_perc(wins, games_played):
+    win_perc = wins / games_played
+    return np.round(win_perc,2)
+A DataFrame named dbacks_df has been loaded into your session.
+
+Instructions 1/4
+25 XP
+1
+2
+3
+4
+Print the first five rows of the dbacks_df DataFrame to see what the data looks like.
+
+# Display the first five rows of the DataFrame
+print(dbacks_df.head())
+
+
+Create a pandas Series called win_percs by applying the calc_win_perc() function to each row of the DataFrame with a lambda function.
+
+# Display the first five rows of the DataFrame
+print(dbacks_df.head())
+
+# Create a win percentage Series 
+win_percs = dbacks_df.apply(lambda row: calc_win_perc(row['W'], row['G']), axis=1)
+print(win_percs, '\n')
+
+
+Create a new column in dbacks_df called WP that contains the win percentages you calculated in the above step.
+
+# Display the first five rows of the DataFrame
+print(dbacks_df.head())
+
+# Create a win percentage Series 
+win_percs = dbacks_df.apply(lambda row: calc_win_perc(row['W'], row['G']), axis=1)
+print(win_percs, '\n')
+
+# Append a new column to dbacks_df
+dbacks_df['WP'] = win_percs
+print(dbacks_df, '\n')
+
+# Display dbacks_df where WP is greater than 0.50
+print(dbacks_df[dbacks_df['WP'] >= 0.50])
+
+
+ +93 XP
+Nicely done! Using the .apply() method with a lambda function allows you to apply a function to a DataFrame without the need to write a for loop.
+
+Sadly, the second manager was correct. In the year 2012, 2008, 2003, and 2000 the Arizona Diamondbacks had a win percentage greater than or equal to 0.50, but still did not make the playoffs.
+
 
 
 _________________________________________________________________________________________________________________________________
 
 
 
+Replacing .iloc with underlying arrays
+Now that you have a better grasp on a DataFrame's internals let's update one of your previous analyses to leverage a DataFrame's underlying arrays. You'll revisit the win percentage calculations you performed row by row with the .iloc method:
+
+def calc_win_perc(wins, games_played):
+    win_perc = wins / games_played
+    return np.round(win_perc,2)
+
+win_percs_list = []
+
+for i in range(len(baseball_df)):
+    row = baseball_df.iloc[i]
+
+    wins = row['W']
+    games_played = row['G']
+
+    win_perc = calc_win_perc(wins, games_played)
+
+    win_percs_list.append(win_perc)
+
+baseball_df['WP'] = win_percs_list
+Let's update this analysis to use arrays instead of the .iloc method. A DataFrame (baseball_df) has been loaded into your session.
+
+Instructions 1/3
+50 XP
+1
+2
+3
+Use the right method to collect the underlying 'W' and 'G' arrays of baseball_df and pass them directly into the calc_win_perc() function. Store the result as a variable called win_percs_np.
+
+
+# Use the W array and G array to calculate win percentages
+win_percs_np = calc_win_perc(baseball_df['W'].values, baseball_df['G'].values)
+
+
+Create a new column in baseball_df called 'WP' that contains the win percentages you just calculated.
+
+# Use the W array and G array to calculate win percentages
+win_percs_np = calc_win_perc(baseball_df['W'].values, baseball_df['G'].values)
+
+# Append a new column to baseball_df that stores all win percentages
+baseball_df['WP'] = win_percs_np
+
+print(baseball_df.head())
+
+
+ +85 XP
+Great job! You're knocking it out of the park! Using a DataFrame's underlying arrays to perform calculations can really speed up your code and yields some significant efficiency gains. Did you notice that the NumPy array approach was not just faster, but that it also used fewer lines of code and was easier to read?
+
 
 
 _________________________________________________________________________________________________________________________________
+
+
+Bringing it all together: Predict win percentage
+A pandas DataFrame (baseball_df) has been loaded into your session. For convenience, a dictionary describing each column within baseball_df has been printed into your console. You can reference these descriptions throughout the exercise.
+
+You'd like to attempt to predict a team's win percentage for a given season by using the team's total runs scored in a season ('RS') and total runs allowed in a season ('RA') with the following function:
+
+def predict_win_perc(RS, RA):
+    prediction = RS ** 2 / (RS ** 2 + RA ** 2)
+    return np.round(prediction, 2)
+Let's compare the approaches you've learned to calculate a predicted win percentage for each season (or row) in your DataFrame.
+
+Instructions 1/4
+25 XP
+1
+2
+3
+4
+Use a for loop and .itertuples() to predict the win percentage for each row of baseball_df with the predict_win_perc() function. Save each row's predicted win percentage as win_perc_pred and append each to the win_perc_preds_loop list.
+
+
+win_perc_preds_loop = []
+
+# Use a loop and .itertuples() to collect each row's predicted win percentage
+for row in baseball_df.itertuples():
+    runs_scored = row.RS
+    runs_allowed = row.RA
+    win_perc_pred = predict_win_perc(row.RS, row.RA)
+    win_perc_preds_loop.append(win_perc_pred)
+    
+    
+Apply predict_win_perc() to each row of the baseball_df DataFrame using a lambda function. Save the predicted win percentage as win_perc_preds_apply.
+
+win_perc_preds_loop = []
+
+# Use a loop and .itertuples() to collect each row's predicted win percentage
+for row in baseball_df.itertuples():
+    runs_scored = row.RS
+    runs_allowed = row.RA
+    win_perc_pred = predict_win_perc(runs_scored, runs_allowed)
+    win_perc_preds_loop.append(win_perc_pred)
+
+# Apply predict_win_perc to each row of the DataFrame
+win_perc_preds_apply = baseball_df.apply(lambda row: predict_win_perc(row['RS'], row['RA']), axis=1)
+
+
+Calculate the predicted win percentages by passing the underlying 'RS' and 'RA' arrays from baseball_df into predict_win_perc(). Save these predictions as win_perc_preds_np.
+
+win_perc_preds_loop = []
+
+# Use a loop and .itertuples() to collect each row's predicted win percentage
+for row in baseball_df.itertuples():
+    runs_scored = row.RS
+    runs_allowed = row.RA
+    win_perc_pred = predict_win_perc(runs_scored, runs_allowed)
+    win_perc_preds_loop.append(win_perc_pred)
+
+# Apply predict_win_perc to each row of the DataFrame
+win_perc_preds_apply = baseball_df.apply(lambda row: predict_win_perc(row['RS'], row['RA']), axis=1)
+
+# Calculate the win percentage predictions using NumPy arrays
+win_perc_preds_np = predict_win_perc(baseball_df['RS'].values, baseball_df['RA'].values)
+baseball_df['WP_preds'] = win_perc_preds_np
+print(baseball_df.head())
+
+ +100 XP
+Great job! That's a home run! You practiced using three different approaches to iterate over a pandas DataFrame and perform calculations. Did you notice that the .itertuples() approach beat the .apply() approach? Even though both these implementations can be useful, you should default to using a DataFrame's underlying arrays to perform calculations.
+
+Take a look at your win percentage predictions (column 'WP_preds') and compare them to the actual win percentages (column 'WP'). Not bad!
+
+You've done a great job throughout the course! Now, you are well on your way to writing efficient Python and pandas code!
+
+
+
+
+_________________________________________________________________________________________________________________________________
+
+
+

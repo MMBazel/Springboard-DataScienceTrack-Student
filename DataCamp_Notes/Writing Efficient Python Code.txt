@@ -517,6 +517,239 @@ ________________________________________________________________________________
 
 
 
+Using %lprun: spot bottlenecks
+Profiling a function allows you to dig deeper into the function's source code and potentially spot bottlenecks. When you see certain lines of code taking up the majority of the function's runtime, it is an indication that you may want to deploy a different, more efficient technique.
+
+Lets dig deeper into the convert_units() function.
+
+def convert_units(heroes, heights, weights):
+
+    new_hts = [ht * 0.39370  for ht in heights]
+    new_wts = [wt * 2.20462  for wt in weights]
+
+    hero_data = {}
+
+    for i,hero in enumerate(heroes):
+        hero_data[hero] = (new_hts[i], new_wts[i])
+
+    return hero_data
+Load the line_profiler package into your IPython session. Then, use %lprun to profile the convert_units() function acting on your superheroes data. Remember to use the special syntax for working with %lprun (you'll have to provide a -f flag specifying the function you'd like to profile).
+
+The convert_units() function, heroes list, hts array, and wts array have been loaded into your session. After you've finished coding, answer the following question:
+
+What percentage of time is spent on the new_hts list comprehension line of code relative to the total amount of time spent in the convert_units() function?
+
+Instructions
+50 XP
+Possible Answers
+0% - 10%
+11% - 20%
+21% - 50%
+51% - 100%
+
+_________________________________________________________________________________________________________________________________
+
+Using %lprun: fix the bottleneck
+In the previous exercise, you profiled the convert_units() function and saw that the new_hts list comprehension could be a potential bottleneck. Did you notice that the new_wts list comprehension also accounted for a similar percentage of the runtime? This is an indication that you may want to create the new_hts and new_wts objects using a different technique.
+
+Since the height and weight of each hero is stored in a numpy array, you can use array broadcasting rather than list comprehension to convert the heights and weights. This has been implemented in the below function:
+
+def convert_units_broadcast(heroes, heights, weights):
+
+    # Array broadcasting instead of list comprehension
+    new_hts = heights * 0.39370
+    new_wts = weights * 2.20462
+
+    hero_data = {}
+
+    for i,hero in enumerate(heroes):
+        hero_data[hero] = (new_hts[i], new_wts[i])
+
+    return hero_data
+Load the line_profiler package into your IPython session. Then, use %lprun to profile the convert_units_broadcast() function acting on your superheroes data. The convert_units_broadcast() function, heroes list, hts array, and wts array have been loaded into your session. After you've finished coding, answer the following question:
+
+What percentage of time is spent on the new_hts array broadcasting line of code relative to the total amount of time spent in the convert_units_broadcast() function?
+
+
+ +50 XP
+That's correct! By profiling the convert_units() function, you were able to see that using list comprehension was not the most efficient solution for creating the new_hts and new_wts objects. You also saw that using array broadcasting in the convert_units_broadcast() function dramatically decreased the percentage of time spent executing these lines of code. You may have noticed that your function still takes a while to iterate through the for loop. Don't worry; you'll cover how to make this loop more efficient in a later chapter.
+
+_________________________________________________________________________________________________________________________________
+
+Pop quiz: steps for using %mprun
+Suppose you have a list of superheroes (named heroes) along with each hero's height (in centimeters) and weight (in kilograms) loaded as NumPy arrays (named hts and wts, respectively). You also have a convert_units() function saved in a file titled hero_funcs.py.
+
+What are the necessary steps you need to take in order to profile the convert_units() function acting on your superheroes data if you'd like to see the line-by-line memory consumption of convert_units()?
+
+Answer the question
+50 XP
+Possible Answers
+Use the command from hero_funcs import convert_units to load the function you'd like to profile.
+press
+1
+Use %load_ext memory_profiler to load the memory_profiler within your IPython session.
+press
+2
+Use %mprun -f convert_units convert_units(heroes, hts, wts) to get line-by-line memory allocations.
+press
+3
+All of the above.
+press
+4
+
+ +50 XP
+Great job! Remember that using %mprun requires one additional step compared to using %lprun (i.e., you need to import the function in order to use %mprun on it). Now that you've reviewed these necessary steps, practice profiling for memory usage!
+
+_________________________________________________________________________________________________________________________________
+
+
+Using %mprun: Hero BMI
+You'd like to calculate the body mass index (BMI) for a selected sample of heroes. BMI can be calculated using the below formula:
+
+BMI = mass(kg) / height(m)^2
+
+A random sample of 25,000 superheroes has been loaded into your session as an array called sample_indices. This sample is a list of indices that corresponds to each superhero's index selected from the heroes list.
+
+A function named calc_bmi_lists has also been created and saved to a file titled bmi_lists.py. For convenience, it is displayed below:
+
+def calc_bmi_lists(sample_indices, hts, wts):
+
+    # Gather sample heights and weights as lists
+    s_hts = [hts[i] for i in sample_indices]
+    s_wts = [wts[i] for i in sample_indices]
+
+    # Convert heights from cm to m and square with list comprehension
+    s_hts_m_sqr = [(ht / 100) ** 2 for ht in s_hts]
+
+    # Calculate BMIs as a list with list comprehension
+    bmis = [s_wts[i] / s_hts_m_sqr[i] for i in range(len(sample_indices))]
+
+    return bmis
+Notice that this function performs all necessary calculations using list comprehension (hence the name calc_bmi_lists()). Dig deeper into this function and analyze the memory footprint for performing your calculations using lists:
+
+Load the memory_profiler package into your IPython session.
+Import calc_bmi_lists from bmi_lists.
+Once you've completed the above steps, use %mprun to profile the calc_bmi_lists() function acting on your superheroes data. The hts array and wts array have already been loaded into your session.
+After you've finished coding, answer the following question:
+
+How much memory do the list comprehension lines of code consume in the calc_bmi_lists() function? (i.e., what is the total sum of the Increment column for these four lines of code?)
+
+Instructions
+50 XP
+Possible Answers
+20.0 MiB - 30.0 MiB
+0.1 MiB - 2.0 MiB
+10.0 MiB - 15.0 MiB
+0.0 MiB
+
+
+ +50 XP
+Correct! Using a list comprehension approach allocates anywhere from 0.1 MiB to 2 MiB of memory to calculate your BMIs.
+
+If you run %mprun multiple times within your session, you may notice that the Increment column reports 0.0 MiB for all lines of code. This is due to a limitation with the magic command. After running %mprun once, the memory allocation analyzed previously is taken into account for all consecutive runs and %mprun will start from the place the first run left off.
+
+Now that we've profiled the calc_bmi_lists() function, let's see if you can do better with a different approach.
+
+_________________________________________________________________________________________________________________________________
+
+Using %mprun: Hero BMI 2.0
+Let's see if using a different approach to calculate the BMIs can save some memory. If you remember, each hero's height and weight is stored in a numpy array. That means you can use NumPy's handy array indexing capabilities and broadcasting to perform your calculations. A function named calc_bmi_arrays has been created and saved to a file titled bmi_arrays.py. For convenience, it is displayed below:
+
+def calc_bmi_arrays(sample_indices, hts, wts):
+
+    # Gather sample heights and weights as arrays
+    s_hts = hts[sample_indices]
+    s_wts = wts[sample_indices]
+
+    # Convert heights from cm to m and square with broadcasting
+    s_hts_m_sqr = (s_hts / 100) ** 2
+
+    # Calculate BMIs as an array using broadcasting
+    bmis = s_wts / s_hts_m_sqr
+
+    return bmis
+Notice that this function performs all necessary calculations using arrays.
+
+Let's see if this updated array approach decreases your memory footprint:
+
+Load the memory_profiler package into your IPython session.
+Import calc_bmi_arrays from bmi_arrays.
+Once you've completed the above steps, use %mprun to profile the calc_bmi_arrays() function acting on your superheroes data. The sample_indices array, hts array, and wts array have been loaded into your session.
+After you've finished coding, answer the following question:
+
+How much memory do the array indexing and broadcasting lines of code consume in the calc_bmi_array() function? (i.e., what is the total sum of the Increment column for these four lines of code?)
+
+Instructions
+50 XP
+Possible Answers
+10.0 MiB - 15.0 MiB
+0.0 MiB
+20.0 MiB - 30.0 MiB
+0.1 MiB - 2.0 MiB
+
+
+ +50 XP
+That's right! By implementing an array approach, you were able to shave off a few MiBs. Although this isn't a colossal gain, it still decreases your code's overhead. If your input data grows over time, these small improvements could add up to some major efficiency gains.
+
+_________________________________________________________________________________________________________________________________
+
+
+Bringing it all together: Star Wars profiling
+A list of 480 superheroes has been loaded into your session (called heroes) as well as a list of each hero's corresponding publisher (called publishers).
+
+You'd like to filter the heroes list based on a hero's specific publisher, but are unsure which of the below functions is more efficient.
+
+def get_publisher_heroes(heroes, publishers, desired_publisher):
+
+    desired_heroes = []
+
+    for i,pub in enumerate(publishers):
+        if pub == desired_publisher:
+            desired_heroes.append(heroes[i])
+
+    return desired_heroes
+def get_publisher_heroes_np(heroes, publishers, desired_publisher):
+
+    heroes_np = np.array(heroes)
+    pubs_np = np.array(publishers)
+
+    desired_heroes = heroes_np[pubs_np == desired_publisher]
+
+    return desired_heroes
+Instructions 1/4
+25 XP
+1
+2
+3
+4
+Use the get_publisher_heroes() function and the get_publisher_heroes_np() function to collect heroes from the Star Wars universe. The desired_publisher for Star Wars is 'George Lucas'.
+
+
+# Use get_publisher_heroes() to gather Star Wars heroes
+star_wars_heroes = get_publisher_heroes(heroes, publishers, 'George Lucas')
+
+print(star_wars_heroes)
+print(type(star_wars_heroes))
+
+# Use get_publisher_heroes_np() to gather Star Wars heroes
+star_wars_heroes_np = get_publisher_heroes_np(heroes, publishers, 'George Lucas')
+
+print(star_wars_heroes_np)
+print(type(star_wars_heroes_np))
+
+
+Question
+Within your IPython console, load the line_profiler and use %lprun to profile the two functions for line-by-line runtime. When using %lprun, use each function to gather the Star Wars heroes as you did in the previous step. After you've finished profiling, answer the following question:
+Which function has the fastest runtime?
+
+Possible Answers
+get_publisher_heroes() is faster.
+get_publisher_heroes_np() is faster.
+Both functions have the same runtime.
+
+
+
+
 
 
 ==================================================================================================================================
@@ -526,6 +759,627 @@ ________________________________________________________________________________
 Gaining efficiencies
 0%
 This chapter covers more complex efficiency tips and tricks. You'll learn a few useful built-in modules for writing efficient code and practice using set theory. You'll then learn about looping patterns in Python and how to make them more efficient.
+
+_________________________________________________________________________________________________________________________________
+Combining Pokémon names and types
+Three lists have been loaded into your session from a dataset that contains 720 Pokémon:
+
+The names list contains the names of each Pokémon.
+The primary_types list contains the corresponding primary type of each Pokémon.
+The secondary_types list contains the corresponding secondary type of each Pokémon (nan if the Pokémon has only one type).
+We want to combine each Pokémon's name and types together so that you easily see a description of each Pokémon. Practice using zip() to accomplish this task.
+
+Instructions 1/3
+35 XP
+1
+Combine the names list and the primary_types list into a new list object (called names_type1).
+
+Take Hint (-10 XP)
+2
+Combine names, primary_types, and secondary_types (in that order) using zip() and unpack the zip object into a new list.
+
+3
+Use zip() to combine the first five items from the names list and the first three items from the primary_types list.
+
+
+# Combine names and primary_types
+names_type1 = [*zip(names, primary_types)]
+
+print(*names_type1[:5], sep='\n')
+
+
+# Combine all three lists together
+names_types = [*zip(names, primary_types, secondary_types)]
+
+print(*names_types[:5], sep='\n')
+
+# Combine five items from names and three items from primary_types
+differing_lengths = [*zip(names[:5], primary_types[:3])]
+
+print(*differing_lengths, sep='\n')
+
+
+ +100 XP
+Good job! You practiced using zip() to combine multiple objects together. This is a nice function that allows you to easily combine two or more objects.
+
+Did you notice that if you provide zip() with objects of differing lengths, it will only combine until the smallest lengthed object is exhausted?
+
+_________________________________________________________________________________________________________________________________
+
+
+Counting Pokémon from a sample
+A sample of 500 Pokémon has been generated, and three lists from this sample have been loaded into your session:
+
+The names list contains the names of each Pokémon in the sample.
+The primary_types list containing the corresponding primary type of each Pokémon in the sample.
+The generations list contains the corresponding generation of each Pokémon in the sample.
+You want to quickly gather a few counts from these lists to better understand the sample that was generated. Use Counter from the collections module to explore what types of Pokémon are in your sample, what generations they come from, and how many Pokémon have a name that starts with a specific letter.
+
+Counter has already been imported into your session for convenience.
+
+Instructions
+100 XP
+Collect the count of each primary type from the sample.
+Collect the count of each generation from the sample.
+Use list comprehension to collect the first letter of each Pokémon in the names list. Save this as starting_letters.
+Collect the count of starting letters from the starting_letters list. Save this as starting_letters_count.
+
+# Collect the count of primary types
+type_count = Counter(primary_types)
+print(type_count, '\n')
+
+# Collect the count of generations
+gen_count = Counter(generations)
+print(gen_count, '\n')
+
+# Use list comprehension to get each Pokémon's starting letter
+starting_letters = [name[:1] for name in names]
+
+# Collect the count of Pokémon for each starting_letter
+starting_letters_count = Counter(starting_letters)
+print(starting_letters_count)
+
+<script.py> output:
+    Counter({'Water': 66, 'Normal': 64, 'Bug': 51, 'Grass': 47, 'Psychic': 31, 'Rock': 29, 'Fire': 27, 'Electric': 25, 'Ground': 23, 'Fighting': 23, 'Poison': 22, 'Steel': 18, 'Ice': 16, 'Fairy': 16, 'Dragon': 16, 'Ghost': 13, 'Dark': 13}) 
+    
+    Counter({5: 122, 3: 103, 1: 99, 4: 78, 2: 51, 6: 47}) 
+    
+    Counter({'S': 83, 'C': 46, 'D': 33, 'M': 32, 'L': 29, 'G': 29, 'B': 28, 'P': 23, 'A': 22, 'K': 20, 'E': 19, 'W': 19, 'T': 19, 'F': 18, 'H': 15, 'R': 14, 'N': 13, 'V': 10, 'Z': 8, 'J': 7, 'I': 4, 'O': 3, 'Y': 3, 'U': 2, 'X': 1})
+    
+    
+    
+ +100 XP
+Great job! You used Counter from the collections module to better understand the sample of 500 Pokémon that was generated. The sample's most common Pokémon type was 'Water' and the sample's least common Pokémon types were 'Ghost' and 'Dark'. Did you also notice that most of the Pokémon in the sample came from generation 5 and had a starting letter of 'S'?
+
+
+_________________________________________________________________________________________________________________________________
+
+Combinations of Pokémon
+Ash, a Pokémon trainer, encounters a group of five Pokémon. These Pokémon have been loaded into a list within your session (called pokemon) and printed into the console for your convenience.
+
+Ash would like to try to catch some of these Pokémon, but his Pokédex can only store two Pokémon at a time. Let's use combinations from the itertools module to see what the possible pairs of Pokémon are that Ash could catch.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import combinations from itertools.
+Create a combinations object called combos_obj that contains all possible pairs of Pokémon from the pokemon list. A pair has 2 Pokémon.
+Unpack combos_obj into a list called combos_2.
+Ash upgraded his Pokédex so that it can now store four Pokémon. Use combinations to collect all possible combinations of 4 different Pokémon. Save these combinations directly into a list called combos_4 using the star character (*).
+
+
+
+# Import combinations from itertools
+from itertools import combinations
+
+# Create a combination object with pairs of Pokémon
+combos_obj = combinations(pokemon, 2)
+print(type(combos_obj), '\n')
+
+# Convert combos_obj to a list by unpacking
+combos_2 = [*combos_obj]
+print(combos_2, '\n')
+
+# Collect all possible combinations of 4 Pokémon directly into a list
+combos_4 = [*combinations(pokemon, 4)]
+print(combos_4)
+
+
+ +0 XP
+Awesome! You used combinations() from itertools to collect various combination-tuples from a list. combinations() allows you to specify any size of combinations by passing an integer as the second argument. Ash has 10 combination options when his Pokédex can store only two Pokémon. He has 5 combination options when his Pokédex can store four Pokémo
+
+
+
+_________________________________________________________________________________________________________________________________
+
+
+Comparing Pokédexes
+Two Pokémon trainers, Ash and Misty, would like to compare their individual collections of Pokémon. Let's see what Pokémon they have in common and what Pokémon Ash has that Misty does not.
+
+Both Ash and Misty's Pokédex (their collection of Pokémon) have been loaded into your session as lists called ash_pokedex and misty_pokedex. They have been printed into the console for your convenience.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Convert both lists (ash_pokedex and misty_pokedex) to sets called ash_set and misty_set respectively.
+Find the Pokémon that both Ash and Misty have in common using a set method.
+Find the Pokémon that are within Ash's Pokédex but are not within Misty's Pokédex with a set method.
+Use a set method to find the Pokémon that are unique to either Ash or Misty (i.e., the Pokémon that exist in exactly one of the Pokédexes but not both).
+
+
+# Convert both lists to sets
+ash_set = set(ash_pokedex)
+misty_set = set(misty_pokedex)
+
+# Find the Pokémon that exist in both sets
+both = ash_set.intersection(misty_set)
+print(both)
+
+# Find the Pokémon that Ash has and Misty does not have
+ash_only = ash_set.difference(misty_set)
+print(ash_only)
+
+# Find the Pokémon that are in only one set (not both)
+unique_to_set = ash_set.symmetric_difference(misty_set)
+print(unique_to_set)
+
+
+<script.py> output:
+    {'Psyduck', 'Squirtle'}
+    {'Bulbasaur', 'Wigglytuff', 'Koffing', 'Spearow', 'Zubat', 'Rattata', 'Vulpix', 'Pikachu'}
+    {'Krabby', 'Bulbasaur', 'Magikarp', 'Wigglytuff', 'Starmie', 'Spearow', 'Slowbro', 'Koffing', 'Zubat', 'Rattata', 'Poliwag', 'Vulpix', 'Tentacool', 'Horsea', 'Pikachu', 'Vaporeon'}
+
+
+ +100 XP
+Great work! Using sets lets you do some cool comparisons between objects without the need to write a for loop. With a few lines of code, you were able to see that both Ash and Misty have 'Psyduck' and 'Squirtle' in their Pokédex. You were also able to see that Ash has 8 Pokémon that Misty does not have.
+
+_________________________________________________________________________________________________________________________________
+
+
+
+Searching for Pokémon
+Two Pokémon trainers, Ash and Brock, have a collection of ten Pokémon each. Each trainer's Pokédex (their collection of Pokémon) has been loaded into your session as lists called ash_pokedex and brock_pokedex respectively.
+
+You'd like to see if certain Pokémon are members of either Ash or Brock's Pokédex.
+
+Let's compare using a set versus using a list when performing this membership testing.
+
+Instructions 1/4
+25 XP
+1
+2
+3
+4
+Convert Brock's Pokédex list (brock_pokedex) to a set called brock_pokedex_set.
+
+# Convert Brock's Pokédex to a set
+brock_pokedex_set = set(brock_pokedex)
+print(brock_pokedex_set)
+
+
+Check if 'Psyduck' is in Ash's Pokédex list (ash_pokedex) and if 'Psyduck' is in Brock's Pokédex set (brock_pokedex_set).
+
+
+# Convert Brock's Pokédex to a set
+brock_pokedex_set = set(brock_pokedex)
+print(brock_pokedex_set)
+
+# Check if Psyduck is in Ash's list and Brock's set
+print('Psyduck' in ash_pokedex)
+print('Psyduck' in brock_pokedex_set)
+
+Check if 'Machop' is in Ash's Pokédex list (ash_pokedex) and if 'Machop' is in Brock's Pokédex set (brock_pokedex_set).
+
+# Convert Brock's Pokédex to a set
+brock_pokedex_set = set(brock_pokedex)
+print(brock_pokedex_set)
+
+# Check if Psyduck is in Ash's list and Brock's set
+print('Psyduck' in ash_pokedex)
+print('Psyduck' in brock_pokedex_set)
+
+# Check if Machop is in Ash's list and Brock's set
+print('Machop' in ash_pokedex)
+print('Machop' in brock_pokedex_set)
+
+
+
+ +100 XP
+Awesome! Membership testing is much faster when you use sets. Did you notice that using a set for member testing is faster than using a list regardless if the item you are checking is in the set? Checking for 'Psyduck' (which was not in Brock's set) is still faster than checking for 'Psyduck' in Ash's list!
+
+_________________________________________________________________________________________________________________________________
+
+
+Gathering unique Pokémon
+A sample of 500 Pokémon has been created with replacement (meaning a Pokémon could be selected more than once and duplicates exist within the sample).
+
+Three lists have been loaded into your session:
+
+The names list contains the names of each Pokémon in the sample.
+The primary_types list containing the corresponding primary type of each Pokémon in the sample.
+The generations list contains the corresponding generation of each Pokémon in the sample.
+The below function was written to gather unique values from each list:
+
+def find_unique_items(data):
+    uniques = []
+
+    for item in data:
+        if item not in uniques:
+            uniques.append(item)
+
+    return uniques
+Let's compare the above function to using the set data type for collecting unique items.
+
+Instructions 1/4
+25 XP
+1
+2
+3
+4
+Use the provided function to collect the unique Pokémon in the names list. Save this as uniq_names_func.
+
+# Use find_unique_items() to collect unique Pokémon names
+uniq_names_func = find_unique_items(names)
+print(len(uniq_names_func))
+
+# Convert the names list to a set to collect unique Pokémon names
+uniq_names_set = set(names)
+print(len(uniq_names_set))
+
+# Check that both unique collections are equivalent
+print(sorted(uniq_names_func) == sorted(uniq_names_set))
+
+Use the most efficient approach for gathering unique items to collect the unique Pokémon types (from the primary_types list) and Pokémon generations (from the generations list).
+
+
+# Use find_unique_items() to collect unique Pokémon names
+uniq_names_func = find_unique_items(names)
+print(len(uniq_names_func))
+
+# Convert the names list to a set to collect unique Pokémon names
+uniq_names_set = set(names)
+print(len(uniq_names_set))
+
+# Check that both unique collections are equivalent
+print(sorted(uniq_names_func) == sorted(uniq_names_set))
+
+# Use the best approach to collect unique primary types and generations
+uniq_types = set(primary_types) 
+uniq_gens = set(generations)
+print(uniq_types, uniq_gens, sep='\n') 
+
+ +100 XP
+Nice work! Using a set data type to collect unique values is much faster than using a for loop (like in the find_unique_items() function). Since a set is defined as a collection of distinct elements, it is an efficient way to collect unique items from an existing object. Here you took advantage of a set to find the distinct Pokémon from the sample (eliminating duplicate Pokémon) and saw what unique Pokémon types and generations were included in the sample.
+
+
+
+<script.py> output:
+    368
+
+<script.py> output:
+    368
+    368
+    True
+
+<script.py> output:
+    368
+    368
+    True
+    {'Poison', 'Electric', 'Ground', 'Dragon', 'Psychic', 'Grass', 'Ghost', 'Bug', 'Normal', 'Ice', 'Dark', 'Fire', 'Rock', 'Fighting', 'Fairy', 'Steel', 'Water'}
+    {1, 2, 3, 4, 5, 6}
+    
+_________________________________________________________________________________________________________________________________
+
+Gathering Pokémon without a loop
+A list containing 720 Pokémon has been loaded into your session as poke_names. Another list containing each Pokémon's corresponding generation has been loaded as poke_gens.
+
+A for loop has been created to filter the Pokémon that belong to generation one or two, and collect the number of letters in each Pokémon's name:
+
+gen1_gen2_name_lengths_loop = []
+
+for name,gen in zip(poke_names, poke_gens):
+    if gen < 3:
+        name_length = len(name)
+        poke_tuple = (name, name_length)
+        gen1_gen2_name_lengths_loop.append(poke_tuple)
+Instructions
+100 XP
+Instructions
+100 XP
+Eliminate the above for loop using list comprehension and the map() function:
+
+Use list comprehension to collect each Pokémon that belongs to generation 1 or generation 2. Save this as gen1_gen2_pokemon.
+Use the map() function to collect the number of letters in each Pokémon's name within the gen1_gen2_pokemon list. Save this map object as name_lengths_map.
+Combine gen1_gen2_pokemon and name_length_map into a list called gen1_gen2_name_lengths.
+
+
+# Collect Pokémon that belong to generation 1 or generation 2
+gen1_gen2_pokemon = [name for name,gen in zip(poke_names, poke_gens) if gen < 3]
+
+# Create a map object that stores the name lengths
+name_lengths_map = map(len, gen1_gen2_pokemon)
+
+# Combine gen1_gen2_pokemon and name_lengths_map into a list
+gen1_gen2_name_lengths = [*zip(gen1_gen2_pokemon, name_lengths_map)]
+
+print(gen1_gen2_name_lengths_loop[:5])
+print(gen1_gen2_name_lengths[:5])
+
+
+<script.py> output:
+    [('Abra', 4), ('Aerodactyl', 10), ('Aipom', 5), ('Alakazam', 8), ('Ampharos', 8)]
+    [('Abra', 4), ('Aerodactyl', 10), ('Aipom', 5), ('Alakazam', 8), ('Ampharos', 8)]
+
+ +100 XP
+Great job! You successfully used list comprehension and the map() function to eliminate a for loop. If you compared runtimes between the for loop and using list comprehension with a map() function, you'd see that the for loop took quite a bit longer.
+
+If you're an experienced Pythonista, you may have noticed that you could replace the entire for loop with one list comprehension: [(name, len(name)) for name,gen in zip(poke_names, poke_gens) if gen < 3]
+
+_________________________________________________________________________________________________________________________________
+
+
+Pokémon totals and averages without a loop
+A list of 720 Pokémon has been loaded into your session called names. Each Pokémon's corresponding statistics has been loaded as a NumPy array called stats. Each row of stats corresponds to a Pokémon in names and each column represents an individual Pokémon stat (HP, Attack, Defense, Special Attack, Special Defense, and Speed respectively.)
+
+You want to gather each Pokémon's total stat value (i.e., the sum of each row in stats) and each Pokémon's average stat value (i.e., the mean of each row in stats) so that you find the strongest Pokémon.
+
+The below for loop was written to collect these values:
+
+poke_list = []
+
+for pokemon,row in zip(names, stats):
+    total_stats = np.sum(row)
+    avg_stats = np.mean(row)
+    poke_list.append((pokemon, total_stats, avg_stats))
+Instructions
+100 XP
+Replace the above for loop using NumPy:
+Create a total stats array (total_stats_np) using the .sum() method and specifying the correct axis.
+Create an average stats array (avg_stats_np) using the .mean() method and specifying the correct axis.
+Create a final output list (poke_list_np) by combining the names list, the total_stats_np array, and the avg_stats_np array.
+
+# Create a total stats array
+total_stats_np = stats.sum(axis=1)
+
+# Create an average stats array
+avg_stats_np = stats.mean(axis=1)
+
+# Combine names, total_stats_np, and avg_stats_np into a list
+poke_list_np = [*zip(names, total_stats_np, avg_stats_np)]
+
+print(poke_list_np == poke_list, '\n')
+print(poke_list_np[:3])
+print(poke_list[:3], '\n')
+top_3 = sorted(poke_list_np, key=lambda x: x[1], reverse=True)[:3]
+print('3 strongest Pokémon:\n{}'.format(top_3))
+
+
+<script.py> output:
+    True 
+    
+    [('Abomasnow', 494, 82.33333333333333), ('Abra', 310, 51.666666666666664), ('Absol', 465, 77.5)]
+    [('Abomasnow', 494, 82.33333333333333), ('Abra', 310, 51.666666666666664), ('Absol', 465, 77.5)] 
+    
+    3 strongest Pokémon:
+    [('GroudonPrimal Groudon', 770, 128.33333333333334), ('KyogrePrimal Kyogre', 770, 128.33333333333334), ('Arceus', 720, 120.0)]
+    
+    
+     +100 XP
+Great work! You used NumPy's .sum() and .mean() methods with a specific axis to eliminate a for loop. With this approach, you were able to quickly see that 'GroudonPrimal Groudon', 'KyogrePrimal Kyogre', and 'Arceus' were the strongest Pokémon in your list based on total stats.
+
+If you were to gather run times, the for loop would have taken milliseconds to execute while the NumPy approach would have taken microseconds to execute. This is quite an improvement!
+
+
+_________________________________________________________________________________________________________________________________
+
+
+One-time calculation loop
+A list of integers that represents each Pokémon's generation has been loaded into your session called generations. You'd like to gather the counts of each generation and determine what percentage each generation accounts for out of the total count of integers.
+
+The below loop was written to accomplish this task:
+
+for gen,count in gen_counts.items():
+    total_count = len(generations)
+    gen_percent = round(count / total_count * 100, 2)
+    print(
+      'generation {}: count = {:3} percentage = {}'
+      .format(gen, count, gen_percent)
+    )
+Let's make this loop more efficient by moving a one-time calculation outside the loop.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Import Counter from the collections module.
+Use Counter() to collect the count of each generation from the generations list. Save this as gen_counts.
+Write a better for loop that places a one-time calculation outside (above) the loop.
+
+
+# Import Counter
+from collections import Counter
+
+# Collect the count of each generation
+gen_counts = Counter(generations)
+
+# Improve for loop by moving one calculation above the loop
+total_count = len(generations)
+
+for gen,count in gen_counts.items():
+    gen_percent = round(count / total_count * 100, 2)
+    print('generation {}: count = {:3} percentage = {}'
+          .format(gen, count, gen_percent))
+          
+          
+
+ +100 XP
+Well done! You spotted a calculation that could be moved outside a loop to make the loop more efficient. Since the total count is now calculated just once (and not with each loop iteration), you can expect to see an efficiency gain with your new loop. When writing a loop is unavoidable, be sure to analyze the loop and move any one-time calculations outside.
+
+
+<script.py> output:
+    generation 4: count = 112 percentage = 15.56
+    generation 1: count = 151 percentage = 20.97
+    generation 3: count = 136 percentage = 18.89
+    generation 5: count = 154 percentage = 21.39
+    generation 2: count =  99 percentage = 13.75
+    generation 6: count =  68 percentage = 9.44
+    
+_________________________________________________________________________________________________________________________________
+
+
+Holistic conversion loop
+A list of all possible Pokémon types has been loaded into your session as pokemon_types. It's been printed in the console for convenience.
+
+You'd like to gather all the possible pairs of Pokémon types. You want to store each of these pairs in an individual list with an enumerated index as the first element of each list. This allows you to see the total number of possible pairs and provides an indexed label for each pair.
+
+The below loop was written to accomplish this task:
+
+enumerated_pairs = []
+
+for i,pair in enumerate(possible_pairs, 1):
+    enumerated_pair_tuple = (i,) + pair
+    enumerated_pair_list = list(enumerated_pair_tuple)
+    enumerated_pairs.append(enumerated_pair_list)
+Let's make this loop more efficient using a holistic conversion.
+
+Instructions
+100 XP
+combinations from the itertools module has been loaded into your session. Use it to create a list called possible_pairs that contains all possible pairs of Pokémon types (each pair has 2 Pokémon types).
+Create an empty list called enumerated_tuples above the for loop.
+Add a line to the for loop that appends each enumerated_pair_tuple to the empty list you created in the above step.
+Use a built-in function to convert each tuple in enumerated_tuples to a list.
+
+
+
+# Collect all possible pairs using combinations()
+possible_pairs = [*combinations(pokemon_types, 2)]
+
+# Create an empty list called enumerated_tuples
+enumerated_tuples = []
+
+# Add a line to append each enumerated_pair_tuple to the empty list above
+for i,pair in enumerate(possible_pairs, 1):
+    enumerated_pair_tuple = (i,) + pair
+    enumerated_tuples.append(enumerated_pair_tuple)
+
+# Convert all tuples in enumerated_tuples to a list
+enumerated_pairs = [*map(list, enumerated_tuples)]
+print(enumerated_pairs)
+
+
+Possible Pokémon types: ['Bug', 'Dark', 'Dragon', 'Electric', 'Fairy', 'Fighting', 'Fire', 'Flying', 'Ghost', 'Grass', 'Ground', 'Ice', 'Normal', 'Poison', 'Psychic', 'Rock', 'Steel', 'Water']
+
+<script.py> output:
+    [[1, 'Bug', 'Dark'], [2, 'Bug', 'Dragon'], [3, 'Bug', 'Electric'], [4, 'Bug', 'Fairy'], [5, 'Bug', 'Fighting'], [6, 'Bug', 'Fire'], [7, 'Bug', 'Flying'], [8, 'Bug', 'Ghost'], [9, 'Bug', 'Grass'], [10, 'Bug', 'Ground'], [11, 'Bug', 'Ice'], [12, 'Bug', 'Normal'], [13, 'Bug', 'Poison'], [14, 'Bug', 'Psychic'], [15, 'Bug', 'Rock'], [16, 'Bug', 'Steel'], [17, 'Bug', 'Water'], [18, 'Dark', 'Dragon'], [19, 'Dark', 'Electric'], [20, 'Dark', 'Fairy'], [21, 'Dark', 'Fighting'], [22, 'Dark', 'Fire'], [23, 'Dark', 'Flying'], [24, 'Dark', 'Ghost'], [25, 'Dark', 'Grass'], [26, 'Dark', 'Ground'], [27, 'Dark', 'Ice'], [28, 'Dark', 'Normal'], [29, 'Dark', 'Poison'], [30, 'Dark', 'Psychic'], [31, 'Dark', 'Rock'], [32, 'Dark', 'Steel'], [33, 'Dark', 'Water'], [34, 'Dragon', 'Electric'], [35, 'Dragon', 'Fairy'], [36, 'Dragon', 'Fighting'], [37, 'Dragon', 'Fire'], [38, 'Dragon', 'Flying'], [39, 'Dragon', 'Ghost'], [40, 'Dragon', 'Grass'], [41, 'Dragon', 'Ground'], [42, 'Dragon', 'Ice'], [43, 'Dragon', 'Normal'], [44, 'Dragon', 'Poison'], [45, 'Dragon', 'Psychic'], [46, 'Dragon', 'Rock'], [47, 'Dragon', 'Steel'], [48, 'Dragon', 'Water'], [49, 'Electric', 'Fairy'], [50, 'Electric', 'Fighting'], [51, 'Electric', 'Fire'], [52, 'Electric', 'Flying'], [53, 'Electric', 'Ghost'], [54, 'Electric', 'Grass'], [55, 'Electric', 'Ground'], [56, 'Electric', 'Ice'], [57, 'Electric', 'Normal'], [58, 'Electric', 'Poison'], [59, 'Electric', 'Psychic'], [60, 'Electric', 'Rock'], [61, 'Electric', 'Steel'], [62, 'Electric', 'Water'], [63, 'Fairy', 'Fighting'], [64, 'Fairy', 'Fire'], [65, 'Fairy', 'Flying'], [66, 'Fairy', 'Ghost'], [67, 'Fairy', 'Grass'], [68, 'Fairy', 'Ground'], [69, 'Fairy', 'Ice'], [70, 'Fairy', 'Normal'], [71, 'Fairy', 'Poison'], [72, 'Fairy', 'Psychic'], [73, 'Fairy', 'Rock'], [74, 'Fairy', 'Steel'], [75, 'Fairy', 'Water'], [76, 'Fighting', 'Fire'], [77, 'Fighting', 'Flying'], [78, 'Fighting', 'Ghost'], [79, 'Fighting', 'Grass'], [80, 'Fighting', 'Ground'], [81, 'Fighting', 'Ice'], [82, 'Fighting', 'Normal'], [83, 'Fighting', 'Poison'], [84, 'Fighting', 'Psychic'], [85, 'Fighting', 'Rock'], [86, 'Fighting', 'Steel'], [87, 'Fighting', 'Water'], [88, 'Fire', 'Flying'], [89, 'Fire', 'Ghost'], [90, 'Fire', 'Grass'], [91, 'Fire', 'Ground'], [92, 'Fire', 'Ice'], [93, 'Fire', 'Normal'], [94, 'Fire', 'Poison'], [95, 'Fire', 'Psychic'], [96, 'Fire', 'Rock'], [97, 'Fire', 'Steel'], [98, 'Fire', 'Water'], [99, 'Flying', 'Ghost'], [100, 'Flying', 'Grass'], [101, 'Flying', 'Ground'], [102, 'Flying', 'Ice'], [103, 'Flying', 'Normal'], [104, 'Flying', 'Poison'], [105, 'Flying', 'Psychic'], [106, 'Flying', 'Rock'], [107, 'Flying', 'Steel'], [108, 'Flying', 'Water'], [109, 'Ghost', 'Grass'], [110, 'Ghost', 'Ground'], [111, 'Ghost', 'Ice'], [112, 'Ghost', 'Normal'], [113, 'Ghost', 'Poison'], [114, 'Ghost', 'Psychic'], [115, 'Ghost', 'Rock'], [116, 'Ghost', 'Steel'], [117, 'Ghost', 'Water'], [118, 'Grass', 'Ground'], [119, 'Grass', 'Ice'], [120, 'Grass', 'Normal'], [121, 'Grass', 'Poison'], [122, 'Grass', 'Psychic'], [123, 'Grass', 'Rock'], [124, 'Grass', 'Steel'], [125, 'Grass', 'Water'], [126, 'Ground', 'Ice'], [127, 'Ground', 'Normal'], [128, 'Ground', 'Poison'], [129, 'Ground', 'Psychic'], [130, 'Ground', 'Rock'], [131, 'Ground', 'Steel'], [132, 'Ground', 'Water'], [133, 'Ice', 'Normal'], [134, 'Ice', 'Poison'], [135, 'Ice', 'Psychic'], [136, 'Ice', 'Rock'], [137, 'Ice', 'Steel'], [138, 'Ice', 'Water'], [139, 'Normal', 'Poison'], [140, 'Normal', 'Psychic'], [141, 'Normal', 'Rock'], [142, 'Normal', 'Steel'], [143, 'Normal', 'Water'], [144, 'Poison', 'Psychic'], [145, 'Poison', 'Rock'], [146, 'Poison', 'Steel'], [147, 'Poison', 'Water'], [148, 'Psychic', 'Rock'], [149, 'Psychic', 'Steel'], [150, 'Psychic', 'Water'], [151, 'Rock', 'Steel'], [152, 'Rock', 'Water'], [153, 'Steel', 'Water']]
+    
+    
+    
+  +0 XP
+Great job! Rather than converting each tuple to a list within the loop, you used the map() function to convert tuples to lists all at once outside of a loop. You're getting the hang of writing efficient loops! Remember, you want to avoid looping as much as possible when writing Python code. In cases where looping is unavoidable, be sure to check your loops for one-time calculations and holistic conversions to make them more efficient.
+
+
+_________________________________________________________________________________________________________________________________
+
+Bringing it all together: Pokémon z-scores
+A list of 720 Pokémon has been loaded into your session as names. Each Pokémon's corresponding Health Points is stored in a NumPy array called hps. You want to analyze the Health Points using the z-score to see how many standard deviations each Pokémon's HP is from the mean of all HPs.
+
+The below code was written to calculate the HP z-score for each Pokémon and gather the Pokémon with the highest HPs based on their z-scores:
+
+poke_zscores = []
+
+for name,hp in zip(names, hps):
+    hp_avg = hps.mean()
+    hp_std = hps.std()
+    z_score = (hp - hp_avg)/hp_std
+    poke_zscores.append((name, hp, z_score))
+high_hp_pokemon = []
+
+for name,hp,zscore in poke_zscores:
+    if zscore > 2:
+        high_hp_pokemon.append((name, hp, zscore))
+Instructions 1/3
+35 XP
+1
+2
+3
+Use NumPy to eliminate the for loop used to create the z-scores.
+Then, combine the names, hps, and z_scores objects together into a list called poke_zscores2.
+
+
+
+# Calculate the total HP avg and total HP standard deviation
+hp_avg = hps.mean()
+hp_std = hps.std()
+
+# Use NumPy to eliminate the previous for loop
+z_scores = (hps - hp_avg)/hp_std
+
+# Combine names, hps, and z_scores
+poke_zscores2 = [*zip(names, hps, z_scores)]
+print(*poke_zscores2[:3], sep='\n')
+
+
+<script.py> output:
+    ('Abomasnow', 80.0, 0.46797638117739043)
+    ('Abra', 60.0, -0.3271693284337512)
+    ('Absol', 131.0, 2.4955979406858013)
+    
+    
+    
+ Use list comprehension to replace the for loop used to collect Pokémon with the highest HPs based on their z-score.
+ 
+ # Calculate the total HP avg and total HP standard deviation
+hp_avg = hps.mean()
+hp_std = hps.std()
+
+# Use NumPy to eliminate the previous for loop
+z_scores = (hps - hp_avg)/hp_std
+
+# Combine names, hps, and z_scores
+poke_zscores2 = [*zip(names, hps, z_scores)]
+print(*poke_zscores2[:3], sep='\n')
+
+# Use list comprehension with the same logic as the highest_hp_pokemon code block
+highest_hp_pokemon = [(name, hp, zscore) for name,hp,zscore in poke_zscores2 if zscore > 2]
+print(*highest_hp_pokemon, sep='\n')
+
+
+
+<script.py> output:
+    ('Abomasnow', 80.0, 0.46797638117739043)
+    ('Abra', 60.0, -0.3271693284337512)
+    ('Absol', 131.0, 2.4955979406858013)
+    ('Absol', 131.0, 2.4955979406858013)
+    ('Bonsly', 127.0, 2.3365687987635733)
+    ('Caterpie', 122.0, 2.137782371360788)
+    ('Cofagrigus', 133.0, 2.575112511646916)
+    ('Cresselia', 126.0, 2.296811513283016)
+    ('Dewgong', 122.0, 2.137782371360788)
+    ('Druddigon', 126.0, 2.296811513283016)
+    ('Froakie', 123.0, 2.1775396568413448)
+    ('Kadabra', 135.0, 2.65462708260803)
+    ('Klang', 123.0, 2.1775396568413448)
+    ('Kricketune', 122.0, 2.137782371360788)
+    ('Lumineon', 129.0, 2.4160833697246873)
+    ('Magnemite', 137.0, 2.734141653569144)
+    ('Nidorina', 119.0, 2.0185105149191167)
+    ('Onix', 126.0, 2.296811513283016)
+    ('Prinplup', 124.0, 2.217296942321902)
+    ('Skuntank', 128.0, 2.3763260842441305)
+    ('Swellow', 125.0, 2.2570542278024592)
+    
+    
+    
+  +100 XP
+Great job! You're Catching 'Em All (efficiencies that is). You eliminated two loops using NumPy broadcasting and list comprehension. Did you notice how much faster the approach you developed was compared to the original loops? What a great improvement!
+
+Remember the techniques you've learned throughout this chapter as you continue writing Python code outside this course. Keep in mind the built-in functions and modules you covered to eliminate loops and remember to check your unavoidable loops for things that can be moved outside.
+
+
+    
+    
 
 
 
@@ -537,3 +1391,51 @@ This chapter covers more complex efficiency tips and tricks. You'll learn a few 
 Basic pandas optimizations
 0%
 This chapter offers a brief introduction on how to efficiently work with pandas DataFrames. You'll learn the various options you have for iterating over a DataFrame. Then, you'll learn how to efficiently apply functions to data stored in a DataFrame.
+
+
+_________________________________________________________________________________________________________________________________
+
+
+Iterating with .iterrows()
+In the video, we discussed that .iterrows() returns each DataFrame row as a tuple of (index, pandas Series) pairs. But, what does this mean? Let's explore with a few coding exercises.
+
+A pandas DataFrame has been loaded into your session called pit_df. This DataFrame contains the stats for the Major League Baseball team named the Pittsburgh Pirates (abbreviated as 'PIT') from the year 2008 to the year 2012. It has been printed into your console for convenience.
+
+Instructions 1/4
+30 XP
+1
+Use .iterrows() to loop over pit_df and print each row. Save the first item from .iterrows() as i and the second as row.
+
+Take Hint (-9 XP)
+2
+Add two lines to the loop: one before print(row) to print each index variable and one after to print each row's type.
+
+3
+Instead of using i and row in the for statement to store the output of .iterrows(), use one variable named row_tuple.
+
+4
+Add a line in the for loop to print the type of each row_tuple.
+
+
+ +100 XP
+Nice work! Since .iterrows() returns each DataFrame row as a tuple of (index, pandas Series) pairs, you can either split this tuple and use the index and row-values separately (as you did with for i,row in pit_df.iterrows()), or you can keep the result of .iterrows() in the tuple form (as you did with for row_tuple in pit_df.iterrows()).
+
+If using i,row, you can access things from the row using square brackets (i.e., row['Team']). If using row_tuple, you would have to specify which element of the tuple you'd like to access before grabbing the team name (i.e., row_tuple[1]['Team']).
+
+With either approach, using .iterrows() will still be substantially faster than using .iloc as you saw in the video.
+
+
+
+_________________________________________________________________________________________________________________________________
+
+
+
+
+
+_________________________________________________________________________________________________________________________________
+
+
+
+
+
+_________________________________________________________________________________________________________________________________

@@ -1,0 +1,99 @@
+Creating Robust Python Workflows
+Creating Robust Python Workflows
+4 hours
+16 Videos
+47 Exercises
+1,343 Participants
+3,900 XP
+This course is part of these tracks:
+
+Coding Best Practices with Python
+Martin Skarzynski
+Martin Skarzynski
+Co-Chair, Foundation for Advanced Education in the Sciences (FAES)
+
+Martin Skarzynski is passionate about Bioinformatics, Data Science, Epidemiology, and Statistical Computing. Martin is Co-Chair of the Bioinformatics and Data Science Department at the Foundation for the Advancement of Education in the Sciences (FAES), where he has been an instructor since 2015 and currently teaches Introduction to Python (BIOF309) and Applied Machine Learning (BIOF509). Martin is also an instructor for Software and Data Carpentry, non-profit organizations that teach computational skills. As a National Cancer Institute (NCI) Cancer Prevention Fellow, Martin uses the Python and R programming languages and command line tools to explore, analyze, visualize and present data. Martin has a strong interest in reproducibility, scientific publishing workflows, and open data/science best practices and is excited to apply his computational skills in combination with his science background to the study and prevention of cancer.
+
+COLLABORATOR(S)
+Chester Ismay
+Chester Ismay
+
+Sara Billen
+Sara Billen
+
+PREREQUISITES
+Python Data Science Toolbox (Part 2)
+Supervised Learning with scikit-learn
+Course Description
+The decisions we make in life are guided by our principles. No one is born with a life philosophy, instead everyone creates their own over time. In this course, you will develop a set of principles for your data science and software development projects. These principles will save time, prevent frustration, and build your confidence as a data scientist and software developer. In addition to best practices in the Python programming language, You will learn to leverage hidden gems in the Python standard library and well-known tools from Python's excellent ecosystem, such as pandas and scikit-learn. The time you invest in this course will yield dividends for you and others throughout your career. Your colleagues, community members, and future self will thank you.
+
+
+<=====================================================================================================================================>
+1
+Python Programming Principles
+FREE
+0%
+In this chapter, we will discuss three principles that guide decisions made by Python programmers. You will put these principles into practice in the coding exercises and throughout the rest of the course!
+
+
+_______________________________________________________________________________________________________________________________________
+
+
+
+_______________________________________________________________________________________________________________________________________
+
+
+
+_______________________________________________________________________________________________________________________________________
+
+
+
+_______________________________________________________________________________________________________________________________________
+
+
+
+_______________________________________________________________________________________________________________________________________
+
+
+
+
+_______________________________________________________________________________________________________________________________________
+
+
+
+_______________________________________________________________________________________________________________________________________
+
+
+
+<=====================================================================================================================================>
+
+
+
+VIEW CHAPTER DETAILS
+2
+Documentation and Tests
+0%
+Documentation and tests are often overlooked, despite being essential to the success of all projects. In this chapter, you will learn how to include documentation in our code and practice Test-Driven Development (TDD), a process that puts tests first!
+
+
+<=====================================================================================================================================>
+
+
+
+VIEW CHAPTER DETAILS
+3
+Shell superpowers
+0%
+Shell scripting is an essential part of any Python workflow. In this chapter, you will learn how to build command-line interfaces (CLIs) for Python programs and to automate common tasks related to version control, virtual environments, and Python packaging.
+
+
+<=====================================================================================================================================>
+
+
+VIEW CHAPTER DETAILS
+4
+Projects, pipelines, and parallelism
+0%
+In the final chapter of this course, you will learn how to facilitate and standardize project setup using project templates. You will also consider the benefits of zipped executable projects, Jupyter notebooks parameterization, and parallel computing.
+
+VIEW CHAPTER DETAILS

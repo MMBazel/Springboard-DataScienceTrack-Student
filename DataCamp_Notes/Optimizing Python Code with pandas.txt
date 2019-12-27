@@ -631,6 +631,15 @@ Congratulations! Looking through a list requires a pass in every element of the 
 
 
 
+
+
+
+====================================================================================================================================
+VIEW CHAPTER DETAILS
+3
+Efficient iterating
+0%
+This chapter presents different ways of iterating through a Pandas DataFrame and why vectorization is the most efficient way to achieve it.
 ______________________________________________________________________________________________________________________________
 
 
@@ -693,14 +702,145 @@ Well Done! You now know how to use the .iterrows() function to loop over the row
 ______________________________________________________________________________________________________________________________
 
 
+.apply() function in every cell
+As you saw in the lesson, you can use .apply() to map a function to every cell of the DataFrame, regardless the column or the row.
+
+You're going to try it out on the poker_hands dataset. You will use .apply() to square every cell of the DataFrame. The native Python way to square a number n is n**2.
+
+Instructions
+100 XP
+Define the lambda transformation for the square.
+Apply the transformation using the .apply() function.
 
 
-====================================================================================================================================
-VIEW CHAPTER DETAILS
-3
-Efficient iterating
-0%
-This chapter presents different ways of iterating through a Pandas DataFrame and why vectorization is the most efficient way to achieve it.
+# Define the lambda transformation
+get_square = lambda x: x**2
+
+# Apply the transformation
+data_sum = poker_hands.apply(get_square)
+print(data_sum.head())
+
+ +100 XP
+Well done! You can now use the apply function to transform every cell at once.
+______________________________________________________________________________________________________________________________
+
+.apply() for rows iteration
+.apply() is a very useful to iterate through the rows of a DataFrame and apply a specific function.
+
+You will work on a subset of the poker_hands dataset, which includes only the rank of all the five cards of each hand in each row (this subset is generated for you in the script). You're going to get the variance of every hand for all ranks, and every rank for all hands.
+
+Instructions 1/2
+50 XP
+1
+Define a lambda function to return the variance, using the numpy package.
+Apply the transformation for every row.
+Take Hint (-15 XP)
+
+
+# Define the lambda transformation
+get_variance = lambda x: np.var(x)
+
+# Apply the transformation
+data_tr = poker_hands[['R1', 'R2', 'R3', 'R4', 'R5']].apply(get_variance, axis=1)
+print(data_tr.head())
+
+2
+Modify the script to apply the function on every rank.
+
+get_variance = lambda x: np.var(x)
+
+# Apply the transformation
+data_tr = poker_hands[['R1', 'R2', 'R3', 'R4', 'R5']].apply(get_variance, axis=0)
+print(data_tr.head())
+______________________________________________________________________________________________________________________________
+
+pandas vectorization in action
+In this exercise, you will apply vectorization over pandas series to:
+
+calculate the mean rank of all the cards in each hand (row)
+calculate the mean rank of each of the 5 cards in each hand (column)
+You will use the poker_hands dataset once again to compare both methods' efficiency.
+
+Instructions
+100 XP
+Calculate the mean rank in each hand.
+Calculate the mean rank of each of the 5 card in all hands.
+
+
+# Calculate the mean rank in each hand
+row_start_time = time.time()
+mean_r = poker_hands[['R1', 'R2', 'R3', 'R4', 'R5']].mean(axis=1)
+print("Time using pandas vectorization for rows: {} sec".format(time.time() - row_start_time))
+print(mean_r.head())
+
+# Calculate the mean rank of each of the 5 card in all hands
+col_start_time = time.time()
+mean_c = poker_hands[['R1', 'R2', 'R3', 'R4', 'R5']].mean(axis=0)
+print("Time using pandas vectorization for columns: {} sec".format(time.time() - col_start_time))
+print(mean_c.head())
+
+<script.py> output:
+    Time using pandas vectorization for rows: 0.005646467208862305 sec
+    0    9.4
+    1    9.4
+    2    9.4
+    3    9.4
+    4    9.4
+    dtype: float64
+    Time using pandas vectorization for columns: 0.004666566848754883 sec
+    R1    6.995242
+    R2    7.014194
+    R3    7.014154
+    R4    6.942463
+    R5    6.962735
+    dtype: float64
+
+
+
+
+______________________________________________________________________________________________________________________________
+
+Vectorization methods for looping a DataFrame
+Now that you're familiar with vectorization in pandas and NumPy, you're going to compare their respective performances yourself.
+
+Your task is to calculate the variance of all the hands in each hand using the vectorization over pandas Series and then modify your code using the vectorization over Numpy ndarrays method.
+
+Instructions 1/2
+50 XP
+1
+Calculate the variance of the ranks of all the cards in each hand using vectorization with pandas.
+Take Hint (-15 XP)
+
+
+# Calculate the variance in each hand
+start_time = time.time()
+poker_var = poker_hands[['R1', 'R2', 'R3', 'R4', 'R5']].var(axis=1)
+print("Time using pandas vectorization: {} sec".format(time.time() - start_time))
+print(poker_var.head())
+
+
+2
+Calculate the variance of the ranks of all the cards in each hand using vectorization with NumPy.
+
+
+# Calculate the variance in each hand
+start_time = time.time()
+poker_var = poker_hands[['R1', 'R2', 'R3', 'R4', 'R5']].values.var(axis=1, ddof=1)
+print("Time using NumPy vectorization: {} sec".format(time.time() - start_time))
+print(poker_var[0:5])
+
+
+ +100 XP
+Congratulations! You have mastered all the techniques to iterate through a pandas DataFrame and apply functions on its values! In case you wonder, it's expected to get 5 identical values. The dataset contains all the possible combinations of 5 cards from a standard deck of cards: the columns all contain the same cards, although in a different order, so the variance is the same for all columns.
+______________________________________________________________________________________________________________________________
+
+
+______________________________________________________________________________________________________________________________
+
+
+______________________________________________________________________________________________________________________________
+
+
 
 
 ====================================================================================================================================

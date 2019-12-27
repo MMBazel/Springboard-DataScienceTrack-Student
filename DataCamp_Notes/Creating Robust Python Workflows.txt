@@ -38,25 +38,210 @@ In this chapter, we will discuss three principles that guide decisions made by P
 
 _______________________________________________________________________________________________________________________________________
 
+Functions and iteration
+In this exercise, we'll define two functions, print_files() and list_files(), that will each use read_text().
+
+The print_files() function will use a for loop to print file contents and not return anything.
+
+The list_files() function will use a list comprehension to return a list of file contents.
+
+In the video, we used the Path class's read_text() method to read in text files.
+
+If you don't remember how this worked, you can take a look at the slides.
+
+Path has already been imported from the pathlib module.
+
+We will also use the pprint() function (short for pretty print) from the standard library pprint module to make the list output a little more readable.
+
+Instructions
+100 XP
+Instructions
+100 XP
+In the print_files() function definition, set up the iteration instructions for the for loop.
+Use the for loop to pass each the contents of each file to print().
+In the list_files() function definition, use the read_text() method to read file contents.
+Set up the list comprehension to pass each filename to Path.
+
+def print_files(filenames):
+    # Set up the loop iteration instructions
+    for name in filenames:
+        # Use pathlib.Path to print out each file
+        print(Path(name).read_text())
+        
+def list_files(filenames):
+    # Use pathlib.Path to read the contents of each file
+    return [Path(name).read_text()
+            # Obtain each name from the list of filenames
+            for name in filenames]
+
+filenames = "diabetes.txt", "boston.txt", "digits.txt", "iris.txt", "wine.txt"
+print_files(filenames)
+pprint(list_files(filenames))
+
+
+ +100 XP
+Well done! In our first coding exercise, we practiced using functions and two types of iteration: for loops and list comprehensions. Next, we will take a closer look at the dataset descriptions we obtained.
+
+_______________________________________________________________________________________________________________________________________
+
+Find matches
+In the previous exercise, we printed out a lot of text.
+
+Here, we'll define a get_matches() function that will allow us to search through all of that text.
+
+When we pass a query string to get_matches() it will return only the lines that contain the query string.
+
+The list comprehension in get_matches() iterates over every line in the file object created by the open() method.
+
+To filter out lines that do not match, get_matches() includes an if clause in its list comprehension.
+
+The if clauses in list comprehensions always go after for clauses.
+
+We will use get_matches() to extract lines that include the number of rows and columns in each dataset description.
+
+Instructions
+100 XP
+Add an if clause to the list comprehension in get_matches() that will remove lines that do not match from the final list of lines.
+Use a second list comprehension to search for the string "Number of" in every file in the filenames variable from the previous exercise.
+
+
+def get_matches(filename, query):
+    # Filter the list comprehension using an if clause
+    return [line for line in Path(filename).open() if query in line]
+
+# Iterate over files to find all matching lines
+matches = [get_matches(name, "Number of") for name in filenames]
+print(matches)
+
+
+ +0 XP
+Magnificent matching! In this second coding exercise, we learned how to include an if clause in our list comprehensions. Next, we will extract numbers from the strings we obtained.
+_______________________________________________________________________________________________________________________________________
+
+
+Dataset dimensions
+The output from the previous exercise was a nested list, or more specifically a list of lists of strings.
+
+Next, we will define a function called flatten() to flatten this list of lists into a simple list.
+
+In this exercise, we will use generator expressions instead of list comprehensions.
+
+Generators remember which values they have already generated.
+
+This allows us to use the zip() function to elegantly pair the numbers we will extract from the matches variable.
+
+As zip() pairs numbers, the number generator will keep track of which numbers come next until it runs out of values.
+
+After we use zip() to pair up the number of rows and columns from each dataset description, we will use zip() again to match dataset names and dimensions.
+
+Instructions
+100 XP
+First, use flatten() to obtain each list from the list of lists.
+Then, extract each element from every list so that the strings can be combined into one final list.
+
+def flatten(nested_list):
+    return (item 
+            # Obtain each list from the list of lists
+            for sublist in nested_list
+            # Obtain each element from each individual list
+            for item in sublist)
+
+number_generator = (int(substring) for string in flatten(matches)
+                    for substring in string.split() if substring.isdigit())
+pprint(dict(zip(filenames, zip(number_generator, number_generator))))
+
+
+
+<script.py> output:
+    {'boston.txt': (506, 13),
+     'diabetes.txt': (442, 10),
+     'digits.txt': (5620, 64),
+     'iris.txt': (150, 4),
+     'wine.txt': (178, 13)}
+
+
+ +100 XP
+Fantastic flattening! In this third coding exercise, we practiced using generator expressions instead of list comprehensions. Next, we'll continue on to learn about a new set of principles related to Python workflows.
 
 
 _______________________________________________________________________________________________________________________________________
 
+Extract words
+In the next two exercises, you will define three functions that can be combine to extract and count words from a text file.
 
+The obtain_words() function uses a conditional expression to replace non-letter characters with spaces so that it can return words without punctuation.
+
+The filter_words() function use a list comprehension with an if clause to remove words shorter than the minimum_length threshold.
+
+After we confirm that these two functions work correctly, we will move them into a module.
+
+As we continue to work towards our current goal, we can build up a toolbox of functions that may come in handy for future tasks.
+
+Instructions
+100 XP
+Inside of obtain_words(), check if each character in the input string is a letter with the .isalpha() string method.
+Inside of filter_words(), set up the if clause to remove words shorter than three characters.
+
+
+def obtain_words(string):
+    # Replace non-alphabetic characters with spaces
+    return "".join(char if char.isalpha() else " " for char in string).split()
+
+def filter_words(words, minimum_length=3):
+    # Remove words shorter than 3 characters
+    return [word for word in words if len(word) >= minimum_length]
+
+words = obtain_words(Path("diabetes.txt").read_text().lower())
+filtered_words = filter_words(words)
+pprint(filtered_words)
+
+ +0 XP
+Marvelous modularization! You just created two functions and combined them to obtain and process words from a text file. Next, we will count the words that we obtained.
 
 _______________________________________________________________________________________________________________________________________
 
+Most frequent words
+In the previous exercise, we created a list of words called filtered_words.
+
+Now we will define a count_words() function to turn the word list into a dictionary of words and word counts.
+
+To accomplish this, we will use a dictionary comprehension.
+
+Dictionary comprehensions create key-value pairs from an iterable.
+
+In this case, the iterable is the word list, the dictionary keys are words, and the values are the word counts.
+
+After we create the dictionary, we will use turn it into a pandas DataFrame, so that we can use a series of methods to
+
+sort the word counts
+obtain the top 5 most frequent words
+create a horizontal bar plot
+remove the y axis label
+The bar plot will show the frequency of the top words in the diabetes dataset.
+
+Instructions
+100 XP
+Complete the dictionary comprehension inside the count_words() function definition.
+Create the dictionary of words and word counts from the filtered_words variable that we created in the previous exercise.
+
+def count_words(word_list):
+    # Count the words in the input list
+    return {word: word_list.count(word) for word in word_list}
+
+# Create the dictionary of words and word counts
+word_count_dictionary = count_words(filtered_words)
+
+(pd.DataFrame(word_count_dictionary.items())
+ .sort_values(by=1, ascending=False)
+ .head()
+ .plot(x=0, kind="barh", xticks=range(5), legend=False)
+ .set_ylabel("")
+)
+plt.show()
 
 
-_______________________________________________________________________________________________________________________________________
-
-
-
-_______________________________________________________________________________________________________________________________________
-
-
-
-
+ +100 XP
+Wonderful word-ranking! We now have several independent, reusable functions at our disposal. In this coding exercise, we used a dictionary comprehension to link words with their counts and then sorted the words we obtained by their frequency. In the next video, we will learn about the last principle covered in this chapter.
 _______________________________________________________________________________________________________________________________________
 
 

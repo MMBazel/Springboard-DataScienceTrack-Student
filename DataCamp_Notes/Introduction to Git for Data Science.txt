@@ -1,0 +1,86 @@
+Interactive Course
+Introduction to Git for Data Science
+Introduction to Git for Data Science
+
+    4 hours
+    0 Videos
+    46 Exercises
+    65,206 Participants
+    3,650 XP
+
+Greg Wilson
+Greg Wilson
+
+Co-founder of Software Carpentry
+
+Dr. Greg Wilson has worked for 30 years in both industry and academia, and is the author or editor of several books on computing and two for children. He is best known as the co-founder of Software Carpentry, a non-profit organization that teaches basic computing skills to researchers.
+Collaborator(s)
+
+    Filip Schouwenaars
+
+    Filip Schouwenaars
+
+Course Description
+
+Version control is one of the power tools of programming. It allows you to keep track of what you did when, undo any changes you decide you don't want, and collaborate at scale with other people. This course will introduce you to Git, a modern version control tool that is very popular with data scientists and software developers, and show you how to use it to get more done in less time and with less pain.
+
+<============================================================================================================================>
+
+    1
+    Basic workflow
+    100%
+
+    This chapter explains what version control is and why you should use it, and introduces the most common steps in a common Git workflow.
+    View Chapter Details
+
+
+
+
+
+<============================================================================================================================>
+2
+Repositories
+9%
+
+This chapter digs a little deeper into how Git stores information and how you can explore a repository's history.
+View Chapter Details
+______________________________________________________________________________________________________________________________
+
+
+
+
+
+
+<============================================================================================================================>
+3
+Undo
+0%
+
+Since Git saves all the changes you've made to your files, you can use it to undo those changes. This chapter shows you several ways to do that.
+View Chapter Details
+
+
+
+
+<============================================================================================================================>
+4
+Working with branches
+0%
+
+Branching is one of Git's most powerful features, since it allows you to work on several things at once. This chapter shows you how to create and manage branches.
+View Chapter Details
+
+
+
+
+
+<============================================================================================================================>
+5
+Collaborating
+0%
+
+This chapter showcases how Git allows you to share changes between repositories to collaborate at scale.
+View Chapter Details
+
+
+

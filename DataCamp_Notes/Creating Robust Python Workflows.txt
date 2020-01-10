@@ -244,10 +244,75 @@ plt.show()
 Wonderful word-ranking! We now have several independent, reusable functions at our disposal. In this coding exercise, we used a dictionary comprehension to link words with their counts and then sorted the words we obtained by their frequency. In the next video, we will learn about the last principle covered in this chapter.
 _______________________________________________________________________________________________________________________________________
 
+Instance method
+
+In this exercise, we will work with a class called ScikitData that represents datasets from the popular Python machine learning library scikit-learn.
+
+ScikitData has already been defined. In this exercise, we will define an instance method called pair_plot() and add it to ScikitData.
+
+It is best practice to include all methods in the class definition, but we will add methods to ScikitData on the fly, so that we can build the class sequentially without redefining it.
+
+Our pair_plot() instance method will plot dataset variables against each other using the pairplot() function, which has already been imported from the seaborn library.
+
+Before we can use pair_plot() to make a scatterplot matrix, we will have to create a ScikitData instance.
+Instructions
+100 XP
+
+    Fill in the first parameter in the pair_plot() instance method definition.
+    Create the diabetes instance of the ScikitData class.
+
+
+# Fill in the first parameter in the pair_plot() definition
+def pair_plot(self, vars=range(3), hue=None):
+    return pairplot(pd.DataFrame(self.data), vars=vars, hue=hue, kind="reg")
+
+ScikitData.pair_plot = pair_plot
+
+# Create the diabetes instance of the ScikitData class
+diabetes = ScikitData("diabetes")
+diabetes.pair_plot(vars=range(2, 6), hue=1)._legend.remove()
+plt.show()
+
+r plotting! In this exercise, we saw how classes and methods can be very useful! The choice to use seaborn for plotting is an implementation detail. We could switch to different visualization library without changing how our ScikitData class is used. Next, we'll add a class method to ScikitData that will allow us to simultaneously create more than one instance.
+
 
 
 _______________________________________________________________________________________________________________________________________
+Class method
 
+The pair_plot() method we defined in the previous exercise facilitates exploratory data analysis.
+
+If we have several datasets that we want to explore, it can be tedious to instantiate the ScikitData class repeatedly.
+
+To enable rapid instantiation of our ScikitData class, we will add a class method called get_generator().
+
+A class method is a good choice here, because we want to be able to access the class's ability to make new instances.
+
+We will use get_generator() to create a generator named dataset_generator that will generate instances that represent the diabetes and iris datasets.
+
+Instead of assigning the instances to variables, we will use a for loop and the pair_plot() instance method from the previous exercise to plot each dataset.
+Instructions
+100 XP
+
+    Fill in the decorator for the get_generator() class method definition.
+    Add the first parameter to the get_generator() class method definition.
+
+
+# Fill in the decorator for the get_generator() definition
+@classmethod
+# Add the first parameter to the get_generator() definition
+def get_generator(cls, dataset_names):
+    return map(cls, dataset_names)
+
+ScikitData.get_generator = get_generator
+dataset_generator = ScikitData.get_generator(["diabetes", "iris"])
+for dataset in dataset_generator:
+    dataset.pair_plot()
+    plt.show()
+    
+    
+    
+    , we have learned about abstracting away implementation details and providing interfaces to facilitate code use. For example, the details of how the ScikitData class works are hidden inside the module that contains the ScikitData class definition. We can use the ScikitData class to quickly obtain and explore scikit-learn datasets without looking at the ScikitData source code. In the next chapter, we will learn to describe how our code works with documentation and to ensure that the code works properly with testing.
 
 
 <=====================================================================================================================================>
@@ -259,6 +324,128 @@ VIEW CHAPTER DETAILS
 Documentation and Tests
 0%
 Documentation and tests are often overlooked, despite being essential to the success of all projects. In this chapter, you will learn how to include documentation in our code and practice Test-Driven Development (TDD), a process that puts tests first!
+
+
+_______________________________________________________________________________________________________________________________________
+
+TextFile hints
+
+In this exercise, we will go back to the example of a TextFile class that can represent any text file.
+
+As in the previous chapter, TextFile stores file contents in an instance variable called text.
+
+This time our TextFile class will have a get_lines() method that returns all of the lines from the text file used to instantiate the TextFile class.
+
+The TextFile class definition is ready, but we want to add type hints, so that calling help() on the TextFile class will provide type annotation information to users.
+
+To help getting things started, we've already imported the List class from the typing module.
+Instructions
+100 XP
+
+    Add type hints to the __init__() method's name argument.
+    Add type hints to the get_lines() method's return value.
+
+
+
+
+
+_______________________________________________________________________________________________________________________________________
+
+
+class TextFile:
+  	# Add type hints to TextFile"s __init__() method
+    def __init__(self, name: str) -> None:
+        self.text = Path(name).read_text()
+
+	# Type annotate TextFile"s get_lines() method
+    def get_lines(self) -> List[str]:
+        return self.text.split("\n")
+
+help(TextFile)
+
+
+<script.py> output:
+    Help on class TextFile in module __main__:
+    
+    class TextFile(builtins.object)
+     |  Methods defined here:
+     |  
+     |  __init__(self, name:str) -> None
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |  
+     |  get_lines(self) -> List[str]
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables (if defined)
+     |  
+     |  __weakref__
+     |      list of weak references to the object (if defined)
+
+
+
+Awesome annotation! In this case, we can be certain that the result of calling get_lines() will be a list of strings. While it is good to be as specific as possible when annotating return values, we might want to be a little more flexible with argument type hints. For example, we could design the TextFile class to allow users to pass a single filename or a list or tuple of filenames. Being smart about type hinting requires finding a balance between flexibility and specificity.
+
+
+_______________________________________________________________________________________________________________________________________
+
+MatchFinder hints
+
+In the video, we discussed how we can introduce flexibility into type hints with the Optional (None and one of any other type) class.
+
+In this exercise, we'll design a class called MatchFinder that has a method called get_matches().
+
+MatchFinder should only accept a list of strings as its strings argument and then store the input list in an instance variable called strings.
+
+The get_matches() method returns a list of either
+
+    every string in strings that contains the query argument or
+    all strings in strings if the match argument is None.
+
+The typing module's List and Optional classes have already been imported.
+Instructions
+100 XP
+
+    Add a strict type hint to the __init__() method's strings argument.
+    Add a flexible type hint to get_matches()'s query argument.
+
+
+class MatchFinder:
+  	# Add type hints to __init__()'s strings argument
+    def __init__(self, strings: List[str]) -> None:
+        self.strings = strings
+
+	# Type annotate get_matches()'s query argument
+    def get_matches(self, query: Optional[str] = None) -> List[str]:
+        return [s for s in self.strings if query in s] if query else self.strings
+
+help(MatchFinder)
+
+
+Very helpful hinting! In the previous chapter, we focused on writing modules. Type hints help us to understand important aspects of how functions and methods work, without having to look at the source code in modules. We will continue to use type annotation throughout the course, but in the next lesson we'll shift our attention to another way we can include information in the code that we write.
+
+
+
+
+
+
+_______________________________________________________________________________________________________________________________________
+
+
+
+_______________________________________________________________________________________________________________________________________
+
+
+
+_______________________________________________________________________________________________________________________________________
+
+
+
+
+_______________________________________________________________________________________________________________________________________
+
 
 
 <=====================================================================================================================================>

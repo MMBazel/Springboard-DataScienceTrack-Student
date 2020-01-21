@@ -1,0 +1,183 @@
+INTERACTIVE COURSE
+Introduction to Data Visualization with Seaborn
+Introduction to Data Visualization with Seaborn
+4 hours
+14 Videos
+44 Exercises
+3,568 Participants
+3,700 XP
+This course is part of these tracks:
+
+Data Visualization with Python
+Erin Case
+Erin Case
+Data Scientist
+
+Erin is a Data Scientist who is passionate about both statistics and education. She enjoys experimental design, communicating data analyses to a wide range of audiences, and developing user-facing data products for technology companies. Previously, she was a biostatistician for two epidemiological studies on cardiac arrest.
+
+COLLABORATOR(S)
+Mona Khalil
+Mona Khalil
+
+Yashas Roy
+Yashas Roy
+
+PREREQUISITES
+Introduction to Data Science in Python
+DATASETS
+Countries
+Mileage per gallon
+Students
+Survey responses
+Course Description
+Seaborn is a powerful Python library that makes it easy to create informative and attractive visualizations. This course provides an introduction to Seaborn and teaches you how to visualize your data using plots such as scatter plots, box plots, and bar plots. You’ll do this while exploring survey responses about student hobbies and the factors that are associated with academic success. You’ll also learn about some of Seaborn’s advantages as a statistical visualization tool, such as how it automatically calculates confidence intervals. By the end of the course, you will be able to use Seaborn in a variety of situations to explore your data and effectively communicate the results of your data analyses to others.
+
+
+<=========================================================================================================================>
+1
+Introduction to Seaborn
+FREE
+0%
+What is Seaborn, and when should you use it? In this chapter, you will find out! Plus, you will learn how to create scatter plots and count plots with both lists of data and pandas DataFrames. You will also be introduced to one of the big advantages of using Seaborn - the ability to easily add a third variable to your plots by using color to represent different subgroups.
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+
+Making a scatter plot with lists
+In this exercise, we'll use a dataset that contains information about 227 countries. This dataset has lots of interesting information on each country, such as the country's birth rates, death rates, and its gross domestic product (GDP). GDP is the value of all the goods and services produced in a year, expressed as dollars per person.
+
+We've created three lists of data from this dataset to get you started. gdp is a list that contains the value of GDP per country, expressed as dollars per person. phones is a list of the number of mobile phones per 1,000 people in that country. Finally, percent_literate is a list that contains the percent of each country's population that can read and write.
+
+Instructions 1/4
+25 XP
+1
+2
+3
+4
+Import Matplotlib and Seaborn using the standard naming convention.
+Take Hint (-7 XP)
+
+# Import Matplotlib and Seaborn
+import maplotlib.pyplot as plt
+import seaborn as sns
+
+
+Instructions 2/4
+25 XP
+2
+3
+4
+Create a scatter plot of GDP (gdp) vs. number of phones per 1000 people (phones).
+
+
+# Import Matplotlib and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create scatter plot with GDP on the x-axis and number of phones on the y-axis
+sns.scatterplot(x=gdp,y=phones)
+
+Instructions 3/4
+25 XP
+3
+4
+Display the plot.
+
+
+# Import Matplotlib and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create scatter plot with GDP on the x-axis and number of phones on the y-axis
+sns.scatterplot(x=gdp, y=phones)
+
+# Show plot
+plt.show()
+
+
+Instructions 4/4
+25 XP
+4
+Change the scatter plot so it displays the percent of the population that can read and write (percent_literate) on the y-axis.
+
+# Import Matplotlib and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Change this scatter plot to have percent literate on the y-axis
+sns.scatterplot(x=gdp, y=percent_literate)
+
+# Show plot
+plt.show()
+
+
+ +100 XP
+Alright! While this plot does not show a linear relationship between GDP and percent literate, countries with a lower GDP do seem more likely to have a lower percent of the population that can read and write.
+
+--------------------------------------------------------------------------------------------------------------------------
+
+Making a count plot with a list
+In the last exercise, we explored a dataset that contains information about 227 countries. Let's do more exploration of this data - specifically, how many countries are in each region of the world?
+
+To do this, we'll need to use a count plot. Count plots take in a categorical list and return bars that represent the number of list entries per category. You can create one here using a list of regions for each country, which is a variable named region.
+
+Instructions
+100 XP
+Import Matplotlib and Seaborn using the standard naming conventions.
+Use Seaborn to create a count plot with region on the y-axis.
+Display the plot.
+
+
+# Import Matplotlib and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+# Create count plot with region on the y-axis
+sns.countplot(y=region)
+
+# Show plot
+plt.show()
+
+
+ +100 XP
+Great job! Sub-Saharan Africa contains the most countries in this list. We'll revisit count plots later in the course.
+--------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+<=========================================================================================================================>
+VIEW CHAPTER DETAILS
+2
+Visualizing Two Quantitative Variables
+0%
+In this chapter, you will create and customize plots that visualize the relationship between two quantitative variables. To do this, you will use scatter plots and line plots to explore how the level of air pollution in a city changes over the course of a day and how horsepower relates to fuel efficiency in cars. You will also see another big advantage of using Seaborn - the ability to easily create subplots in a single figure!
+
+
+
+
+<=========================================================================================================================>
+VIEW CHAPTER DETAILS
+3
+Visualizing a Categorical and a Quantitative Variable
+0%
+Categorical variables are present in nearly every dataset, but they are especially prominent in survey data. In this chapter, you will learn how to create and customize categorical plots such as box plots, bar plots, count plots, and point plots. Along the way, you will explore survey data from young people about their interests, students about their study habits, and adult men about their feelings about masculinity.
+
+
+
+
+
+
+<=========================================================================================================================>
+VIEW CHAPTER DETAILS
+4
+Customizing Seaborn Plots
+0%
+In this final chapter, you will learn how to add informative plot titles and axis labels, which are one of the most important parts of any data visualization! You will also learn how to customize the style of your visualizations in order to more quickly orient your audience to the key takeaways. Then, you will put everything you have learned together for the final exercises of the course!
+
+VIEW CHAPTER DETAILS

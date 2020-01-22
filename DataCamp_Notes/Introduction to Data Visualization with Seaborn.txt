@@ -414,14 +414,213 @@ plt.show()
 
 ---------------------------------------------------------------------------------------------------------------------------
 
+Changing the size of scatter plot points
+In this exercise, we'll explore Seaborn's mpg dataset, which contains one row per car model and includes information such as the year the car was made, the number of miles per gallon ("M.P.G.") it achieves, the power of its engine (measured in "horsepower"), and its country of origin.
+
+What is the relationship between the power of a car's engine ("horsepower") and its fuel efficiency ("mpg")? And how does this relationship vary by the number of cylinders ("cylinders") the car has? Let's find out.
+
+Let's continue to use relplot() instead of scatterplot() since it offers more flexibility.
+
+Instructions 1/2
+50 XP
+1
+2
+Use relplot() and the mpg DataFrame to create a scatter plot with "horsepower" on the x-axis and "mpg" on the y-axis. Vary the size of the points by the number of cylinders in the car ("cylinders").
 
 
 
+# Import Matplotlib and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create scatter plot of horsepower vs. mpg
+sns.relplot(data=mpg,
+x='horsepower',
+y='mpg',
+kind='scatter',
+size='cylinders')
 
 
 
+# Show plot
+plt.show()
 
 
+
+Instructions 2/2
+50 XP
+2
+To make this plot easier to read, use hue to vary the color of the points by the number of cylinders in the car ("cylinders").
+
+
+# Import Matplotlib and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create scatter plot of horsepower vs. mpg
+sns.relplot(x="horsepower", y="mpg", 
+            data=mpg, kind="scatter", 
+            size="cylinders",
+            hue='cylinders')
+
+# Show plot
+plt.show()
+
+
+
+ +100 XP
+Great job! Cars with higher horsepower tend to get a lower number of miles per gallon. They also tend to have a higher number of cylinders.
+---------------------------------------------------------------------------------------------------------------------
+
+
+Changing the style of scatter plot points
+Let's continue exploring Seaborn's mpg dataset by looking at the relationship between how fast a car can accelerate ("acceleration") and its fuel efficiency ("mpg"). Do these properties vary by country of origin ("origin")?
+
+Note that the "acceleration" variable is the time to accelerate from 0 to 60 miles per hour, in seconds. Higher values indicate slower acceleration.
+
+Instructions
+100 XP
+Use relplot() and the mpg DataFrame to create a scatter plot with "acceleration" on the x-axis and "mpg" on the y-axis. Vary the style and color of the plot points by country of origin ("origin").\\
+
+# Import Matplotlib and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create a scatter plot of acceleration vs. mpg
+sns.relplot(data=mpg,
+kind='scatter',
+x='acceleration',
+y='mpg',
+style='origin',
+hue='origin')
+
+
+
+# Show plot
+plt.show()
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+Interpreting line plots
+In this exercise, we'll continue to explore Seaborn's mpg dataset, which contains one row per car model and includes information such as the year the car was made, its fuel efficiency (measured in "miles per gallon" or "M.P.G"), and its country of origin (USA, Europe, or Japan).
+
+How has the average miles per gallon achieved by these cars changed over time? Let's use line plots to find out!
+
+Instructions 1/2
+50 XP
+1
+2
+Use relplot() and the mpg DataFrame to create a line plot with "model_year" on the x-axis and "mpg" on the y-axis.
+
+# Import Matplotlib and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create line plot
+sns.relplot(
+    data=mpg,
+    x='model_year',
+    y='mpg',
+    kind='line')
+
+
+# Show plot
+plt.show()
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+Visualizing standard deviation with line plots
+In the last exercise, we looked at how the average miles per gallon achieved by cars has changed over time. Now let's use a line plot to visualize how the distribution of miles per gallon has changed over time.
+
+Seaborn has been imported as sns and matplotlib.pyplot has been imported as plt.
+
+Instructions
+100 XP
+Change the plot so the shaded area shows the standard deviation instead of the confidence interval for the mean.
+
+# Make the shaded area show the standard deviation
+sns.relplot(x="model_year", y="mpg",
+            data=mpg, kind="line", ci='sd')
+
+# Show plot
+plt.show()
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+Plotting subgroups in line plots
+Let's continue to look at the mpg dataset. We've seen that the average miles per gallon for cars has increased over time, but how has the average horsepower for cars changed over time? And does this trend differ by country of origin?
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Use relplot() and the mpg DataFrame to create a line plot with "model_year" on the x-axis and "horsepower" on the y-axis. Turn off the confidence intervals on the plot.
+
+# Import Matplotlib and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create line plot of model year vs. horsepower
+sns.relplot(data=mpg, x='model_year',y='horsepower', kind='line',ci=None)
+
+
+
+# Show plot
+plt.show()
+
+
+Instructions 2/3
+35 XP
+2
+3
+Create different lines for each country of origin ("origin") that vary in both line style and color.
+
+
+# Import Matplotlib and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Change to create subgroups for country of origin
+sns.relplot(x="model_year", y="horsepower", 
+            data=mpg, kind="line", 
+            hue='origin',
+            style='origin',
+            ci=None)
+
+# Show plot
+plt.show()
+
+Plotting subgroups in line plots
+Let's continue to look at the mpg dataset. We've seen that the average miles per gallon for cars has increased over time, but how has the average horsepower for cars changed over time? And does this trend differ by country of origin?
+
+Instructions 3/3
+30 XP
+3
+Add markers for each data point to the lines.
+Make the line styles the same for each country.
+
+# Import Matplotlib and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Add markers and make each line have the same style
+sns.relplot(x="model_year", y="horsepower", 
+            data=mpg, kind="line", 
+            ci=None, style="origin", markers=True,dashes=None,
+            hue="origin")
+
+# Show plot
+plt.show()
+
+
++91 XP
+Nice work! Now that we've added subgroups, we can see that this downward trend in horsepower was more pronounced among cars from the USA.
 
 
 
@@ -433,7 +632,264 @@ Visualizing a Categorical and a Quantitative Variable
 0%
 Categorical variables are present in nearly every dataset, but they are especially prominent in survey data. In this chapter, you will learn how to create and customize categorical plots such as box plots, bar plots, count plots, and point plots. Along the way, you will explore survey data from young people about their interests, students about their study habits, and adult men about their feelings about masculinity.
 
+---------------------------------------------------------------------------------------------------------------------
 
+Count plots
+In this exercise, we'll return to exploring our dataset that contains the responses to a survey sent out to young people. We might suspect that young people spend a lot of time on the internet, but how much do they report using the internet each day? Let's use a count plot to break down the number of survey responses in each category and then explore whether it changes based on age.
+
+As a reminder, to create a count plot, we'll use the catplot() function and specify the name of the categorical variable to count (x=____), the Pandas DataFrame to use (data=____), and the type of plot (kind="count").
+
+Seaborn has been imported as sns and matplotlib.pyplot has been imported as plt.
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Use sns.catplot() to create a count plot using the survey_data DataFrame with "Internet usage" on the x-axis.
+
+# Create count plot of internet usage
+sns.catplot(data=survey_data,
+            x='Internet usage',
+            kind='count')
+
+
+# Show plot
+plt.show()
+
+Make the bars horizontal instead of vertical.
+
+# Change the orientation of the plot
+sns.catplot(y="Internet usage",
+data=survey_data,
+            kind="count")
+
+# Show plot
+plt.show()
+
+
+
+Create column subplots based on "Age Category", which separates respondents into those that are younger than 21 vs. 21 and older.
+
+# Create column subplots based on age category
+sns.catplot(y="Internet usage", data=survey_data,
+            kind="count",
+            col='Age Category')
+
+# Show plot
+plt.show()
+
+0 XP
+Great job! It looks like most young people use the internet for a few hours every day, regardless of their age.
+
+---------------------------------------------------------------------------------------------------------------------
+
+Bar plots with percentages
+Let's continue exploring the responses to a survey sent out to young people. The variable "Interested in Math" is True if the person reported being interested or very interested in mathematics, and False otherwise. What percentage of young people report being interested in math, and does this vary based on gender? Let's use a bar plot to find out.
+
+As a reminder, we'll create a bar plot using the catplot() function, providing the name of categorical variable to put on the x-axis (x=____), the name of the quantitative variable to summarize on the y-axis (y=____), the Pandas DataFrame to use (data=____), and the type of categorical plot (kind="bar").
+
+Seaborn has been imported as sns and matplotlib.pyplot has been imported as plt.
+
+Instructions
+100 XP
+Use the survey_data DataFrame and sns.catplot() to create a bar plot with "Gender" on the x-axis and "Interested in Math" on the y-axis.
+
+# Create a bar plot of interest in math, separated by gender
+sns.catplot(data=survey_data,
+x='Gender',
+y='Interested in Math',kind='bar')
+
+
+# Show plot
+plt.show()
+
+ +100 XP
+Excellent. When the y-variable is True/False, bar plots will show the percentage of responses reporting True. This plot shows us that males report a much higher interest in math compared to females.
+---------------------------------------------------------------------------------------------------------------------
+
+
+Customizing bar plots
+In this exercise, we'll explore data from students in secondary school. The "study_time" variable records each student's reported weekly study time as one of the following categories: "<2 hours", "2 to 5 hours", "5 to 10 hours", or ">10 hours". Do students who report higher amounts of studying tend to get better final grades? Let's compare the average final grade among students in each category using a bar plot.
+
+Seaborn has been imported as sns and matplotlib.pyplot has been imported as plt.
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Use sns.catplot() to create a bar plot with "study_time" on the x-axis and final grade ("G3") on the y-axis, using the student_data DataFrame.
+
+# Create bar plot of average final grade in each study category
+sns.catplot(data = student_data,
+            x='study_time',
+            y='G3',
+            kind='bar')
+
+
+
+# Show plot
+plt.show()
+
+
+Instructions 2/3
+35 XP
+2
+3
+Using the order parameter, rearrange the categories so that they are in order from lowest study time to highest.
+
+# Rearrange the categories
+sns.catplot(x="study_time", y="G3",
+            data=student_data,
+            kind="bar",
+            order=["<2 hours", "2 to 5 hours", "5 to 10 hours",">10 hours"])
+
+# Show plot
+plt.show()
+
+
+Update the plot so that it no longer displays confidence intervals.
+
+# Turn off the confidence intervals
+sns.catplot(x="study_time", y="G3",
+            data=student_data,
+            kind="bar",
+            order=["<2 hours", 
+                   "2 to 5 hours", 
+                   "5 to 10 hours", 
+                   ">10 hours"],
+                   ci=None)
+
+# Show plot
+plt.show()
+
+
+ +100 XP
+Great work! Students in our sample who studied more have a slightly higher average grade, but it's not a strong relationship.
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+Create and interpret a box plot
+Let's continue using the student_data dataset. In an earlier exercise, we explored the relationship between studying and final grade by using a bar plot to compare the average final grade ("G3") among students in different categories of "study_time".
+
+In this exercise, we'll try using a box plot look at this relationship instead. As a reminder, to create a box plot you'll need to use the catplot() function and specify the name of the categorical variable to put on the x-axis (x=____), the name of the quantitative variable to summarize on the y-axis (y=____), the Pandas DataFrame to use (data=____), and the type of plot (kind="box").
+
+We have already imported matplotlib.pyplot as plt and seaborn as sns.
+
+Instructions 1/2
+50 XP
+1
+2
+Instructions 1/2
+50 XP
+1
+2
+Use sns.catplot() and the student_data DataFrame to create a box plot with "study_time" on the x-axis and "G3" on the y-axis. Set the ordering of the categories to study_time_order.
+
+# Specify the category ordering
+study_time_order = ["<2 hours", "2 to 5 hours", 
+                    "5 to 10 hours", ">10 hours"]
+
+# Create a box plot and set the order of the categories
+sns.catplot(data=student_data,kind='box', x='study_time', y='G3', order=study_time_order)
+
+
+
+
+# Show plot
+plt.show()
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+Omitting outliers
+Now let's use the student_data dataset to compare the distribution of final grades ("G3") between students who have internet access at home and those who don't. To do this, we'll use the "internet" variable, which is a binary (yes/no) indicator of whether the student has internet access at home.
+
+Since internet may be less accessible in rural areas, we'll add subgroups based on where the student lives. For this, we can use the "location" variable, which is an indicator of whether a student lives in an urban ("Urban") or rural ("Rural") location.
+
+Seaborn has already been imported as sns and matplotlib.pyplot has been imported as plt. As a reminder, you can omit outliers in box plots by setting the sym parameter equal to an empty string ("").
+
+Instructions
+100 XP
+Instructions
+100 XP
+Use sns.catplot() to create a box plot with the student_data DataFrame, putting "internet" on the x-axis and "G3" on the y-axis.
+Add subgroups so each box plot is colored based on "location".
+Do not display the outliers.
+
+
+# Create a box plot with subgroups and omit the outliers
+
+sns.catplot(data=student_data, x='internet',y='G3',hue='location',kind='box', sym="")
+
+
+
+
+# Show plot
+plt.show()
+
+ +100 XP
+Success! The median grades are quite similar between each group, but the spread of the distribution looks larger among students who have internet access.
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+Adjusting the whiskers
+In the lesson we saw that there are multiple ways to define the whiskers in a box plot. In this set of exercises, we'll continue to use the student_data dataset to compare the distribution of final grades ("G3") between students who are in a romantic relationship and those that are not. We'll use the "romantic" variable, which is a yes/no indicator of whether the student is in a romantic relationship.
+
+Let's create a box plot to look at this relationship and try different ways to define the whiskers.
+
+We've already imported Seaborn as sns and matplotlib.pyplot as plt.
+
+Instructions 1/3
+35 XP
+Instructions 1/3
+35 XP
+1
+Adjust the code to make the box plot whiskers to extend to 0.5 * IQR. Recall: the IQR is the interquartile range.
+
+Take Hint (-10 XP)
+2
+Change the code to set the whiskers to extend to the 5th and 95th percentiles.
+
+3
+Change the code to set the whiskers to extend to the min and max values.
+
+
+
+# Set the whiskers to 0.5 * IQR
+sns.catplot(x="romantic", y="G3",
+            data=student_data,
+            kind="box",
+            whis=0.5)
+
+# Show plot
+plt.show()
+
+
+
+# Extend the whiskers to the 5th and 95th percentile
+sns.catplot(x="romantic", y="G3",
+            data=student_data,
+            kind="box",
+            whis=[5,95])
+
+# Show plot
+plt.show()
+
+
+
+# Set the whiskers at the min and max values
+sns.catplot(x="romantic", y="G3",
+            data=student_data,
+            kind="box",
+            whis=[0,100])
+
+# Show plot
+plt.show()
+---------------------------------------------------------------------------------------------------------------------
 
 
 

@@ -145,10 +145,139 @@ plt.show()
 Great job! Sub-Saharan Africa contains the most countries in this list. We'll revisit count plots later in the course.
 --------------------------------------------------------------------------------------------------------------------------
 
+"Tidy" vs. "untidy" data
+Here, we have a sample dataset from a survey of children about their favorite animals. But can we use this dataset as-is with Seaborn? Let's use Pandas to import the csv file with the data collected from the survey and determine whether it is tidy, which is essential to having it work well with Seaborn.
+
+To get you started, the filepath to the csv file has been assigned to the variable csv_filepath.
+
+Instructions 1/2
+50 XP
+1
+2
+Read the csv file located at csv_filepath into a DataFrame named df.
+Print the head of df to show the fir
+
+# Import Pandas
+import pandas as pd
+
+# Create a DataFrame from csv file
+df = pd.read_csv(csv_filepath)
+
+# Print the head of df
+print(df.head())
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+Making a count plot with a DataFrame
+In this exercise, we'll look at the responses to a survey sent out to young people. Our primary question here is: how many young people surveyed report being scared of spiders? Survey participants were asked to agree or disagree with the statement "I am afraid of spiders". Responses vary from 1 to 5, where 1 is "Strongly disagree" and 5 is "Strongly agree".
+
+The survey data is in a csv file located at csv_filepath.
+
+Instructions
+100 XP
+Import Matplotlib, Pandas, and Seaborn using the standard names.
+Create a DataFrame named df from the csv file located at csv_filepath.
+Create a count plot with the "Spiders" column values on the x-axis.
+Display the plot.
+
+# Import Matplotlib, Pandas, and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+
+
+# Create a DataFrame from csv file
+df = pd.read_csv(csv_filepath) 
+
+# Create a count plot with "Spiders" on the x-axis
+sns.countplot(data=df,x="Spiders")
+
+# Display the plot
+plt.show()
+
+--------------------------------------------------------------------------------------------------------------------------
+
+Hue and scatter plots
+In the prior video, we learned how hue allows us to easily make subgroups within Seaborn plots. Let's try it out by exploring data from students in secondary school. We have a lot of information about each student like their age, where they live, their study habits and their extracurricular activities.
+
+For now, we'll look at the relationship between the number of absences they have in school and their final grade in the course, segmented by where the student lives (rural vs. urban area).
+
+Instructions 1/2
+50 XP
+1
+2
+Create a scatter plot with "absences" on the x-axis and final grade ("G3") on the y-axis using the DataFrame student_data. Color the plot points based on "location" (urban vs. rural).
+
+# Import Matplotlib and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create a scatter plot of absences vs. final grade
+sns.scatterplot(x='absences',
+y='G3',
+data=student_data,
+hue='location')
+
+
+
+# Show plot
+plt.show()
+
+Instructions 2/2
+50 XP
+2
+Make "Rural" appear before "Urban" in the plot legend.
+
+# Import Matplotlib and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Change the legend order in the scatter plot
+sns.scatterplot(x="absences", y="G3", 
+                data=student_data, 
+                hue="location")
+
+# Show plot
+plt.show()
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Hue and count plots
+Let's continue exploring our dataset from students in secondary school by looking at a new variable. The "school" column indicates the initials of which school the student attended - either "GP" or "MS".
+
+In the last exercise, we created a scatter plot where the plot points were colored based on whether the student lived in an urban or rural area. How many students live in urban vs. rural areas, and does this vary based on what school the student attends? Let's make a count plot with subgroups to find out.
+
+Instructions
+100 XP
+Fill in the palette_colors dictionary to map the "Rural" location value to the color "green" and the "Urban" location value to the color "blue".
+Create a count plot with "school" on the x-axis using the student_data DataFrame.
+Add subgroups to the plot using "location" variable.
+Use the palette_colors dictionary to make the location subgroups green and blue.
+
+# Import Matplotlib and Seaborn
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create a dictionary mapping subgroup values to colors
+palette_colors = {'Rural': "green", 'Urban': "blue"}
+
+# Create a count plot of school with location subgroups
+sns.countplot(x='school',
+data=student_data,
+hue='location',
+palette = palette_colors)
 
 
 
 
+# Display plot
+plt.show()
+
+
++70 XP
+Awesome. Students at GP tend to come from an urban location, but students at MS are more evenly split. Congratulations on finishing Chapter 1!
 
 
 <=========================================================================================================================>
@@ -157,6 +286,142 @@ VIEW CHAPTER DETAILS
 Visualizing Two Quantitative Variables
 0%
 In this chapter, you will create and customize plots that visualize the relationship between two quantitative variables. To do this, you will use scatter plots and line plots to explore how the level of air pollution in a city changes over the course of a day and how horsepower relates to fuel efficiency in cars. You will also see another big advantage of using Seaborn - the ability to easily create subplots in a single figure!
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Creating subplots with col and row
+We've seen in prior exercises that students with more absences ("absences") tend to have lower final grades ("G3"). Does this relationship hold regardless of how much time students study each week?
+
+To answer this, we'll look at the relationship between the number of absences that a student has in school and their final grade in the course, creating separate subplots based on each student's weekly study time ("study_time").
+
+Seaborn has been imported as sns and matplotlib.pyplot has been imported as plt.
+
+Instructions 1/3
+50 XP
+Instructions 1/3
+50 XP
+1
+Modify the code to use relplot() instead of scatterplot().
+
+Take Hint (-15 XP)
+2
+Modify the code to create one scatter plot for each level of the variable "study_time", arranged in columns.
+
+3
+Adapt your code to create one scatter plot for each level of a student's weekly study time, this time arranged in rows.
+
+
+# Change to use relplot() instead of scatterplot()
+sns.relplot(x="absences", y="G3", 
+                data=student_data,
+                kind='scatter')
+
+# Show plot
+plt.show()
+
+
+
+
+# Change to make subplots based on study time
+sns.relplot(x="absences", y="G3", 
+            data=student_data,
+            kind="scatter",
+            col = 'study_time')
+
+# Show plot
+plt.show()
+
+
+
+# Change this scatter plot to arrange the plots in rows instead of columns
+sns.relplot(x="absences", y="G3", 
+            data=student_data,
+            kind="scatter", 
+            row="study_time")
+
+# Show plot
+plt.show()
+
+ +100 XP
+Great job! Because these subplots had a large range of x values, it's easier to read them arranged in rows instead of columns.
+
+-------------------------------------------------------------------------------------------------------------
+
+Creating two-factor subplots
+Let's continue looking at the student_data dataset of students in secondary school. Here, we want to answer the following question: does a student's first semester grade ("G1") tend to correlate with their final grade ("G3")?
+
+There are many aspects of a student's life that could result in a higher or lower final grade in the class. For example, some students receive extra educational support from their school ("schoolsup") or from their family ("famsup"), which could result in higher grades. Let's try to control for these two factors by creating subplots based on whether the student received extra educational support from their school or family.
+
+Seaborn has been imported as sns and matplotlib.pyplot has been imported as plt.
+
+Instructions 1/3
+35 XP
+1
+2
+3
+Instructions 1/3
+35 XP
+1
+2
+3
+Use relplot() to create a scatter plot with "G1" on the x-axis and "G3" on the y-axis, using the student_data DataFrame.
+
+
+# Create a scatter plot of G1 vs. G3
+sns.relplot(data=student_data, x = 'G1', y = 'G3', kind='scatter')
+
+
+
+# Show plot
+plt.show()
+
+
+
+Instructions 2/3
+35 XP
+2
+3
+Create column subplots based on whether the student received support from the school ("schoolsup"), ordered so that "yes" comes before "no".
+
+
+# Adjust to add subplots based on school support
+sns.relplot(x="G1", y="G3", 
+            data=student_data,
+            kind="scatter",
+            col='schoolsup',
+            col_order=['yes','no'])
+
+# Show plot
+plt.show()
+
+
+Add row subplots based on whether the student received support from the family ("famsup"), ordered so that "yes" comes before "no". This will result in subplots based on two factors.
+
+
+# Adjust further to add subplots based on family support
+sns.relplot(x="G1", y="G3", 
+            data=student_data,
+            kind="scatter", 
+            row = 'famsup',
+            row_order = ['yes','no'],
+            col="schoolsup",
+            col_order=["yes", "no"])
+
+# Show plot
+plt.show()
+
+
+---------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
 
 
 

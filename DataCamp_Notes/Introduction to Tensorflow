@@ -676,7 +676,172 @@ Great job! Notice that printing price yielded a numpy array; whereas printing wa
 
 _________________________________________________________________________________________________________________________________
 
+# Import the keras module from tensorflow
+from tensorflow import keras
 
+# Compute the mean absolute error (mae)
+loss = keras.losses.mae(price, predictions)
+
+# Print the mean absolute error (mae)
+print(loss.numpy())
+
+
+Great work! You may have noticed that the MAE was much smaller than the MSE, even though price and predictions were the same. This is because the different loss functions penalize deviations of predictions from price differently. MSE does not like large deviations and punishes them harshly.
+
+_________________________________________________________________________________________________________________________________
+
+Modifying the loss function
+In the previous exercise, you defined a tensorflow loss function and then evaluated it once for a set of actual and predicted values. In this exercise, you will compute the loss within another function called loss_function(), which first generates predicted values from the data and variables. The purpose of this is to construct a function of the trainable model variables that returns the loss. You can then repeatedly evaluate this function for different variable values until you find the minimum. In practice, you will pass this function to an optimizer in tensorflow. Note that features and targets have been defined and are available. Additionally, Variable, float32, and keras are available.
+
+Instructions
+100 XP
+Define a variable, scalar, with an initial value of 1.0 and a type of float32.
+Define a function called loss_function(), which takes scalar, features, and targets as arguments in that order.
+Use a mean absolute error loss function.
+
+
+# Initialize a variable named scalar
+scalar = Variable(1.0, float32)
+
+# Define the model
+def model(scalar, features = features):
+  	return scalar * features
+
+# Define a loss function
+def loss_function(scalar, features = features, targets = targets):
+	# Compute the predicted values
+	predictions = model(scalar, features)
+    
+	# Return the mean absolute error loss
+	return keras.losses.mae(targets, predictions)
+
+# Evaluate the loss function and print the loss
+print(loss_function(scalar).numpy())
+
+ +100 XP
+Great work! As you will see in the following lessons, this exercise was the equivalent of evaluating the loss function for a linear regression where the intercept is 0.
+
+_________________________________________________________________________________________________________________________________
+
+Set up a linear regression
+A univariate linear regression identifies the relationship between a single feature and the target tensor. In this exercise, we will use a property's lot size and price. Just as we discussed in the video, we will take the natural logarithms of both tensors, which are available as price_log and size_log.
+
+In this exercise, you will define the model and the loss function. You will then evaluate the loss function for two different values of intercept and slope. Remember that the predicted values are given by intercept + features*slope. Additionally, note that keras.losses.mse() is available for you. Furthermore, slope and intercept have been defined as variables.
+
+Instructions
+100 XP
+Define a function that returns the predicted values for a linear regression using intercept, features, and slope, and without using add() or multiply().
+Complete the loss_function() by adding the model's variables, intercept and slope, as arguments.
+Compute the mean squared error using targets and predictions.
+
+# Define a linear regression model
+def linear_regression(intercept, slope, features = size_log):
+	return intercept + features*slope
+
+# Set loss_function() to take the variables as arguments
+def loss_function(intercept, slope, features = size_log, targets = price_log):
+	# Set the predicted values
+	predictions = linear_regression(intercept, slope, features)
+    
+    # Return the mean squared error loss
+	return keras.losses.mse(targets, predictions)
+
+# Compute the loss for different slope and intercept values
+print(loss_function(0.1, 0.1).numpy())
+print(loss_function(0.1, 0.5).numpy())
+
+_________________________________________________________________________________________________________________________________
+
+Train a linear model
+In this exercise, we will pick up where the previous exercise ended. The intercept and slope, intercept and slope, have been defined and initialized. Additionally, a function has been defined, loss_function(intercept, slope), which computes the loss using the data and model variables.
+
+You will now define an optimization operation as opt. You will then train a univariate linear model by minimizing the loss to find the optimal values of intercept and slope. Note that the opt operation will try to move closer to the optimum with each step, but will require many steps to find it. Thus, you must repeatedly execute the operation.
+
+Instructions
+100 XP
+Initialize an Adam optimizer as opt with a learning rate of 0.5.
+Apply the .minimize() method to the optimizer.
+Pass loss_function() with the appropriate arguments as a lambda function to .minimize().
+Supply the list of variables that need to be updated to var_list.
+
+# Initialize an adam optimizer
+opt = keras.optimizers.Adam(0.5)
+
+for j in range(100):
+	# Apply minimize, pass the loss function, and supply the variables
+	opt.minimize(lambda: loss_function(intercept, slope), var_list=[intercept, slope])
+
+	# Print every 10th value of the loss
+	if j % 10 == 0:
+		print(loss_function(intercept, slope).numpy())
+
+# Plot data and regression line
+plot_results(intercept, slope)
+
+<script.py> output:
+    9.669481
+    11.726705
+    1.1193314
+    1.6605749
+    0.7982892
+    0.8017315
+    0.6106562
+    0.59997994
+    0.5811015
+    0.5576157
+    
+     +100 XP
+Excellent! Notice that we printed loss_function(intercept, slope) every 10th execution for 100 executions. Each time, the loss got closer to the minimum as the optimizer moved the slope and intercept parameters closer to their optimal values.
+
+_________________________________________________________________________________________________________________________________
+
+Multiple linear regression
+In most cases, performing a univariate linear regression will not yield a model that is useful for making accurate predictions. In this exercise, you will perform a multiple regression, which uses more than one feature.
+
+You will use price_log as your target and size_log and bedrooms as your features. Each of these tensors has been defined and is available. You will also switch from using the the mean squared error loss to the mean absolute error loss: keras.losses.mae(). Finally, the predicted values are computed as follows: params[0] + feature1*params[1] + feature2*params[2]. Note that we've defined a vector of parameters, params, as a variable, rather than using three variables. Here, params[0] is the intercept and params[1] and params[2] are the slopes.
+
+Instructions
+100 XP
+Define a linear regression model that returns the predicted values.
+Set loss_function() to take the parameter vector as an input.
+Use the mean absolute error loss.
+Complete the minimization operation.
+
+# Define the linear regression model
+def linear_regression(params, feature1 = size_log, feature2 = bedrooms):
+	return params[0] + feature1*params[1] + feature2*params[2]
+
+# Define the loss function
+def loss_function(params, targets = price_log, feature1 = size_log, feature2 = bedrooms):
+	# Set the predicted values
+	predictions = linear_regression(params, feature1, feature2)
+  
+	# Use the mean absolute error loss
+	return keras.losses.mae(targets, predictions)
+
+# Define the optimize operation
+opt = keras.optimizers.Adam()
+
+# Perform minimization and print trainable variables
+for j in range(10):
+	opt.minimize(lambda: loss_function(params), var_list=[params])
+	print_results(params)
+	
+script.py> output:
+    loss: 12.418, intercept: 0.101, slope_1: 0.051, slope_2: 0.021
+    loss: 12.404, intercept: 0.102, slope_1: 0.052, slope_2: 0.022
+    loss: 12.391, intercept: 0.103, slope_1: 0.053, slope_2: 0.023
+    loss: 12.377, intercept: 0.104, slope_1: 0.054, slope_2: 0.024
+    loss: 12.364, intercept: 0.105, slope_1: 0.055, slope_2: 0.025
+    loss: 12.351, intercept: 0.106, slope_1: 0.056, slope_2: 0.026
+    loss: 12.337, intercept: 0.107, slope_1: 0.057, slope_2: 0.027
+    loss: 12.324, intercept: 0.108, slope_1: 0.058, slope_2: 0.028
+    loss: 12.311, intercept: 0.109, slope_1: 0.059, slope_2: 0.029
+    loss: 12.297, intercept: 0.110, slope_1: 0.060, slope_2: 0.030
+    
+    
+ +70 XP
+Great job! Note that params[2] tells us how much the price will increase in percentage terms if we add one more bedroom. You could train params[2] and the other model parameters by increasing the number of times we iterate over opt.
 
 
 

@@ -15,7 +15,7 @@ All of the documentation, code, and notes can be found here, as well as links to
 
 For questions or comments, please feel free to reach out on [LinkedIn](https://www.linkedin.com/in/mikikobazeley/). 
 
-If you find my repo useful, let me know OR ☕ consider buying me a coffee!: https://www.buymeacoffee.com/mmbazel ☕.
+If you find my repo useful, let me know OR ☕ consider buying me a coffee! https://www.buymeacoffee.com/mmbazel ☕.
 
 Regards,
 Mikiko

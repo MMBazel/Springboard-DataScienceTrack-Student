@@ -10,6 +10,55 @@ FREE
 0%
 You'll be introduced to the concept of dimensionality reduction and will learn when an why this is important. You'll learn the difference between feature selection and feature extraction and will apply both techniques for data exploration. The chapter ends with a lesson on t-SNE, a powerful feature extraction technique that will allow you to visualize a high-dimensional dataset.
 
+<---------------------------------------------------------------------------------------------------------------------------------------->
+
+Fitting t-SNE to the ANSUR data
+t-SNE is a great technique for visual exploration of high dimensional datasets. In this exercise, you'll apply it to the ANSUR dataset. You'll remove non-numeric columns from the pre-loaded dataset df and fit TSNE to his numeric dataset.
+
+Instructions
+100 XP
+Drop the non-numeric columns from the dataset.
+Create a TSNE model with learning rate 50.
+Fit and transform the model on the numeric dataset.
+
+Take Hint (-30 XP)
+
+
+# Non-numerical columns in the dataset
+non_numeric = ['Branch', 'Gender', 'Component']
+
+# Drop the non-numerical columns from df
+df_numeric = df.drop(non_numeric, axis=1)
+
+# Create a t-SNE model with learning rate 50
+m = TSNE(learning_rate=50)
+
+# Fit and transform the t-SNE model on the numeric dataset
+tsne_features = m.fit_transform(df_numeric)
+print(tsne_features.shape)
+
+ +100 XP
+Good job! t-SNE reduced the more than 90 features in the dataset to just 2 which you can now plot.
+
+
+<---------------------------------------------------------------------------------------------------------------------------------------->
+
+t-SNE visualisation of dimensionality
+Time to look at the results of your hard work. In this exercise, you will visualize the output of t-SNE dimensionality reduction on the combined male and female Ansur dataset. You'll create 3 scatterplots of the 2 t-SNE features ('x' and 'y') which were added to the dataset df. In each scatterplot you'll color the points according to a different categorical variable.
+
+seaborn has already been imported as sns and matplotlib.pyplot as plt.
+
+Instructions 1/3
+35 XP
+1
+Use seaborn's sns.scatterplot to create the plot.
+Color the points by 'Component'.
+
+
+
+
+
+
 
 <=========================================================================================================================================>
 
@@ -19,12 +68,354 @@ Feature selection I, selecting for feature information
 In this first out of two chapters on feature selection, you'll learn about the curse of dimensionality and how dimensionality reduction can help you overcome it. You'll be introduced to a number of techniques to detect and remove features that bring little added value to the dataset. Either because they have little variance, too many missing values, or because they are strongly correlated to other features.
 
 
+<---------------------------------------------------------------------------------------------------------------------------------------->
+
+Train - test split
+In this chapter, you will keep working with the ANSUR dataset. Before you can build a model on your dataset, you should first decide on which feature you want to predict. In this case, you're trying to predict gender.
+
+You need to extract the column holding this feature from the dataset and then split the data into a training and test set. The training set will be used to train the model and the test set will be used to check its performance on unseen data.
+
+ansur_df has been pre-loaded for you.
+
+Instructions
+100 XP
+Import the train_test_split function from sklearn.model_selection.
+Assign the 'Gender' column to y.
+Remove the 'Gender' column from the dataframe and assign the result to X.
+Set the test size to 30% to perform a 70% train and 30% test data split.
+
+
+# Import train_test_split()
+from sklearn.model_selection import train_test_split
+
+# Select the Gender column as the feature to be predicted (y)
+y = ansur_df['Gender']
+
+# Remove the Gender column to create the training data
+X = ansur_df.drop('Gender', axis=1)
+
+# Perform a 70% train and 30% test data split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+
+print("{} rows in test set vs. {} in training set. {} Features.".format(X_test.shape[0], X_train.shape[0], X_test.shape[1]))
+
+<---------------------------------------------------------------------------------------------------------------------------------------->
+
+Fitting and testing the model
+In the previous exercise, you split the dataset into X_train, X_test, y_train, and y_test. These datasets have been pre-loaded for you. You'll now create a support vector machine classifier model (SVC()) and fit that to the training data. You'll then calculate the accuracy on both the test and training set to detect overfitting.
+
+Instructions
+100 XP
+Import SVC from sklearn.svm and accuracy_score from sklearn.metrics
+Create an instance of the Support Vector Classification class (SVC()).
+Fit the model to the training data.
+Calculate accuracy scores on both train and test data.
+
+
+# Import SVC from sklearn.svm and accuracy_score from sklearn.metrics
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
+
+# Create an instance of the Support Vector Classification class
+svc = SVC()
+
+# Fit the model to the training data
+svc.fit(X_train, y_train)
+
+# Calculate accuracy scores on both train and test data
+accuracy_train = accuracy_score(y_train, svc.predict(X_train))
+accuracy_test = accuracy_score(y_test, svc.predict(X_test))
+
+print("{0:.1%} accuracy on test set vs. {1:.1%} on training set".format(accuracy_test, accuracy_train))
+
+
+<script.py> output:
+    49.7% accuracy on test set vs. 100.0% on training set
+    
+<---------------------------------------------------------------------------------------------------------------------------------------->
+
+Accuracy after dimensionality reduction
+You'll reduce the overfit with the help of dimensionality reduction. In this case, you'll apply a rather drastic form of dimensionality reduction by only selecting a single column that has some good information to distinguish between genders. You'll repeat the train-test split, model fit and prediction steps to compare the accuracy on test vs. training data.
+
+All relevant packages and y have been pre-loaded.
+
+Instructions
+100 XP
+Select just the neck circumference ('neckcircumferencebase') column from ansur_df.
+Split the data, instantiate a classifier and fit the data. This has been done for you.
+Once again calculate the accuracy scores on both training and test set.
+
+# Assign just the 'neckcircumferencebase' column from ansur_df to X
+X = ansur_df[['neckcircumferencebase']]
+
+# Split the data, instantiate a classifier and fit the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+svc = SVC()
+svc.fit(X_train, y_train)
+
+# Calculate accuracy scores on both train and test data
+accuracy_train = accuracy_score(y_train, svc.predict(X_train))
+accuracy_test = accuracy_score(y_test, svc.predict(X_test))
+
+print("{0:.1%} accuracy on test set vs. {1:.1%} on training set".format(accuracy_test, accuracy_train))
+
+
+<script.py> output:
+    93.3% accuracy on test set vs. 94.9% on training set
+    
+    
+ +100 XP
+Wow, what just happened!? On the full dataset the model is rubbish but with a single feature we can make good predictions? This is an example of the curse of dimensionality! The model badly overfits when we feed it too many features. It overlooks that neck circumference by itself is pretty different for males and females.
+
+<---------------------------------------------------------------------------------------------------------------------------------------->
+
+Features with low variance
+In the previous exercise you established that 0.001 is a good threshold to filter out low variance features in head_df after normalization. Now use the VarianceThreshold feature selector to remove these features.
+
+Instructions
+100 XP
+Create the variance threshold selector with a threshold of 0.001.
+Normalize the head_df dataframe by dividing it by its mean values and fit the selector.
+Create a boolean mask from the selector using .get_support().
+Create a reduced dataframe by passing the mask to the .loc[] method.
+
+Take Hint (-30 XP)
+
+from sklearn.feature_selection import VarianceThreshold
+
+# Create a VarianceThreshold feature selector
+sel = VarianceThreshold(threshold=0.001)
+
+# Fit the selector to normalized head_df
+sel.fit(head_df / head_df.mean())
+
+# Create a boolean mask
+mask = sel.get_support()
+
+# Apply the mask to create a reduced dataframe
+reduced_df = head_df.loc[:, mask]
+
+print("Dimensionality reduced from {} to {}.".format(head_df.shape[1], reduced_df.shape[1]))
+
+<script.py> output:
+    Dimensionality reduced from 6 to 4.
+<---------------------------------------------------------------------------------------------------------------------------------------->
+
+Visualizing the correlation matrix
+Reading the correlation matrix of ansur_df in its raw, numeric format doesn't allow us to get a quick overview. Let's improve this by removing redundant values and visualizing the matrix using seaborn.
+
+Seaborn has been pre-loaded as sns, matplotlib.pyplot as plt, NumPy as np and pandas as pd.
+
+Instructions 1/4
+100 XP
+1
+2
+3
+4
+Create the correlation matrix.
+Visualize it using Seaborn's heatmap function.
+
+Take Hint (-30 XP)
+
+# Create the correlation matrix
+corr = ansur_df.corr()
+
+# Draw the heatmap
+sns.heatmap(corr,  cmap=cmap, center=0, linewidths=1, annot=True, fmt=".2f")
+plt.show()
+
+
+
+Instructions 2/4
+0 XP
+2
+3
+4
+Create a boolean mask for the upper triangle of the plot.
+
+# Create the correlation matrix
+corr = ansur_df.corr()
+
+# Generate a mask for the upper triangle
+mask = np.triu(np.ones_like(corr, dtype=bool))
+
+
+
+Instructions 3/4
+0 XP
+3
+4
+Add the mask to the heatmap.
+
+# Create the correlation matrix
+corr = ansur_df.corr()
+
+# Generate a mask for the upper triangle 
+mask = np.triu(np.ones_like(corr, dtype=bool))
+
+# Add the mask to the heatmap
+sns.heatmap(corr, mask=mask, cmap=cmap, center=0, linewidths=1, annot=True, fmt=".2f")
+plt.show()
+
+
+<---------------------------------------------------------------------------------------------------------------------------------------->
+
+Filtering out highly correlated features
+You're going to automate the removal of highly correlated features in the numeric ANSUR dataset. You'll calculate the correlation matrix and filter out columns that have a correlation coefficient of more than 0.95 or less than -0.95.
+
+Since each correlation coefficient occurs twice in the matrix (correlation of A to B equals correlation of B to A) you'll want to ignore half of the correlation matrix so that only one of the two correlated features is removed. Use a mask trick for this purpose.
+
+Instructions
+100 XP
+Calculate the correlation matrix of ansur_df and take the absolute value of this matrix.
+Create a boolean mask with True values in the upper right triangle and apply it to the correlation matrix.
+Set the correlation coefficient threshold to 0.95.
+Drop all the columns listed in to_drop from the dataframe.
+
+Take Hint (-30 XP)
+
+# Calculate the correlation matrix and take the absolute value
+corr_matrix = ansur_df.corr().abs()
+
+# Create a True/False mask and apply it
+mask = np.triu(np.ones_like(corr_matrix, dtype=bool))
+tri_df = corr_matrix.mask(mask)
+
+# List column names of highly correlated features (r > 0.95)
+to_drop = [c for c in tri_df.columns if any(tri_df[c] >  0.95)]
+
+# Drop the features in the to_drop list
+reduced_df = ansur_df.drop(to_drop, axis=1)
+
+print("The reduced dataframe has {} columns.".format(reduced_df.shape[1]))
+
+
+
+
 <=========================================================================================================================================>
 
 3
 Feature selection II, selecting for model accuracy
 0%
 In this second chapter on feature selection, you'll learn how to let models help you find the most important features in a dataset for predicting a particular target feature. In the final lesson of this chapter, you'll combine the advice of multiple, different, models to decide on which features are worth keeping.
+
+
+
+<---------------------------------------------------------------------------------------------------------------------------------------->
+
+Building a diabetes classifier
+You'll be using the Pima Indians diabetes dataset to predict whether a person has diabetes using logistic regression. There are 8 features and one target in this dataset. The data has been split into a training and test set and pre-loaded for you as X_train, y_train, X_test, and y_test.
+
+A StandardScaler() instance has been predefined as scaler and a LogisticRegression() one as lr.
+
+Instructions
+100 XP
+Fit the scaler on the training features and transform these features in one go.
+Fit the logistic regression model on the scaled training data.
+Scale the test features.
+Predict diabetes presence on the scaled test set.
+
+
+# Fit the scaler on the training features and transform these in one go
+X_train_std = scaler.fit_transform(X_train)
+
+# Fit the logistic regression model on the scaled training data
+lr.fit(X_train_std, y_train)
+
+# Scale the test features
+X_test_std = scaler.transform(X_test)
+
+# Predict diabetes presence on the scaled test set
+y_pred = lr.predict(X_test_std)
+
+# Prints accuracy metrics and feature coefficients
+print("{0:.1%} accuracy on test set.".format(accuracy_score(y_test, y_pred))) 
+print(dict(zip(X.columns, abs(lr.coef_[0]).round(2))))
+
+
+<script.py> output:
+    79.6% accuracy on test set.
+    {'diastolic': 0.03, 'family': 0.34, 'bmi': 0.38, 'glucose': 1.23, 'insulin': 0.19, 'age': 0.34, 'triceps': 0.24, 'pregnant': 0.04}
+    
+     +100 XP
+Great! We get almost 80% accuracy on the test set. Take a look at the differences in model coefficients for the different features.
+<---------------------------------------------------------------------------------------------------------------------------------------->
+
+Manual Recursive Feature Elimination
+Now that we've created a diabetes classifier, let's see if we can reduce the number of features without hurting the model accuracy too much.
+
+On the second line of code the features are selected from the original dataframe. Adjust this selection.
+
+A StandardScaler() instance has been predefined as scaler and a LogisticRegression() one as lr.
+
+All necessary functions and packages have been pre-loaded too.
+
+Instructions 1/3
+50 XP
+1
+First, run the given code, then remove the feature with the lowest model coefficient from X.
+
+Take Hint (-15 XP)
+
+
+# Remove the feature with the lowest model coefficient
+X = diabetes_df[['pregnant', 'glucose', 'diastolic', 'triceps', 'insulin', 'bmi', 'family', 'age']]
+
+# Performs a 25-75% train test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+
+# Scales features and fits the logistic regression model
+lr.fit(scaler.fit_transform(X_train), y_train)
+
+# Calculates the accuracy on the test set and prints coefficients
+acc = accuracy_score(y_test, lr.predict(scaler.transform(X_test)))
+print("{0:.1%} accuracy on test set.".format(acc)) 
+print(dict(zip(X.columns, abs(lr.coef_[0]).round(2))))
+
+
+
+
+<script.py> output:
+    79.6% accuracy on test set.
+    {'diastolic': 0.03, 'family': 0.34, 'bmi': 0.38, 'glucose': 1.23, 'insulin': 0.19, 'age': 0.34, 'triceps': 0.24, 'pregnant': 0.04}
+    
+    
+    
+    # Remove the 2 features with the lowest model coefficients
+X = diabetes_df[['pregnant', 'glucose', 'triceps', 'insulin', 'bmi', 'family', 'age']]
+
+# Performs a 25-75% train test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+
+# Scales features and fits the logistic regression model
+lr.fit(scaler.fit_transform(X_train), y_train)
+
+# Calculates the accuracy on the test set and prints coefficients
+acc = accuracy_score(y_test, lr.predict(scaler.transform(X_test)))
+print("{0:.1%} accuracy on test set.".format(acc)) 
+print(dict(zip(X.columns, abs(lr.coef_[0]).round(2))))
+
+
+
+
+Run the code and remove 2 more features with the lowest model coefficients.
+
+Take Hint (-15 XP)
+
+
+
+
+<---------------------------------------------------------------------------------------------------------------------------------------->
+
+
+
+
+
+
+
+
+<---------------------------------------------------------------------------------------------------------------------------------------->
+
 
 <=========================================================================================================================================>
 

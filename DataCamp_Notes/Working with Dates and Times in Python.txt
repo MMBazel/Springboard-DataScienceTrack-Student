@@ -204,7 +204,7 @@ from datetime import date
 andrew = date(1992, 8, 26)
 
 # Print the date in the format 'MONTH (YYYY)'
-print(andrew.strftime('%MM (%Y)'))
+print(andrew.strftime('%B (%Y)'))
 
 Print andrew in the format 'YYYY-DDD' where DDD is the day of the year.
 
